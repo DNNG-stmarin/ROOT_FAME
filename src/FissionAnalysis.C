@@ -1,0 +1,366 @@
+#define FissionAnalysis_cxx
+#include "FissionAnalysis.h"
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <TLegend.h>
+#include <TCut.h>
+#include <TFitResult.h>
+#include <THStack.h>
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <queue> 
+
+#include "InfoSystem.h"
+#include "FissionEvent.h"
+#include "ParticleEvent.h"
+#include "TriggerEvent.h"
+
+#include "mappingFunctions.h"
+
+using namespace std;
+
+int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
+{
+
+	 //  _                          ____  _     _           _       
+	 // | |                        / __ \| |   (_)         | |      
+	 // | |     ___   ___  _ __   | |  | | |__  _  ___  ___| |_ ___ 
+	 // | |    / _ \ / _ \| '_ \  | |  | | '_ \| |/ _ \/ __| __/ __|
+	 // | |___| (_) | (_) | |_) | | |__| | |_) | |  __/ (__| |_\__ \
+	 // |______\___/ \___/| .__/   \____/|_.__/| |\___|\___|\__|___/
+	 //                   | |                 _/ |                  
+	 //                   |_|                |__/                   
+
+	// use an array of fifo to store particles and chambers
+	queue<ParticleEvent> DetectorBuffer[NUM_DETS]; 
+	queue<TriggerEvent> TriggerBuffer[NUM_CHAMBERS]; 
+
+
+	/*
+	  __  __       _         _                       
+	 |  \/  |     (_)       | |                      
+	 | \  / | __ _ _ _ __   | |     ___   ___  _ __  
+	 | |\/| |/ _` | | '_ \  | |    / _ \ / _ \| '_ \ 
+	 | |  | | (_| | | | | | | |___| (_) | (_) | |_) |
+	 |_|  |_|\__,_|_|_| |_| |______\___/ \___/| .__/ 
+	                                          | |    
+	                                          |_|    
+	*/
+
+	// get the number of entries
+	Long64_t nentries = fChain->GetEntriesFast();
+	cout << "For this file there are: " << nentries << " entries." << endl;
+
+	if(entriesToProc > 0)
+	{
+		cout << "Reading the first " << entriesToProc << " events." << endl;
+		nentries = entriesToProc;
+	}
+
+
+	// keep track of the number of bytes in the chain
+	Long64_t nbytes = 0, nb = 0;
+
+	// initialize the particle
+	ParticleEvent newParticle = ParticleEvent();
+	TriggerEvent newTrigger = TriggerEvent();
+
+	// initialize the detector channel
+	int detChannel = 0;
+
+	// loop through array
+	for (Long64_t jentry = 0; jentry < nentries; jentry++)
+	{
+
+		Long64_t ientry = LoadTree(jentry);
+	    if (ientry < 0) break;
+
+		// load current entry
+		nb = fChain->GetEntry(jentry);   nbytes += nb;
+
+		// update user on status of processing
+		if(jentry%1000000 == 0)
+		{
+			cout << "now reading entry " << jentry << endl;
+		}
+
+		detChannel = (int)Channel + (int)Board*CHAN_PER_BOARD;
+
+
+
+		if(isDetector(detChannel) >= 0)
+		{
+			newParticle = ParticleEvent(detChannel, Timestamp, Energy, EnergyShort);
+			DetectorBuffer[isDetector(detChannel)].push(newParticle);
+		}
+		else if(isChamber(detChannel) >= 0)
+		{
+			newTrigger = TriggerEvent(detChannel, Timestamp, Energy, EnergyShort);
+			TriggerBuffer[isChamber(detChannel)].push(newTrigger);
+		}
+
+	}
+
+	/*
+	  _______              _____            _                 _   _             
+	 |__   __|            |  __ \          | |               | | (_)            
+	    | |_ __ ___  ___  | |  | | ___  ___| | __ _ _ __ __ _| |_ _  ___  _ __  
+	    | |  __/ _ \/ _ \ | |  | |/ _ \/ __| |/ _  |  __/ _  | __| |/ _ \|  _ \ 
+	    | | | |  __/  __/ | |__| |  __/ (__| | (_| | | | (_| | |_| | (_) | | | |
+	    |_|_|  \___|\___| |_____/ \___|\___|_|\__,_|_|  \__,_|\__|_|\___/|_| |_|
+*/                                                                                                                                                 
+	//create TFile object
+	// TString fileName = "FissionOutput" + to_string(fileNum) + ".root";
+	// TFile *first = new TFile(fileName, "RECREATE");	//filename/option/filetitle
+
+	expFile->cd();
+	fileTreeDir->cd();
+	//create TTree object
+	TTree *tree = new TTree("FissionTree", "Fission TREE");	//treename/treetitle
+
+	// declatre the variables to store the fission branches
+	int tMult = 0;
+	double tTime = 0;
+	double tDep = 0;
+	double totToF[MAX_MULTIPLICITY] = {0};
+	double totPSP[MAX_MULTIPLICITY] = {0};
+	double totDep[MAX_MULTIPLICITY] = {0};
+	double totTail[MAX_MULTIPLICITY] = {0};
+	int totChan[MAX_MULTIPLICITY] = {0};
+
+	// scalar variables
+	tree->Branch("tMult", &tMult, "tMult/I");
+	tree->Branch("tTime", &tTime, "fissionTime/D");
+	tree->Branch("tDep", &tDep, "fissionErg/D");
+
+	// list variables
+	tree->Branch("totToF", totToF, "totToF[tMult]/D");
+	tree->Branch("totPSP", totPSP, "totPSP[tMult]/D");
+	tree->Branch("totDep", totDep, "totDep[tMult]/D");
+	tree->Branch("totChan", totChan, "totChan[tMult]/I");
+	tree->Branch("totTail", totTail, "totTail[tMult]/D");
+
+
+/*
+	   _____      _            _     _                       _                       
+	  / ____|    (_)          (_)   | |                     | |                      
+	 | |     ___  _ _ __   ___ _  __| | ___ _ __   ___ ___  | |     ___   ___  _ __  
+	 | |    / _ \| | '_ \ / __| |/ _` |/ _ \ '_ \ / __/ _ \ | |    / _ \ / _ \| '_ \ 
+	 | |___| (_) | | | | | (__| | (_| |  __/ | | | (_|  __/ | |___| (_) | (_) | |_) |
+	  \_____\___/|_|_| |_|\___|_|\__,_|\___|_| |_|\___\___| |______\___/ \___/| .__/ 
+	                                                                          | |    
+	                                                                          |_|    
+*/
+	// queue containing valid fission events
+	queue<FissionEvent> FissionBuffer; 
+
+	// keep track of the iterator in each of the channels
+	Long64_t indexTrig[NUM_CHAMBERS] = {0};
+
+	// keep track of the earliest times in each of the channels
+	double DetectorLastTime[NUM_DETS] = {0};
+
+	// distribution of chamber times and energy
+	double chamberTimes[NUM_CHAMBERS] = {0};
+	double chamberErgs[NUM_CHAMBERS] = {0};
+
+	// initialize the new particle
+	TriggerEvent qTrigger = TriggerEvent();
+	FissionEvent newFission = FissionEvent(0, 0);
+
+	// start at the beginning of the array and also keep track of the the number of coincidence events found.
+	ULong64_t numFissEvents = 0;
+
+	// initialize fission tracker
+	bool validFiss = true;
+	double averageTrigTime = 0;
+	double sumTrigErg = 0;
+
+	// first start by looking for valid fission triggers
+	while (!TriggerBuffer[0].empty())
+	{		
+		// boolean to keep track of valid fissions
+		bool validFiss = true;
+
+		// reset the times and energies
+		for(int chambIndex = 0; chambIndex < NUM_CHAMBERS; chambIndex++)
+		{
+			chamberTimes[chambIndex] = 0;
+			chamberErgs[chambIndex] = 0;
+		}
+
+		// assign fission event from first list
+		qTrigger = TriggerBuffer[0].front();
+		chamberTimes[0] = qTrigger.getTime();
+		chamberErgs[0] = qTrigger.getEnergy();
+
+		// look at the other fission lists
+		for(int chambIndex = 1; chambIndex < NUM_CHAMBERS; chambIndex++)
+		{
+			if(!TriggerBuffer[chambIndex].empty())
+			{
+				chamberTimes[chambIndex] = TriggerBuffer[chambIndex].front().getTime();
+				chamberErgs[chambIndex] = TriggerBuffer[chambIndex].front().getEnergy();
+			}	
+			// match the indices for other queus
+			while((chamberTimes[0] - chamberTimes[chambIndex] > COINC_WINDOW) and (!TriggerBuffer[chambIndex].empty()) )
+			{
+				TriggerBuffer[chambIndex].pop();
+				chamberTimes[chambIndex] = TriggerBuffer[chambIndex].front().getTime();
+				chamberErgs[chambIndex] = TriggerBuffer[chambIndex].front().getEnergy();
+			}
+			// find coincidences, set validity to 0 if one of the events is lost
+			if(abs(chamberTimes[0] - chamberTimes[chambIndex]) > MAX_CHAMBER_DRIFT)
+			{
+				validFiss = false;
+			}
+		}
+		// calculate the average of times and sum of energies
+		averageTrigTime = 0;
+		sumTrigErg = 0;
+
+		for(int chambIndex = 0; chambIndex < NUM_CHAMBERS; chambIndex++)
+		{
+			averageTrigTime += chamberTimes[chambIndex];
+			sumTrigErg += chamberErgs[chambIndex];
+		}
+		averageTrigTime /= NUM_CHAMBERS;
+
+		// if fission is valid, store it in queue
+		if(validFiss)
+		{
+			// update the number of valid fissions and populate queue
+			newFission = FissionEvent(averageTrigTime, sumTrigErg);
+			FissionBuffer.push(newFission);
+		}
+
+		// get rid of currently analyzed event in queue
+		TriggerBuffer[0].pop();
+	}
+
+	cout << "Number of Fissions is " << FissionBuffer.size() << endl;
+
+	/*
+	  ______ _         _               _                       
+	 |  ____(_)       (_)             | |                      
+	 | |__   _ ___ ___ _  ___  _ __   | |     ___   ___  _ __  
+	 |  __| | / __/ __| |/ _ \| '_ \  | |    / _ \ / _ \| '_ \ 
+	 | |    | \__ \__ \ | (_) | | | | | |___| (_) | (_) | |_) |
+	 |_|    |_|___/___/_|\___/|_| |_| |______\___/ \___/| .__/ 
+	                                                    | |    
+	                                                    |_|    
+	*/
+
+	// now loop thrugh fission events to find valid fission events
+	FissionEvent qFission = FissionEvent(0, 0);
+	double fissionTime = 0;
+	double fissionEnergy = 0;
+
+	// dynamical variables
+	double detTime = 0;
+	double detPSP = 0;
+
+	// store multiplicities
+	int totMult = 0;
+
+	// find coincidences option
+	double deltaT = 0;
+	ParticleEvent qParticle = ParticleEvent();
+
+	// keep track of the fission index
+	int fisTracker = 0;
+
+	// first start by looking for valid fission triggers
+	while (!FissionBuffer.empty())
+	{	
+		fisTracker++;
+		// reset the attributes of the fission event
+		totMult = 0;
+
+		// reset all the indices to 0
+		for(int jMult = 0; jMult < MAX_MULTIPLICITY; jMult++)
+		{
+			totToF[jMult] = 0;
+			totDep[jMult] = 0;
+			totPSP[jMult] = 0;
+			totChan[jMult] = 0;
+		}
+
+		// assign fission event from first list
+		qFission = FissionBuffer.front();
+		fissionTime = qFission.getTriggerTime();
+		fissionEnergy = qFission.getEnergy();
+
+		// look at the detection events
+		for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
+		{
+			// match the indices for other queues
+			if(!DetectorBuffer[detIndex].empty())
+			{
+				qParticle = DetectorBuffer[detIndex].front();
+				detTime = qParticle.getTime();
+				deltaT = detTime - fissionTime;
+			} 
+
+			// detector has no more valid detection events, skip it.
+			else
+			{
+				continue;
+			}
+			
+			// cycle through the indices of the other array
+			while( (fissionTime - detTime > COINC_WINDOW) and (!DetectorBuffer[detIndex].empty()))
+			{
+				DetectorBuffer[detIndex].pop();
+				qParticle = DetectorBuffer[detIndex].front();
+				detTime = qParticle.getTime();
+				deltaT = detTime - fissionTime;
+			}
+
+			// create the coincidence event
+			if(abs(deltaT) < COINC_WINDOW)
+			{
+
+				totToF[totMult] = deltaT;
+				totPSP[totMult] = 1 - qParticle.getPsp();
+				totDep[totMult] = qParticle.getEnergy();
+				totTail[totMult] = qParticle.getTail();
+				totChan[totMult] = qParticle.getDetector();
+				totMult++;
+			}
+		}
+
+		// get rid of analyzed fission event
+		FissionBuffer.pop();
+
+		// now fill the histogram of particle-particle coincidences
+		tMult = totMult;
+		tTime = fissionTime;
+		tDep = fissionEnergy;
+
+		// fill the tree branches
+		tree->Fill();
+	}
+
+
+	 //   _____             _               _____        _        
+	 //  / ____|           (_)             |  __ \      | |       
+	 // | (___   __ ___   ___ _ __   __ _  | |  | | __ _| |_ __ _ 
+	 //  \___ \ / _` \ \ / / | '_ \ / _` | | |  | |/ _` | __/ _` |
+	 //  ____) | (_| |\ V /| | | | | (_| | | |__| | (_| | || (_| |
+	 // |_____/ \__,_| \_/ |_|_| |_|\__, | |_____/ \__,_|\__\__,_|
+	 //                              __/ |                        
+	 //                             |___/                         
+
+
+	// cd back into the main file
+	cout << "Saving the tree to file. " << endl;
+	//first->cd();
+
+	tree->Write();
+	//expFile->Close();
+
+	return 1;
+}
