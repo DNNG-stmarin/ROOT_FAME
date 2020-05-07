@@ -1,4 +1,4 @@
-// Programmer: Stefano Marin, Isabel Hernandez
+ // Programmer: Stefano Marin, Isabel Hernandez
 // Purpose: class intented to store the information related to a single detected particle
 // Date: 02.20.2020
 
@@ -15,6 +15,8 @@ class ParticleEvent {
 
 private:
 
+public:
+
 	double depositedEnergy;
 	double time;
 	int detChannel;
@@ -22,7 +24,6 @@ private:
 	double tailEnergy;
 	int type;
 
-public:
 
 	// the default and value constructor
 
@@ -36,12 +37,11 @@ public:
 		type = 0;
 	}
 
-	ParticleEvent(int detNumber, ULong64_t timestamp, UShort_t energy, UShort_t energyShort)
+	ParticleEvent(int detNumber, double timestamp, double energy, double energyShort)
 	{
-		depositedEnergy = (double)INT_CALIBRATION * energy;
-		tailEnergy = (double)INT_CALIBRATION * energyShort;
-
-		time = (double)timestamp/1000; // convert picosecond to nanosecond
+		depositedEnergy = INT_CALIBRATION * energy;
+		tailEnergy = INT_CALIBRATION * energyShort;
+		time = timestamp;
 		
 		detChannel = detNumber;
 		psp = tailEnergy/depositedEnergy;

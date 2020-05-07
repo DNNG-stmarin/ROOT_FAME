@@ -38,6 +38,11 @@ FissionExperimentClass::FissionExperimentClass()
 	cout << "How many files are you analyzing: ";
 	cin >> numFiles;	
 
+	cout << "What is the format of your data file: " << endl;
+	cout << "(0): CoMPASS" << endl;
+	cout << "(1): MIDAS (LANSCE)" << endl;
+	cin >> digType;
+
 	expFile = new TFile(treeFileT, "RECREATE");
 	detFile = new TFile(detFileT, "RECREATE");
 	sysFile = new TFile(sysFileT, "RECREATE");
@@ -55,7 +60,7 @@ int FissionExperimentClass::CreateFissionTree(TString filename, TFile* expFileWr
 	for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
 	{
 		cout << "reading file number " << fileNum << endl;
-		FissionAnalysis* inputData = new FissionAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite);
+		FissionAnalysis* inputData = new FissionAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
 		inputData->CreateFissionTree(fileNum, numEntries);
 	}
 	expFile->Close();

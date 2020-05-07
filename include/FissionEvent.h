@@ -14,21 +14,20 @@
 class FissionEvent {
 
 private:
+
+public:
 	// attributes of the coincidence class
 	int multiplicityNeutron;
 	int multiplicityPhoton;
 	int totalMultiplicity;
 
 	double triggerEnergy;
-	double triggerTime;
+	long double triggerTime;
 	bool isValidFission;
 
 	ParticleEvent particles[MAX_MULTIPLICITY];
 	ParticleEvent neutrons[MAX_MULTIPLICITY];
 	ParticleEvent photons[MAX_MULTIPLICITY];
-
-
-public:
 
 	FissionEvent()
 	{

@@ -33,7 +33,6 @@ public:
 	int backNeutMult;
 	int backGammaMult;
 
-	
 };
 
 #endif

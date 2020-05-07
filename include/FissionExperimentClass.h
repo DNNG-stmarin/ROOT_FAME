@@ -33,6 +33,8 @@ private:
 	int startFile = 0;
 	int numFiles = 1;
 
+	int digType;
+
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";
 
@@ -43,6 +45,9 @@ private:
 	TString sysFileT = "System.root";
 
 public:
+
+	// attributes
+
 	// file to write all results
 	TFile* expFile = 0;
 	TFile* detFile = 0;
@@ -59,6 +64,11 @@ public:
 
 	// chain of raw tree files
 	TChain* coincTreeChain = 0;
+
+	// Experimental system class
+	//DetectorSystemClass detSys;
+
+	// methods
 
 	// class constructor
 	FissionExperimentClass();

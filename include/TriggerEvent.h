@@ -15,14 +15,15 @@
 class TriggerEvent
 {
 private:
+
+public:
+
 	double depositedEnergy;
 	double time;
 	int detChannel;
 	double psp;
 	int type;
 	bool isFission;
-
-public:
 
 	TriggerEvent()
 	{
@@ -34,12 +35,12 @@ public:
 		isFission = true;
 	}
 
-	TriggerEvent(int detNumber, ULong64_t timestamp, UShort_t energy, UShort_t energyShort)
+	TriggerEvent(int detNumber, double timestamp, double energy, double energyShort)
 	{
-		depositedEnergy = (double)INT_CALIBRATION * energy;
-		time = (double)timestamp/1000; // convert picosecond to nanosecond
+		depositedEnergy = INT_CALIBRATION * energy;
+		time = timestamp; 
 		detChannel = detNumber;
-		psp = (double)energyShort/depositedEnergy;
+		psp = energyShort/energy;
 		type = NO_PARTICLE;
 		isFission = true;
 	}

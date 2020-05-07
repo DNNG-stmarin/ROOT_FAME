@@ -185,11 +185,14 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 	                                    |_|   
 	*/
 
+	cout << endl;
 	for(int i=0; i<NUM_DETS; i++) 
 	{
 
 		// find the string name of the detector
 		numDet = to_string(DETECTORS[i]);
+
+		cout << "Now analyzing detector at channel " << numDet << endl;
 		// psd histograms
 		psdHistNameT = psdName + numDet;
 		psdErgHistNameT = psdErgName + numDet;

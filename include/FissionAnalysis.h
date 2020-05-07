@@ -1,9 +1,8 @@
-//////////////////////////////////////////////////////////
-// This class has been automatically generated on
-// Mon Mar 23 10:50:07 2020 by ROOT version 6.18/04
-// from TTree Data_F/CoMPASS filtered events TTree
-// found on file: compassCf.root
-//////////////////////////////////////////////////////////
+/*
+Authors: Stefano Marin, Isabel Hernandez
+Purpose: Forms the coincidence tree
+Date: Ann Arbor, May 6th, 2020
+*/
 
 #ifndef FissionAnalysis_h
 #define FissionAnalysis_h
@@ -17,71 +16,72 @@
 #include <fstream>
 #include <sstream>
 
-using namespace std;
+#include "DigitizerBranchClass.h"
 
-// Header file for the classes stored in the TTree if any.
+using namespace std;
 
 class FissionAnalysis {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
 
-// Fixed size dimensions of array or collections stored in the TTree if any.
-
    // output file
    TFile* expFile = 0;
    TDirectory* fileTreeDir = 0;
 
-   // Declaration of leaf types
-   UShort_t        Board;
-   UShort_t        Channel;
-   ULong64_t       Timestamp;
-   UShort_t        Energy;
-   UShort_t        EnergyShort;
-   UInt_t          Flags;
+   // declare the digitizer classes
+   int digType = 1;
+   // 0: CoMPASS
+   // 1: MIDAS
 
-   // List of branches
-   TBranch        *b_Board;   //!
-   TBranch        *b_Channel;   //!
-   TBranch        *b_Timestamp;   //!
-   TBranch        *b_Energy;   //!
-   TBranch        *b_EnergyShort;   //!
-   TBranch        *b_Flags;   //!
+   COMPASS_DIG* cp = new COMPASS_DIG();
+   MIDAS_DIG* md = new MIDAS_DIG();
 
-   FissionAnalysis(TString filename, int fileNum, TFile* expFileWrite, TTree *tree=0);
+   TString compassName = "Data_F";
+   TString midasName = "midas_data";
+
+   TString inputTreeName;
+
+
+   FissionAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree *tree=0);
    virtual ~FissionAnalysis();
-   virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
    virtual int   CreateFissionTree(int fileNum, Long64_t entriesToProc = -1);
-   virtual Bool_t   Notify();
-   virtual void     Show(Long64_t entry = -1);
 };
 
 #endif
 
 #ifdef FissionAnalysis_cxx
-FissionAnalysis::FissionAnalysis(TString filename, int fileNum, TFile* expFileWrite, TTree *tree) : fChain(0)
+FissionAnalysis::FissionAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree *tree) : fChain(0)
 {
 
    // set the output stream
-
    expFile = expFileWrite;
 
    TString treeNumT = TString(to_string(fileNum));
    fileTreeDir = expFile->mkdir(treeNumT);
 
    // set the input tree
+   digType = digTypeIn;
+   if(digType == 0)
+   {
+      inputTreeName = compassName;
+   }
+   else if(digType == 1)
+   {
+      inputTreeName = midasName;
+   }
 
    if (tree == 0) {
       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(filename);
       if (!f || !f->IsOpen()) {
          f = new TFile(filename);
       }
-      f->GetObject("Data_F",tree);
+      f->GetObject(inputTreeName,tree);
 
-      //cout << "tree found at " << tree << endl;
+      cout << "tree found at " << tree << endl;
    }
    Init(tree);
 
@@ -99,6 +99,7 @@ Int_t FissionAnalysis::GetEntry(Long64_t entry)
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
+
 Long64_t FissionAnalysis::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
@@ -107,53 +108,44 @@ Long64_t FissionAnalysis::LoadTree(Long64_t entry)
    if (centry < 0) return centry;
    if (fChain->GetTreeNumber() != fCurrent) {
       fCurrent = fChain->GetTreeNumber();
-      Notify();
    }
    return centry;
 }
 
 void FissionAnalysis::Init(TTree *tree)
 {
-   // The Init() function is called when the selector needs to initialize
-   // a new tree or chain. Typically here the branch addresses and branch
-   // pointers of the tree will be set.
-   // It is normally not necessary to make changes to the generated
-   // code, but the routine can be extended by the user if needed.
-   // Init() will be called many times when running on PROOF
-   // (once per file to be processed).
-
+   
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
    fCurrent = -1;
    fChain->SetMakeClass(1);
 
-   fChain->SetBranchAddress("Board", &Board, &b_Board);
-   fChain->SetBranchAddress("Channel", &Channel, &b_Channel);
-   fChain->SetBranchAddress("Timestamp", &Timestamp, &b_Timestamp);
-   fChain->SetBranchAddress("Energy", &Energy, &b_Energy);
-   fChain->SetBranchAddress("EnergyShort", &EnergyShort, &b_EnergyShort);
-   fChain->SetBranchAddress("Flags", &Flags, &b_Flags);
+   if(digType == 0)
+   {
+      fChain->SetBranchAddress("Board", &(cp->Board), &(cp->b_Board) );
+      fChain->SetBranchAddress("Channel", &(cp->Channel), &(cp->b_Channel) );
+      fChain->SetBranchAddress("Timestamp", &(cp->Timestamp), &(cp->b_Timestamp) );
+      fChain->SetBranchAddress("Energy", &(cp->Energy), &(cp->b_Energy) );
+      fChain->SetBranchAddress("EnergyShort", &(cp->EnergyShort) , &(cp->b_EnergyShort) );
+      fChain->SetBranchAddress("Flags", &(cp->Flags), &(cp->b_Flags) );
+   }
+
+   cout << "Branches of input tree have been initialized" << endl; 
+
+   if(digType == 1)
+   {
+      fChain->SetBranchAddress("interpolation", &(md->interpolation), &(md->b_interpolation) );
+      fChain->SetBranchAddress("time", &(md->time), &(md->b_time) );
+      fChain->SetBranchAddress("detector", &(md->detector), &(md->b_detector) );
+      fChain->SetBranchAddress("baseline", &(md->baseline), &(md->b_baseline) ) ;
+      fChain->SetBranchAddress("total", &(md->total), &(md->b_total) );
+      fChain->SetBranchAddress("head", &(md->head) , &(md->b_head) );
+      fChain->SetBranchAddress("tail", &(md->tail), &(md->b_tail) );
+   }
+
+   
+
 }
 
-Bool_t FissionAnalysis::Notify()
-{
-   return kTRUE;
-}
-
-void FissionAnalysis::Show(Long64_t entry)
-{
-// Print contents of entry.
-// If entry is not specified, print current entry
-   if (!fChain) return;
-   fChain->Show(entry);
-}
-
-Int_t FissionAnalysis::Cut(Long64_t entry)
-{
-// This function may be called from Loop.
-// returns  1 if entry is accepted.
-// returns -1 otherwise.
-   return 1;
-}
 #endif // #ifdef FissionAnalysis_cxx

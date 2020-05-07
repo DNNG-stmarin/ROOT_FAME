@@ -69,6 +69,9 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 
 	// initialize the detector channel
 	int detChannel = 0;
+	double timeDet = 0;
+	double energyDep = 0;
+	double energyTail = 0;
 
 	// loop through array
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
@@ -86,22 +89,59 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 			cout << "now reading entry " << jentry << endl;
 		}
 
-		detChannel = (int)Channel + (int)Board*CHAN_PER_BOARD;
 
+		if(digType == 0) //compass type digitizer
+		{
+			detChannel = cp->getDetector();
+			timeDet = cp->getTime();
+			energyDep = cp->getEnergy();
+			energyTail = cp->getTail();
+		}
+		else if(digType == 1) //midas type digitizer
+		{
+			detChannel = md->getDetector();
+			timeDet = md->getTime();
+			energyDep = md->getEnergy();
+			energyTail = md->getTail();
+		}
 
 
 		if(isDetector(detChannel) >= 0)
 		{
-			newParticle = ParticleEvent(detChannel, Timestamp, Energy, EnergyShort);
+			newParticle = ParticleEvent(detChannel, timeDet, energyDep, energyTail);
 			DetectorBuffer[isDetector(detChannel)].push(newParticle);
 		}
 		else if(isChamber(detChannel) >= 0)
 		{
-			newTrigger = TriggerEvent(detChannel, Timestamp, Energy, EnergyShort);
+			newTrigger = TriggerEvent(detChannel, timeDet, energyDep, energyTail);
 			TriggerBuffer[isChamber(detChannel)].push(newTrigger);
 		}
 
 	}
+
+	// output the content of the buffers
+
+	cout << endl;
+	cout << "Buffers are ready: " << endl;
+
+
+	cout << endl;
+	cout << "Triggers: " << endl;
+
+	for(int d = 0; d < NUM_CHAMBERS; d++)
+	{
+		cout << "trigger: " << FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
+	}
+
+	cout << endl;
+	cout << "Detectors: " << endl;
+
+	for(int d = 0; d < NUM_DETS; d++)
+	{
+		cout << "channel: " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
+	}
+
+	cout << endl;
 
 	/*
 	  _______              _____            _                 _   _             
@@ -178,6 +218,8 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 	double averageTrigTime = 0;
 	double sumTrigErg = 0;
 
+	double beginTime = TriggerBuffer[0].front().getTime();
+
 	// first start by looking for valid fission triggers
 	while (!TriggerBuffer[0].empty())
 	{		
@@ -199,6 +241,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 		// look at the other fission lists
 		for(int chambIndex = 1; chambIndex < NUM_CHAMBERS; chambIndex++)
 		{
+
 			if(!TriggerBuffer[chambIndex].empty())
 			{
 				chamberTimes[chambIndex] = TriggerBuffer[chambIndex].front().getTime();
@@ -228,6 +271,12 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 		}
 		averageTrigTime /= NUM_CHAMBERS;
 
+		// energy discrimination of fission
+		if((sumTrigErg < CHAMBER_THRESHOLD) or (sumTrigErg > CHAMBER_CLIP))
+		{
+			validFiss = false;
+		}
+
 		// if fission is valid, store it in queue
 		if(validFiss)
 		{
@@ -240,7 +289,11 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 		TriggerBuffer[0].pop();
 	}
 
+	double stopTime = averageTrigTime;
+
 	cout << "Number of Fissions is " << FissionBuffer.size() << endl;
+
+	cout << "Fission rate at: " << FissionBuffer.size()/(stopTime - beginTime)*1e9 << "fissions/s" <<  endl;
 
 	/*
 	  ______ _         _               _                       
@@ -255,7 +308,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 
 	// now loop thrugh fission events to find valid fission events
 	FissionEvent qFission = FissionEvent(0, 0);
-	double fissionTime = 0;
+	long double fissionTime = 0;
 	double fissionEnergy = 0;
 
 	// dynamical variables
@@ -266,7 +319,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 	int totMult = 0;
 
 	// find coincidences option
-	double deltaT = 0;
+	long double deltaT = 0;
 	ParticleEvent qParticle = ParticleEvent();
 
 	// keep track of the fission index
@@ -322,9 +375,8 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 			// create the coincidence event
 			if(abs(deltaT) < COINC_WINDOW)
 			{
-
 				totToF[totMult] = deltaT;
-				totPSP[totMult] = 1 - qParticle.getPsp();
+				totPSP[totMult] = qParticle.getPsp();
 				totDep[totMult] = qParticle.getEnergy();
 				totTail[totMult] = qParticle.getTail();
 				totChan[totMult] = qParticle.getDetector();
