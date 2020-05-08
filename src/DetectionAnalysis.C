@@ -1,6 +1,6 @@
 /*
 Author: Stefano Marin, Isabel Hernandez
-Purpose: Perform the analyisis of the collected data on a detector-by-detector basis. 
+Purpose: Perform the analyisis of the collected data on a detector-by-detector basis.
 The result of this code will be a series of cuts to clean the data.
 
 So far, we look at:
@@ -24,7 +24,7 @@ So far, we look at:
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <queue> 
+#include <queue>
 
 #include "InfoSystem.h"
 #include "FissionEvent.h"
@@ -36,67 +36,33 @@ using namespace std;
 int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 {
 	/*
-	    _____      _               
-	  / ____|    | |              
-	 | (___   ___| |_ _   _ _ __  
-	  \___ \ / _ \ __| | | | '_ \ 
+	    _____      _
+	  / ____|    | |
+	 | (___   ___| |_ _   _ _ __
+	  \___ \ / _ \ __| | | | '_ \
 	  ____) |  __/ |_| |_| | |_) |
-	 |_____/ \___|\__|\__,_| .__/ 
-	                       | |    
-	                       |_|    
+	 |_____/ \___|\__|\__,_| .__/
+	                       | |
+	                       |_|
 	*/
 
 	// openFile and create tree
 	TString filePrefix = "FissionOutput";
 	TString fileInName;
 
-	// TChain* tree = new TChain("FissionTree", "TreeChain");
-
-	// for(int fileNum = firstFile; fileNum < lastFile; fileNum++)
-	// {
-	// 	fileInName = filePrefix + to_string(fileNum) + ".root";
-	// 	tree->Add(fileInName);
-	// }
-
-	// TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(fileName);
- //    if (!f || !f->IsOpen()) 
- //    {
- //        f = new TFile(fileName, "UPDATE");
- //    }
-	// f->GetObject("FissionTree", tree);
-
-	// TString outName = "DetectorOutput.root";
-	// TFile* outF = new TFile(outName, "RECREATE");
-
-
-
-	// // set the directory
-	// TString detFolderT = "Detectors";
-	// TDirectory *cdDets = outF->GetDirectory(detFolderT);
-	// if(cdDets)
-	// {
-	// 	outF->rmdir(detFolderT);
-	// } 
-	// cdDets = outF->mkdir(detFolderT);
-
-
-
-	// cd into the detectors folder
-	//cdDets->cd();
-
 	expFile->cd();
 
 
 	/*
-		___     _      
+		___     _
 	  / __|  _| |_ ___
 	 | (_| || |  _(_-<
 	  \___\_,_|\__/__/
-	                  
+
 	*/
 
 	// cuts based on detector
-	TCut selectChan;  
+	TCut selectChan;
 	TString chanS = "totChan==";
 
 	// cuts based on psp
@@ -112,17 +78,17 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 	cutMaxPSP = downPSP;
 
 	// neutron photon cuts
-	TCut neutronCut;  
-	TCut photonCut;  
+	TCut neutronCut;
+	TCut photonCut;
 	TString neutPSP = "totPSP >=";
 	TString photPSP = "totPSP <=";
 
 	/*
-	  _  _ _    _                              _  _                   
+	  _  _ _    _                              _  _
 	 | || (_)__| |_ ___  __ _ _ _ __ _ _ __   | \| |__ _ _ __  ___ ___
 	 | __ | (_-<  _/ _ \/ _` | '_/ _` | '  \  | .` / _` | '  \/ -_|_-<
 	 |_||_|_/__/\__\___/\__, |_| \__,_|_|_|_| |_|\_\__,_|_|_|_\___/__/
-	                    |___/                                         
+	                    |___/
 	*/
 
 	// name generators
@@ -149,14 +115,14 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 	TFitResultPtr tofDelPFit;
 
 	/*
-	  ___             _ _      
+	  ___             _ _
 	 | _ \___ ____  _| | |_ ___
 	 |   / -_|_-< || | |  _(_-<
 	 |_|_\___/__/\_,_|_|\__/__/
-	*/                        
+	*/
 
 	// psp parameters
-	double psd_disc[NUM_DETS] = {0.17, 0.17, 0.15, 0.15, 0.18, 0.18};
+	double psd_disc[NUM_DETS] = {0};
 
 	// time parameters
 	double time_delay[NUM_DETS] = {0};
@@ -178,15 +144,15 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 
 
 	/*
-	  __  __      _        _                  
-	 |  \/  |__ _(_)_ _   | |   ___  ___ _ __ 
+	  __  __      _        _
+	 |  \/  |__ _(_)_ _   | |   ___  ___ _ __
 	 | |\/| / _` | | ' \  | |__/ _ \/ _ \ '_ \
 	 |_|  |_\__,_|_|_||_| |____\___/\___/ .__/
-	                                    |_|   
+	                                    |_|
 	*/
 
 	cout << endl;
-	for(int i=0; i<NUM_DETS; i++) 
+	for(int i=0; i<NUM_DETS; i++)
 	{
 
 		// find the string name of the detector
@@ -223,7 +189,7 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 		// find the appropriate cuts
 		selectChan = chanS + numDet;
 
-		// draw histogram 
+		// draw histogram
 		tree->Draw("totPSP>>" + psdHistNameT, selectChan, "EGOFF");
 		tree->Draw("totPSP:totDep >>" + psdErgHistNameT, upPSP&&selectChan, "EGOFF");
 		psdErgHists[i]->SetOption("COLZ");
@@ -231,6 +197,7 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 
 
 		// find the appropriate psp parameters here
+		psd_disc[i] = 0.17;
 
 		// ok now we have found the appropriate PSP, find the strictest photon cut
 
@@ -249,7 +216,7 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 
 		// makes the new cuts
 		neutronCut = neutPSP + to_string(psd_disc[i]);
-		photonCut = photPSP + to_string(psd_disc[i]); 
+		photonCut = photPSP + to_string(psd_disc[i]);
 
 
 		TString correctedTimes = "totToF - "  + to_string(time_delay[i]);
@@ -282,7 +249,7 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 	tofCanvas->Divide(3,2);
 	TString titleCanvas;
 
-	for(int i=0; i<NUM_DETS; i++) 
+	for(int i=0; i<NUM_DETS; i++)
 	{
 		tofCanvas->cd(i+1);
 
@@ -303,6 +270,3 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 	//outF->Close();
 	return 0;
 }
-
-
-

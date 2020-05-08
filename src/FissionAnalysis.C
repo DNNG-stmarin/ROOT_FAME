@@ -10,7 +10,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <queue> 
+#include <queue>
 
 #include "InfoSystem.h"
 #include "FissionEvent.h"
@@ -24,29 +24,31 @@ using namespace std;
 int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 {
 
-	 //  _                          ____  _     _           _       
-	 // | |                        / __ \| |   (_)         | |      
-	 // | |     ___   ___  _ __   | |  | | |__  _  ___  ___| |_ ___ 
+	TH1F* hDt = new TH1F("delT", "delT", 1000, 0, 5e12);
+
+	 //  _                          ____  _     _           _
+	 // | |                        / __ \| |   (_)         | |
+	 // | |     ___   ___  _ __   | |  | | |__  _  ___  ___| |_ ___
 	 // | |    / _ \ / _ \| '_ \  | |  | | '_ \| |/ _ \/ __| __/ __|
 	 // | |___| (_) | (_) | |_) | | |__| | |_) | |  __/ (__| |_\__ \
 	 // |______\___/ \___/| .__/   \____/|_.__/| |\___|\___|\__|___/
-	 //                   | |                 _/ |                  
-	 //                   |_|                |__/                   
+	 //                   | |                 _/ |
+	 //                   |_|                |__/
 
 	// use an array of fifo to store particles and chambers
-	queue<ParticleEvent> DetectorBuffer[NUM_DETS]; 
-	queue<TriggerEvent> TriggerBuffer[NUM_CHAMBERS]; 
+	queue<TriggerEvent> TriggerBuffer[NUM_CHAMBERS];
+	queue<ParticleEvent> DetectorBuffer[NUM_DETS];
 
 
 	/*
-	  __  __       _         _                       
-	 |  \/  |     (_)       | |                      
-	 | \  / | __ _ _ _ __   | |     ___   ___  _ __  
-	 | |\/| |/ _` | | '_ \  | |    / _ \ / _ \| '_ \ 
+	  __  __       _         _
+	 |  \/  |     (_)       | |
+	 | \  / | __ _ _ _ __   | |     ___   ___  _ __
+	 | |\/| |/ _` | | '_ \  | |    / _ \ / _ \| '_ \
 	 | |  | | (_| | | | | | | |___| (_) | (_) | |_) |
-	 |_|  |_|\__,_|_|_| |_| |______\___/ \___/| .__/ 
-	                                          | |    
-	                                          |_|    
+	 |_|  |_|\__,_|_|_| |_| |______\___/ \___/| .__/
+	                                          | |
+	                                          |_|
 	*/
 
 	// get the number of entries
@@ -73,6 +75,9 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 	double energyDep = 0;
 	double energyTail = 0;
 
+	// debugging
+	double oldTime = 0;
+
 	// loop through array
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
 	{
@@ -96,6 +101,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 			timeDet = cp->getTime();
 			energyDep = cp->getEnergy();
 			energyTail = cp->getTail();
+
 		}
 		else if(digType == 1) //midas type digitizer
 		{
@@ -144,13 +150,13 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 	cout << endl;
 
 	/*
-	  _______              _____            _                 _   _             
-	 |__   __|            |  __ \          | |               | | (_)            
-	    | |_ __ ___  ___  | |  | | ___  ___| | __ _ _ __ __ _| |_ _  ___  _ __  
-	    | |  __/ _ \/ _ \ | |  | |/ _ \/ __| |/ _  |  __/ _  | __| |/ _ \|  _ \ 
+	  _______              _____            _                 _   _
+	 |__   __|            |  __ \          | |               | | (_)
+	    | |_ __ ___  ___  | |  | | ___  ___| | __ _ _ __ __ _| |_ _  ___  _ __
+	    | |  __/ _ \/ _ \ | |  | |/ _ \/ __| |/ _  |  __/ _  | __| |/ _ \|  _ \
 	    | | | |  __/  __/ | |__| |  __/ (__| | (_| | | | (_| | |_| | (_) | | | |
 	    |_|_|  \___|\___| |_____/ \___|\___|_|\__,_|_|  \__,_|\__|_|\___/|_| |_|
-*/                                                                                                                                                 
+*/
 	//create TFile object
 	// TString fileName = "FissionOutput" + to_string(fileNum) + ".root";
 	// TFile *first = new TFile(fileName, "RECREATE");	//filename/option/filetitle
@@ -184,17 +190,17 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 
 
 /*
-	   _____      _            _     _                       _                       
-	  / ____|    (_)          (_)   | |                     | |                      
-	 | |     ___  _ _ __   ___ _  __| | ___ _ __   ___ ___  | |     ___   ___  _ __  
-	 | |    / _ \| | '_ \ / __| |/ _` |/ _ \ '_ \ / __/ _ \ | |    / _ \ / _ \| '_ \ 
+	   _____      _            _     _                       _
+	  / ____|    (_)          (_)   | |                     | |
+	 | |     ___  _ _ __   ___ _  __| | ___ _ __   ___ ___  | |     ___   ___  _ __
+	 | |    / _ \| | '_ \ / __| |/ _` |/ _ \ '_ \ / __/ _ \ | |    / _ \ / _ \| '_ \
 	 | |___| (_) | | | | | (__| | (_| |  __/ | | | (_|  __/ | |___| (_) | (_) | |_) |
-	  \_____\___/|_|_| |_|\___|_|\__,_|\___|_| |_|\___\___| |______\___/ \___/| .__/ 
-	                                                                          | |    
-	                                                                          |_|    
+	  \_____\___/|_|_| |_|\___|_|\__,_|\___|_| |_|\___\___| |______\___/ \___/| .__/
+	                                                                          | |
+	                                                                          |_|
 */
 	// queue containing valid fission events
-	queue<FissionEvent> FissionBuffer; 
+	queue<FissionEvent> FissionBuffer;
 
 	// keep track of the iterator in each of the channels
 	Long64_t indexTrig[NUM_CHAMBERS] = {0};
@@ -222,7 +228,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 
 	// first start by looking for valid fission triggers
 	while (!TriggerBuffer[0].empty())
-	{		
+	{
 		// boolean to keep track of valid fissions
 		bool validFiss = true;
 
@@ -246,7 +252,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 			{
 				chamberTimes[chambIndex] = TriggerBuffer[chambIndex].front().getTime();
 				chamberErgs[chambIndex] = TriggerBuffer[chambIndex].front().getEnergy();
-			}	
+			}
 			// match the indices for other queus
 			while((chamberTimes[0] - chamberTimes[chambIndex] > COINC_WINDOW) and (!TriggerBuffer[chambIndex].empty()) )
 			{
@@ -289,26 +295,30 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 		TriggerBuffer[0].pop();
 	}
 
+	cout << TriggerBuffer[10].size() << " events remaining in buffer" << endl;
+
 	double stopTime = averageTrigTime;
 
 	cout << "Number of Fissions is " << FissionBuffer.size() << endl;
 
-	cout << "Fission rate at: " << FissionBuffer.size()/(stopTime - beginTime)*1e9 << "fissions/s" <<  endl;
+	cout << "Fission rate at: " << FissionBuffer.size()/(stopTime - beginTime)*1e9 << " fissions/s" <<  endl;
 
 	/*
-	  ______ _         _               _                       
-	 |  ____(_)       (_)             | |                      
-	 | |__   _ ___ ___ _  ___  _ __   | |     ___   ___  _ __  
-	 |  __| | / __/ __| |/ _ \| '_ \  | |    / _ \ / _ \| '_ \ 
+	  ______ _         _               _
+	 |  ____(_)       (_)             | |
+	 | |__   _ ___ ___ _  ___  _ __   | |     ___   ___  _ __
+	 |  __| | / __/ __| |/ _ \| '_ \  | |    / _ \ / _ \| '_ \
 	 | |    | \__ \__ \ | (_) | | | | | |___| (_) | (_) | |_) |
-	 |_|    |_|___/___/_|\___/|_| |_| |______\___/ \___/| .__/ 
-	                                                    | |    
-	                                                    |_|    
+	 |_|    |_|___/___/_|\___/|_| |_| |______\___/ \___/| .__/
+	                                                    | |
+	                                                    |_|
 	*/
+	cout << endl;
+	cout << "Now looping throught detectors. " << endl;
 
 	// now loop thrugh fission events to find valid fission events
 	FissionEvent qFission = FissionEvent(0, 0);
-	long double fissionTime = 0;
+	double fissionTime = 0;
 	double fissionEnergy = 0;
 
 	// dynamical variables
@@ -319,7 +329,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 	int totMult = 0;
 
 	// find coincidences option
-	long double deltaT = 0;
+	double deltaT = 0;
 	ParticleEvent qParticle = ParticleEvent();
 
 	// keep track of the fission index
@@ -327,8 +337,10 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 
 	// first start by looking for valid fission triggers
 	while (!FissionBuffer.empty())
-	{	
+	{
+		// increment the fission tracker
 		fisTracker++;
+
 		// reset the attributes of the fission event
 		totMult = 0;
 
@@ -342,9 +354,12 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 		}
 
 		// assign fission event from first list
+		// cout << FissionBuffer.size() << endl;
 		qFission = FissionBuffer.front();
 		fissionTime = qFission.getTriggerTime();
 		fissionEnergy = qFission.getEnergy();
+
+		//cout << "Fission at time " << fissionTime << endl;
 
 		// look at the detection events
 		for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
@@ -355,22 +370,26 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 				qParticle = DetectorBuffer[detIndex].front();
 				detTime = qParticle.getTime();
 				deltaT = detTime - fissionTime;
-			} 
+			}
 
 			// detector has no more valid detection events, skip it.
 			else
 			{
+				cout << "detector " << detIndex << " is empty." << endl;
 				continue;
 			}
-			
+
 			// cycle through the indices of the other array
-			while( (fissionTime - detTime > COINC_WINDOW) and (!DetectorBuffer[detIndex].empty()))
+			while( (fissionTime - detTime > COINC_WINDOW) and !DetectorBuffer[detIndex].empty())
 			{
 				DetectorBuffer[detIndex].pop();
 				qParticle = DetectorBuffer[detIndex].front();
 				detTime = qParticle.getTime();
 				deltaT = detTime - fissionTime;
 			}
+
+
+			//cout << "detC " << qParticle.getDetector() << ": " <<  deltaT << endl;
 
 			// create the coincidence event
 			if(abs(deltaT) < COINC_WINDOW)
@@ -383,6 +402,8 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 				totMult++;
 			}
 		}
+
+		//cout << "_____________________________" << endl;
 
 		// get rid of analyzed fission event
 		FissionBuffer.pop();
@@ -397,14 +418,41 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 	}
 
 
-	 //   _____             _               _____        _        
-	 //  / ____|           (_)             |  __ \      | |       
-	 // | (___   __ ___   ___ _ __   __ _  | |  | | __ _| |_ __ _ 
+	// output the content of the buffers
+
+	cout << endl;
+	cout << "Buffers are finished: " << endl;
+
+
+	cout << endl;
+	cout << "Triggers: " << endl;
+
+	for(int d = 0; d < NUM_CHAMBERS; d++)
+	{
+		cout << "trigger: " << FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
+	}
+
+	cout << endl;
+	cout << "Detectors: " << endl;
+
+	for(int d = 0; d < NUM_DETS; d++)
+	{
+		cout << "channel: " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
+	}
+
+	cout << endl;
+
+
+
+
+	 //   _____             _               _____        _
+	 //  / ____|           (_)             |  __ \      | |
+	 // | (___   __ ___   ___ _ __   __ _  | |  | | __ _| |_ __ _
 	 //  \___ \ / _` \ \ / / | '_ \ / _` | | |  | |/ _` | __/ _` |
 	 //  ____) | (_| |\ V /| | | | | (_| | | |__| | (_| | || (_| |
 	 // |_____/ \__,_| \_/ |_|_| |_|\__, | |_____/ \__,_|\__\__,_|
-	 //                              __/ |                        
-	 //                             |___/                         
+	 //                              __/ |
+	 //                             |___/
 
 
 	// cd back into the main file
@@ -412,6 +460,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 	//first->cd();
 
 	tree->Write();
+	hDt->Write();
 	//expFile->Close();
 
 	return 1;
