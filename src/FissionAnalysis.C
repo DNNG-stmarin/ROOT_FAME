@@ -224,7 +224,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 	double averageTrigTime = 0;
 	double sumTrigErg = 0;
 
-	double beginTime = TriggerBuffer[0].front().getTime();
+	long double beginTime = TriggerBuffer[0].front().getTime();
 
 	// first start by looking for valid fission triggers
 	while (!TriggerBuffer[0].empty())
@@ -295,13 +295,17 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 		TriggerBuffer[0].pop();
 	}
 
-	cout << TriggerBuffer[10].size() << " events remaining in buffer" << endl;
+	cout << TriggerBuffer[0].size() << " events remaining in buffer" << endl;
 
-	double stopTime = averageTrigTime;
+	long double stopTime = averageTrigTime;
 
 	cout << "Number of Fissions is " << FissionBuffer.size() << endl;
 
-	cout << "Fission rate at: " << FissionBuffer.size()/(stopTime - beginTime)*1e9 << " fissions/s" <<  endl;
+	long double elapTime = (stopTime - beginTime)*1e-9;
+
+	cout << "Time elapsed is: " << elapTime << endl;
+
+	cout << "Fission rate at: " << FissionBuffer.size()/elapTime << " fissions/s" <<  endl;
 
 	/*
 	  ______ _         _               _
@@ -375,7 +379,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 			// detector has no more valid detection events, skip it.
 			else
 			{
-				cout << "detector " << detIndex << " is empty." << endl;
+				//cout << "detector " << detIndex << " is empty." << endl;
 				continue;
 			}
 

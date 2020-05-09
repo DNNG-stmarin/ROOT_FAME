@@ -1,3 +1,0 @@
-/Users/stmarin/Documents/ROOT_FISSION/root/build/CMakeFiles/rebuild_cache.dir
-/Users/stmarin/Documents/ROOT_FISSION/root/build/CMakeFiles/edit_cache.dir
-/Users/stmarin/Documents/ROOT_FISSION/root/build/CMakeFiles/main.dir
