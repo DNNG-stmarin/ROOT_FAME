@@ -85,7 +85,7 @@ FissionAnalysis::FissionAnalysis(TString filename, int fileNum, TFile* expFileWr
    }
    Init(tree);
 
-} 
+}
 
 FissionAnalysis::~FissionAnalysis()
 {
@@ -114,7 +114,7 @@ Long64_t FissionAnalysis::LoadTree(Long64_t entry)
 
 void FissionAnalysis::Init(TTree *tree)
 {
-   
+
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -131,7 +131,7 @@ void FissionAnalysis::Init(TTree *tree)
       fChain->SetBranchAddress("Flags", &(cp->Flags), &(cp->b_Flags) );
    }
 
-   cout << "Branches of input tree have been initialized" << endl; 
+   cout << "Branches of input tree have been initialized" << endl;
 
    if(digType == 1)
    {
@@ -144,7 +144,7 @@ void FissionAnalysis::Init(TTree *tree)
       fChain->SetBranchAddress("tail", &(md->tail), &(md->b_tail) );
    }
 
-   
+
 
 }
 

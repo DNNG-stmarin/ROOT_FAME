@@ -70,10 +70,10 @@ public:
    Float_t         interpolation;
    ULong64_t       time;
    Int_t           detector;
-   Int_t           baseline;
-   Int_t           total;
-   Int_t           head;
-   Int_t           tail;
+   UShort_t        baseline;
+   UShort_t        total;
+   UShort_t        head;
+   UShort_t        tail;
 
    // List of branches
    TBranch        *b_interpolation;   //!
@@ -95,7 +95,7 @@ public:
 	// output functions
 	long double getTime()
 	{
-		double detTime = (double)(time + interpolation)*2;
+		double detTime = (double)time*2 + (double)interpolation*2;
 		return detTime;
 	}
 
@@ -115,6 +115,3 @@ public:
 
 };
 #endif
-
-
-
