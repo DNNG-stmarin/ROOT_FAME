@@ -12,9 +12,11 @@ So far, we look at:
 #include "FissionAnalysis.h"
 
 //#include "DetectionAnalysis.h"
-#include "FissionExperimentClass.h"
+//#include "FissionExperimentClass.h"
+#include "DetectorSystemClass.h"
 
 #include <TH2.h>
+#include <TF1.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TLegend.h>
@@ -33,7 +35,7 @@ So far, we look at:
 
 using namespace std;
 
-int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
+int DetectorSystemClass::DetectionAnalysis()
 {
 	/*
 	    _____      _
@@ -49,6 +51,18 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 	// openFile and create tree
 	TString filePrefix = "FissionOutput";
 	TString fileInName;
+
+	// define the fitting function for the psd discrimination
+	double minPSD_fit = 0;
+	double maxPSD_fit = 0.3;
+	TF1* fitPSD_n = new TF1("fitPSDn", "[0]*e^(-(x - [1])^2/(2*[2]^2))", minPSD_fit, maxPSD_fit);
+	TF1* fitPSD_p = new TF1("fitPSDp", "[0]*e^(-(x - [1])^2/(2*[2]^2))", minPSD_fit, maxPSD_fit);
+
+	// the sum of the two fitting functions
+	TF1* fitPSD_np = new TF1("fitPSDnp", "fitPSDn + fitPSDp");
+	fitPSD_np->SetParNames("AP", "mP", "sP", "AN", "mN", "sN");
+	fitPSD_np->SetParameters(100, 0.12, 0.02, 27, 0.28, 0.04);
+	fitPSD_np->SetParLimits(4, 0.2, 0.3);
 
 	expFile->cd();
 
@@ -113,6 +127,9 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 
 	// initialize the pointers to the fits
 	TFitResultPtr tofDelPFit;
+	TFitResultPtr psdFit;
+
+	double psdPhotMean, psdPhotStd, psdNeutMean, psdNeutStd;
 
 	/*
 	  ___             _ _
@@ -194,15 +211,25 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 		tree->Draw("totPSP:totDep >>" + psdErgHistNameT, upPSP&&selectChan, "EGOFF");
 		psdErgHists[i]->SetOption("COLZ");
 
+		// find the psp parameter
+		psdFit = psdhists[i]->Fit(fitPSD_np, "SQ");
 
+		psdPhotMean = psdFit->Parameter(1);
+		psdPhotStd = psdFit->Parameter(2);
+		psdNeutMean = psdFit->Parameter(4);
+		psdNeutStd = psdFit->Parameter(5);
 
 		// find the appropriate psp parameters here
-		psd_disc[i] = 0.17;
+		cout << psdPhotMean << " " << psdNeutMean << endl;
+		psd_disc[i] = (psdPhotMean + psdNeutMean)/2;
+
+		detectors[i].discPSD = psd_disc[i];
+
+		cout << "PSD discrimination is: " << psd_disc[i] << endl;
 
 		// ok now we have found the appropriate PSP, find the strictest photon cut
 
 		photonCut = photPSP + to_string(psd_disc[i] - 0.05); // change this to number of sigmas
-
 
 		// fill the tof histograms
 		tree->Draw("totToF>>" + tofPHistNameT + "del", selectChan&&photonCut, "EGOFF");
@@ -213,6 +240,8 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 		// find the dealy of each detector
 		time_delay[i] = tofDelPFit->Parameter(1);
 		time_sigma[i] = tofDelPFit->Parameter(2);
+
+		cout << "Time delay is: " << time_delay[i] << endl;
 
 		// makes the new cuts
 		neutronCut = neutPSP + to_string(psd_disc[i]);
@@ -241,8 +270,6 @@ int FissionExperimentClass::DetectionAnalysis(TChain* tree, TFile* expFile)
 		kinematicN[i]->Write();
 		kinematicP[i]->Write();
 	}
-
-
 
 	// save the stacked histograms as a root file
 	TCanvas* tofCanvas = new TCanvas("ToF", "ToF", 800, 1500);

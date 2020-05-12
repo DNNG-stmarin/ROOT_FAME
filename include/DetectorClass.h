@@ -27,16 +27,23 @@ using namespace std;
 class DetectorClass
 {
 public:
-	double timeDelay;
 
-	double energyResolution;
-	double timeResolution;
+	TString name = "det";
 
-	double energyThreshold;
+	double energyThreshold; // threshold in keVee
 
-	double efficiency;
+	double timeDelay; // store the time delay with respect to the trigger
 
-	/* bunch of other stuff */
+	double energyResolution; // store the energy resolution of this detector
+	double timeResolution; // store the time resolution from the fitted gamma peak
+
+	double discPSD;
+
+	double energyCalibration; // store the energy calibration for each detector
+
+	double efficiency; // efficiency of this detector to
+
+	double X, Y, Z; // position of the center of the detector
 
 };
 

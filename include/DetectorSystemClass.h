@@ -18,21 +18,48 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include <fstream>
 #include <sstream>
 
-#include "FissionAnalysis.h"
-#include "SystemAnalysis.h"
+#include "DetectorClass.h"
+#include "TriggerClass.h"
+
+#include "InfoSystem.h"
 
 using namespace std;
 
 
-class FissionExperimentClass
+class DetectorSystemClass
 {
 public:
+	// characterize the detector system
 	int numTriggers;
 	int numDetectors;
 
-	TriggerClass* Triggers;
-	DetectorClass* Detectors;
+	// create arrays of detectors to modify
+	TriggerClass* triggers;
+	DetectorClass* detectors;
 
+	// inputs given by the larger file, made up of the data collected and
+	// where to write
+	TChain* tree;
+	TFile* expFile;
+
+	// constructor
+	DetectorSystemClass(TChain* treeIn, TFile* writeFile)
+	{
+		numTriggers = 0;
+		numDetectors = 0;
+
+		triggers = new (TriggerClass[NUM_CHAMBERS]);
+		detectors = new (DetectorClass[NUM_DETS]);
+
+		cout << "Detectors created at: " << detectors[0].name << endl;
+
+		tree = treeIn;
+		expFile = writeFile;
+	}
+
+
+	// functions to perfom the detection analysis
+	int DetectionAnalysis();
 };
 
 #endif

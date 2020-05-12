@@ -2,10 +2,6 @@
 // Purpose: Compass post-process and forming fission coincidences in fission
 // Date: April 2020
 
-#include "FissionAnalysis.h"
-#include "DetectionAnalysis.h"
-#include "SystemAnalysis.h"
-
 #include "MidasClass.h"
 
 #include <stdlib.h>
@@ -40,7 +36,7 @@ int main(int argc, char** argv)
   experiment.CreateFissionTree(fileName, experiment.expFile, -1);
 
   cout << "Analyzing single detectors" << endl;
-  experiment.DetectionAnalysis(experiment.coincTreeChain, experiment.detFile);
+  experiment.CreateDetectionAnalysis(experiment.coincTreeChain, experiment.detFile);
 
   cout << "Analyzing multiple detectors" << endl;
   experiment.CreateSystemAnalysis(experiment.coincTreeChain, experiment.sysFile);

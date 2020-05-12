@@ -1,7 +1,7 @@
 /*
 Author: Stefano Marin, Isabel Hernandez
 Date: May 1st, 2020
-Purpose: Methods of the Fission Experiment Class 
+Purpose: Methods of the Fission Experiment Class
 */
 
 #define FissionExperimentClass_cxx
@@ -19,7 +19,7 @@ Purpose: Methods of the Fission Experiment Class
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <queue> 
+#include <queue>
 
 #include "InfoSystem.h"
 #include "FissionEvent.h"
@@ -36,42 +36,75 @@ FissionExperimentClass::FissionExperimentClass()
 	cin >> startFile;
 
 	cout << "How many files are you analyzing: ";
-	cin >> numFiles;	
+	cin >> numFiles;
 
 	cout << "What is the format of your data file: " << endl;
 	cout << "(0): CoMPASS" << endl;
 	cout << "(1): MIDAS (LANSCE)" << endl;
 	cin >> digType;
 
-	expFile = new TFile(treeFileT, "RECREATE");
+	cout << "Do you want to use existing data: ";
+	cin >> oldDat;
+
+	// read data already written
+	if(oldDat == 0)
+	{
+		expFile = new TFile(treeFileT, "RECREATE");
+	}
+	else
+	{
+		expFile = new TFile(treeFileT, "READm");
+	}
+
 	detFile = new TFile(detFileT, "RECREATE");
 	sysFile = new TFile(sysFileT, "RECREATE");
 
-    // create the chain with all the entries to analyze for the raw coincidence mode
-    coincTreeChain = new TChain();
+  // create the chain with all the entries to analyze for the raw coincidence mode
+  coincTreeChain = new TChain();
 }
+
+// destructor closes all the remaining loose ends
+/*
+FissionExperimentClass::~FissionExperimentClass()
+{
+}
+*/
 
 // Now go ahead and create all the fission tree
 int FissionExperimentClass::CreateFissionTree(TString filename, TFile* expFileWrite, int numEntries)
 {
 
-	cout << "Writing coincidence trees to " << expFileWrite->GetName() << "." << endl;
-
-	for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
+	if(oldDat == 0)
 	{
-		cout << "reading file number " << fileNum << endl;
-		FissionAnalysis* inputData = new FissionAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
-		inputData->CreateFissionTree(fileNum, numEntries);
-	}
-	expFile->Close();
+		cout << "Writing coincidence trees to " << expFileWrite->GetName() << "." << endl;
 
-	for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
-	{
-		coincTreeChain->Add(treeFileT + "/" + TString(to_string(fileNum)) + "/" + nameCoincTree);
+		for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
+		{
+			cout << "reading file number " << fileNum << endl;
+			FissionAnalysis* inputData = new FissionAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
+			inputData->CreateFissionTree(fileNum, numEntries);
+		}
+		expFile->Close();
 	}
 
-	cout << coincTreeChain->GetEntries() << endl;
+	else
+	{
+		for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
+		{
+			coincTreeChain->Add(treeFileT + "/" + TString(to_string(fileNum)) + "/" + nameCoincTree);
+		}
+		expFile->Close();
+	}
 
+	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
+
+	return 1;
+}
+
+int FissionExperimentClass::CreateDetectionAnalysis(TChain* chainm, TFile* writeFile)
+{
+	DetectorSystemClass* detData = new DetectorSystemClass(coincTreeChain, detFile);
+	detData->DetectionAnalysis();
 	return 1;
 }
 
@@ -80,7 +113,7 @@ int FissionExperimentClass::CreateSystemAnalysis(TChain* chainm, TFile* writeFil
 	SystemAnalysis* sysData = new SystemAnalysis(coincTreeChain, sysFile);
 	sysData->Loop();
 	return 1;
-}	
+}
 
 // getSystemInfo
 int FissionExperimentClass::getStartFile()

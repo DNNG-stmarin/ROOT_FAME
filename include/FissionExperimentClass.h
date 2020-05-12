@@ -21,6 +21,7 @@ Date: late April 2020, Ann Arbor, Michigan
 #include <sstream>
 
 #include "FissionAnalysis.h"
+#include "DetectorSystemClass.h"
 #include "SystemAnalysis.h"
 
 using namespace std;
@@ -34,6 +35,7 @@ private:
 	int numFiles = 1;
 
 	int digType;
+	int oldDat;
 
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";
@@ -60,8 +62,8 @@ public:
 
 	// pointer attributes
 	FissionAnalysis* inputData;
+	DetectorSystemClass* detectorData;
 	SystemAnalysis* systemData;
-
 	// chain of raw tree files
 	TChain* coincTreeChain = 0;
 
@@ -72,16 +74,19 @@ public:
 
 	// class constructor
 	FissionExperimentClass();
+	//~FissionExperimentClass();
 
 	// operations
 	int CreateFissionTree(TString filename, TFile* expFile, int numEntries = - 1);
-	int DetectionAnalysis(TChain* chain, TFile* writeFile);
+	int CreateDetectionAnalysis(TChain* chain, TFile* writeFile);
 	int CreateSystemAnalysis(TChain* chainm, TFile* writeFile);
 
 	// get attributes
 	int getStartFile();
 	int getEndFile();
 	TString getExpName();
+
+
 };
 
 #endif

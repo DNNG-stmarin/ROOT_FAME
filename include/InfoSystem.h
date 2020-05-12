@@ -38,7 +38,5 @@ const double COINC_WINDOW = 200; // ns
 const double CHAMBER_THRESHOLD = 0.03;
 const double CHAMBER_CLIP = 10;
 const double DETECTOR_THRESHOLD = 0.15;
-const double PSP_DISCRIMINATION = 0.85; //very basic psd, we can do much more advanced than that
-
 
 #endif

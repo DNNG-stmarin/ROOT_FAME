@@ -47,7 +47,6 @@ public:
 		triggerEnergy = triggerEnergyIn;
 	}
 
-	
 	// default destructor
 	~FissionEvent(){
 	}
