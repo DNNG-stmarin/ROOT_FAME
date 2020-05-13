@@ -15,9 +15,13 @@ Purpose: Methods of the Fission Experiment Class
 #include <TCut.h>
 #include <TFitResult.h>
 #include <THStack.h>
+#include <TFolder.h>
 
+#include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
+
+
 #include <queue>
 
 #include "InfoSystem.h"
@@ -49,6 +53,8 @@ FissionExperimentClass::FissionExperimentClass()
 	cout << "Do you want to use existing data: no (0), yes (1)" << endl;
 	cin >> oldDat;
 
+	//resultFold = new TFolder(nameOfExp, nameOfExp);
+
 	// read data already written
 	if(oldDat == 0)
 	{
@@ -56,7 +62,7 @@ FissionExperimentClass::FissionExperimentClass()
 	}
 	else
 	{
-		expFile = new TFile(treeFileT, "READm");
+		expFile = new TFile(treeFileT, "READ");
 	}
 
 	detFile = new TFile(detFileT, "RECREATE");
@@ -95,7 +101,7 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 	{
 		coincTreeChain->Add(treeFileT + "/" + TString(to_string(fileNum)) + "/" + nameCoincTree);
 	}
-	expFile->Close();
+	//expFile->Close();
 
 	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
 
@@ -125,6 +131,13 @@ int FissionExperimentClass::getStartFile()
 int FissionExperimentClass::getEndFile()
 {
 	return startFile + numFiles;
+}
+
+void FissionExperimentClass::saveAll()
+{
+	delete expFile;
+	delete detFile;
+	delete sysFile;
 }
 
 TString FissionExperimentClass::getExpName()

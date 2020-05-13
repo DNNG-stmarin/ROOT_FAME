@@ -50,6 +50,9 @@ public:
 
 	// attributes
 
+	// folder which contains all the results
+	TFolder* resultFold = 0;
+
 	// file to write all results
 	TFile* expFile = 0;
 	TFile* detFile = 0;
@@ -68,7 +71,7 @@ public:
 	TChain* coincTreeChain = 0;
 
 	// Experimental system class
-	//DetectorSystemClass detSys;
+	// DetectorSystemClass detSys;
 
 	// methods
 
@@ -80,6 +83,8 @@ public:
 	int CreateCoincidenceTree(TString filename, TFile* expFile, int numEntries = - 1);
 	int CreateDetectionAnalysis(TChain* chain, TFile* writeFile);
 	int CreateSystemAnalysis(TChain* chainm, TFile* writeFile);
+
+	void saveAll();
 
 	// get attributes
 	int getStartFile();

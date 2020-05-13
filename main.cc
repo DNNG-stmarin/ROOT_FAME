@@ -35,7 +35,7 @@ int main(int argc, char** argv)
   FissionExperimentClass experiment = FissionExperimentClass();
 
   cout << "Forming Coincidences" << endl;
-  experiment.CreateCoincidenceTree(fileName, experiment.expFile, -1);
+  experiment.CreateCoincidenceTree(fileName, experiment.expFile, 1000000);
 
   cout << "Analyzing single detectors" << endl;
   experiment.CreateDetectionAnalysis(experiment.coincTreeChain, experiment.detFile);
@@ -44,6 +44,9 @@ int main(int argc, char** argv)
   experiment.CreateSystemAnalysis(experiment.coincTreeChain, experiment.sysFile);
 
   cout << "Creating the cleaned trees " << endl;
+
+  cout << "Saving the results" << endl;
+  experiment.saveAll();
 
   return 0;
 }
