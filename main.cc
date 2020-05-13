@@ -15,6 +15,8 @@ using namespace std;
 int main(int argc, char** argv)
 {
 
+  cout << "Welcome to ROOT FAME" << endl;
+
   // find the name of the file to use
   TString fileName;
 
@@ -33,7 +35,7 @@ int main(int argc, char** argv)
   FissionExperimentClass experiment = FissionExperimentClass();
 
   cout << "Forming Coincidences" << endl;
-  experiment.CreateFissionTree(fileName, experiment.expFile, -1);
+  experiment.CreateCoincidenceTree(fileName, experiment.expFile, -1);
 
   cout << "Analyzing single detectors" << endl;
   experiment.CreateDetectionAnalysis(experiment.coincTreeChain, experiment.detFile);

@@ -5,7 +5,6 @@ Purpose: Methods of the Fission Experiment Class
 */
 
 #define FissionExperimentClass_cxx
-#include "FissionAnalysis.h"
 
 #include "FissionExperimentClass.h"
 
@@ -22,7 +21,6 @@ Purpose: Methods of the Fission Experiment Class
 #include <queue>
 
 #include "InfoSystem.h"
-#include "FissionEvent.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
 
@@ -32,6 +30,11 @@ using namespace std;
 // methods to acquire from the user the info about the system
 FissionExperimentClass::FissionExperimentClass()
 {
+	//string inName;
+	cout << "What is the name of your experiment: ";
+	cin >> nameOfExp;
+	//nameOfExp = TString(inName);
+
 	cout << "What is your initial start file: ";
 	cin >> startFile;
 
@@ -43,7 +46,7 @@ FissionExperimentClass::FissionExperimentClass()
 	cout << "(1): MIDAS (LANSCE)" << endl;
 	cin >> digType;
 
-	cout << "Do you want to use existing data: ";
+	cout << "Do you want to use existing data: no (0), yes (1)" << endl;
 	cin >> oldDat;
 
 	// read data already written
@@ -71,9 +74,9 @@ FissionExperimentClass::~FissionExperimentClass()
 */
 
 // Now go ahead and create all the fission tree
-int FissionExperimentClass::CreateFissionTree(TString filename, TFile* expFileWrite, int numEntries)
+int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFileWrite, int numEntries)
 {
-
+	// produce the data if not already present
 	if(oldDat == 0)
 	{
 		cout << "Writing coincidence trees to " << expFileWrite->GetName() << "." << endl;
@@ -81,20 +84,18 @@ int FissionExperimentClass::CreateFissionTree(TString filename, TFile* expFileWr
 		for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
 		{
 			cout << "reading file number " << fileNum << endl;
-			FissionAnalysis* inputData = new FissionAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
-			inputData->CreateFissionTree(fileNum, numEntries);
+			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
+			inputData->CreateCoincidenceTree(fileNum, numEntries);
 		}
 		expFile->Close();
 	}
 
-	else
+	// attach the coincidence tree to the chain
+	for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
 	{
-		for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
-		{
-			coincTreeChain->Add(treeFileT + "/" + TString(to_string(fileNum)) + "/" + nameCoincTree);
-		}
-		expFile->Close();
+		coincTreeChain->Add(treeFileT + "/" + TString(to_string(fileNum)) + "/" + nameCoincTree);
 	}
+	expFile->Close();
 
 	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
 

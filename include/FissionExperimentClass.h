@@ -20,7 +20,7 @@ Date: late April 2020, Ann Arbor, Michigan
 #include <fstream>
 #include <sstream>
 
-#include "FissionAnalysis.h"
+#include "CoincidenceAnalysis.h"
 #include "DetectorSystemClass.h"
 #include "SystemAnalysis.h"
 
@@ -61,7 +61,7 @@ public:
 	TDirectory* sysDir = 0;
 
 	// pointer attributes
-	FissionAnalysis* inputData;
+	CoincidenceAnalysis* inputData;
 	DetectorSystemClass* detectorData;
 	SystemAnalysis* systemData;
 	// chain of raw tree files
@@ -77,7 +77,7 @@ public:
 	//~FissionExperimentClass();
 
 	// operations
-	int CreateFissionTree(TString filename, TFile* expFile, int numEntries = - 1);
+	int CreateCoincidenceTree(TString filename, TFile* expFile, int numEntries = - 1);
 	int CreateDetectionAnalysis(TChain* chain, TFile* writeFile);
 	int CreateSystemAnalysis(TChain* chainm, TFile* writeFile);
 

@@ -27,8 +27,15 @@ using namespace std;
 class CutClass
 {
 public:
+	// cuts to find good particles
 	TCut neutronCut;
 	TCut gammaCut;
+
+	// cuts to find background particles
+	TCut backNeutronCut;
+	TCut backGammaCut;
+
+
 };
 
 #endif

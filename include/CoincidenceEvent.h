@@ -1,9 +1,9 @@
 // Programmer: Stefano Marin, Isabel Hernandez
-// Purpose: class intented to store a complete fission event with all the particle information
-// Date: 02.20.2020
+// Purpose: class intented to store a complete coincidence event with all the particle information
+// Date: 02.20.2020 Ann Arbor
 
-#ifndef FissionEvent_h
-#define FissionEvent_h
+#ifndef CoincidenceEvent_h
+#define CoincidenceEvent_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -11,7 +11,7 @@
 #include "InfoSystem.h"
 #include "ParticleEvent.h"
 
-class FissionEvent {
+class CoincidenceEvent {
 
 private:
 
@@ -29,7 +29,7 @@ public:
 	ParticleEvent neutrons[MAX_MULTIPLICITY];
 	ParticleEvent photons[MAX_MULTIPLICITY];
 
-	FissionEvent()
+	CoincidenceEvent()
 	{
 		multiplicityNeutron = 0;
 		multiplicityPhoton = 0;
@@ -38,7 +38,7 @@ public:
 		triggerEnergy = 0;
 	}
 
-	FissionEvent(double triggerTimeIn, double triggerEnergyIn)
+	CoincidenceEvent(double triggerTimeIn, double triggerEnergyIn)
 	{
 		multiplicityNeutron = 0;
 		multiplicityPhoton = 0;
@@ -48,7 +48,7 @@ public:
 	}
 
 	// default destructor
-	~FissionEvent(){
+	~CoincidenceEvent(){
 	}
 
 	// get the trigger time

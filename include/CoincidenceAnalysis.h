@@ -4,8 +4,8 @@ Purpose: Forms the coincidence tree
 Date: Ann Arbor, May 6th, 2020
 */
 
-#ifndef FissionAnalysis_h
-#define FissionAnalysis_h
+#ifndef CoincidenceAnalysis_h
+#define CoincidenceAnalysis_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -20,7 +20,7 @@ Date: Ann Arbor, May 6th, 2020
 
 using namespace std;
 
-class FissionAnalysis {
+class CoincidenceAnalysis {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -43,18 +43,19 @@ public :
    TString inputTreeName;
 
 
-   FissionAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree *tree=0);
-   virtual ~FissionAnalysis();
+   CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree *tree=0);
+   virtual ~CoincidenceAnalysis();
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual int   CreateFissionTree(int fileNum, Long64_t entriesToProc = -1);
+   virtual int   CreateCoincidenceTree(int fileNum, Long64_t entriesToProc = -1);
 };
 
 #endif
 
-#ifdef FissionAnalysis_cxx
-FissionAnalysis::FissionAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree *tree) : fChain(0)
+#ifdef CoincidenceAnalysis_cxx
+
+CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree *tree) : fChain(0)
 {
 
    // set the output stream
@@ -87,20 +88,20 @@ FissionAnalysis::FissionAnalysis(TString filename, int fileNum, TFile* expFileWr
 
 }
 
-FissionAnalysis::~FissionAnalysis()
+CoincidenceAnalysis::~CoincidenceAnalysis()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
 }
 
-Int_t FissionAnalysis::GetEntry(Long64_t entry)
+Int_t CoincidenceAnalysis::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
 
-Long64_t FissionAnalysis::LoadTree(Long64_t entry)
+Long64_t CoincidenceAnalysis::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
@@ -112,7 +113,7 @@ Long64_t FissionAnalysis::LoadTree(Long64_t entry)
    return centry;
 }
 
-void FissionAnalysis::Init(TTree *tree)
+void CoincidenceAnalysis::Init(TTree *tree)
 {
 
    // Set branch addresses and branch pointers
@@ -144,8 +145,6 @@ void FissionAnalysis::Init(TTree *tree)
       fChain->SetBranchAddress("tail", &(md->tail), &(md->b_tail) );
    }
 
-
-
 }
 
-#endif // #ifdef FissionAnalysis_cxx
+#endif // #ifdef CoincidenceAnalysis_cxx

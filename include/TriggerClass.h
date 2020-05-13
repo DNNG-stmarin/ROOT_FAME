@@ -18,9 +18,6 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include <fstream>
 #include <sstream>
 
-#include "FissionAnalysis.h"
-#include "SystemAnalysis.h"
-
 using namespace std;
 
 

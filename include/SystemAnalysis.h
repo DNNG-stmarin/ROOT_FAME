@@ -15,6 +15,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include "InfoSystem.h"
 
 using namespace std;
@@ -26,19 +30,17 @@ public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
 
-   TFile*         sysFile = 0;
-
-// Fixed size dimensions of array or collections stored in the TTree if any.
+   TFile          *sysFile = 0; // file to store the system information
 
    // Declaration of leaf types
-   Int_t           tMult;
-   Double_t        tTime;
-   Double_t        tDep;
-   Double_t        totToF[MAX_MULTIPLICITY];   //[tMult]
-   Double_t        totPSP[MAX_MULTIPLICITY];   //[tMult]
-   Double_t        totDep[MAX_MULTIPLICITY];   //[tMult]
-   Double_t        totTail[MAX_MULTIPLICITY];   //[tMult]
-   Int_t           totChan[MAX_MULTIPLICITY];   //[tMult]
+   int           tMult;
+   double        tTime;
+   double        tDep;
+   double        totToF[MAX_MULTIPLICITY];   //[tMult]
+   double        totPSP[MAX_MULTIPLICITY];   //[tMult]
+   double        totDep[MAX_MULTIPLICITY];   //[tMult]
+   double        totTail[MAX_MULTIPLICITY];   //[tMult]
+   int           totChan[MAX_MULTIPLICITY];   //[tMult]
 
    // List of branches
    TBranch        *b_tMult;   //!
@@ -77,7 +79,6 @@ SystemAnalysis::SystemAnalysis(TChain *tree, TFile* sysFileWrite)
          f = new TFile("FissionOutput.root");
       }
       f->GetObject("FissionTree",tree);
-
    }
    Init(tree);
 }
@@ -129,9 +130,11 @@ void SystemAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("totToF", totToF, &b_totToF);
    fChain->SetBranchAddress("totPSP", totPSP, &b_totPSP);
    fChain->SetBranchAddress("totDep", totDep, &b_totDep);
-   fChain->SetBranchAddress("totTail", totDep, &b_totDep);
+   fChain->SetBranchAddress("totTail", totTail, &b_totTail);
    fChain->SetBranchAddress("totChan", totChan, &b_totChan);
    Notify();
+
+   cout << "Tree being read in correctly." << endl;
 }
 
 Bool_t SystemAnalysis::Notify()

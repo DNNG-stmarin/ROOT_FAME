@@ -18,14 +18,13 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include <fstream>
 #include <sstream>
 
-#include "FissionAnalysis.h"
-#include "SystemAnalysis.h"
-
 using namespace std;
 
 
 class DetectorClass
 {
+private:
+	
 public:
 
 	TString name = "det";
@@ -37,7 +36,7 @@ public:
 	double energyResolution; // store the energy resolution of this detector
 	double timeResolution; // store the time resolution from the fitted gamma peak
 
-	double discPSD;
+	double discPSD; // psd discrimination line
 
 	double energyCalibration; // store the energy calibration for each detector
 

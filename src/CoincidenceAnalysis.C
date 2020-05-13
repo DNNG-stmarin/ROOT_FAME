@@ -1,5 +1,7 @@
-#define FissionAnalysis_cxx
-#include "FissionAnalysis.h"
+#define CoincidenceAnalysis_cxx
+
+#include "CoincidenceAnalysis.h"
+
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -13,7 +15,7 @@
 #include <queue>
 
 #include "InfoSystem.h"
-#include "FissionEvent.h"
+#include "CoincidenceEvent.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
 
@@ -21,7 +23,7 @@
 
 using namespace std;
 
-int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
+int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToProc)
 {
 
 	TH1F* hDt = new TH1F("delT", "delT", 1000, 0, 5e12);
@@ -200,7 +202,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 	                                                                          |_|
 */
 	// queue containing valid fission events
-	queue<FissionEvent> FissionBuffer;
+	queue<CoincidenceEvent> FissionBuffer;
 
 	// keep track of the iterator in each of the channels
 	Long64_t indexTrig[NUM_CHAMBERS] = {0};
@@ -214,7 +216,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 
 	// initialize the new particle
 	TriggerEvent qTrigger = TriggerEvent();
-	FissionEvent newFission = FissionEvent(0, 0);
+	CoincidenceEvent newFission = CoincidenceEvent(0, 0);
 
 	// start at the beginning of the array and also keep track of the the number of coincidence events found.
 	ULong64_t numFissEvents = 0;
@@ -287,13 +289,21 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 		if(validFiss)
 		{
 			// update the number of valid fissions and populate queue
-			newFission = FissionEvent(averageTrigTime, sumTrigErg);
+			newFission = CoincidenceEvent(averageTrigTime, sumTrigErg);
 			FissionBuffer.push(newFission);
 		}
 
 		// get rid of currently analyzed event in queue
 		TriggerBuffer[0].pop();
 	}
+
+	/*
+	___       _             _     ___       __  __
+ / _ \ _  _| |_ _ __ _  _| |_  | _ )_  _ / _|/ _|___ _ _
+| (_) | || |  _| '_ \ || |  _| | _ \ || |  _|  _/ -_) '_|
+ \___/ \_,_|\__| .__/\_,_|\__| |___/\_,_|_| |_| \___|_|
+							 |_|
+	*/
 
 	cout << TriggerBuffer[0].size() << " events remaining in buffer" << endl;
 
@@ -321,7 +331,7 @@ int FissionAnalysis::CreateFissionTree(int fileNum, Long64_t entriesToProc)
 	cout << "Now looping throught detectors. " << endl;
 
 	// now loop thrugh fission events to find valid fission events
-	FissionEvent qFission = FissionEvent(0, 0);
+	CoincidenceEvent qFission = CoincidenceEvent(0, 0);
 	double fissionTime = 0;
 	double fissionEnergy = 0;
 

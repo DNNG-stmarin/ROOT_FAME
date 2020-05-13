@@ -5,6 +5,8 @@ Purpose: This code loops through the processed tree and using the applied cuts a
 
 #define SystemAnalysis_cxx
 
+#include "SystemAnalysis.h"
+
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -17,7 +19,9 @@ Purpose: This code loops through the processed tree and using the applied cuts a
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "SystemAnalysis.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include "InfoSystem.h"
 #include "mappingFunctions.h"
@@ -28,25 +32,15 @@ void SystemAnalysis::Loop()
 {
 
 /*
-   _____      _               
-  / ____|    | |              
- | (___   ___| |_ _   _ _ __  
-  \___ \ / _ \ __| | | | '_ \ 
+   _____      _
+  / ____|    | |
+ | (___   ___| |_ _   _ _ __
+  \___ \ / _ \ __| | | | '_ \
   ____) |  __/ |_| |_| | |_) |
- |_____/ \___|\__|\__,_| .__/ 
-                       | |    
-                       |_|    
+ |_____/ \___|\__|\__,_| .__/
+                       | |
+                       |_|
 */
-
-   //    // openFile and create tree
-   // TString fileName = "FissionOutput.root";
-   // TTree* tree;
-   // TFile *file = (TFile*)gROOT->GetListOfFiles()->FindObject(fileName);
-   //  if (!file || !file->IsOpen()) 
-   //  {
-   //      file = new TFile(fileName, "UPDATE");
-   //  }
-   // file->GetObject("FissionTree", tree);
 
    // important axes to have
    TString timeAxis = "time (ns)";
@@ -54,11 +48,11 @@ void SystemAnalysis::Loop()
    TString countAxis = "counts";
 
 /*
-  __  __      _ _   _      _ _    _ _        
- |  \/  |_  _| | |_(_)_ __| (_)__(_) |_ _  _ 
+  __  __      _ _   _      _ _    _ _
+ |  \/  |_  _| | |_(_)_ __| (_)__(_) |_ _  _
  | |\/| | || | |  _| | '_ \ | / _| |  _| || |
  |_|  |_|\_,_|_|\__|_| .__/_|_\__|_|\__|\_, |
-                     |_|                |__/ 
+                     |_|                |__/
 */
 
    // file output and directory list
@@ -75,11 +69,11 @@ void SystemAnalysis::Loop()
    TH2I* hMult = new TH2I("mult", "mult", 10, 0, 10, 10, 0, 10);
 
 /*
-  ___ _                    _      _   _          
- | _ |_)__ ___ _ _ _ _ ___| |__ _| |_(_)___ _ _  
- | _ \ / _/ _ \ '_| '_/ -_) / _` |  _| / _ \ ' \ 
+  ___ _                    _      _   _
+ | _ |_)__ ___ _ _ _ _ ___| |__ _| |_(_)___ _ _
+ | _ \ / _/ _ \ '_| '_/ -_) / _` |  _| / _ \ ' \
  |___/_\__\___/_| |_| \___|_\__,_|\__|_\___/_||_|
-                                                 
+
 */
 
    // create a two bicorrelation distribution
@@ -103,12 +97,12 @@ void SystemAnalysis::Loop()
    TH1I* hSingles = new TH1I("singles", "singles; detector; counts", NUM_DETS + 1, 0, NUM_DETS);
    TH2I* hDoubles = new TH2I("doubles", "doubles; detector; detector", NUM_DETS + 1, 0, NUM_DETS, NUM_DETS + 1, 0, NUM_DETS);
 /*
-         _         _    _                    
+         _         _    _
   __ ___(_)_ _  __(_)__| |___ _ _  __ ___ ___
  / _/ _ \ | ' \/ _| / _` / -_) ' \/ _/ -_|_-<
  \__\___/_|_||_\__|_\__,_\___|_||_\__\___/__/
-                                             
-*/                                                    
+
+*/
 
    // create array of histograms
    TH1F* nnMult[NUM_DETS][NUM_DETS];
@@ -170,12 +164,12 @@ void SystemAnalysis::Loop()
 
 
 
- //  ___      __ _        _   _             
+ //  ___      __ _        _   _
  // | _ \___ / _| |___ __| |_(_)___ _ _  ___
  // |   / -_)  _| / -_) _|  _| / _ \ ' \(_-<
  // |_|_\___|_| |_\___\__|\__|_\___/_||_/__/
-                                         
-     TH2F* reflections[NUM_DETS][NUM_DETS]; 
+
+     TH2F* reflections[NUM_DETS][NUM_DETS];
 
      TString refT = "ref_det_";
      TString refHistName, refHistTitle;
@@ -196,34 +190,31 @@ void SystemAnalysis::Loop()
    //cout << "Now starting main loop. " << endl;
 
    /*
-  __  __      _        _                  
- |  \/  |__ _(_)_ _   | |   ___  ___ _ __ 
+  __  __      _        _
+ |  \/  |__ _(_)_ _   | |   ___  ___ _ __
  | |\/| / _` | | ' \  | |__/ _ \/ _ \ '_ \
  |_|  |_\__,_|_|_||_| |____\___/\___/ .__/
-                                    |_|   
+                                    |_|
    */
-   
+
    int nMult, pMult;
 
    if (fChain == 0) return;
 
    Long64_t nentries = fChain->GetEntriesFast();
-
-   //cout << nentries << endl;
-
    Long64_t nbytes = 0, nb = 0;
-   for (Long64_t jentry=0; jentry<nentries;jentry++) 
+   for (Long64_t jentry=0; jentry<nentries;jentry++)
    {
 
-      // load tree
-      Long64_t ientry = LoadTree(jentry);
-      if (ientry < 0) break;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
+    // load tree
+    Long64_t ientry = LoadTree(jentry);
+    if (ientry < 0) break;
+    nb = fChain->GetEntry(jentry);   nbytes += nb;
 
 
-      // fill multiplicity histograms
-      nMult = 0;
-      pMult = 0;
+    // fill multiplicity histograms
+    nMult = 0;
+    pMult = 0;
 
    	for(int j = 0; j < tMult; j++)
    	{
@@ -236,18 +227,20 @@ void SystemAnalysis::Loop()
             pMult++;
          }
    	}
-      hMult->Fill(nMult, pMult);
 
+    hMult->Fill(nMult, pMult);
 
+    double psdDisc = 0.17;
 
-      // fill coincidence histograms
-      for(int j = 0; j < tMult; j++)
-      {
+    // fill coincidence histograms
+    for(int j = 0; j < tMult; j++)
+    {
          hSingles->Fill(isDetector(totChan[j]));
 
          for(int k = 0; k < tMult; k++)
          {
 
+            // cout << totToF[j] << " " << totToF[k] << endl;
 
             // find the reflections
             reflections[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[k] - totToF[j], totDep[k]);
@@ -258,34 +251,35 @@ void SystemAnalysis::Loop()
                hDoubles->Fill(isDetector(totChan[j]), isDetector(totChan[k]));
             }
 
-
             // compute the coincidences
             if((totDep[j] > DETECTOR_THRESHOLD) & (totDep[k] > DETECTOR_THRESHOLD))
             {
+
+               // fill the bi-correlation
                hBicorr[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[j], totToF[k]);
 
-
-               if((totPSP[j] > 0.15) & (totPSP[k] > 0.15)) // neutron - neutron
+               // fill the cross-correlations
+               if((totPSP[j] > psdDisc) & (totPSP[k] > psdDisc)) // neutron - neutron
                {
                   nnMult[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[j] - totToF[k]);
                }
 
-               if((totPSP[j] > 0.15) & (totPSP[k] < 0.15)) // neutron - photon
+               if((totPSP[j] > psdDisc) & (totPSP[k] < psdDisc)) // neutron - photon
                {
                   ngMult[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[j] - totToF[k]);
                }
 
-               if((totPSP[j] < 0.15) & (totPSP[k] > 0.15)) // photon - neutron
+               if((totPSP[j] < psdDisc) & (totPSP[k] > psdDisc)) // photon - neutron
                {
                   gnMult[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[j] - totToF[k]);
                }
 
-               if((totPSP[j] < 0.15) & (totPSP[k] < 0.15)) // photon - photon
+               if((totPSP[j] < psdDisc) & (totPSP[k] < psdDisc)) // photon - photon
                {
                   ggMult[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[j] - totToF[k]);
-               } 
+               }
             }
-            
+
          }
       }
    }
@@ -298,7 +292,7 @@ void SystemAnalysis::Loop()
 
    //cout << "Saving Multiplicities. " << endl;
 
-   // multiplicity 
+   // multiplicity
    cdMult->cd();
    TCanvas* canvMult = new TCanvas("multC", "multC", 800, 500);
    canvMult->cd();
@@ -332,7 +326,7 @@ void SystemAnalysis::Loop()
          gnMult[det1][det2]->Write();
          ggMult[det1][det2]->Write();
 
-         allCoinc[det1][det2]->Write();  
+         allCoinc[det1][det2]->Write();
 
       }
    }
@@ -354,7 +348,7 @@ void SystemAnalysis::Loop()
          namePlot = nameCoincT + to_string(det1) + "_" + to_string(det2);
          titlePlot = namePlot;
 
-         canvEach[det1][det2] = new TCanvas(namePlot, titlePlot, 800, 500); 
+         canvEach[det1][det2] = new TCanvas(namePlot, titlePlot, 800, 500);
 
          canvEach[det1][det2]->cd();
          allCoinc[det1][det2]->Draw("nostack");
@@ -385,7 +379,7 @@ void SystemAnalysis::Loop()
          namePlot = nameBicorrT + to_string(det1) + "_" + to_string(det2);
          titlePlot = namePlot;
 
-         canvBicorr[det1][det2] = new TCanvas(namePlot, titlePlot, 800, 500); 
+         canvBicorr[det1][det2] = new TCanvas(namePlot, titlePlot, 800, 500);
 
          canvBicorr[det1][det2]->cd();
          hBicorr[det1][det2]->Draw();

@@ -37,12 +37,15 @@ public:
 	TriggerClass* triggers;
 	DetectorClass* detectors;
 
-	// inputs given by the larger file, made up of the data collected and
+	// inputs given by the fission experiment class file, made up of the data collected and
 	// where to write
 	TChain* tree;
 	TFile* expFile;
 
-	// constructor
+	// store all the histograms
+	
+
+	// constructor of the detector system class
 	DetectorSystemClass(TChain* treeIn, TFile* writeFile)
 	{
 		numTriggers = 0;
@@ -56,7 +59,6 @@ public:
 		tree = treeIn;
 		expFile = writeFile;
 	}
-
 
 	// functions to perfom the detection analysis
 	int DetectionAnalysis();

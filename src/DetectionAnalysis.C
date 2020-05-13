@@ -9,10 +9,7 @@ So far, we look at:
 */
 
 #define DetectionAnalysis_cxx
-#include "FissionAnalysis.h"
 
-//#include "DetectionAnalysis.h"
-//#include "FissionExperimentClass.h"
 #include "DetectorSystemClass.h"
 
 #include <TH2.h>
@@ -29,7 +26,6 @@ So far, we look at:
 #include <queue>
 
 #include "InfoSystem.h"
-#include "FissionEvent.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
 
