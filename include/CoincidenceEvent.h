@@ -17,8 +17,6 @@ private:
 
 public:
 	// attributes of the coincidence class
-	int multiplicityNeutron;
-	int multiplicityPhoton;
 	int totalMultiplicity;
 
 	double triggerEnergy;
@@ -31,8 +29,6 @@ public:
 
 	CoincidenceEvent()
 	{
-		multiplicityNeutron = 0;
-		multiplicityPhoton = 0;
 		totalMultiplicity = 0;
 		triggerTime = 0;
 		triggerEnergy = 0;
@@ -40,8 +36,6 @@ public:
 
 	CoincidenceEvent(double triggerTimeIn, double triggerEnergyIn)
 	{
-		multiplicityNeutron = 0;
-		multiplicityPhoton = 0;
 		totalMultiplicity = 0;
 		triggerTime = triggerTimeIn;
 		triggerEnergy = triggerEnergyIn;

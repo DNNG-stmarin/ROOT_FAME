@@ -24,7 +24,7 @@ using namespace std;
 class DetectorClass
 {
 private:
-	
+
 public:
 
 	TString name = "det";

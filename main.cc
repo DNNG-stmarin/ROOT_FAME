@@ -2,8 +2,6 @@
 // Purpose: Compass post-process and forming fission coincidences in fission
 // Date: April 2020
 
-#include "MidasClass.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <TString.h>
@@ -35,13 +33,13 @@ int main(int argc, char** argv)
   FissionExperimentClass experiment = FissionExperimentClass();
 
   cout << "Forming Coincidences" << endl;
-  experiment.CreateCoincidenceTree(fileName, experiment.expFile, 1000000);
+  experiment.CreateCoincidenceTree(fileName, experiment.expFile, -1);
 
   cout << "Analyzing single detectors" << endl;
   experiment.CreateDetectionAnalysis(experiment.coincTreeChain, experiment.detFile);
 
   cout << "Analyzing multiple detectors" << endl;
-  experiment.CreateSystemAnalysis(experiment.coincTreeChain, experiment.sysFile);
+  //experiment.CreateSystemAnalysis(experiment.coincTreeChain, experiment.sysFile);
 
   cout << "Creating the cleaned trees " << endl;
 

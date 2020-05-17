@@ -57,10 +57,10 @@ int DetectorSystemClass::DetectionAnalysis()
 	// the sum of the two fitting functions
 	TF1* fitPSD_np = new TF1("fitPSDnp", "fitPSDn + fitPSDp");
 	fitPSD_np->SetParNames("AP", "mP", "sP", "AN", "mN", "sN");
-	fitPSD_np->SetParameters(100, 0.12, 0.02, 27, 0.28, 0.04);
-	fitPSD_np->SetParLimits(4, 0.2, 0.3);
+	fitPSD_np->SetParameters(100, 0.12, 0.02, 27, 0.24, 0.04);
+	fitPSD_np->SetParLimits(4, 0.15, 0.3);
 
-	expFile->cd();
+	detFile->cd();
 
 
 	/*
@@ -207,6 +207,8 @@ int DetectorSystemClass::DetectionAnalysis()
 		tree->Draw("totPSP:totDep >>" + psdErgHistNameT, upPSP&&selectChan, "EGOFF");
 		psdErgHists[i]->SetOption("COLZ");
 
+		cout << "Tree is drawing to histograms correctly" << endl;
+
 		// find the psp parameter
 		psdFit = psdhists[i]->Fit(fitPSD_np, "SQ");
 
@@ -239,6 +241,9 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		cout << "Time delay is: " << time_delay[i] << endl;
 
+		detectors[i].timeDelay = time_delay[i];
+		detectors[i].timeResolution = time_sigma[i];
+
 		// makes the new cuts
 		neutronCut = neutPSP + to_string(psd_disc[i]);
 		photonCut = photPSP + to_string(psd_disc[i]);
@@ -261,6 +266,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		// save the results
 		psdhists[i]->Write();
 		psdErgHists[i]->Write();
+		tofDelPhists[i]->Write();
 		tofNhists[i]->Write();
 		tofPhists[i]->Write();
 		kinematicN[i]->Write();

@@ -22,13 +22,14 @@ Date: late April 2020, Ann Arbor, Michigan
 
 #include "CoincidenceAnalysis.h"
 #include "DetectorSystemClass.h"
-#include "SystemAnalysis.h"
+//#include "SystemAnalysis.h"
 
 using namespace std;
 
 
 class FissionExperimentClass
 {
+	
 private:
 	TString nameOfExp;
 	int startFile = 0;
@@ -40,15 +41,15 @@ private:
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";
 
-	TString nameCoincTree = "FissionTree";
+	TString nameCoincTree = "CoincidenceTree"; // coincidence pre-clean tree
+	TString nameFissionTree = "FissionTree"; // fission post-cleaning tree
 
+	// names of files to write
 	TString treeFileT = "CoincidenceTrees.root";
 	TString detFileT = "Detectors.root";
-	TString sysFileT = "System.root";
+	TString sysFileT = "Fission.root";
 
 public:
-
-	// attributes
 
 	// folder which contains all the results
 	TFolder* resultFold = 0;
@@ -56,22 +57,14 @@ public:
 	// file to write all results
 	TFile* expFile = 0;
 	TFile* detFile = 0;
-	TFile* sysFile = 0;
-
-	// folder to write the coincidence trees
-	TDirectory* treeDir = 0;
-	TDirectory* detDir = 0;
-	TDirectory* sysDir = 0;
 
 	// pointer attributes
 	CoincidenceAnalysis* inputData;
 	DetectorSystemClass* detectorData;
-	SystemAnalysis* systemData;
+
+
 	// chain of raw tree files
 	TChain* coincTreeChain = 0;
-
-	// Experimental system class
-	// DetectorSystemClass detSys;
 
 	// methods
 
@@ -82,7 +75,6 @@ public:
 	// operations
 	int CreateCoincidenceTree(TString filename, TFile* expFile, int numEntries = - 1);
 	int CreateDetectionAnalysis(TChain* chain, TFile* writeFile);
-	int CreateSystemAnalysis(TChain* chainm, TFile* writeFile);
 
 	void saveAll();
 

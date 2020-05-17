@@ -25,6 +25,9 @@ public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
 
+   //create TTree object to contain the output coincidence tree
+   TTree* coincTree;;
+
    // output file
    TFile* expFile = 0;
    TDirectory* fileTreeDir = 0;
@@ -43,7 +46,7 @@ public :
    TString inputTreeName;
 
 
-   CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree *tree=0);
+   CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree* tree = 0);
    virtual ~CoincidenceAnalysis();
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
@@ -55,7 +58,7 @@ public :
 
 #ifdef CoincidenceAnalysis_cxx
 
-CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree *tree) : fChain(0)
+CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree* tree) : fChain(0)
 {
 
    // set the output stream
@@ -92,6 +95,7 @@ CoincidenceAnalysis::~CoincidenceAnalysis()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
+   delete coincTree;
 }
 
 Int_t CoincidenceAnalysis::GetEntry(Long64_t entry)
