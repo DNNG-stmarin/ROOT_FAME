@@ -31,5 +31,5 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h)
 #target_link_libraries(Event ${ROOT_LIBRARIES})
 
 #---Create  a main program using the library
-add_executable(main main.cc ${sources} ${headers})
-target_link_libraries(main ${ROOT_LIBRARIES})
+add_executable(ROOT_FAME main.cc ${sources} ${headers})
+target_link_libraries(ROOT_FAME ${ROOT_LIBRARIES})

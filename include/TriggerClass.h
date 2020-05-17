@@ -5,8 +5,8 @@ Purpose: Class with all of the properties of the triggering system
 Date: Ann Arbor, MI, May 3rd, 2020
 */
 
-#ifndef DetectorClass_h
-#define DetectorClass_h
+#ifndef TriggerClass_h
+#define TriggerClass_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -18,16 +18,19 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include <fstream>
 #include <sstream>
 
-#include "FissionAnalysis.h"
-#include "SystemAnalysis.h"
-
 using namespace std;
 
 
 class TriggerClass
 {
 public:
-	
+  TString name = "trig";
+
+  double crossSection;
+
+  double energyResolution;
+  double timeResolution;
+
 };
 
 #endif

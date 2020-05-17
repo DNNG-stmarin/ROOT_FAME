@@ -2,12 +2,6 @@
 // Purpose: Compass post-process and forming fission coincidences in fission
 // Date: April 2020
 
-#include "FissionAnalysis.h"
-#include "DetectionAnalysis.h"
-#include "SystemAnalysis.h"
-
-#include "MidasClass.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <TString.h>
@@ -18,6 +12,8 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+
+  cout << "Welcome to ROOT FAME" << endl;
 
   // find the name of the file to use
   TString fileName;
@@ -37,15 +33,18 @@ int main(int argc, char** argv)
   FissionExperimentClass experiment = FissionExperimentClass();
 
   cout << "Forming Coincidences" << endl;
-  experiment.CreateFissionTree(fileName, experiment.expFile, -1);
+  experiment.CreateCoincidenceTree(fileName, experiment.expFile, -1);
 
   cout << "Analyzing single detectors" << endl;
-  experiment.DetectionAnalysis(experiment.coincTreeChain, experiment.detFile);
+  experiment.CreateDetectionAnalysis(experiment.coincTreeChain, experiment.detFile);
 
   cout << "Analyzing multiple detectors" << endl;
-  experiment.CreateSystemAnalysis(experiment.coincTreeChain, experiment.sysFile);
+  //experiment.CreateSystemAnalysis(experiment.coincTreeChain, experiment.sysFile);
 
   cout << "Creating the cleaned trees " << endl;
+
+  cout << "Saving the results" << endl;
+  experiment.saveAll();
 
   return 0;
 }

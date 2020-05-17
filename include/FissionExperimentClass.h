@@ -20,68 +20,70 @@ Date: late April 2020, Ann Arbor, Michigan
 #include <fstream>
 #include <sstream>
 
-#include "FissionAnalysis.h"
-#include "SystemAnalysis.h"
+#include "CoincidenceAnalysis.h"
+#include "DetectorSystemClass.h"
+//#include "SystemAnalysis.h"
 
 using namespace std;
 
 
 class FissionExperimentClass
 {
+	
 private:
 	TString nameOfExp;
 	int startFile = 0;
 	int numFiles = 1;
 
 	int digType;
+	int oldDat;
 
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";
 
-	TString nameCoincTree = "FissionTree";
+	TString nameCoincTree = "CoincidenceTree"; // coincidence pre-clean tree
+	TString nameFissionTree = "FissionTree"; // fission post-cleaning tree
 
+	// names of files to write
 	TString treeFileT = "CoincidenceTrees.root";
 	TString detFileT = "Detectors.root";
-	TString sysFileT = "System.root";
+	TString sysFileT = "Fission.root";
 
 public:
 
-	// attributes
+	// folder which contains all the results
+	TFolder* resultFold = 0;
 
 	// file to write all results
 	TFile* expFile = 0;
 	TFile* detFile = 0;
-	TFile* sysFile = 0;
-
-	// folder to write the coincidence trees
-	TDirectory* treeDir = 0;
-	TDirectory* detDir = 0;
-	TDirectory* sysDir = 0;
 
 	// pointer attributes
-	FissionAnalysis* inputData;
-	SystemAnalysis* systemData;
+	CoincidenceAnalysis* inputData;
+	DetectorSystemClass* detectorData;
+
 
 	// chain of raw tree files
 	TChain* coincTreeChain = 0;
-
-	// Experimental system class
-	//DetectorSystemClass detSys;
 
 	// methods
 
 	// class constructor
 	FissionExperimentClass();
+	//~FissionExperimentClass();
 
 	// operations
-	int CreateFissionTree(TString filename, TFile* expFile, int numEntries = - 1);
-	int DetectionAnalysis(TChain* chain, TFile* writeFile);
-	int CreateSystemAnalysis(TChain* chainm, TFile* writeFile);
+	int CreateCoincidenceTree(TString filename, TFile* expFile, int numEntries = - 1);
+	int CreateDetectionAnalysis(TChain* chain, TFile* writeFile);
+
+	void saveAll();
 
 	// get attributes
 	int getStartFile();
 	int getEndFile();
 	TString getExpName();
+
+
 };
 
 #endif

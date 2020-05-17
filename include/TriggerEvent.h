@@ -8,73 +8,25 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
-#include "InfoSystem.h"
-#include "ParticleEvent.h"
+
+#include "GeneralEvent.h"
 
 
-class TriggerEvent
+class TriggerEvent : public GeneralEvent
 {
+
 private:
 
 public:
-
-	double depositedEnergy;
-	double time;
-	int detChannel;
-	double psp;
-	int type;
-	bool isFission;
-
 	TriggerEvent()
-	{
-		depositedEnergy = 0;
-		time = 0;
-		psp = 0;
-		detChannel = 0;
-		type = 0;
-		isFission = true;
-	}
+				: GeneralEvent()
+				{
+				}
 
 	TriggerEvent(int detNumber, double timestamp, double energy, double energyShort)
-	{
-		depositedEnergy = INT_CALIBRATION * energy;
-		time = timestamp; 
-		detChannel = detNumber;
-		psp = energyShort/energy;
-		type = NO_PARTICLE;
-		isFission = true;
-	}
-
-		// the next few functions are used to get the properties of the particle
-	double getEnergy()
-	{
-		return depositedEnergy;
-	}
-
-	double getTime()
-	{
-		return time;
-	}
-
-	int getDetector()
-	{
-		return detChannel;
-	}
-
-	double getPsp()
-	{
-		return psp;
-	}
-
-	int getType()
-	{
-		return type;
-	}
-
-	void correctTime(double triggerTime)
-	{
-		time -= triggerTime;
-	}
+				: GeneralEvent(detNumber, timestamp, energy, energyShort)
+				{
+				}
 };
 
-#endif 
+#endif
