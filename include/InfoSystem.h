@@ -39,13 +39,8 @@ const short PHOTON = 2;
 // multiplicity max to store
 const int MAX_MULTIPLICITY = 50;
 
-// chamber drift
-const double MAX_CHAMBER_DRIFT = 0.2; // ns
-const double COINC_WINDOW = 400; // ns
-
 const double MAX_CHAMBER_DRIFT = 1; // ns
 const double COINC_WINDOW = 600; // ns
-
 
 const double CHAMBER_THRESHOLD = 0.01;
 const double CHAMBER_CLIP = 10.0;
