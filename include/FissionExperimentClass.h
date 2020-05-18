@@ -22,14 +22,13 @@ Date: late April 2020, Ann Arbor, Michigan
 
 #include "CoincidenceAnalysis.h"
 #include "DetectorSystemClass.h"
-//#include "SystemAnalysis.h"
 
 using namespace std;
 
 
 class FissionExperimentClass
 {
-	
+
 private:
 	TString nameOfExp;
 	int startFile = 0;

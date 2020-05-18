@@ -15,6 +15,9 @@
 #include <queue>
 
 #include "InfoSystem.h"
+#include "PhysicalConstants.h"
+#include "ProcessingConstants.h"
+
 #include "CoincidenceEvent.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"

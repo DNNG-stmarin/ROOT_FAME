@@ -25,6 +25,8 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include "DetectorClass.h"
 #include "TriggerClass.h"
 
+#include "PhysicalConstants.h"
+#include "ProcessingConstants.h"
 #include "InfoSystem.h"
 
 using namespace std;
