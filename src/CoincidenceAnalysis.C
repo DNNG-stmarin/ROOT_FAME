@@ -41,7 +41,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	 //                   |_|                |__/
 
 	// use an array of fifo to store particles and chambers
-	queue<TriggerEvent> TriggerBuffer[NUM_CHAMBERS];
+	queue<TriggerEvent> TriggerBuffer[NUM_CHAMBERS]; //from InfoSystem
 	queue<ParticleEvent> DetectorBuffer[NUM_DETS];
 
 
@@ -387,7 +387,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 			{
 				qParticle = DetectorBuffer[detIndex].front();
 				detTime = qParticle.getTime();
-				deltaT = detTime - fissionTime;
+				deltaT = detTime - fissionTime; 
 			}
 
 			// detector has no more valid detection events, skip it.

@@ -10,7 +10,6 @@ const int NUM_BEAM = 0;
 const int NUM_CHAMBERS = 1;
 const int NUM_DETS = 54;
 
-
 // location of fission chambers and detectors
 const int FISSION_CHAMBERS[NUM_CHAMBERS] = {7};
 

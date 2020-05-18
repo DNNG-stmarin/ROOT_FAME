@@ -56,6 +56,8 @@ void DetectorSystemClass::SystemAnalysis()
     if (ientry < 0) break;
     nb = tree->GetEntry(jentry);   nbytes += nb;
 
+    //if((totPSP[j] > detectors[j].psd_disc) & (totPSP[k] > detectors[k].psd_disc)) // neutron - neutron
+
     double psdDisc = 0.17;
 
     // fill coincidence histograms
