@@ -230,6 +230,8 @@ void SystemAnalysis::Loop()
 
     hMult->Fill(nMult, pMult);
 
+    //if((totPSP[j] > detectors[j].psd_disc) & (totPSP[k] > detectors[k].psd_disc)) // neutron - neutron
+
     double psdDisc = 0.17;
 
     // fill coincidence histograms

@@ -93,7 +93,7 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
 			inputData->CreateCoincidenceTree(fileNum, numEntries);
 		}
-		expFile->Close();
+		expFile->Close(); 
 	}
 
 	// attach the coincidence tree to the chain
