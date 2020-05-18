@@ -66,7 +66,7 @@ FissionExperimentClass::FissionExperimentClass()
 	}
 
 	detFile = new TFile(detFileT, "RECREATE");
-	sysFile = new TFile(sysFileT, "RECREATE");
+	//sysFile = new TFile(sysFileT, "RECREATE");
 
   // create the chain with all the entries to analyze for the raw coincidence mode
   coincTreeChain = new TChain();
@@ -108,17 +108,22 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 	return 1;
 }
 
-int FissionExperimentClass::CreateDetectionAnalysis(TChain* chainm, TFile* writeFile)
+int FissionExperimentClass::CreateDetectionAnalysis(TChain* chain, TFile* writeFile)
 {
-	DetectorSystemClass* detData = new DetectorSystemClass(coincTreeChain, detFile);
-	detData->DetectionAnalysis();
-	return 1;
-}
+	detectorData = new DetectorSystemClass(coincTreeChain, detFile);
 
-int FissionExperimentClass::CreateSystemAnalysis(TChain* chainm, TFile* writeFile)
-{
-	SystemAnalysis* sysData = new SystemAnalysis(coincTreeChain, sysFile);
-	sysData->Loop();
+	cout << "Entering detector analysis mode" << endl;
+	detectorData->DetectionAnalysis();
+
+	cout << "Creating the histograms to store the data. " << endl;
+	detectorData->InitializeDetectorHistograms();
+
+	cout << "Entering system analysis mode" << endl;
+	detectorData->SystemAnalysis();
+
+	cout << "Entering fission analysis mode" << endl;
+	detectorData->FissionAnalysis();
+
 	return 1;
 }
 
@@ -137,7 +142,7 @@ void FissionExperimentClass::saveAll()
 {
 	delete expFile;
 	delete detFile;
-	delete sysFile;
+	//delete sysFile;
 }
 
 TString FissionExperimentClass::getExpName()

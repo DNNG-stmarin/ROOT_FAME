@@ -165,8 +165,9 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 
 	expFile->cd();
 	fileTreeDir->cd();
-	//create TTree object
-	TTree *tree = new TTree("FissionTree", "Fission TREE");	//treename/treetitle
+
+	coincTree = new TTree("CoincidenceTree", "Tree of Experimental Coincidences");
+
 
 	// declatre the variables to store the fission branches
 	int tMult = 0;
@@ -179,16 +180,16 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	int totChan[MAX_MULTIPLICITY] = {0};
 
 	// scalar variables
-	tree->Branch("tMult", &tMult, "tMult/I");
-	tree->Branch("tTime", &tTime, "fissionTime/D");
-	tree->Branch("tDep", &tDep, "fissionErg/D");
+	coincTree->Branch("tMult", &tMult, "tMult/I");
+	coincTree->Branch("tTime", &tTime, "fissionTime/D");
+	coincTree->Branch("tDep", &tDep, "fissionErg/D");
 
 	// list variables
-	tree->Branch("totToF", totToF, "totToF[tMult]/D");
-	tree->Branch("totPSP", totPSP, "totPSP[tMult]/D");
-	tree->Branch("totDep", totDep, "totDep[tMult]/D");
-	tree->Branch("totChan", totChan, "totChan[tMult]/I");
-	tree->Branch("totTail", totTail, "totTail[tMult]/D");
+	coincTree->Branch("totToF", totToF, "totToF[tMult]/D");
+	coincTree->Branch("totPSP", totPSP, "totPSP[tMult]/D");
+	coincTree->Branch("totDep", totDep, "totDep[tMult]/D");
+	coincTree->Branch("totChan", totChan, "totChan[tMult]/I");
+	coincTree->Branch("totTail", totTail, "totTail[tMult]/D");
 
 
 /*
@@ -428,7 +429,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 		tDep = fissionEnergy;
 
 		// fill the tree branches
-		tree->Fill();
+		coincTree->Fill();
 	}
 
 
@@ -473,7 +474,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	cout << "Saving the tree to file. " << endl;
 	//first->cd();
 
-	tree->Write();
+	coincTree->Write();
 	hDt->Write();
 	//expFile->Close();
 

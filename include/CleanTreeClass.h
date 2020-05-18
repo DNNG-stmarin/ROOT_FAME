@@ -27,7 +27,6 @@ public:
   TFile* cleanFile;
   TChain* chainIn;
 
-
 };
 
 #endif

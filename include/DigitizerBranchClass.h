@@ -38,7 +38,7 @@ public:
 	// output functions
 	long double getTime()
 	{
-		double detTime = ((double)Timestamp)/1000;
+		double detTime = ((double)Timestamp)/1000.0;
 		return detTime;
 	}
 
@@ -95,7 +95,7 @@ public:
 	// output functions
 	long double getTime()
 	{
-		double detTime = (double)time*2 + (double)interpolation*2;
+		double detTime = (double)time*2.0 - (double)interpolation*2.0;
 		return detTime;
 	}
 
