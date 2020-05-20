@@ -28,6 +28,7 @@ So far, we look at:
 #include "InfoSystem.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
+#include "InfoSystemTest.h"
 
 using namespace std;
 
@@ -263,15 +264,30 @@ int DetectorSystemClass::DetectionAnalysis()
 		tree->Draw("totDep:" + correctedTimes + ">>" + kinematicPHistNameT, selectChan&&photonCut, "EGOFF");
 
 
-		// save the results
-		psdhists[i]->Write();
-		psdErgHists[i]->Write();
-		tofDelPhists[i]->Write();
-		tofNhists[i]->Write();
-		tofPhists[i]->Write();
-		kinematicN[i]->Write();
-		kinematicP[i]->Write();
 	}
+
+	//create folders and write things to correct folder
+	TDirectory *psdFile = detFile->mkdir("PSD");
+	TDirectory *tofFile = detFile->mkdir("TOF");
+	TDirectory *kinFile = detFile->mkdir("Kinematics");
+
+	for(int i=0; i<NUM_DETS; i++)
+	{
+			// save the results
+			psdFile->cd();
+			psdhists[i]->Write();
+			psdErgHists[i]->Write();
+
+			tofFile->cd();
+			tofDelPhists[i]->Write();
+			tofNhists[i]->Write();
+			tofPhists[i]->Write();
+
+			kinFile->cd();
+			kinematicN[i]->Write();
+			kinematicP[i]->Write();
+	}
+
 
 	// save the stacked histograms as a root file
 	TCanvas* tofCanvas = new TCanvas("ToF", "ToF", 800, 1500);
