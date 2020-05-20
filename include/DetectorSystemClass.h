@@ -142,6 +142,8 @@ ___             _   _
 	virtual void     InitFiss();
 	virtual Bool_t   Notify();
 	virtual void     Show(Long64_t entry = -1);
+
+	// initialize the histogram of the detectors
 	virtual void 		 InitializeDetectorHistograms();
 
 	// functions to perfom the detection analysis
@@ -150,8 +152,6 @@ ___             _   _
 	virtual void 		 FissionAnalysis();
 };
 #endif
-
-
 
 #ifdef DetectionAnalysis_cxx
 

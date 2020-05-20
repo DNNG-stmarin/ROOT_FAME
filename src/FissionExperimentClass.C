@@ -93,7 +93,7 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
 			inputData->CreateCoincidenceTree(fileNum, numEntries);
 		}
-		expFile->Close(); 
+		expFile->Close();
 	}
 
 	// attach the coincidence tree to the chain
@@ -112,11 +112,11 @@ int FissionExperimentClass::CreateDetectionAnalysis(TChain* chain, TFile* writeF
 {
 	detectorData = new DetectorSystemClass(coincTreeChain, detFile);
 
-	cout << "Entering detector analysis mode" << endl;
-	detectorData->DetectionAnalysis();
-
 	cout << "Creating the histograms to store the data. " << endl;
 	detectorData->InitializeDetectorHistograms();
+
+	cout << "Entering detector analysis mode" << endl;
+	detectorData->DetectionAnalysis();
 
 	cout << "Entering system analysis mode" << endl;
 	detectorData->SystemAnalysis();
