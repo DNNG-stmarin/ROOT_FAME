@@ -16,6 +16,7 @@ Date: Ann Arbor, May 6th, 2020
 #include <fstream>
 #include <sstream>
 
+#include "InfoSystemTest.h"
 #include "DigitizerBranchClass.h"
 
 using namespace std;
@@ -51,7 +52,7 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual int   CreateCoincidenceTree(int fileNum, Long64_t entriesToProc = -1);
+   virtual int   CreateCoincidenceTree(InfoSystemTest info, int fileNum, Long64_t entriesToProc = -1);
 };
 
 #endif

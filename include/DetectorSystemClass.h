@@ -27,7 +27,8 @@ Date: Ann Arbor, MI, May 3rd, 2020
 
 #include "PhysicalConstants.h"
 #include "ProcessingConstants.h"
-#include "InfoSystem.h"
+//#include "InfoSystem.h"
+#include "InfoSystemTest.h"
 
 using namespace std;
 
@@ -73,19 +74,30 @@ public:
 	TriggerClass* triggers;
 	DetectorClass* detectors;
 
+	//declare arrays as dynamic and allot space once info object is passed
 	TH2I* hMult; // multiplicity histograms
-	TH2F* hBicorr[NUM_DETS][NUM_DETS]; // bicorrelation histograms
+	//TH2F* hBicorr[NUM_DETS][NUM_DETS]; // bicorrelation histograms
+	TH2F*** hBicorr;
+
 	TH1I* hSingles; // singles measurements
 	TH2I* hDoubles; // doubles measurements
 
-	// create array of cross-correlations histograms
-	TH1F* nnMult[NUM_DETS][NUM_DETS];
-	TH1F* ggMult[NUM_DETS][NUM_DETS];
-	TH1F* gnMult[NUM_DETS][NUM_DETS];
-	TH1F* ngMult[NUM_DETS][NUM_DETS];
-	THStack* allCoinc[NUM_DETS][NUM_DETS];
+	// // create array of cross-correlations histograms
+	// TH1F* nnMult[NUM_DETS][NUM_DETS];
+	// TH1F* ggMult[NUM_DETS][NUM_DETS];
+	// TH1F* gnMult[NUM_DETS][NUM_DETS];
+	// TH1F* ngMult[NUM_DETS][NUM_DETS];
+	// THStack* allCoinc[NUM_DETS][NUM_DETS];
+	//
+	// TH2F* reflections[NUM_DETS][NUM_DETS]; // reflections in detectors
 
-	TH2F* reflections[NUM_DETS][NUM_DETS]; // reflections in detectors
+	TH1F*** nnMult;
+	TH1F*** ggMult;
+	TH1F*** gnMult;
+	TH1F*** ngMult;
+	THStack*** allCoinc;
+
+	TH2F*** reflections;
 
 /*
 	 _____
@@ -100,11 +112,17 @@ public:
 	int           tMult;
 	double        tTime;
 	double        tDep;
-	double        totToF[MAX_MULTIPLICITY];   //[tMult]
-	double        totPSP[MAX_MULTIPLICITY];   //[tMult]
-	double        totDep[MAX_MULTIPLICITY];   //[tMult]
-	double        totTail[MAX_MULTIPLICITY];   //[tMult]
-	int           totChan[MAX_MULTIPLICITY];   //[tMult]
+	// double        totToF[MAX_MULTIPLICITY];   //[tMult]
+	// double        totPSP[MAX_MULTIPLICITY];   //[tMult]
+	// double        totDep[MAX_MULTIPLICITY];   //[tMult]
+	// double        totTail[MAX_MULTIPLICITY];   //[tMult]
+	// int           totChan[MAX_MULTIPLICITY];   //[tMult]
+
+	double*        totToF;   //[tMult]
+	double*        totPSP;   //[tMult]
+	double*        totDep;   //[tMult]
+	double*        totTail;   //[tMult]
+	int*           totChan;   //[tMult]
 
 	// List of branches
 	TBranch        *b_tMult;   //!
@@ -133,7 +151,7 @@ ___             _   _
 */
 
 	// store all the histograms
-	DetectorSystemClass(TChain* treeIn, TFile* writeFile);
+	DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest info);
 	virtual ~DetectorSystemClass();
 	virtual Int_t    Cut(Long64_t entry);
 	virtual Int_t    GetEntry(Long64_t entry);
@@ -142,12 +160,12 @@ ___             _   _
 	virtual void     InitFiss();
 	virtual Bool_t   Notify();
 	virtual void     Show(Long64_t entry = -1);
-	virtual void 		 InitializeDetectorHistograms();
+	virtual void 		 InitializeDetectorHistograms(InfoSystemTest info);
 
 	// functions to perfom the detection analysis
-	virtual int      DetectionAnalysis();
-	virtual void     SystemAnalysis();
-	virtual void 		 FissionAnalysis();
+	virtual int      DetectionAnalysis(InfoSystemTest info);
+	virtual void     SystemAnalysis(InfoSystemTest info);
+	virtual void 		 FissionAnalysis(InfoSystemTest info);
 };
 #endif
 
@@ -156,15 +174,15 @@ ___             _   _
 #ifdef DetectionAnalysis_cxx
 
 // constructor of the detector system class
-DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile)
+DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest info)
 {
 	// set the number of detectors and triggers
-	numTriggers = NUM_CHAMBERS;
-	numDetectors = NUM_DETS;
+	numTriggers = info.NUM_CHAMBERS;
+	numDetectors = info.NUM_DETS;
 
 	// create the dynamically allocated array of detectors and triggers
-	triggers = new (TriggerClass[NUM_CHAMBERS]);
-	detectors = new (DetectorClass[NUM_DETS]);
+	triggers = new TriggerClass[info.NUM_CHAMBERS];
+	detectors = new DetectorClass[info.NUM_DETS];
 
 	cout << "Detectors and triggers have been created" << endl;
 

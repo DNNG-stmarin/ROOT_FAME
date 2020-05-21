@@ -34,6 +34,7 @@ private:
 	int startFile = 0;
 	int numFiles = 1;
 
+	int expType;
 	int digType;
 	int oldDat;
 
@@ -61,6 +62,7 @@ public:
 	CoincidenceAnalysis* inputData;
 	DetectorSystemClass* detectorData;
 
+	//InfoSystemTest info = InfoSystemTest(expType);
 
 	// chain of raw tree files
 	TChain* coincTreeChain = 0;

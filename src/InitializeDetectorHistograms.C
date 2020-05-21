@@ -7,7 +7,7 @@ Date: Ann Arbor, May 14th 2020
 
 #include "DetectorSystemClass.h"
 
-void DetectorSystemClass::InitializeDetectorHistograms()
+void DetectorSystemClass::InitializeDetectorHistograms(InfoSystemTest info)
 {
   cout << endl;
 
@@ -31,9 +31,9 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   TString bicorrT = "bicorr_det_";
   TString bicorrHistName, bicorrHistTitle;
 
-  for(int det1 = 0; det1 < NUM_DETS; det1++)
+  for(int det1 = 0; det1 < info.NUM_DETS; det1++)
   {
-     for(int det2 = 0; det2 < NUM_DETS; det2++)
+     for(int det2 = 0; det2 < info.NUM_DETS; det2++)
      {
         bicorrHistName = bicorrT + to_string(det1) + "_" + to_string(det2);
         bicorrHistTitle = bicorrHistName + ";" + timeAxis + ";" + timeAxis;
@@ -53,8 +53,8 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   cout << "Bicorrelation histograms have been created" << endl;
 
   // singles and doubles histograms
-  hSingles = new TH1I("singles", "singles; detector; counts", NUM_DETS + 1, 0, NUM_DETS);
-  hDoubles = new TH2I("doubles", "doubles; detector; detector", NUM_DETS + 1, 0, NUM_DETS, NUM_DETS + 1, 0, NUM_DETS);
+  hSingles = new TH1I("singles", "singles; detector; counts", info.NUM_DETS + 1, 0, info.NUM_DETS);
+  hDoubles = new TH2I("doubles", "doubles; detector; detector", info.NUM_DETS + 1, 0, info.NUM_DETS, info.NUM_DETS + 1, 0, info.NUM_DETS);
 
   cout << "Detection histograms have been created" << endl;
 
@@ -83,9 +83,9 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   TString nnHistTitle, ngHistTitle, gnHistTitle, ggHistTitle, allCoincTitle;
 
   // populate histograms with pointers
-  for(int det1 = 0; det1 < NUM_DETS; det1++)
+  for(int det1 = 0; det1 < info.NUM_DETS; det1++)
   {
-     for(int det2 = 0; det2 < NUM_DETS; det2++)
+     for(int det2 = 0; det2 < info.NUM_DETS; det2++)
      {
         allCoincName = allCoincT + to_string(det1) + "_" + to_string(det2);
         allCoincTitle = allCoincName + ";" + timeAxis + ";" + countAxis;
@@ -136,9 +136,9 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   TString refT = "ref_det_";
   TString refHistName, refHistTitle;
 
-  for(int det1 = 0; det1 < NUM_DETS; det1++)
+  for(int det1 = 0; det1 < info.NUM_DETS; det1++)
   {
-     for(int det2 = 0; det2 < NUM_DETS; det2++)
+     for(int det2 = 0; det2 < info.NUM_DETS; det2++)
      {
         refHistName = refT + to_string(det1) + "_" + to_string(det2);
         refHistTitle = refHistName + ";" + timeAxis + ";" + energyAxis + ";" + countAxis;

@@ -8,7 +8,8 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
-#include "InfoSystem.h"
+//#include "InfoSystem.h"
+#include "InfoSystemTest.h"
 
 #include "GeneralEvent.h"
 
