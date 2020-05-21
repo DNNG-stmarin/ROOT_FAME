@@ -13,7 +13,7 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
 
   // detector histograms
-  
+
 
   // important axes to have
   TString timeAxis = "time (ns)";

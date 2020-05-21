@@ -387,7 +387,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 			{
 				qParticle = DetectorBuffer[detIndex].front();
 				detTime = qParticle.getTime();
-				deltaT = detTime - fissionTime; 
+				deltaT = detTime - fissionTime;
 			}
 
 			// detector has no more valid detection events, skip it.
