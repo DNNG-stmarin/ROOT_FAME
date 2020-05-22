@@ -117,10 +117,10 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystemTest info, int fileNum,
 			energyTail = md->getTail();
 		}
 
-		cout << "\ndetChannel=" << detChannel << endl;
-		cout << isDetector(detChannel, info) << endl;
-		cout << "Detector mapping done\n";
-		cout << isChamber(detChannel, info) << endl;
+		//cout << "\ndetChannel=" << detChannel << endl;
+		//cout << "isDetector()= " << isDetector(detChannel, info) << endl;
+		//cout << "Detector mapping done\n";
+		//cout << isChamber(detChannel, info) << endl;
 		if(isDetector(detChannel, info) >= 0)
 		{
 			newParticle = ParticleEvent(detChannel, timeDet, energyDep, energyTail);
@@ -128,7 +128,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystemTest info, int fileNum,
 		}
 		else if(isChamber(detChannel, info) >= 0)
 		{
-			cout << "\nChamber if statement\n";
+			//cout << "\nChamber if statement\n";
 
 			newTrigger = TriggerEvent(detChannel, timeDet, energyDep, energyTail);
 			TriggerBuffer[isChamber(detChannel, info)].push(newTrigger);

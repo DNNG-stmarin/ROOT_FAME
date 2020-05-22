@@ -9,12 +9,13 @@
 #include "mappingFunctions.h"
 
 // returns the index of the detector or -1 if not a detector
-int isDetector(int detectorNumber, InfoSystemTest info)
+int isDetector(int detectorNumber, InfoSystemTest &info)
 {
 	int detIndex = -1;
 
 	for(int index = 0; index < info.NUM_DETS; index++)
 	{
+		//cout << "In loop!!\n";
 		if(detectorNumber == info.DETECTORS[index])
 		{
 			detIndex = index;
@@ -22,16 +23,14 @@ int isDetector(int detectorNumber, InfoSystemTest info)
 		}
 	}
 	//cout << detIndex;
-	cout << "\nisDetector done\n\n";
+	//cout << "\nisDetector done\n\n";
 
 	return detIndex;
 }
 
 
-int isChamber(int detectorNumber, InfoSystemTest info)
+int isChamber(int detectorNumber, InfoSystemTest &info)
 {
-	cout << "\nhello4\n";
-
 	int chamberIndex = -1;
 	for(int index = 0; index < info.NUM_CHAMBERS; index++)
 	{
@@ -41,5 +40,7 @@ int isChamber(int detectorNumber, InfoSystemTest info)
 			break;
 		}
 	}
+	//cout << "\nisChamber done\n\n";
+
 	return chamberIndex;
 }
