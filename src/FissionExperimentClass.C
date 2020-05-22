@@ -92,7 +92,7 @@ FissionExperimentClass::~FissionExperimentClass()
 // Now go ahead and create all the fission tree
 int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFileWrite, int numEntries)
 {
-	InfoSystemTest info = InfoSystemTest(expType);
+	InfoSystemTest* info = new InfoSystemTest(expType);
 	// produce the data if not already present
 	if(oldDat == 0)
 	{
@@ -125,15 +125,15 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 
 int FissionExperimentClass::CreateDetectionAnalysis(TChain* chain, TFile* writeFile)
 {
-	InfoSystemTest info = InfoSystemTest(expType);
+	InfoSystemTest* info = new InfoSystemTest(expType);
 
 	detectorData = new DetectorSystemClass(coincTreeChain, detFile, info);
 
-	cout << "Entering detector analysis mode" << endl;
-	detectorData->DetectionAnalysis(info);
-
 	cout << "Creating the histograms to store the data. " << endl;
 	detectorData->InitializeDetectorHistograms(info);
+
+	cout << "Entering detector analysis mode" << endl;
+	detectorData->DetectionAnalysis(info);
 
 	cout << "Entering system analysis mode" << endl;
 	detectorData->SystemAnalysis(info);

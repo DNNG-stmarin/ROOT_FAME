@@ -8,7 +8,7 @@ Date: May 14th, Ann Arbor
 #include "DetectorSystemClass.h"
 #include "mappingFunctions.h"
 
-void DetectorSystemClass::FissionAnalysis(InfoSystemTest info)
+void DetectorSystemClass::FissionAnalysis(InfoSystemTest* info)
 {
   fissionFile->cd();
 

@@ -151,7 +151,7 @@ ___             _   _
 */
 
 	// store all the histograms
-	DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest info);
+	DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest* info);
 	virtual ~DetectorSystemClass();
 	virtual Int_t    Cut(Long64_t entry);
 	virtual Int_t    GetEntry(Long64_t entry);
@@ -160,12 +160,12 @@ ___             _   _
 	virtual void     InitFiss();
 	virtual Bool_t   Notify();
 	virtual void     Show(Long64_t entry = -1);
-	virtual void 		 InitializeDetectorHistograms(InfoSystemTest info);
+	virtual void 		 InitializeDetectorHistograms(InfoSystemTest* info);
 
 	// functions to perfom the detection analysis
-	virtual int      DetectionAnalysis(InfoSystemTest info);
-	virtual void     SystemAnalysis(InfoSystemTest info);
-	virtual void 		 FissionAnalysis(InfoSystemTest info);
+	virtual int      DetectionAnalysis(InfoSystemTest* info);
+	virtual void     SystemAnalysis(InfoSystemTest* info);
+	virtual void 		 FissionAnalysis(InfoSystemTest* info);
 };
 #endif
 
@@ -174,21 +174,22 @@ ___             _   _
 #ifdef DetectionAnalysis_cxx
 
 // constructor of the detector system class
-DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest info)
+DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest* info)
 {
 	// set the number of detectors and triggers
-	numTriggers = info.NUM_CHAMBERS;
-	numDetectors = info.NUM_DETS;
+	numTriggers = info->NUM_CHAMBERS;
+	numDetectors = info->NUM_DETS;
 
 	// create the dynamically allocated array of detectors and triggers
-	triggers = new TriggerClass[info.NUM_CHAMBERS];
-	detectors = new DetectorClass[info.NUM_DETS];
+	triggers = new TriggerClass[info->NUM_CHAMBERS];
+	detectors = new DetectorClass[info->NUM_DETS];
 
 	cout << "Detectors and triggers have been created" << endl;
 
 	// initialize the tree and the file to write to
 	detFile = writeFile;
 	Init(treeIn);
+	//cout << "DetectorSystemClass treeIn: " << treeIn << endl;
 
 	// create the directories to store the results
 	cdMult =  detFile->mkdir("Multiplicity");
@@ -230,7 +231,10 @@ Long64_t DetectorSystemClass::LoadTree(Long64_t entry)
 void DetectorSystemClass::Init(TChain *treeIn)
 {
    // Set branch addresses and branch pointers for the coincidence tree
-   if (!tree) return;
+   if (!tree) {
+		 cout << "no tree!" << endl;
+		 return;
+	 }
    tree = treeIn;
    fCurrent = -1;
    tree->SetMakeClass(1);
@@ -245,7 +249,8 @@ void DetectorSystemClass::Init(TChain *treeIn)
    tree->SetBranchAddress("totChan", totChan, &b_totChan);
    Notify();
 
-   cout << "Tree being read in correctly." << endl;
+   cout << "Tree being read in correctly @ " << tree << endl;
+
 }
 
 void DetectorSystemClass::InitFiss()

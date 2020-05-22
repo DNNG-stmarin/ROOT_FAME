@@ -31,7 +31,7 @@ Purpose: This code loops through the processed tree and using the applied cuts a
 
 using namespace std;
 
-void DetectorSystemClass::SystemAnalysis(InfoSystemTest info)
+void DetectorSystemClass::SystemAnalysis(InfoSystemTest* info)
 {
 
    detFile->cd();
@@ -137,14 +137,14 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest info)
    // coincidences saving
    cdCoinc->cd();
    TCanvas* canvCoinc = new TCanvas("coincC", "coincC", 800, 500);
-   canvCoinc->Divide(info.NUM_DETS, info.NUM_DETS);
+   canvCoinc->Divide(info->NUM_DETS, info->NUM_DETS);
 
-   for(int det1 = 0; det1 < info.NUM_DETS; det1++)
+   for(int det1 = 0; det1 < info->NUM_DETS; det1++)
    {
-      for(int det2 = 0; det2 < info.NUM_DETS; det2++)
+      for(int det2 = 0; det2 < info->NUM_DETS; det2++)
       {
          // select position on canvas
-         canvCoinc->cd(det1*info.NUM_DETS + det2 + 1);
+         canvCoinc->cd(det1*info->NUM_DETS + det2 + 1);
 
          // draw histograms
          allCoinc[det1][det2]->Draw("nostack");
@@ -166,13 +166,13 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest info)
 
    // Now save the figures related to coincidences
    cdFigCoinc->cd();
-   TCanvas* canvEach[info.NUM_DETS][info.NUM_DETS];
+   TCanvas* canvEach[info->NUM_DETS][info->NUM_DETS];
    TString titlePlot, namePlot;
    TString nameCoincT = "coincidence_";
 
-   for(int det1 = 0; det1 < info.NUM_DETS; det1++)
+   for(int det1 = 0; det1 < info->NUM_DETS; det1++)
    {
-      for(int det2 = 0; det2 < info.NUM_DETS; det2++)
+      for(int det2 = 0; det2 < info->NUM_DETS; det2++)
       {
          namePlot = nameCoincT + to_string(det1) + "_" + to_string(det2);
          titlePlot = namePlot;
@@ -198,12 +198,12 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest info)
 
    //cout << "Saving Bicorrelations. " << endl;
    cdBicorr->cd();
-   TCanvas* canvBicorr[info.NUM_DETS][info.NUM_DETS];
+   TCanvas* canvBicorr[info->NUM_DETS][info->NUM_DETS];
    TString nameBicorrT = "bicorr_";
 
-   for(int det1 = 0; det1 < info.NUM_DETS; det1++)
+   for(int det1 = 0; det1 < info->NUM_DETS; det1++)
    {
-      for(int det2 = 0; det2 < info.NUM_DETS; det2++)
+      for(int det2 = 0; det2 < info->NUM_DETS; det2++)
       {
          namePlot = nameBicorrT + to_string(det1) + "_" + to_string(det2);
          titlePlot = namePlot;
@@ -227,9 +227,9 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest info)
    // saving reflection plots
    cdRef->cd();
 
-   for(int det1 = 0; det1 < info.NUM_DETS; det1++)
+   for(int det1 = 0; det1 < info->NUM_DETS; det1++)
    {
-      for(int det2 = 0; det2 < info.NUM_DETS; det2++)
+      for(int det2 = 0; det2 < info->NUM_DETS; det2++)
       {
          reflections[det1][det2]->Write();
       }

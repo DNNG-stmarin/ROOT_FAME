@@ -32,7 +32,7 @@ So far, we look at:
 
 using namespace std;
 
-int DetectorSystemClass::DetectionAnalysis(InfoSystemTest info)
+int DetectorSystemClass::DetectionAnalysis(InfoSystemTest* info)
 {
 	/*
 	    _____      _
@@ -136,25 +136,25 @@ int DetectorSystemClass::DetectionAnalysis(InfoSystemTest info)
 	*/
 
 	// psp parameters
-	double *psd_disc = new double[info.NUM_DETS];
+	double *psd_disc = new double[info->NUM_DETS];
 
 	// time parameters
-	double *time_delay = new double[info.NUM_DETS];
-	double *time_sigma = new double[info.NUM_DETS];
+	double *time_delay = new double[info->NUM_DETS];
+	double *time_sigma = new double[info->NUM_DETS];
 
 	// psd histograms
-	TH1F *psdhists[info.NUM_DETS];
-	TH1F *erghists[info.NUM_DETS];
-	TH2F *psdErgHists[info.NUM_DETS];
+	TH1F *psdhists[info->NUM_DETS];
+	TH1F *erghists[info->NUM_DETS];
+	TH2F *psdErgHists[info->NUM_DETS];
 
 	// tof histograms
-	TH1F *tofDelPhists[info.NUM_DETS];
-	TH1F *tofNhists[info.NUM_DETS];
-	TH1F *tofPhists[info.NUM_DETS];
+	TH1F *tofDelPhists[info->NUM_DETS];
+	TH1F *tofNhists[info->NUM_DETS];
+	TH1F *tofPhists[info->NUM_DETS];
 
 	// kinematic histograms
-	TH2F *kinematicN[info.NUM_DETS];
-	TH2F *kinematicP[info.NUM_DETS];
+	TH2F *kinematicN[info->NUM_DETS];
+	TH2F *kinematicP[info->NUM_DETS];
 
 
 	/*
@@ -166,11 +166,11 @@ int DetectorSystemClass::DetectionAnalysis(InfoSystemTest info)
 	*/
 
 	cout << endl;
-	for(int i=0; i<info.NUM_DETS; i++)
+	for(int i=0; i<info->NUM_DETS; i++)
 	{
 
 		// find the string name of the detector
-		numDet = to_string(info.DETECTORS[i]);
+		numDet = to_string(info->DETECTORS[i]);
 
 		cout << "Now analyzing detector at channel " << numDet << endl;
 		// psd histograms
@@ -199,6 +199,8 @@ int DetectorSystemClass::DetectionAnalysis(InfoSystemTest info)
 		kinematicN[i] = new TH2F(kinematicNHistNameT, kinematicNHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
 		kinematicP[i] = new TH2F(kinematicPHistNameT, kinematicPHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
 		kinematicN[i]->SetOption("COLZ");
+
+		//cout << tree << endl;
 
 		// find the appropriate cuts
 		selectChan = chanS + numDet;
@@ -271,7 +273,7 @@ int DetectorSystemClass::DetectionAnalysis(InfoSystemTest info)
 	TDirectory *tofFile = detFile->mkdir("TOF");
 	TDirectory *kinFile = detFile->mkdir("Kinematics");
 
-	for(int i=0; i<info.NUM_DETS; i++)
+	for(int i=0; i<info->NUM_DETS; i++)
 	{
 			// save the results
 			psdFile->cd();
@@ -294,11 +296,11 @@ int DetectorSystemClass::DetectionAnalysis(InfoSystemTest info)
 	tofCanvas->Divide(3,2);
 	TString titleCanvas;
 
-	for(int i=0; i<info.NUM_DETS; i++)
+	for(int i=0; i<info->NUM_DETS; i++)
 	{
 		tofCanvas->cd(i+1);
 
-		titleCanvas = "ToF detector " + to_string(info.DETECTORS[i]) + "; Time (ns); Counts";
+		titleCanvas = "ToF detector " + to_string(info->DETECTORS[i]) + "; Time (ns); Counts";
 
 		THStack *tofStack = new THStack("tofStack", titleCanvas);
 		tofStack->Add(tofNhists[i]);
