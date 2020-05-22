@@ -128,20 +128,6 @@ int DetectorSystemClass::DetectionAnalysis()
 
 	double psdPhotMean, psdPhotStd, psdNeutMean, psdNeutStd;
 
-	/*
-	  ___             _ _
-	 | _ \___ ____  _| | |_ ___
-	 |   / -_|_-< || | |  _(_-<
-	 |_|_\___/__/\_,_|_|\__/__/
-	*/
-
-	// psp parameters
-	double psd_disc[NUM_DETS] = {0};
-
-	// time parameters
-	double time_delay[NUM_DETS] = {0};
-	double time_sigma[NUM_DETS] = {0};
-
 	// psd histograms
 	TH1F *psdhists[NUM_DETS];
 	TH1F *erghists[NUM_DETS];
@@ -156,6 +142,19 @@ int DetectorSystemClass::DetectionAnalysis()
 	TH2F *kinematicN[NUM_DETS];
 	TH2F *kinematicP[NUM_DETS];
 
+	/*
+	  ___             _ _
+	 | _ \___ ____  _| | |_ ___
+	 |   / -_|_-< || | |  _(_-<
+	 |_|_\___/__/\_,_|_|\__/__/
+	*/
+
+	// psp parameters
+	double psd_disc[NUM_DETS] = {0};
+
+	// time parameters
+	double time_delay[NUM_DETS] = {0};
+	double time_sigma[NUM_DETS] = {0};
 
 	/*
 	  __  __      _        _

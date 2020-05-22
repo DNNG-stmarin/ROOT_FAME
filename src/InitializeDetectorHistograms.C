@@ -11,6 +11,10 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 {
   cout << endl;
 
+
+  // detector histograms
+
+
   // important axes to have
   TString timeAxis = "time (ns)";
   TString energyAxis = "energy (MeVee)";
