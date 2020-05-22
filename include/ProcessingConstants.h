@@ -7,7 +7,7 @@ Purpose: Store the constants used in the processing
 #define ProcessingConstants_h_
 
 // these are too important to be left out like this
-const double DETECTOR_THRESHOLD = 0.15;
+const double DETECTOR_THRESHOLD = 0.05;
 
 // calibration of detectors for energy
 const double INT_CALIBRATION = 0.477/1000; // from Cs calibration

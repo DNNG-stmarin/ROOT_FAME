@@ -4,36 +4,43 @@
 
 #define mappingFunctions_h
 
-#include "InfoSystem.h"
+//#include "InfoSystem.h"
+#include "InfoSystemTest.h"
 #include "mappingFunctions.h"
 
 // returns the index of the detector or -1 if not a detector
-int isDetector(int detectorNumber)
+int isDetector(int detectorNumber, InfoSystemTest* info)
 {
 	int detIndex = -1;
 
-	for(int index = 0; index < NUM_DETS; index++)
+	for(int index = 0; index < info->NUM_DETS; index++)
 	{
-		if(detectorNumber == DETECTORS[index]) 
+		//cout << "In loop!!\n";
+		if(detectorNumber == info->DETECTORS[index])
 		{
 			detIndex = index;
 			break;
 		}
 	}
+	//cout << detIndex;
+	//cout << "\nisDetector done\n\n";
+
 	return detIndex;
 }
 
 
-int isChamber(int detectorNumber)
+int isChamber(int detectorNumber, InfoSystemTest* info)
 {
 	int chamberIndex = -1;
-	for(int index = 0; index < NUM_CHAMBERS; index++)
+	for(int index = 0; index < info->NUM_CHAMBERS; index++)
 	{
-		if(detectorNumber == FISSION_CHAMBERS[index]) 
+		if(detectorNumber == info->FISSION_CHAMBERS[index])
 		{
 			chamberIndex = index;
 			break;
 		}
 	}
+	//cout << "\nisChamber done\n\n";
+
 	return chamberIndex;
 }

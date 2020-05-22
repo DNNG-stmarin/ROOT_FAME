@@ -14,7 +14,8 @@
 #include <stdio.h>
 #include <queue>
 
-#include "InfoSystem.h"
+//#include "InfoSystem.h"
+#include "InfoSystemTest.h"
 #include "PhysicalConstants.h"
 #include "ProcessingConstants.h"
 
@@ -26,7 +27,7 @@
 
 using namespace std;
 
-int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToProc)
+int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystemTest *info, int fileNum, Long64_t entriesToProc)
 {
 
 	TH1F* hDt = new TH1F("delT", "delT", 1000, 0, 5e12);
@@ -41,8 +42,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	 //                   |_|                |__/
 
 	// use an array of fifo to store particles and chambers
-	queue<TriggerEvent> TriggerBuffer[NUM_CHAMBERS]; //from InfoSystem
-	queue<ParticleEvent> DetectorBuffer[NUM_DETS];
+	queue<TriggerEvent> TriggerBuffer[info->NUM_CHAMBERS]; //from InfoSystem
+	queue<ParticleEvent> DetectorBuffer[info->NUM_DETS];
 
 
 	/*
@@ -66,7 +67,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 		nentries = entriesToProc;
 	}
 
-
 	// keep track of the number of bytes in the chain
 	Long64_t nbytes = 0, nb = 0;
 
@@ -82,6 +82,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 
 	// debugging
 	double oldTime = 0;
+
 
 	// loop through array
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
@@ -116,19 +117,25 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 			energyTail = md->getTail();
 		}
 
-
-		if(isDetector(detChannel) >= 0)
+		//cout << "\ndetChannel=" << detChannel << endl;
+		//cout << "isDetector()= " << isDetector(detChannel, info) << endl;
+		//cout << "Detector mapping done\n";
+		//cout << isChamber(detChannel, info) << endl;
+		if(isDetector(detChannel, info) >= 0)
 		{
 			newParticle = ParticleEvent(detChannel, timeDet, energyDep, energyTail);
-			DetectorBuffer[isDetector(detChannel)].push(newParticle);
+			DetectorBuffer[isDetector(detChannel, info)].push(newParticle);
 		}
-		else if(isChamber(detChannel) >= 0)
+		else if(isChamber(detChannel, info) >= 0)
 		{
+			//cout << "\nChamber if statement\n";
+
 			newTrigger = TriggerEvent(detChannel, timeDet, energyDep, energyTail);
-			TriggerBuffer[isChamber(detChannel)].push(newTrigger);
+			TriggerBuffer[isChamber(detChannel, info)].push(newTrigger);
 		}
 
 	}
+
 
 	// output the content of the buffers
 
@@ -139,17 +146,17 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	cout << endl;
 	cout << "Triggers: " << endl;
 
-	for(int d = 0; d < NUM_CHAMBERS; d++)
+	for(int d = 0; d < info->NUM_CHAMBERS; d++)
 	{
-		cout << "trigger: " << FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
+		cout << "trigger: " << info->FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
 	}
 
 	cout << endl;
 	cout << "Detectors: " << endl;
 
-	for(int d = 0; d < NUM_DETS; d++)
+	for(int d = 0; d < info->NUM_DETS; d++)
 	{
-		cout << "channel: " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
+		cout << "channel: " << info->DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
 	}
 
 	cout << endl;
@@ -209,14 +216,16 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	queue<CoincidenceEvent> FissionBuffer;
 
 	// keep track of the iterator in each of the channels
-	Long64_t indexTrig[NUM_CHAMBERS] = {0};
+	//Long64_t indexTrig[info.NUM_CHAMBERS] = {0};
+	Long64_t *indexTrig = new Long64_t[info->NUM_CHAMBERS];
+
 
 	// keep track of the earliest times in each of the channels
-	double DetectorLastTime[NUM_DETS] = {0};
+	double *DetectorLastTime = new double[info->NUM_DETS];
 
 	// distribution of chamber times and energy
-	double chamberTimes[NUM_CHAMBERS] = {0};
-	double chamberErgs[NUM_CHAMBERS] = {0};
+	double *chamberTimes = new double[info->NUM_CHAMBERS];
+	double *chamberErgs = new double[info->NUM_CHAMBERS];
 
 	// initialize the new particle
 	TriggerEvent qTrigger = TriggerEvent();
@@ -239,7 +248,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 		bool validFiss = true;
 
 		// reset the times and energies
-		for(int chambIndex = 0; chambIndex < NUM_CHAMBERS; chambIndex++)
+		for(int chambIndex = 0; chambIndex < info->NUM_CHAMBERS; chambIndex++)
 		{
 			chamberTimes[chambIndex] = 0;
 			chamberErgs[chambIndex] = 0;
@@ -251,7 +260,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 		chamberErgs[0] = qTrigger.getEnergy();
 
 		// look at the other fission lists
-		for(int chambIndex = 1; chambIndex < NUM_CHAMBERS; chambIndex++)
+		for(int chambIndex = 1; chambIndex < info->NUM_CHAMBERS; chambIndex++)
 		{
 
 			if(!TriggerBuffer[chambIndex].empty())
@@ -276,12 +285,12 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 		averageTrigTime = 0;
 		sumTrigErg = 0;
 
-		for(int chambIndex = 0; chambIndex < NUM_CHAMBERS; chambIndex++)
+		for(int chambIndex = 0; chambIndex < info->NUM_CHAMBERS; chambIndex++)
 		{
 			averageTrigTime += chamberTimes[chambIndex];
 			sumTrigErg += chamberErgs[chambIndex];
 		}
-		averageTrigTime /= NUM_CHAMBERS;
+		averageTrigTime /= info->NUM_CHAMBERS;
 
 		// energy discrimination of fission
 		if((sumTrigErg < CHAMBER_THRESHOLD) or (sumTrigErg > CHAMBER_CLIP))
@@ -380,7 +389,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 		//cout << "Fission at time " << fissionTime << endl;
 
 		// look at the detection events
-		for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
+		for(int detIndex = 0; detIndex < info->NUM_DETS; detIndex++)
 		{
 			// match the indices for other queues
 			if(!DetectorBuffer[detIndex].empty())
@@ -445,17 +454,17 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	cout << endl;
 	cout << "Triggers: " << endl;
 
-	for(int d = 0; d < NUM_CHAMBERS; d++)
+	for(int d = 0; d < info->NUM_CHAMBERS; d++)
 	{
-		cout << "trigger: " << FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
+		cout << "trigger: " << info->FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
 	}
 
 	cout << endl;
 	cout << "Detectors: " << endl;
 
-	for(int d = 0; d < NUM_DETS; d++)
+	for(int d = 0; d < info->NUM_DETS; d++)
 	{
-		cout << "channel: " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
+		cout << "channel: " << info->DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
 	}
 
 	cout << endl;

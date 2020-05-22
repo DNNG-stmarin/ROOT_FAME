@@ -8,7 +8,7 @@ Date: May 14th, Ann Arbor
 #include "DetectorSystemClass.h"
 #include "mappingFunctions.h"
 
-void DetectorSystemClass::FissionAnalysis()
+void DetectorSystemClass::FissionAnalysis(InfoSystemTest* info)
 {
   fissionFile->cd();
 
@@ -41,7 +41,7 @@ void DetectorSystemClass::FissionAnalysis()
      for(int j = 0; j < tMult; j++)
      {
        // find the number of the detector
-      numDet = isDetector(totChan[j]);
+      numDet = isDetector(totChan[j], info);
 
       // detection time corrected for delay
       timeDet = totToF[j] -  detectors[numDet].timeDelay;
