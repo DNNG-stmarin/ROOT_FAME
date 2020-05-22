@@ -118,6 +118,8 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 
 	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
 
+	cout << "get this far??\n";
+
 	return 1;
 }
 

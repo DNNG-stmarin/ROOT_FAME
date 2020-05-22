@@ -34,6 +34,7 @@ int main(int argc, char** argv)
 
   cout << "Forming Coincidences" << endl;
   experiment.CreateCoincidenceTree(fileName, experiment.expFile, -1);
+  cout << "Done CreateCoincidenceTree\n";
 
   cout << "Analyzing single detectors" << endl;
   experiment.CreateDetectionAnalysis(experiment.coincTreeChain, experiment.detFile);
