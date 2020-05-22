@@ -67,7 +67,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystemTest info, int fileNum,
 		nentries = entriesToProc;
 	}
 
-
 	// keep track of the number of bytes in the chain
 	Long64_t nbytes = 0, nb = 0;
 
@@ -83,6 +82,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystemTest info, int fileNum,
 
 	// debugging
 	double oldTime = 0;
+
 
 	// loop through array
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
@@ -117,7 +117,10 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystemTest info, int fileNum,
 			energyTail = md->getTail();
 		}
 
-
+		cout << "\ndetChannel=" << detChannel << endl;
+		cout << isDetector(detChannel, info) << endl;
+		cout << "Detector mapping done\n";
+		cout << isChamber(detChannel, info) << endl;
 		if(isDetector(detChannel, info) >= 0)
 		{
 			newParticle = ParticleEvent(detChannel, timeDet, energyDep, energyTail);
@@ -125,11 +128,14 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystemTest info, int fileNum,
 		}
 		else if(isChamber(detChannel, info) >= 0)
 		{
+			cout << "\nChamber if statement\n";
+
 			newTrigger = TriggerEvent(detChannel, timeDet, energyDep, energyTail);
 			TriggerBuffer[isChamber(detChannel, info)].push(newTrigger);
 		}
 
 	}
+
 
 	// output the content of the buffers
 

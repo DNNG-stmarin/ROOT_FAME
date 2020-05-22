@@ -78,7 +78,6 @@ CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* e
    {
       inputTreeName = midasName;
    }
-
    if (tree == 0) {
       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(filename);
       if (!f || !f->IsOpen()) {

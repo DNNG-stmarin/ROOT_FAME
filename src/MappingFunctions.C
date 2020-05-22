@@ -21,12 +21,17 @@ int isDetector(int detectorNumber, InfoSystemTest info)
 			break;
 		}
 	}
+	//cout << detIndex;
+	cout << "\nisDetector done\n\n";
+
 	return detIndex;
 }
 
 
 int isChamber(int detectorNumber, InfoSystemTest info)
 {
+	cout << "\nhello4\n";
+
 	int chamberIndex = -1;
 	for(int index = 0; index < info.NUM_CHAMBERS; index++)
 	{

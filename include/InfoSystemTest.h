@@ -48,14 +48,14 @@ public:
       FISSION_CHAMBERS = new int[NUM_CHAMBERS];
       int tempfiss[] = {0, 16, 32};
       //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
-      for(int i=0; i<sizeof(tempfiss); i++) {
+      for(int i=0; i<NUM_CHAMBERS; i++) {
         FISSION_CHAMBERS[i] = tempfiss[i];
       }
 
       DETECTORS = new int[NUM_DETS];
       int tempDet[] = {2, 10, 18, 26, 34, 42};
       //memcpy(DETECTORS, tempDet, sizeof(tempDet));
-      for(int i=0; i<sizeof(tempDet); i++) {
+      for(int i=0; i<NUM_DETS; i++) {
         DETECTORS[i] = tempDet[i];
       }
     }
@@ -71,7 +71,7 @@ public:
       FISSION_CHAMBERS = new int[NUM_CHAMBERS];
       int tempfiss[] = {7};
       //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
-      for(int i=0; i<sizeof(tempfiss); i++) {
+      for(int i=0; i<NUM_CHAMBERS; i++) {
         FISSION_CHAMBERS[i] = tempfiss[i];
       }
 
@@ -84,7 +84,7 @@ public:
       	            	70, 71, 72, 73, 74, 75, 76, 77, 78};
 
       //memcpy(DETECTORS, tempDet, sizeof(tempDet));
-      for(int i=0; i<sizeof(tempDet); i++) {
+      for(int i=0; i<NUM_DETS; i++) {
         DETECTORS[i] = tempDet[i];
       }
     }

@@ -102,7 +102,9 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 		{
 			cout << "reading file number " << fileNum << endl;
 			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
+			cout << "\nFinish CA constructor\n";
 			inputData->CreateCoincidenceTree(info, fileNum, numEntries);
+			cout << "\nFinish CCT\n";
 		}
 		expFile->Close();
 	}
