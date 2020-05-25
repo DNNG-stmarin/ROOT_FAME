@@ -160,7 +160,17 @@ int DetectorSystemClass::DetectionAnalysis()
 	for(int i = 0; i < numDetectors; i++)
 	{
 		// fit the photon peak and find delay
-		tofDelPFit = tofDelPhists[i]->Fit("gaus", "SQ");
+		int ctMax = tofDelPhists[i]->GetMaximum();
+		int binMax = tofDelPhists[i]->GetMaximumBin();
+		double timePeak = tofDelPhists[i]->GetBinCenter(binMax);
+		cout << "Peak location at: " << timePeak << endl;
+
+		TF1* gausFitTime = new TF1("peakFit", "[0]*e^(-(x - [1])^2/(2*[2]^2))", timePeak - 10, timePeak + 10);
+		gausFitTime->SetParameter(0, ctMax);
+		gausFitTime->SetParameter(1, timePeak);
+		gausFitTime->SetParameter(2, 1);
+
+		tofDelPFit = tofDelPhists[i]->Fit(gausFitTime, "SQ");
 
 		// find the dealy of each detector
 		detectors[i].timeDelay = tofDelPFit->Parameter(1);
