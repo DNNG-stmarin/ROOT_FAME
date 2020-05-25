@@ -8,8 +8,9 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
-#include "InfoSystem.h"
+//#include "InfoSystem.h"
 #include "ParticleEvent.h"
+#include "InfoSystemTest.h"
 
 class CoincidenceEvent {
 
@@ -26,6 +27,7 @@ public:
 	ParticleEvent particles[MAX_MULTIPLICITY];
 	ParticleEvent neutrons[MAX_MULTIPLICITY];
 	ParticleEvent photons[MAX_MULTIPLICITY];
+
 
 	CoincidenceEvent()
 	{

@@ -19,7 +19,8 @@
 #include <fstream>
 #include <sstream>
 
-#include "InfoSystem.h"
+//#include "InfoSystem.h"
+#include "InfoSystemTest.h"
 
 using namespace std;
 

@@ -5,15 +5,12 @@
 #ifndef InfoSystem_h
 #define InfoSystem_h
 
-// hardware
-const int 	CHAN_PER_BOARD = 16;
-
 // experiment specific information
-const int NUM_BOARDS = 5;
+const int NUM_BEAMS = 0;
+const int NUM_CHAMBERS = 3;
+const int NUM_DETS = 6;
 
-const int NUM_CHAMBERS = 1;
-const int NUM_DETS = 54;
-
+const int BEAM[NUM_BEAMS] = {};
 // location of fission chambers and detectors
 const int FISSION_CHAMBERS[NUM_CHAMBERS] = {7};
 
@@ -45,7 +42,6 @@ const double COINC_WINDOW = 600; // ns
 const double CHAMBER_THRESHOLD = 0.01;
 const double CHAMBER_CLIP = 10.0;
 
-const double DETECTOR_THRESHOLD = 0.15;
-// const double PSP_DISCRIMINATION = 0.85; //very basic psd, we can do much more advanced than that
+const int DETECTORS[NUM_DETS] = {2, 10, 18, 26, 34, 42};
 
 #endif

@@ -24,9 +24,12 @@ Purpose: Methods of the Fission Experiment Class
 
 #include <queue>
 
-#include "InfoSystem.h"
+//#include "InfoSystem.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
+#include "InfoSystemTest.h"
+
+
 
 using namespace std;
 
@@ -38,6 +41,11 @@ FissionExperimentClass::FissionExperimentClass()
 	cout << "What is the name of your experiment: ";
 	cin >> nameOfExp;
 	//nameOfExp = TString(inName);
+
+	cout << "What type is your experiment: " << endl;
+	cout << "(0): FS-3" << endl;
+	cout << "(1): ChiNu" << endl;
+	cin >> expType;
 
 	cout << "What is your initial start file: ";
 	cin >> startFile;
@@ -53,7 +61,7 @@ FissionExperimentClass::FissionExperimentClass()
 	cout << "Do you want to use existing data: no (0), yes (1)" << endl;
 	cin >> oldDat;
 
-	//resultFold = new TFolder(nameOfExp, nameOfExp);
+	resultFold = new TFolder(nameOfExp, nameOfExp);
 
 	// read data already written
 	if(oldDat == 0)
@@ -66,7 +74,8 @@ FissionExperimentClass::FissionExperimentClass()
 	}
 
 	detFile = new TFile(detFileT, "RECREATE");
-	//sysFile = new TFile(sysFileT, "RECREATE");
+
+	info = new InfoSystemTest(expType);
 
   // create the chain with all the entries to analyze for the raw coincidence mode
   coincTreeChain = new TChain();
@@ -76,6 +85,7 @@ FissionExperimentClass::FissionExperimentClass()
 /*
 FissionExperimentClass::~FissionExperimentClass()
 {
+
 }
 */
 
@@ -91,10 +101,13 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 		{
 			cout << "reading file number " << fileNum << endl;
 			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
-			inputData->CreateCoincidenceTree(fileNum, numEntries);
+			inputData->CreateCoincidenceTree(info, fileNum, numEntries);
 		}
-		expFile->Close(); 
 	}
+	// coincidence tree must be closed in order to read from them
+	expFile->Close();
+
+	gROOT->cd();
 
 	// attach the coincidence tree to the chain
 	for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
@@ -103,20 +116,23 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 	}
 	//expFile->Close();
 
-	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
+	//cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
 
 	return 1;
 }
 
-int FissionExperimentClass::CreateDetectionAnalysis(TChain* chain, TFile* writeFile)
+int FissionExperimentClass::CreateDetectionAnalysis(TFile* writeFile)
 {
-	detectorData = new DetectorSystemClass(coincTreeChain, detFile);
 
-	cout << "Entering detector analysis mode" << endl;
-	detectorData->DetectionAnalysis();
+	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
+
+	detectorData = new DetectorSystemClass(coincTreeChain, detFile, info);
 
 	cout << "Creating the histograms to store the data. " << endl;
 	detectorData->InitializeDetectorHistograms();
+
+	cout << "Entering detector analysis mode" << endl;
+	detectorData->DetectionAnalysis();
 
 	cout << "Entering system analysis mode" << endl;
 	detectorData->SystemAnalysis();

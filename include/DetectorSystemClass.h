@@ -25,7 +25,9 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include "DetectorClass.h"
 #include "TriggerClass.h"
 
-#include "InfoSystem.h"
+#include "PhysicalConstants.h"
+#include "ProcessingConstants.h"
+#include "InfoSystemTest.h"
 
 using namespace std;
 
@@ -46,12 +48,24 @@ public:
 	TChain* tree;
 	TFile*  detFile;
 
+	// inpu variables
 	TTree* fissionTree;
 	TFile* fissionFile;
 
-	TDirectory *cdMult, *cdCoinc, *cdFigCoinc, *cdBicorr, *cdRef;
+	// directories to create for the output
+	TDirectory *cdPsd;
+	TDirectory *cdToF;
+	TDirectory *cdKin;
+	TDirectory *cdMult;
+	TDirectory *cdCoinc;
+	TDirectory *cdFigCoinc;
+	TDirectory *cdBicorr;
+	TDirectory *cdRef;
+
+	// current tree in chain
 	Int_t   fCurrent;
 
+	// names
 	TString nameExp = "Exp";
 	TString nameFission = "Fiss";
 
@@ -67,23 +81,50 @@ public:
 	int numTriggers;
 	int numDetectors;
 
+	// list of channels for triggers and detectors
+	int* listTriggersChan;
+	int* listDetectorsChan;
+
 	// arrays of detectors to modify
 	TriggerClass* triggers;
 	DetectorClass* detectors;
 
+/*
+_  _ _    _
+| || (_)__| |_ ___  __ _ _ _ __ _ _ __  ___
+| __ | (_-<  _/ _ \/ _` | '_/ _` | '  \(_-<
+|_||_|_/__/\__\___/\__, |_| \__,_|_|_|_/__/
+									|___/
+*/
+	// psd and energy histograms
+	TH1F** psdhists;
+	TH1F** erghists;
+	TH2F** psdErgHists;
+
+	// tof histograms
+	TH1F** tofDelPhists;
+	TH1F** tofNhists;
+	TH1F** tofPhists;
+
+	// kinematic histograms
+	TH2F** kinematicN;
+	TH2F** kinematicP;
+
 	TH2I* hMult; // multiplicity histograms
-	TH2F* hBicorr[NUM_DETS][NUM_DETS]; // bicorrelation histograms
+
+	TH2F*** hBicorr; // bicorrelation histograms
+
 	TH1I* hSingles; // singles measurements
 	TH2I* hDoubles; // doubles measurements
 
-	// create array of cross-correlations histograms
-	TH1F* nnMult[NUM_DETS][NUM_DETS];
-	TH1F* ggMult[NUM_DETS][NUM_DETS];
-	TH1F* gnMult[NUM_DETS][NUM_DETS];
-	TH1F* ngMult[NUM_DETS][NUM_DETS];
-	THStack* allCoinc[NUM_DETS][NUM_DETS];
+	// cross correlations histograms
+	TH1F*** nnMult;
+	TH1F*** ggMult;
+	TH1F*** gnMult;
+	TH1F*** ngMult;
+	THStack*** allCoinc;
 
-	TH2F* reflections[NUM_DETS][NUM_DETS]; // reflections in detectors
+	TH2F*** reflections; // reflections histogram
 
 /*
 	 _____
@@ -98,11 +139,12 @@ public:
 	int           tMult;
 	double        tTime;
 	double        tDep;
-	double        totToF[MAX_MULTIPLICITY];   //[tMult]
-	double        totPSP[MAX_MULTIPLICITY];   //[tMult]
-	double        totDep[MAX_MULTIPLICITY];   //[tMult]
-	double        totTail[MAX_MULTIPLICITY];   //[tMult]
-	int           totChan[MAX_MULTIPLICITY];   //[tMult]
+
+	double        totToF[5];   //[tMult]
+	double        totPSP[5];   //[tMult]
+	double        totDep[5];   //[tMult]
+	double        totTail[5];   //[tMult]
+	int           totChan[5];   //[tMult]
 
 	// List of branches
 	TBranch        *b_tMult;   //!
@@ -113,8 +155,6 @@ public:
 	TBranch        *b_totDep;   //!
 	TBranch        *b_totTail;   //!
 	TBranch        *b_totChan;   //!
-
-
 
 
 	// properties of the output tree
@@ -131,7 +171,7 @@ ___             _   _
 */
 
 	// store all the histograms
-	DetectorSystemClass(TChain* treeIn, TFile* writeFile);
+	DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest* info);
 	virtual ~DetectorSystemClass();
 	virtual Int_t    Cut(Long64_t entry);
 	virtual Int_t    GetEntry(Long64_t entry);
@@ -146,115 +186,10 @@ ___             _   _
 	virtual int      DetectionAnalysis();
 	virtual void     SystemAnalysis();
 	virtual void 		 FissionAnalysis();
+
+	// mapping functions
+	int isDetector(int detectorNumber);
+	int isChamber(int detectorNumber);
+
 };
 #endif
-
-
-
-#ifdef DetectionAnalysis_cxx
-
-// constructor of the detector system class
-DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile)
-{
-	// set the number of detectors and triggers
-	numTriggers = NUM_CHAMBERS;
-	numDetectors = NUM_DETS;
-
-	// create the dynamically allocated array of detectors and triggers
-	triggers = new (TriggerClass[NUM_CHAMBERS]);
-	detectors = new (DetectorClass[NUM_DETS]);
-
-	cout << "Detectors and triggers have been created" << endl;
-
-	// initialize the tree and the file to write to
-	detFile = writeFile;
-	Init(treeIn);
-
-	// create the directories to store the results
-	cdMult =  detFile->mkdir("Multiplicity");
-	cdCoinc =  detFile->mkdir("Coincidences");
-	cdFigCoinc =  detFile->mkdir("CoincFigs");
-	cdBicorr =  detFile->mkdir("Bicorr");
-	cdRef =  detFile->mkdir("Reflections");
-
-	fissionFile = new TFile(nameFission + ".root", "RECREATE");
-	fissionTree = new TTree(nameFission, nameFission);
-
-	InitFiss();
-}
-
-DetectorSystemClass::~DetectorSystemClass()
-{
-   delete tree;
-}
-
-Int_t DetectorSystemClass::GetEntry(Long64_t entry)
-{
-// Read contents of entry.
-   if (!tree) return 0;
-   return tree->GetEntry(entry);
-}
-Long64_t DetectorSystemClass::LoadTree(Long64_t entry)
-{
-// Set the environment to read one entry
-   if (!tree) return -5;
-   Long64_t centry = tree->LoadTree(entry);
-   if (centry < 0) return centry;
-   if (tree->GetTreeNumber() != fCurrent) {
-      fCurrent = tree->GetTreeNumber();
-      Notify();
-   }
-   return centry;
-}
-
-void DetectorSystemClass::Init(TChain *treeIn)
-{
-   // Set branch addresses and branch pointers for the coincidence tree
-   if (!tree) return;
-   tree = treeIn;
-   fCurrent = -1;
-   tree->SetMakeClass(1);
-
-   tree->SetBranchAddress("tMult", &tMult, &b_tMult);
-   tree->SetBranchAddress("tTime", &tTime, &b_fissionTime);
-   tree->SetBranchAddress("tDep", &tDep, &b_fissionErg);
-   tree->SetBranchAddress("totToF", totToF, &b_totToF);
-   tree->SetBranchAddress("totPSP", totPSP, &b_totPSP);
-   tree->SetBranchAddress("totDep", totDep, &b_totDep);
-   tree->SetBranchAddress("totTail", totTail, &b_totTail);
-   tree->SetBranchAddress("totChan", totChan, &b_totChan);
-   Notify();
-
-   cout << "Tree being read in correctly." << endl;
-}
-
-void DetectorSystemClass::InitFiss()
-{
-	 // initialize the fission tree
-   fissionTree->Branch("fisTime", &f_fisTime, "fisTime/D");
-   fissionTree->Branch("fisErg", &f_fisErg, "fisErg/D");
-   fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");
-   fissionTree->Branch("gammaMult", &f_gammaMult, "neutronMult/I");
-
-   cout << "Fission tree has been created." << endl;
-}
-
-Bool_t DetectorSystemClass::Notify()
-{
-   return kTRUE;
-}
-
-void DetectorSystemClass::Show(Long64_t entry)
-{
-// Print contents of entry.
-// If entry is not specified, print current entry
-   if (!tree) return;
-   tree->Show(entry);
-}
-
-Int_t DetectorSystemClass::Cut(Long64_t entry)
-{
-   return 1;
-}
-
-#endif // #ifdef SystemAnalysis_cxx

@@ -25,9 +25,10 @@ So far, we look at:
 #include <stdio.h>
 #include <queue>
 
-#include "InfoSystem.h"
+//#include "InfoSystem.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
+//#include "InfoSystemTest.h"
 
 using namespace std;
 
@@ -60,7 +61,11 @@ int DetectorSystemClass::DetectionAnalysis()
 	fitPSD_np->SetParameters(100, 0.12, 0.02, 27, 0.24, 0.04);
 	fitPSD_np->SetParLimits(4, 0.15, 0.3);
 
-	detFile->cd();
+	// initialize the pointers to the fits
+	TFitResultPtr tofDelPFit;
+	TFitResultPtr psdFit;
+
+	double psdPhotMean, psdPhotStd, psdNeutMean, psdNeutStd;
 
 
 	/*
@@ -94,69 +99,6 @@ int DetectorSystemClass::DetectionAnalysis()
 	TString photPSP = "totPSP <=";
 
 	/*
-	  _  _ _    _                              _  _
-	 | || (_)__| |_ ___  __ _ _ _ __ _ _ __   | \| |__ _ _ __  ___ ___
-	 | __ | (_-<  _/ _ \/ _` | '_/ _` | '  \  | .` / _` | '  \/ -_|_-<
-	 |_||_|_/__/\__\___/\__, |_| \__,_|_|_|_| |_|\_\__,_|_|_|_\___/__/
-	                    |___/
-	*/
-
-	// name generators
-	TString numDet;
-
-	TString psdName = "PSD";
-	TString ergName = "Erg";
-	TString psdErgName = "PSD_Erg";
-	TString tofName = "TOF";
-	TString kinematicName = "Kin";
-
-	TString neutronName = "n";
-	TString photonName = "p";
-
-	// initialize the strings containing the names of the detectors
-	TString psdHistNameT, ergHistNameT, psdErgHistNameT;
-	TString tofNHistNameT;
-	TString tofPHistNameT;
-
-	// name of kinematic
-	TString kinematicNHistNameT, kinematicPHistNameT;
-
-	// initialize the pointers to the fits
-	TFitResultPtr tofDelPFit;
-	TFitResultPtr psdFit;
-
-	double psdPhotMean, psdPhotStd, psdNeutMean, psdNeutStd;
-
-	/*
-	  ___             _ _
-	 | _ \___ ____  _| | |_ ___
-	 |   / -_|_-< || | |  _(_-<
-	 |_|_\___/__/\_,_|_|\__/__/
-	*/
-
-	// psp parameters
-	double psd_disc[NUM_DETS] = {0};
-
-	// time parameters
-	double time_delay[NUM_DETS] = {0};
-	double time_sigma[NUM_DETS] = {0};
-
-	// psd histograms
-	TH1F *psdhists[NUM_DETS];
-	TH1F *erghists[NUM_DETS];
-	TH2F *psdErgHists[NUM_DETS];
-
-	// tof histograms
-	TH1F *tofDelPhists[NUM_DETS];
-	TH1F *tofNhists[NUM_DETS];
-	TH1F *tofPhists[NUM_DETS];
-
-	// kinematic histograms
-	TH2F *kinematicN[NUM_DETS];
-	TH2F *kinematicP[NUM_DETS];
-
-
-	/*
 	  __  __      _        _
 	 |  \/  |__ _(_)_ _   | |   ___  ___ _ __
 	 | |\/| / _` | | ' \  | |__/ _ \/ _ \ '_ \
@@ -164,51 +106,40 @@ int DetectorSystemClass::DetectionAnalysis()
 	                                    |_|
 	*/
 
-	cout << endl;
-	for(int i=0; i<NUM_DETS; i++)
+	detFile->cd();
+
+	int channelDet;
+
+	if (tree == 0) return -1;
+
+	Long64_t nentries = tree->GetEntriesFast();
+	Long64_t nbytes = 0, nb = 0;
+
+	for (Long64_t jentry=0; jentry<nentries;jentry++)
 	{
+	 // load tree
+	 Long64_t ientry = LoadTree(jentry);
+	 if (ientry < 0) break;
+	 nb = tree->GetEntry(jentry);   nbytes += nb;
 
-		// find the string name of the detector
-		numDet = to_string(DETECTORS[i]);
+	 for(int part = 0; part < tMult; part++)
+	 {
+		 // store the channel number
+		 channelDet = isDetector(totChan[part]);
 
-		cout << "Now analyzing detector at channel " << numDet << endl;
-		// psd histograms
-		psdHistNameT = psdName + numDet;
-		psdErgHistNameT = psdErgName + numDet;
-		ergHistNameT = ergName + numDet;
+		 // fill the appropriate histograms
+		 psdhists[channelDet]->Fill(totPSP[part]);
+		 erghists[channelDet]->Fill(totDep[part]);
+		 psdErgHists[channelDet]->Fill(totDep[part], totPSP[part]);
+		 tofDelPhists[channelDet]->Fill(totToF[part]);
 
-		// time of flight histograms
-		tofNHistNameT = tofName + neutronName +  numDet;
-		tofPHistNameT = tofName + photonName + numDet;
+	 }
+  }
 
-		// kinematic histograms
-		kinematicNHistNameT = kinematicName + neutronName + numDet;
-		kinematicPHistNameT = kinematicName + photonName + numDet;
+	cout << "Finished looping tree and filled histograms" << endl;
 
-		//create histograms to fill
-		psdhists[i] = new TH1F(psdHistNameT, psdHistNameT, 200, 0, 1);
-		psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 10000, 0, 10, 500, 0, 1);
-
-		// time of flight histograms, before and after delays
-		tofDelPhists[i] = new TH1F(tofPHistNameT + "del", tofPHistNameT + "del", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
-
-		tofNhists[i] = new TH1F(tofNHistNameT, tofNHistNameT, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
-		tofPhists[i] = new TH1F(tofPHistNameT, tofPHistNameT, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
-
-		kinematicN[i] = new TH2F(kinematicNHistNameT, kinematicNHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
-		kinematicP[i] = new TH2F(kinematicPHistNameT, kinematicPHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
-		kinematicN[i]->SetOption("COLZ");
-
-		// find the appropriate cuts
-		selectChan = chanS + numDet;
-
-		// draw histogram
-		tree->Draw("totPSP>>" + psdHistNameT, selectChan, "EGOFF");
-		tree->Draw("totPSP:totDep >>" + psdErgHistNameT, upPSP&&selectChan, "EGOFF");
-		psdErgHists[i]->SetOption("COLZ");
-
-		cout << "Tree is drawing to histograms correctly" << endl;
-
+	for(int i = 0; i < numDetectors; i++)
+	{
 		// find the psp parameter
 		psdFit = psdhists[i]->Fit(fitPSD_np, "SQ");
 
@@ -219,70 +150,57 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		// find the appropriate psp parameters here
 		cout << psdPhotMean << " " << psdNeutMean << endl;
-		psd_disc[i] = (psdPhotMean + psdNeutMean)/2;
 
-		detectors[i].discPSD = psd_disc[i];
+		// compute the psd discrimination parameter
+		detectors[i].discPSD = (psdPhotMean + psdNeutMean)/2;
 
-		cout << "PSD discrimination is: " << psd_disc[i] << endl;
+		cout << "PSD discrimination is: " << detectors[i].discPSD << endl;
+	}
 
-		// ok now we have found the appropriate PSP, find the strictest photon cut
-
-		photonCut = photPSP + to_string(psd_disc[i] - 0.05); // change this to number of sigmas
-
-		// fill the tof histograms
-		tree->Draw("totToF>>" + tofPHistNameT + "del", selectChan&&photonCut, "EGOFF");
-
+	for(int i = 0; i < numDetectors; i++)
+	{
 		// fit the photon peak and find delay
 		tofDelPFit = tofDelPhists[i]->Fit("gaus", "SQ");
 
 		// find the dealy of each detector
-		time_delay[i] = tofDelPFit->Parameter(1);
-		time_sigma[i] = tofDelPFit->Parameter(2);
+		detectors[i].timeDelay = tofDelPFit->Parameter(1);
+		detectors[i].timeResolution = tofDelPFit->Parameter(2);
 
-		cout << "Time delay is: " << time_delay[i] << endl;
-
-		detectors[i].timeDelay = time_delay[i];
-		detectors[i].timeResolution = time_sigma[i];
-
-		// makes the new cuts
-		neutronCut = neutPSP + to_string(psd_disc[i]);
-		photonCut = photPSP + to_string(psd_disc[i]);
-
-
-		TString correctedTimes = "totToF - "  + to_string(time_delay[i]);
-
-		// fill the neutron ToF histograms
-		tree->Draw(correctedTimes + ">>" + tofNHistNameT, selectChan&&neutronCut, "EGOFF");
-		tree->Draw(correctedTimes + ">>" + tofPHistNameT, selectChan&&photonCut, "EGOFF");
-
-		tofNhists[i]->SetLineColor(kBlue);
-		tofPhists[i]->SetLineColor(kRed);
-
-		// fill the neutron ToF histograms
-		tree->Draw("totDep:" + correctedTimes + ">>" + kinematicNHistNameT, selectChan&&neutronCut, "EGOFF");
-		tree->Draw("totDep:" + correctedTimes + ">>" + kinematicPHistNameT, selectChan&&photonCut, "EGOFF");
-
-
-		// save the results
-		psdhists[i]->Write();
-		psdErgHists[i]->Write();
-		tofDelPhists[i]->Write();
-		tofNhists[i]->Write();
-		tofPhists[i]->Write();
-		kinematicN[i]->Write();
-		kinematicP[i]->Write();
+		cout << "Time delay is: " << detectors[i].timeDelay  << endl;
 	}
 
+	// write the output histograms
+	for(int i = 0; i < numDetectors; i++)
+	{
+			// save the results
+			cdPsd->cd();
+			psdhists[i]->Write();
+			erghists[i]->Write();
+			psdErgHists[i]->Write();
+
+			cdToF->cd();
+			tofDelPhists[i]->Write();
+			tofNhists[i]->Write();
+			tofPhists[i]->Write();
+
+			cdKin->cd();
+			kinematicN[i]->Write();
+			kinematicP[i]->Write();
+	}
+
+	cout << "Histograms have been written to file" << endl;
+
+	cdToF->cd();
 	// save the stacked histograms as a root file
 	TCanvas* tofCanvas = new TCanvas("ToF", "ToF", 800, 1500);
 	tofCanvas->Divide(3,2);
 	TString titleCanvas;
 
-	for(int i=0; i<NUM_DETS; i++)
+	for(int i = 0; i < numDetectors; i++)
 	{
 		tofCanvas->cd(i+1);
 
-		titleCanvas = "ToF detector " + to_string(DETECTORS[i]) + "; Time (ns); Counts";
+		titleCanvas = "ToF detector " + to_string(listDetectorsChan[i]) + "; Time (ns); Counts";
 
 		THStack *tofStack = new THStack("tofStack", titleCanvas);
 		tofStack->Add(tofNhists[i]);

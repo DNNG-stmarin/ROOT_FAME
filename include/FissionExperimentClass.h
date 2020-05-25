@@ -22,19 +22,19 @@ Date: late April 2020, Ann Arbor, Michigan
 
 #include "CoincidenceAnalysis.h"
 #include "DetectorSystemClass.h"
-//#include "SystemAnalysis.h"
 
 using namespace std;
 
 
 class FissionExperimentClass
 {
-	
+
 private:
 	TString nameOfExp;
 	int startFile = 0;
 	int numFiles = 1;
 
+	int expType;
 	int digType;
 	int oldDat;
 
@@ -51,6 +51,13 @@ private:
 
 public:
 
+	/*
+   	     _   _       _ _         _
+	 __ _| |_| |_ _ _(_) |__ _  _| |_ ___ ___
+	/ _` |  _|  _| '_| | '_ \ || |  _/ -_|_-<
+	\__,_|\__|\__|_| |_|_.__/\_,_|\__\___/__/
+	*/
+
 	// folder which contains all the results
 	TFolder* resultFold = 0;
 
@@ -62,11 +69,19 @@ public:
 	CoincidenceAnalysis* inputData;
 	DetectorSystemClass* detectorData;
 
+	// the information about the system
+	InfoSystemTest* info;
 
 	// chain of raw tree files
 	TChain* coincTreeChain = 0;
 
-	// methods
+/*
+	           _   _            _
+	 _ __  ___| |_| |_  ___  __| |___
+	| '  \/ -_)  _| ' \/ _ \/ _` (_-<
+	|_|_|_\___|\__|_||_\___/\__,_/__/
+
+*/
 
 	// class constructor
 	FissionExperimentClass();
@@ -74,7 +89,7 @@ public:
 
 	// operations
 	int CreateCoincidenceTree(TString filename, TFile* expFile, int numEntries = - 1);
-	int CreateDetectionAnalysis(TChain* chain, TFile* writeFile);
+	int CreateDetectionAnalysis(TFile* writeFile);
 
 	void saveAll();
 
@@ -82,8 +97,6 @@ public:
 	int getStartFile();
 	int getEndFile();
 	TString getExpName();
-
-
 };
 
 #endif

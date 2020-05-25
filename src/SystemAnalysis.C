@@ -24,10 +24,6 @@ Purpose: This code loops through the processed tree and using the applied cuts a
 #include <fstream>
 #include <sstream>
 
-
-#include "InfoSystem.h"
-#include "mappingFunctions.h"
-
 using namespace std;
 
 void DetectorSystemClass::SystemAnalysis()
@@ -48,9 +44,9 @@ void DetectorSystemClass::SystemAnalysis()
 
    Long64_t nentries = tree->GetEntriesFast();
    Long64_t nbytes = 0, nb = 0;
+
    for (Long64_t jentry=0; jentry<nentries;jentry++)
    {
-
     // load tree
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
@@ -67,8 +63,6 @@ void DetectorSystemClass::SystemAnalysis()
 
          for(int k = 0; k < tMult; k++)
          {
-
-            // cout << totToF[j] << " " << totToF[k] << endl;
 
             // find the reflections
             reflections[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[k] - totToF[j], totDep[k]);
@@ -136,14 +130,14 @@ void DetectorSystemClass::SystemAnalysis()
    // coincidences saving
    cdCoinc->cd();
    TCanvas* canvCoinc = new TCanvas("coincC", "coincC", 800, 500);
-   canvCoinc->Divide(NUM_DETS, NUM_DETS);
+   canvCoinc->Divide(numDetectors, numDetectors);
 
-   for(int det1 = 0; det1 < NUM_DETS; det1++)
+   for(int det1 = 0; det1 < numDetectors; det1++)
    {
-      for(int det2 = 0; det2 < NUM_DETS; det2++)
+      for(int det2 = 0; det2 < numDetectors; det2++)
       {
          // select position on canvas
-         canvCoinc->cd(det1*NUM_DETS + det2 + 1);
+         canvCoinc->cd(det1 * numDetectors + det2 + 1);
 
          // draw histograms
          allCoinc[det1][det2]->Draw("nostack");
@@ -165,13 +159,13 @@ void DetectorSystemClass::SystemAnalysis()
 
    // Now save the figures related to coincidences
    cdFigCoinc->cd();
-   TCanvas* canvEach[NUM_DETS][NUM_DETS];
+   TCanvas* canvEach[numDetectors][numDetectors];
    TString titlePlot, namePlot;
    TString nameCoincT = "coincidence_";
 
-   for(int det1 = 0; det1 < NUM_DETS; det1++)
+   for(int det1 = 0; det1 < numDetectors; det1++)
    {
-      for(int det2 = 0; det2 < NUM_DETS; det2++)
+      for(int det2 = 0; det2 < numDetectors; det2++)
       {
          namePlot = nameCoincT + to_string(det1) + "_" + to_string(det2);
          titlePlot = namePlot;
@@ -197,12 +191,12 @@ void DetectorSystemClass::SystemAnalysis()
 
    //cout << "Saving Bicorrelations. " << endl;
    cdBicorr->cd();
-   TCanvas* canvBicorr[NUM_DETS][NUM_DETS];
+   TCanvas* canvBicorr[numDetectors][numDetectors];
    TString nameBicorrT = "bicorr_";
 
-   for(int det1 = 0; det1 < NUM_DETS; det1++)
+   for(int det1 = 0; det1 < numDetectors; det1++)
    {
-      for(int det2 = 0; det2 < NUM_DETS; det2++)
+      for(int det2 = 0; det2 < numDetectors; det2++)
       {
          namePlot = nameBicorrT + to_string(det1) + "_" + to_string(det2);
          titlePlot = namePlot;
@@ -226,9 +220,9 @@ void DetectorSystemClass::SystemAnalysis()
    // saving reflection plots
    cdRef->cd();
 
-   for(int det1 = 0; det1 < NUM_DETS; det1++)
+   for(int det1 = 0; det1 < numDetectors; det1++)
    {
-      for(int det2 = 0; det2 < NUM_DETS; det2++)
+      for(int det2 = 0; det2 < numDetectors; det2++)
       {
          reflections[det1][det2]->Write();
       }
