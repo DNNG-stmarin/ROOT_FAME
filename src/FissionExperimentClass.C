@@ -158,7 +158,6 @@ void FissionExperimentClass::saveAll()
 {
 	delete expFile;
 	delete detFile;
-	//delete sysFile;
 }
 
 TString FissionExperimentClass::getExpName()

@@ -12,6 +12,7 @@ So far, we look at:
 
 #include "DetectorSystemClass.h"
 
+#include <TH3.h>
 #include <TH2.h>
 #include <TF1.h>
 #include <TStyle.h>
@@ -52,13 +53,18 @@ int DetectorSystemClass::DetectionAnalysis()
 	// define the fitting function for the psd discrimination
 	double minPSD_fit = 0;
 	double maxPSD_fit = 0.3;
-	TF1* fitPSD_n = new TF1("fitPSDn", "[0]*e^(-(x - [1])^2/(2*[2]^2))", minPSD_fit, maxPSD_fit);
-	TF1* fitPSD_p = new TF1("fitPSDp", "[0]*e^(-(x - [1])^2/(2*[2]^2))", minPSD_fit, maxPSD_fit);
+	TF1* gaussian = new TF1("gausPSD", "[0]/(1 + ((x - [1])/([2]))^2)", minPSD_fit, maxPSD_fit);
+	TF1* cauchy = new TF1("cauchyPSD", "[0]*e^(-(x - [1])^2/(2*[2]^2))", minPSD_fit, maxPSD_fit);
 
 	// the sum of the two fitting functions
-	TF1* fitPSD_np = new TF1("fitPSDnp", "fitPSDn + fitPSDp");
+	TF1* fitPSD_np = new TF1("fitPSDnp", "gausPSD + cauchyPSD");
+
 	fitPSD_np->SetParNames("AP", "mP", "sP", "AN", "mN", "sN");
-	fitPSD_np->SetParameters(100, 0.12, 0.02, 27, 0.24, 0.04);
+	fitPSD_np->SetParameter(1, 0.12);
+	fitPSD_np->SetParameter(2, 0.01);
+	fitPSD_np->SetParameter(4, 0.24);
+	fitPSD_np->SetParameter(5, 0.035);
+	//
 	fitPSD_np->SetParLimits(4, 0.15, 0.3);
 
 	// initialize the pointers to the fits
@@ -106,6 +112,8 @@ int DetectorSystemClass::DetectionAnalysis()
 	                                    |_|
 	*/
 
+
+
 	detFile->cd();
 
 	int channelDet;
@@ -127,19 +135,42 @@ int DetectorSystemClass::DetectionAnalysis()
 		 // store the channel number
 		 channelDet = isDetector(totChan[part]);
 
-		 // fill the appropriate histograms
-		 psdhists[channelDet]->Fill(totPSP[part]);
-		 erghists[channelDet]->Fill(totDep[part]);
-		 psdErgHists[channelDet]->Fill(totDep[part], totPSP[part]);
-		 tofDelPhists[channelDet]->Fill(totToF[part]);
+		 int i = channelDet;
+		 cout << totChan[part] << endl;
+		 cout << channelDet << endl;
+		 cout << psdhists[i] << " " << erghists[i] << " " << tofDelPhists[i] << " ";
+		 cout << psdErgHists[i] << " " << tofPsdHists[i] << " " << tofErgHists[i] << " ";
+		 cout << expHists[i] << endl;
 
+
+		 // fill the appropriate histograms
+		 psdhists[channelDet]->Fill(totPSP[part]); // psd histogram
+		 erghists[channelDet]->Fill(totDep[part]); // energy histogram
+		 tofDelPhists[channelDet]->Fill(totToF[part]); // tof histograms
+
+		 psdErgHists[channelDet]->Fill(totDep[part], totPSP[part]); // energy-psd histogram
+		 tofPsdHists[channelDet]->Fill(totPSP[part], totToF[part]); // psd-tof histograms
+		 tofErgHists[channelDet]->Fill(totDep[part], totToF[part]); // energy-tof
+
+		 expHists[channelDet]->Fill(totPSP[part], totDep[part], totToF[part]); // complete point
 	 }
   }
 
 	cout << "Finished looping tree and filled histograms" << endl;
 
+
+	/*
+	___  ___ ___
+ | _ \/ __|   \
+ |  _/\__ \ |) |
+ |_|  |___/___/
+
+	*/
+
 	for(int i = 0; i < numDetectors; i++)
 	{
+
+
 		// find the psp parameter
 		psdFit = psdhists[i]->Fit(fitPSD_np, "SQ");
 
@@ -157,6 +188,15 @@ int DetectorSystemClass::DetectionAnalysis()
 		cout << "PSD discrimination is: " << detectors[i].discPSD << endl;
 	}
 
+
+	/*
+	_____ _       _
+ |_   _(_)_ __ (_)_ _  __ _
+   | | | | '  \| | ' \/ _` |
+   |_| |_|_|_|_|_|_||_\__, |
+                      |___/
+	*/
+
 	for(int i = 0; i < numDetectors; i++)
 	{
 		// fit the photon peak and find delay
@@ -169,6 +209,9 @@ int DetectorSystemClass::DetectionAnalysis()
 		cout << "Time delay is: " << detectors[i].timeDelay  << endl;
 	}
 
+
+
+
 	// write the output histograms
 	for(int i = 0; i < numDetectors; i++)
 	{
@@ -177,6 +220,9 @@ int DetectorSystemClass::DetectionAnalysis()
 			psdhists[i]->Write();
 			erghists[i]->Write();
 			psdErgHists[i]->Write();
+			tofPsdHists[i]->Write();
+			tofErgHists[i]->Write();
+			expHists[i]->Write();
 
 			cdToF->cd();
 			tofDelPhists[i]->Write();
