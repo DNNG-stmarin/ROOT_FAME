@@ -22,9 +22,6 @@ int isDetector(int detectorNumber, InfoSystemTest* info)
 			break;
 		}
 	}
-	//cout << detIndex;
-	//cout << "\nisDetector done\n\n";
-
 	return detIndex;
 }
 
@@ -40,7 +37,5 @@ int isChamber(int detectorNumber, InfoSystemTest* info)
 			break;
 		}
 	}
-	//cout << "\nisChamber done\n\n";
-
 	return chamberIndex;
 }

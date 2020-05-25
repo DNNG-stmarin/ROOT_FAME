@@ -36,7 +36,7 @@ public:
 
   InfoSystemTest(int type)
   {
-    if(type == 0)
+    if(type == 0) // FS3
     {
       // experiment specific information
       NUM_BEAMS = 0;
@@ -60,7 +60,7 @@ public:
       }
     }
 
-    if(type == 1)
+    if(type == 1) // ChiNu
     {
       // experiment specific information
       NUM_BEAMS = 0;
@@ -92,9 +92,9 @@ public:
 
   ~InfoSystemTest()
   {
-    delete [] BEAM;
-    delete [] FISSION_CHAMBERS;
-    delete [] DETECTORS;
+    delete BEAM;
+    delete FISSION_CHAMBERS;
+    delete DETECTORS;
   }
 };
 

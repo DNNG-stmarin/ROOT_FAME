@@ -24,14 +24,9 @@ Purpose: This code loops through the processed tree and using the applied cuts a
 #include <fstream>
 #include <sstream>
 
-
-//#include "InfoSystem.h"
-#include "InfoSystemTest.h"
-#include "mappingFunctions.h"
-
 using namespace std;
 
-void DetectorSystemClass::SystemAnalysis(InfoSystemTest* info)
+void DetectorSystemClass::SystemAnalysis()
 {
 
    detFile->cd();
@@ -49,9 +44,9 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest* info)
 
    Long64_t nentries = tree->GetEntriesFast();
    Long64_t nbytes = 0, nb = 0;
+
    for (Long64_t jentry=0; jentry<nentries;jentry++)
    {
-
     // load tree
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
@@ -64,20 +59,18 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest* info)
     // fill coincidence histograms
     for(int j = 0; j < tMult; j++)
     {
-         hSingles->Fill(isDetector(totChan[j], info));
+         hSingles->Fill(isDetector(totChan[j]));
 
          for(int k = 0; k < tMult; k++)
          {
 
-            // cout << totToF[j] << " " << totToF[k] << endl;
-
             // find the reflections
-            reflections[isDetector(totChan[j], info)][isDetector(totChan[k], info)]->Fill(totToF[k] - totToF[j], totDep[k]);
+            reflections[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[k] - totToF[j], totDep[k]);
 
             // find the doubles
             if(j != k)
             {
-               hDoubles->Fill(isDetector(totChan[j], info), isDetector(totChan[k], info));
+               hDoubles->Fill(isDetector(totChan[j]), isDetector(totChan[k]));
             }
 
             // compute the coincidences
@@ -85,27 +78,27 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest* info)
             {
 
                // fill the bi-correlation
-               hBicorr[isDetector(totChan[j], info)][isDetector(totChan[k], info)]->Fill(totToF[j], totToF[k]);
+               hBicorr[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[j], totToF[k]);
 
                // fill the cross-correlations
                if((totPSP[j] > psdDisc) & (totPSP[k] > psdDisc)) // neutron - neutron
                {
-                  nnMult[isDetector(totChan[j], info)][isDetector(totChan[k], info)]->Fill(totToF[j] - totToF[k]);
+                  nnMult[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[j] - totToF[k]);
                }
 
                if((totPSP[j] > psdDisc) & (totPSP[k] < psdDisc)) // neutron - photon
                {
-                  ngMult[isDetector(totChan[j], info)][isDetector(totChan[k], info)]->Fill(totToF[j] - totToF[k]);
+                  ngMult[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[j] - totToF[k]);
                }
 
                if((totPSP[j] < psdDisc) & (totPSP[k] > psdDisc)) // photon - neutron
                {
-                  gnMult[isDetector(totChan[j], info)][isDetector(totChan[k], info)]->Fill(totToF[j] - totToF[k]);
+                  gnMult[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[j] - totToF[k]);
                }
 
                if((totPSP[j] < psdDisc) & (totPSP[k] < psdDisc)) // photon - photon
                {
-                  ggMult[isDetector(totChan[j], info)][isDetector(totChan[k], info)]->Fill(totToF[j] - totToF[k]);
+                  ggMult[isDetector(totChan[j])][isDetector(totChan[k])]->Fill(totToF[j] - totToF[k]);
                }
             }
 
@@ -137,14 +130,14 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest* info)
    // coincidences saving
    cdCoinc->cd();
    TCanvas* canvCoinc = new TCanvas("coincC", "coincC", 800, 500);
-   canvCoinc->Divide(info->NUM_DETS, info->NUM_DETS);
+   canvCoinc->Divide(numDetectors, numDetectors);
 
-   for(int det1 = 0; det1 < info->NUM_DETS; det1++)
+   for(int det1 = 0; det1 < numDetectors; det1++)
    {
-      for(int det2 = 0; det2 < info->NUM_DETS; det2++)
+      for(int det2 = 0; det2 < numDetectors; det2++)
       {
          // select position on canvas
-         canvCoinc->cd(det1*info->NUM_DETS + det2 + 1);
+         canvCoinc->cd(det1 * numDetectors + det2 + 1);
 
          // draw histograms
          allCoinc[det1][det2]->Draw("nostack");
@@ -166,13 +159,13 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest* info)
 
    // Now save the figures related to coincidences
    cdFigCoinc->cd();
-   TCanvas* canvEach[info->NUM_DETS][info->NUM_DETS];
+   TCanvas* canvEach[numDetectors][numDetectors];
    TString titlePlot, namePlot;
    TString nameCoincT = "coincidence_";
 
-   for(int det1 = 0; det1 < info->NUM_DETS; det1++)
+   for(int det1 = 0; det1 < numDetectors; det1++)
    {
-      for(int det2 = 0; det2 < info->NUM_DETS; det2++)
+      for(int det2 = 0; det2 < numDetectors; det2++)
       {
          namePlot = nameCoincT + to_string(det1) + "_" + to_string(det2);
          titlePlot = namePlot;
@@ -198,12 +191,12 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest* info)
 
    //cout << "Saving Bicorrelations. " << endl;
    cdBicorr->cd();
-   TCanvas* canvBicorr[info->NUM_DETS][info->NUM_DETS];
+   TCanvas* canvBicorr[numDetectors][numDetectors];
    TString nameBicorrT = "bicorr_";
 
-   for(int det1 = 0; det1 < info->NUM_DETS; det1++)
+   for(int det1 = 0; det1 < numDetectors; det1++)
    {
-      for(int det2 = 0; det2 < info->NUM_DETS; det2++)
+      for(int det2 = 0; det2 < numDetectors; det2++)
       {
          namePlot = nameBicorrT + to_string(det1) + "_" + to_string(det2);
          titlePlot = namePlot;
@@ -227,9 +220,9 @@ void DetectorSystemClass::SystemAnalysis(InfoSystemTest* info)
    // saving reflection plots
    cdRef->cd();
 
-   for(int det1 = 0; det1 < info->NUM_DETS; det1++)
+   for(int det1 = 0; det1 < numDetectors; det1++)
    {
-      for(int det2 = 0; det2 < info->NUM_DETS; det2++)
+      for(int det2 = 0; det2 < numDetectors; det2++)
       {
          reflections[det1][det2]->Write();
       }
