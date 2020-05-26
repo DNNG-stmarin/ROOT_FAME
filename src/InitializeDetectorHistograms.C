@@ -18,6 +18,7 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     // particle names
     TString neutronName = "n";
     TString photonName = "p";
+    TStrin allName = "all";
 
     // name generators
     TString numDet;
@@ -55,9 +56,10 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
     // kinematic
   	TString kinematicName = "Kin";
-  	TString kinematicNHistNameT, kinematicPHistNameT;
+  	TString kinematicNHistNameT, kinematicPHistNameT, kinematicAllHistNameT;
     kinematicN = new TH2F* [numDetectors];
     kinematicP = new TH2F* [numDetectors];
+    kinematicAll = new TH2F* [numDetectors];
 
 
     for(int i = 0; i < numDetectors; i++)
@@ -90,7 +92,8 @@ void DetectorSystemClass::InitializeDetectorHistograms()
       kinematicNHistNameT = kinematicName + neutronName + numDet;
       kinematicPHistNameT = kinematicName + photonName + numDet;
   		kinematicN[i] = new TH2F(kinematicNHistNameT, kinematicNHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
-  		kinematicP[i] = new TH2F(kinematicPHistNameT, kinematicPHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
+      kinematicN[i]->SetOption("COLZ");
+      kinematicP[i] = new TH2F(kinematicPHistNameT, kinematicPHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
   		kinematicN[i]->SetOption("COLZ");
 
   	}

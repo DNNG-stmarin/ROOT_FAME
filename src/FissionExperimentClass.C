@@ -79,8 +79,6 @@ FissionExperimentClass::FissionExperimentClass()
 
   // create the chain with all the entries to analyze for the raw coincidence mode
   coincTreeChain = new TChain();
-
-	detectorData = new DetectorSystemClass(coincTreeChain, detFile, info);
 }
 
 // destructor closes all the remaining loose ends
@@ -127,6 +125,7 @@ int FissionExperimentClass::CreateDetectionAnalysis(TFile* writeFile)
 {
 
 	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
+	detectorData = new DetectorSystemClass(coincTreeChain, detFile, info);
 
 	cout << "Creating the histograms to store the data. " << endl;
 	detectorData->InitializeDetectorHistograms();

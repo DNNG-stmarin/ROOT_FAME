@@ -426,6 +426,10 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystemTest *info, int fileNum
 				totDep[totMult] = qParticle.getEnergy();
 				totTail[totMult] = qParticle.getTail();
 				totChan[totMult] = qParticle.getDetector();
+				if(totChan[totMult] == 0)
+				{
+					cout << "0 channel inserted" << endl;
+				}
 				totMult++;
 			}
 		}

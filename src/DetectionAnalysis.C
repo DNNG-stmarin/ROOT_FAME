@@ -25,10 +25,8 @@ So far, we look at:
 #include <stdio.h>
 #include <queue>
 
-//#include "InfoSystem.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
-//#include "InfoSystemTest.h"
 
 using namespace std;
 
@@ -115,6 +113,8 @@ int DetectorSystemClass::DetectionAnalysis()
 	Long64_t nentries = tree->GetEntriesFast();
 	Long64_t nbytes = 0, nb = 0;
 
+
+	// psd loop
 	for (Long64_t jentry=0; jentry<nentries;jentry++)
 	{
 	 // load tree
@@ -127,6 +127,18 @@ int DetectorSystemClass::DetectionAnalysis()
 		 // store the channel number
 		 channelDet = isDetector(totChan[part]);
 
+		 // if(channelDet < 0)
+		 // {
+			//  cout << totChan[part] << " -> " << channelDet << endl;
+			//  cout << "broken less than 0 at " << jentry << " " << ientry << endl;
+			//  cout << "At mult of " << tMult << endl;
+		 // }
+		 //
+		 // if(channelDet > numDetectors)
+		 // {
+			//  cout << "broken outside range" << endl;
+		 // }
+
 		 // fill the appropriate histograms
 		 psdhists[channelDet]->Fill(totPSP[part]);
 		 erghists[channelDet]->Fill(totDep[part]);
@@ -135,9 +147,9 @@ int DetectorSystemClass::DetectionAnalysis()
 
 	 }
   }
+	cout << "Finished psd loop" << endl;
 
-	cout << "Finished looping tree and filled histograms" << endl;
-
+	// psd discrimination loop delay loop
 	for(int i = 0; i < numDetectors; i++)
 	{
 		// find the psp parameter
@@ -157,6 +169,8 @@ int DetectorSystemClass::DetectionAnalysis()
 		cout << "PSD discrimination is: " << detectors[i].discPSD << endl;
 	}
 
+
+	// time delay loop
 	for(int i = 0; i < numDetectors; i++)
 	{
 		// fit the photon peak and find delay
@@ -178,6 +192,40 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		cout << "Time delay is: " << detectors[i].timeDelay  << endl;
 	}
+
+
+	// time of flight loop
+	double corrTime;
+	for (Long64_t jentry=0; jentry<nentries;jentry++)
+	{
+	 // load tree
+	 Long64_t ientry = LoadTree(jentry);
+	 if (ientry < 0) break;
+	 nb = tree->GetEntry(jentry);   nbytes += nb;
+
+	 for(int part = 0; part < tMult; part++)
+	 {
+		 // store the channel number
+		 channelDet = isDetector(totChan[part]);
+		 corrTime = totToF[part] - detectors[channelDet].timeDelay;
+
+		 // discriminate particles here (make it better)
+		 if(totPSP[part] < detectors[channelDet].discPSD)
+		 {
+			 tofPhists[channelDet]->Fill(corrTime);
+			 kinematicP[channelDet]->Fill(corrTime, totDep[part]);
+		 }
+
+		 if(totPSP[part] > detectors[channelDet].discPSD)
+		 {
+			 tofNhists[channelDet]->Fill(corrTime);
+			 kinematicN[channelDet]->Fill(corrTime, totDep[part]);
+		 }
+
+	 }
+	}
+
+
 
 	// write the output histograms
 	for(int i = 0; i < numDetectors; i++)

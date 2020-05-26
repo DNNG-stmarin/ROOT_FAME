@@ -107,6 +107,7 @@ _  _ _    _
 	TH1F** tofPhists;
 
 	// kinematic histograms
+	TH2F** kinematicAll;
 	TH2F** kinematicN;
 	TH2F** kinematicP;
 
@@ -140,11 +141,11 @@ _  _ _    _
 	double        tTime;
 	double        tDep;
 
-	double        totToF[5];   //[tMult]
-	double        totPSP[5];   //[tMult]
-	double        totDep[5];   //[tMult]
-	double        totTail[5];   //[tMult]
-	int           totChan[5];   //[tMult]
+	double        totToF[MAX_MULTIPLICITY];   //[tMult]
+	double        totPSP[MAX_MULTIPLICITY];   //[tMult]
+	double        totDep[MAX_MULTIPLICITY];   //[tMult]
+	double        totTail[MAX_MULTIPLICITY];   //[tMult]
+	int           totChan[MAX_MULTIPLICITY];   //[tMult]
 
 	// List of branches
 	TBranch        *b_tMult;   //!
