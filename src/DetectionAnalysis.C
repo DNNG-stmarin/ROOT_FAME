@@ -56,8 +56,9 @@ int DetectorSystemClass::DetectionAnalysis()
 	// the sum of the two fitting functions
 	TF1* fitPSD_np = new TF1("fitPSDnp", "fitPSDn + fitPSDp");
 	fitPSD_np->SetParNames("AP", "mP", "sP", "AN", "mN", "sN");
-	fitPSD_np->SetParameters(100, 0.12, 0.02, 27, 0.24, 0.04);
+	fitPSD_np->SetParameters(100, 0.12, 0.02, 27, 0.24, 0.02);
 	fitPSD_np->SetParLimits(4, 0.15, 0.3);
+	fitPSD_np->SetParLimits(5, 0.01, 0.05);
 
 	// initialize the pointers to the fits
 	TFitResultPtr tofDelPFit;
