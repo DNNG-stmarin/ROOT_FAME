@@ -55,7 +55,7 @@ void DetectorSystemClass::FissionAnalysis()
         &
         (timeDet > -5)
         &
-        (timeDet < 50)
+        (timeDet < 150)
         &
         (totDep[j] > 0.1)
         )

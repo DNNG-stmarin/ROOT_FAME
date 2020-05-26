@@ -26,5 +26,3 @@ Purpose: Performs an analysis of the triggering system, and outputs the main sta
 
 int DetectorSystemClass::TriggerAnalysis()
 {
-
-  
