@@ -215,8 +215,7 @@ void DetectorSystemClass::SystemAnalysis()
 
    hSingles->Write();
    hDoubles->Write();
-
-
+   
    // saving reflection plots
    cdRef->cd();
 

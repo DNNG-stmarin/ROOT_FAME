@@ -15,6 +15,7 @@ Date: Ann Arbor, MI, May 3rd, 2020
 
 #include <TH1.h>
 #include <TH2.h>
+#include <TH3.h>
 #include <THStack.h>
 
 #include <string.h>
@@ -96,10 +97,19 @@ _  _ _    _
 |_||_|_/__/\__\___/\__, |_| \__,_|_|_|_/__/
 									|___/
 */
-	// psd and energy histograms
+
+	// experiment Histograms
+	TH1F** triggerHist;
+
+	// experiment Histograms
+	TH3F** expHists;
+
+	// psd and energy histograms for discriminations
 	TH1F** psdhists;
 	TH1F** erghists;
 	TH2F** psdErgHists;
+	TH2F** tofPsdHists;
+	TH2F** tofErgHists;
 
 	// tof histograms
 	TH1F** tofDelPhists;
@@ -163,6 +173,8 @@ _  _ _    _
 	double    f_fisErg;
 	int       f_neutronMult;
 	int       f_gammaMult;
+	int       f_neutronBackMult;
+	int       f_gammaBackMult;
 
 /*
 ___             _   _

@@ -108,6 +108,8 @@ void DetectorSystemClass::InitFiss()
    fissionTree->Branch("fisErg", &f_fisErg, "fisErg/D");
    fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");
    fissionTree->Branch("gammaMult", &f_gammaMult, "neutronMult/I");
+   fissionTree->Branch("neutronBackMult", &f_neutronBackMult, "neutronBackMult/I");
+   fissionTree->Branch("gammaBackMult", &f_gammaBackMult, "gammaBackMult/I");
 
    cout << "Fission tree has been created." << endl;
 }
