@@ -26,10 +26,8 @@ So far, we look at:
 #include <stdio.h>
 #include <queue>
 
-//#include "InfoSystem.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
-//#include "InfoSystemTest.h"
 
 using namespace std;
 
@@ -123,6 +121,8 @@ int DetectorSystemClass::DetectionAnalysis()
 	Long64_t nentries = tree->GetEntriesFast();
 	Long64_t nbytes = 0, nb = 0;
 
+
+	// psd loop
 	for (Long64_t jentry=0; jentry<nentries;jentry++)
 	{
 	 // load tree
@@ -135,13 +135,17 @@ int DetectorSystemClass::DetectionAnalysis()
 		 // store the channel number
 		 channelDet = isDetector(totChan[part]);
 
-		 int i = channelDet;
-		 cout << totChan[part] << endl;
-		 cout << channelDet << endl;
-		 cout << psdhists[i] << " " << erghists[i] << " " << tofDelPhists[i] << " ";
-		 cout << psdErgHists[i] << " " << tofPsdHists[i] << " " << tofErgHists[i] << " ";
-		 cout << expHists[i] << endl;
-
+		 // if(channelDet < 0)
+		 // {
+			//  cout << totChan[part] << " -> " << channelDet << endl;
+			//  cout << "broken less than 0 at " << jentry << " " << ientry << endl;
+			//  cout << "At mult of " << tMult << endl;
+		 // }
+		 //
+		 // if(channelDet > numDetectors)
+		 // {
+			//  cout << "broken outside range" << endl;
+		 // }
 
 		 // fill the appropriate histograms
 		 psdhists[channelDet]->Fill(totPSP[part]); // psd histogram
@@ -155,18 +159,9 @@ int DetectorSystemClass::DetectionAnalysis()
 		 expHists[channelDet]->Fill(totPSP[part], totDep[part], totToF[part]); // complete point
 	 }
   }
+	cout << "Finished psd loop" << endl;
 
-	cout << "Finished looping tree and filled histograms" << endl;
-
-
-	/*
-	___  ___ ___
- | _ \/ __|   \
- |  _/\__ \ |) |
- |_|  |___/___/
-
-	*/
-
+	// psd discrimination loop delay loop
 	for(int i = 0; i < numDetectors; i++)
 	{
 
@@ -200,7 +195,17 @@ int DetectorSystemClass::DetectionAnalysis()
 	for(int i = 0; i < numDetectors; i++)
 	{
 		// fit the photon peak and find delay
-		tofDelPFit = tofDelPhists[i]->Fit("gaus", "SQ");
+		int ctMax = tofDelPhists[i]->GetMaximum();
+		int binMax = tofDelPhists[i]->GetMaximumBin();
+		double timePeak = tofDelPhists[i]->GetBinCenter(binMax);
+		cout << "Peak location at: " << timePeak << endl;
+
+		TF1* gausFitTime = new TF1("peakFit", "[0]*e^(-(x - [1])^2/(2*[2]^2))", timePeak - 10, timePeak + 10);
+		gausFitTime->SetParameter(0, ctMax);
+		gausFitTime->SetParameter(1, timePeak);
+		gausFitTime->SetParameter(2, 1);
+
+		tofDelPFit = tofDelPhists[i]->Fit(gausFitTime, "SQ");
 
 		// find the dealy of each detector
 		detectors[i].timeDelay = tofDelPFit->Parameter(1);
@@ -209,6 +214,37 @@ int DetectorSystemClass::DetectionAnalysis()
 		cout << "Time delay is: " << detectors[i].timeDelay  << endl;
 	}
 
+
+	// time of flight loop
+	double corrTime;
+	for (Long64_t jentry=0; jentry<nentries;jentry++)
+	{
+	 // load tree
+	 Long64_t ientry = LoadTree(jentry);
+	 if (ientry < 0) break;
+	 nb = tree->GetEntry(jentry);   nbytes += nb;
+
+	 for(int part = 0; part < tMult; part++)
+	 {
+		 // store the channel number
+		 channelDet = isDetector(totChan[part]);
+		 corrTime = totToF[part] - detectors[channelDet].timeDelay;
+
+		 // discriminate particles here (make it better)
+		 if(totPSP[part] < detectors[channelDet].discPSD)
+		 {
+			 tofPhists[channelDet]->Fill(corrTime);
+			 kinematicP[channelDet]->Fill(corrTime, totDep[part]);
+		 }
+
+		 if(totPSP[part] > detectors[channelDet].discPSD)
+		 {
+			 tofNhists[channelDet]->Fill(corrTime);
+			 kinematicN[channelDet]->Fill(corrTime, totDep[part]);
+		 }
+
+	 }
+	}
 
 
 

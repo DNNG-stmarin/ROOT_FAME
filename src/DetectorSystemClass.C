@@ -27,6 +27,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 
 	// initialize the tree and the file to write to
 	detFile = writeFile;
+	cout << "tree passed at " << treeIn << endl;
 	Init(treeIn);
 	//cout << "DetectorSystemClass treeIn: " << treeIn << endl;
 
@@ -74,10 +75,11 @@ Long64_t DetectorSystemClass::LoadTree(Long64_t entry)
 void DetectorSystemClass::Init(TChain *treeIn)
 {
    // Set branch addresses and branch pointers for the coincidence tree
-   if (tree != 0) {
+   if (!tree) {
 		 cout << "no tree!" << endl;
 		 return;
 	 }
+
 	 else
 	 {
 		 tree = treeIn;

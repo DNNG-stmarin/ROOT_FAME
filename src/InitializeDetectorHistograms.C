@@ -18,6 +18,7 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     // particle names
     TString neutronName = "n";
     TString photonName = "p";
+    TStrin allName = "all";
 
     // name generators
     TString numDet;
@@ -82,9 +83,10 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
     // kinematic
   	TString kinematicName = "Kin";
-  	TString kinematicNHistNameT, kinematicPHistNameT;
+  	TString kinematicNHistNameT, kinematicPHistNameT, kinematicAllHistNameT;
     kinematicN = new TH2F* [numDetectors];
     kinematicP = new TH2F* [numDetectors];
+    kinematicAll = new TH2F* [numDetectors];
 
 
     for(int i = 0; i < numDetectors; i++)
