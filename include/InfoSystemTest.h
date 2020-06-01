@@ -26,10 +26,13 @@ public:
 
 //import from file
 
+  // store the channel multiplcities
   int NUM_BEAMS;
   int NUM_DETS;
   int NUM_CHAMBERS;
 
+
+  // store the channels
   int *BEAM;
   int *FISSION_CHAMBERS;
   int *DETECTORS;

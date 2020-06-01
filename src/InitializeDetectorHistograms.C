@@ -5,6 +5,7 @@ Purpose: Initialize all the histograms that are used for the analysis of the
 Date: Ann Arbor, May 14th 2020
 */
 
+#define InitializeDetectorHistograms_cxx
 #include "DetectorSystemClass.h"
 
 void DetectorSystemClass::InitializeDetectorHistograms()
@@ -18,6 +19,7 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     // particle names
     TString neutronName = "n";
     TString photonName = "p";
+    TString allName = "all";
 
     // name generators
     TString numDet;
@@ -29,6 +31,23 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     \__,_\___|\__\___\__|\__\___/_| /__/
 
     */
+
+    // experiment
+  	TString expNameT = "Exp";
+    TString expHistNameT;
+    expHists = new TH3F* [numDetectors];
+
+    for(int i = 0; i < numDetectors; i++)
+  	{
+  		// find the string name of the detector
+  		numDet = to_string(listDetectorsChan[i]);
+
+      // exp histograms
+  		expHistNameT = expNameT + numDet;
+      expHists[i] = new TH3F(expHistNameT, expHistNameT, 200, 0, 1, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+
+    }
+
     // psd
   	TString psdName = "PSD";
     TString psdHistNameT;
@@ -44,6 +63,16 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     TString psdErgHistNameT;
     psdErgHists = new TH2F* [numDetectors];
 
+    // TofPSD
+    TString tofPsdNameT = "ToF_Psd";
+    TString tofPsdHistNameT;
+    tofPsdHists = new TH2F* [numDetectors];
+
+    // TofPSD
+    TString tofErgNameT = "ToF_Erg";
+    TString tofErgHistNameT;
+    tofErgHists = new TH2F* [numDetectors];
+
     // time of flight
   	TString tofName = "TOF";
     TString tofNHistNameT;
@@ -55,9 +84,10 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
     // kinematic
   	TString kinematicName = "Kin";
-  	TString kinematicNHistNameT, kinematicPHistNameT;
+  	TString kinematicNHistNameT, kinematicPHistNameT, kinematicAllHistNameT;
     kinematicN = new TH2F* [numDetectors];
     kinematicP = new TH2F* [numDetectors];
+    kinematicAll = new TH2F* [numDetectors];
 
 
     for(int i = 0; i < numDetectors; i++)
@@ -67,31 +97,49 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
   		// psd histograms
   		psdHistNameT = psdName + numDet;
-      ergHistNameT = ergName + numDet;
-  		psdErgHistNameT = psdErgName + numDet;
-
-  		//create histograms to fill
   		psdhists[i] = new TH1F(psdHistNameT, psdHistNameT, 200, 0, 1);
-      erghists[i] = new TH1F(ergHistNameT, ergHistNameT, 1000, 0, 10);
-  		psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 10000, 0, 10, 500, 0, 1);
-      psdErgHists[i]->SetOption("COLZ");
 
+      // energy histograms
+      ergHistNameT = ergName + numDet;
+      erghists[i] = new TH1F(ergHistNameT, ergHistNameT, 1000, 0, 10);
 
       // time of flight histograms
   		tofNHistNameT = tofName + neutronName +  numDet;
   		tofPHistNameT = tofName + photonName + numDet;
   		tofDelPhists[i] = new TH1F(tofPHistNameT + delayTimeT, tofPHistNameT + delayTimeT, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+
+      // split by particles
   		tofNhists[i] = new TH1F(tofNHistNameT, tofNHistNameT, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
-  		tofPhists[i] = new TH1F(tofPHistNameT, tofPHistNameT, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
       tofNhists[i]->SetLineColor(kBlue);
+  		tofPhists[i] = new TH1F(tofPHistNameT, tofPHistNameT, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
       tofPhists[i]->SetLineColor(kRed);
+
+      // tofPSd histograms
+      tofPsdHistNameT = tofPsdNameT + numDet;
+      tofPsdHists[i] = new TH2F(tofPsdHistNameT, tofPsdHistNameT, 200, 0, 1, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      tofPsdHists[i]->SetOption("COLZ");
+
+      // tofErg histograms
+      tofErgHistNameT = tofErgNameT + numDet;
+      tofErgHists[i] = new TH2F(tofErgHistNameT, tofErgHistNameT, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      tofErgHists[i]->SetOption("COLZ");
+
+      // energy-psd
+      psdErgHistNameT = psdErgName + numDet;
+      psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 10000, 0, 10, 500, 0, 1);
+      psdErgHists[i]->SetOption("COLZ");
+
 
       // kinematic histograms
       kinematicNHistNameT = kinematicName + neutronName + numDet;
       kinematicPHistNameT = kinematicName + photonName + numDet;
+      kinematicAllHistNameT = kinematicName + allName + numDet;
   		kinematicN[i] = new TH2F(kinematicNHistNameT, kinematicNHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
-  		kinematicP[i] = new TH2F(kinematicPHistNameT, kinematicPHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
-  		kinematicN[i]->SetOption("COLZ");
+      kinematicN[i]->SetOption("COLZ");
+      kinematicP[i] = new TH2F(kinematicPHistNameT, kinematicPHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
+  		kinematicP[i]->SetOption("COLZ");
+      kinematicAll[i] = new TH2F(kinematicAllHistNameT, kinematicAllHistNameT + ";Time (ns); Integral (MeVee); Counts", 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW, 10000, 0, 10);
+  		kinematicAll[i]->SetOption("COLZ");
 
   	}
 
@@ -246,7 +294,6 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   }
 
   cout << "Reflection histograms have been created" << endl;
-
 
   cout << "All histograms have been initialized" << endl;
 }

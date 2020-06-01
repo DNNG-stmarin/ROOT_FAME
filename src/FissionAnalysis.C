@@ -17,6 +17,7 @@ void DetectorSystemClass::FissionAnalysis()
 
   // neutron and photon multiplicities
   int nMult, pMult;
+  int nBackMult, pBackMult;
 
   // detection time
   double timeDet;
@@ -24,7 +25,6 @@ void DetectorSystemClass::FissionAnalysis()
 
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
   {
-
      // load tree
      Long64_t ientry = LoadTree(jentry);
      if (ientry < 0) break;
@@ -37,6 +37,8 @@ void DetectorSystemClass::FissionAnalysis()
      // reset the neutron and photon multiplicities
      nMult = 0;
      pMult = 0;
+     nBackMult = 0;
+     pBackMult = 0;
 
      for(int j = 0; j < tMult; j++)
      {
@@ -46,10 +48,14 @@ void DetectorSystemClass::FissionAnalysis()
       // detection time corrected for delay
       timeDet = totToF[j] -  detectors[numDet].timeDelay;
 
+
+      // cuts for neutrons
       if(
         (totPSP[j] > detectors[numDet].discPSD)
         &
-        (totToF[j] > -5)
+        (timeDet > -5)
+        &
+        (timeDet < 150)
         &
         (totDep[j] > 0.1)
         )
@@ -57,10 +63,13 @@ void DetectorSystemClass::FissionAnalysis()
            nMult++;
       }
 
+      // cuts for gammas
       else if(
         (totPSP[j] < detectors[numDet].discPSD)
         &
-        (totToF[j] > -5)
+        (timeDet > -5)
+        &
+        (timeDet < 10)
         &
         (totDep[j] > 0.1)
         )
@@ -68,11 +77,41 @@ void DetectorSystemClass::FissionAnalysis()
            pMult++;
       }
 
+      // cuts for background neutrons
+      else if(
+        (totPSP[j] > detectors[numDet].discPSD)
+        &
+        (timeDet > -80)
+        &
+        (timeDet < -25)
+        &
+        (totDep[j] > 0.1)
+        )
+      {
+           nBackMult++;
+      }
+
+      // cuts for background photons
+      else if(
+        (totPSP[j] < detectors[numDet].discPSD)
+        &
+        (timeDet> - 80)
+        &
+        (timeDet< - 65)
+        &
+        (totDep[j] > 0.1)
+        )
+      {
+           pBackMult++;
+      }
+
      }
 
      // set branches of final tree
      f_neutronMult = nMult;
      f_gammaMult = pMult;
+     f_neutronBackMult = nBackMult;
+     f_gammaBackMult = pBackMult;
 
      fissionTree->Fill();
   }

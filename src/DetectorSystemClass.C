@@ -27,10 +27,12 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 
 	// initialize the tree and the file to write to
 	detFile = writeFile;
+	cout << "tree passed at " << treeIn << endl;
 	Init(treeIn);
 	//cout << "DetectorSystemClass treeIn: " << treeIn << endl;
 
 	// create the directories to store the results
+
 	//create folders and write things to correct folder
 	cdPsd = detFile->mkdir("PSD");
 	cdToF = detFile->mkdir("TOF");
@@ -40,6 +42,9 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdFigCoinc = detFile->mkdir("CoincFigs");
 	cdBicorr = detFile->mkdir("Bicorr");
 	cdRef = detFile->mkdir("Reflections");
+
+	// create the folder for psd slices
+	cdPsdSLices = cdPsd->mkdir("PSD_slices");
 
 	fissionFile = new TFile(nameFission + ".root", "RECREATE");
 	fissionTree = new TTree(nameFission, nameFission);
@@ -74,10 +79,11 @@ Long64_t DetectorSystemClass::LoadTree(Long64_t entry)
 void DetectorSystemClass::Init(TChain *treeIn)
 {
    // Set branch addresses and branch pointers for the coincidence tree
-   if (tree != 0) {
+   if (!tree) {
 		 cout << "no tree!" << endl;
 		 return;
 	 }
+
 	 else
 	 {
 		 tree = treeIn;
@@ -106,6 +112,8 @@ void DetectorSystemClass::InitFiss()
    fissionTree->Branch("fisErg", &f_fisErg, "fisErg/D");
    fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");
    fissionTree->Branch("gammaMult", &f_gammaMult, "neutronMult/I");
+   fissionTree->Branch("neutronBackMult", &f_neutronBackMult, "neutronBackMult/I");
+   fissionTree->Branch("gammaBackMult", &f_gammaBackMult, "gammaBackMult/I");
 
    cout << "Fission tree has been created." << endl;
 }

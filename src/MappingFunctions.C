@@ -4,7 +4,6 @@
 
 #define mappingFunctions_h
 
-//#include "InfoSystem.h"
 #include "InfoSystemTest.h"
 #include "mappingFunctions.h"
 

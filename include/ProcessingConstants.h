@@ -7,14 +7,14 @@ Purpose: Store the constants used in the processing
 #define ProcessingConstants_h_
 
 // these are too important to be left out like this
-const double DETECTOR_THRESHOLD = 0.05;
+const double DETECTOR_THRESHOLD = 0.1;
 
 // calibration of detectors for energy
 const double INT_CALIBRATION = 0.477/1000; // from Cs calibration
 const double CHAMB_CALIBRATION = 0.477/1000; // from Cs calibration
 
 // fission trigger allowed
-const double CHAMBER_THRESHOLD = 0.03;
+const double CHAMBER_THRESHOLD = 0.2;
 const double CHAMBER_CLIP = 10;
 const double MAX_CHAMBER_DRIFT = 1; // ns
 const double COINC_WINDOW = 200; // ns

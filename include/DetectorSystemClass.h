@@ -15,7 +15,12 @@ Date: Ann Arbor, MI, May 3rd, 2020
 
 #include <TH1.h>
 #include <TH2.h>
+#include <TH3.h>
 #include <THStack.h>
+
+#include <TF1.h>
+
+#include <TCut.h>
 
 #include <string.h>
 #include <iostream>
@@ -62,6 +67,9 @@ public:
 	TDirectory *cdBicorr;
 	TDirectory *cdRef;
 
+	// subdirectory for slices
+	TDirectory * cdPsdSLices;
+
 	// current tree in chain
 	Int_t   fCurrent;
 
@@ -96,10 +104,19 @@ _  _ _    _
 |_||_|_/__/\__\___/\__, |_| \__,_|_|_|_/__/
 									|___/
 */
-	// psd and energy histograms
+
+	// experiment Histograms
+	TH1F** triggerHist;
+
+	// experiment Histograms
+	TH3F** expHists;
+
+	// psd and energy histograms for discriminations
 	TH1F** psdhists;
 	TH1F** erghists;
 	TH2F** psdErgHists;
+	TH2F** tofPsdHists;
+	TH2F** tofErgHists;
 
 	// tof histograms
 	TH1F** tofDelPhists;
@@ -107,6 +124,7 @@ _  _ _    _
 	TH1F** tofPhists;
 
 	// kinematic histograms
+	TH2F** kinematicAll;
 	TH2F** kinematicN;
 	TH2F** kinematicP;
 
@@ -140,11 +158,11 @@ _  _ _    _
 	double        tTime;
 	double        tDep;
 
-	double        totToF[5];   //[tMult]
-	double        totPSP[5];   //[tMult]
-	double        totDep[5];   //[tMult]
-	double        totTail[5];   //[tMult]
-	int           totChan[5];   //[tMult]
+	double        totToF[MAX_MULTIPLICITY];   //[tMult]
+	double        totPSP[MAX_MULTIPLICITY];   //[tMult]
+	double        totDep[MAX_MULTIPLICITY];   //[tMult]
+	double        totTail[MAX_MULTIPLICITY];   //[tMult]
+	int           totChan[MAX_MULTIPLICITY];   //[tMult]
 
 	// List of branches
 	TBranch        *b_tMult;   //!
@@ -162,6 +180,43 @@ _  _ _    _
 	double    f_fisErg;
 	int       f_neutronMult;
 	int       f_gammaMult;
+	int       f_neutronBackMult;
+	int       f_gammaBackMult;
+
+
+	/*
+	___  ___ ___
+ | _ \/ __|   \
+ |  _/\__ \ |) |
+ |_|  |___/___/
+
+	*/
+
+	//bounds
+	double minPSD_fit = 0.00;
+	double divPSD_fit = 0.18;
+	double maxPSD_fit = 0.40;
+
+	double minErg_fit = 0.05; // MeVee
+	double maxErg_fit = 4.00; // MeVee
+
+
+	// initialize the fitting functions
+	TF1* fitPSD_p;
+	TF1* fitPSD_n;
+	TF1* fitPSD;
+	TF1* intersection;
+
+
+/*
+  ___     _
+ / __|  _| |_ ___
+| (_| || |  _(_-<
+ \___\_,_|\__/__/
+*/
+TCut selectChan;
+
+
 
 /*
 ___             _   _
@@ -180,9 +235,13 @@ ___             _   _
 	virtual void     InitFiss();
 	virtual Bool_t   Notify();
 	virtual void     Show(Long64_t entry = -1);
+
+	// functions to initialize attributes
 	virtual void 		 InitializeDetectorHistograms();
+	virtual void 		 InitializePSDFunctions();
 
 	// functions to perfom the detection analysis
+	virtual void      TriggerAnalysis();
 	virtual int      DetectionAnalysis();
 	virtual void     SystemAnalysis();
 	virtual void 		 FissionAnalysis();
