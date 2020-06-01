@@ -127,6 +127,9 @@ int FissionExperimentClass::CreateDetectionAnalysis(TFile* writeFile)
 	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
 	detectorData = new DetectorSystemClass(coincTreeChain, detFile, info);
 
+	cout << "Creating the functions to analyze the data. " << endl;
+	detectorData->InitializePSDFunctions();
+
 	cout << "Creating the histograms to store the data. " << endl;
 	detectorData->InitializeDetectorHistograms();
 

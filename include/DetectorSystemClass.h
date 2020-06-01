@@ -18,6 +18,10 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include <TH3.h>
 #include <THStack.h>
 
+#include <TF1.h>
+
+#include <TCut.h>
+
 #include <string.h>
 #include <iostream>
 #include <fstream>
@@ -62,6 +66,9 @@ public:
 	TDirectory *cdFigCoinc;
 	TDirectory *cdBicorr;
 	TDirectory *cdRef;
+
+	// subdirectory for slices
+	TDirectory * cdPsdSLices;
 
 	// current tree in chain
 	Int_t   fCurrent;
@@ -176,6 +183,41 @@ _  _ _    _
 	int       f_neutronBackMult;
 	int       f_gammaBackMult;
 
+
+	/*
+	___  ___ ___
+ | _ \/ __|   \
+ |  _/\__ \ |) |
+ |_|  |___/___/
+
+	*/
+
+	//bounds
+	double minPSD_fit = 0.00;
+	double divPSD_fit = 0.18;
+	double maxPSD_fit = 0.40;
+
+	double minErg_fit = 0.05; // MeVee
+	double maxErg_fit = 4.00; // MeVee
+
+
+	// initialize the fitting functions
+	TF1* fitPSD_p;
+	TF1* fitPSD_n;
+	TF1* fitPSD;
+	TF1* intersection;
+
+
+/*
+  ___     _
+ / __|  _| |_ ___
+| (_| || |  _(_-<
+ \___\_,_|\__/__/
+*/
+TCut selectChan;
+
+
+
 /*
 ___             _   _
 | __|  _ _ _  __| |_(_)___ _ _  ___
@@ -193,9 +235,13 @@ ___             _   _
 	virtual void     InitFiss();
 	virtual Bool_t   Notify();
 	virtual void     Show(Long64_t entry = -1);
+
+	// functions to initialize attributes
 	virtual void 		 InitializeDetectorHistograms();
+	virtual void 		 InitializePSDFunctions();
 
 	// functions to perfom the detection analysis
+	virtual void      TriggerAnalysis();
 	virtual int      DetectionAnalysis();
 	virtual void     SystemAnalysis();
 	virtual void 		 FissionAnalysis();

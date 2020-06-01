@@ -5,6 +5,7 @@ Purpose: Initialize all the histograms that are used for the analysis of the
 Date: Ann Arbor, May 14th 2020
 */
 
+#define InitializeDetectorHistograms_cxx
 #include "DetectorSystemClass.h"
 
 void DetectorSystemClass::InitializeDetectorHistograms()

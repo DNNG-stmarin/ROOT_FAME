@@ -22,6 +22,10 @@ So far, we look at:
 #include <TFitResult.h>
 #include <THStack.h>
 
+#include <TProfile.h>
+#include <TGraph.h>
+#include <TLine.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <queue>
@@ -48,29 +52,6 @@ int DetectorSystemClass::DetectionAnalysis()
 	TString filePrefix = "FissionOutput";
 	TString fileInName;
 
-	// define the fitting function for the psd discrimination
-	double minPSD_fit = 0;
-	double maxPSD_fit = 0.3;
-	TF1* gaussian = new TF1("gausPSD", "[0]/(1 + ((x - [1])/([2]))^2)", minPSD_fit, maxPSD_fit);
-	TF1* cauchy = new TF1("cauchyPSD", "[0]*e^(-(x - [1])^2/(2*[2]^2))", minPSD_fit, maxPSD_fit);
-
-	// the sum of the two fitting functions
-	TF1* fitPSD_np = new TF1("fitPSDnp", "gausPSD + cauchyPSD");
-
-	fitPSD_np->SetParNames("AP", "mP", "sP", "AN", "mN", "sN");
-	fitPSD_np->SetParameter(1, 0.12);
-	fitPSD_np->SetParameter(2, 0.01);
-	fitPSD_np->SetParameter(4, 0.24);
-	fitPSD_np->SetParameter(5, 0.035);
-	//
-	fitPSD_np->SetParLimits(4, 0.15, 0.3);
-	fitPSD_np->SetParLimits(5, 0.01, 0.05);
-
-	// initialize the pointers to the fits
-	TFitResultPtr tofDelPFit;
-	TFitResultPtr psdFit;
-
-	double psdPhotMean, psdPhotStd, psdNeutMean, psdNeutStd;
 
 
 	/*
@@ -81,27 +62,29 @@ int DetectorSystemClass::DetectionAnalysis()
 
 	*/
 
-	// cuts based on detector
-	TCut selectChan;
-	TString chanS = "totChan==";
+	// important make cuts
 
-	// cuts based on psp
-	float minPSP = 0.0;
-	float maxPSP = 1.0;
-
-	// max min cuts
-	TString upPSP = "totPSP >= " + to_string(minPSP);
-	TString downPSP = "totPSP <= " + to_string(maxPSP);
-	TCut cutMinPSP;
-	TCut cutMaxPSP;
-	cutMinPSP = upPSP;
-	cutMaxPSP = downPSP;
-
-	// neutron photon cuts
-	TCut neutronCut;
-	TCut photonCut;
-	TString neutPSP = "totPSP >=";
-	TString photPSP = "totPSP <=";
+	// // cuts based on detector
+	// TCut selectChan;
+	// TString chanS = "totChan==";
+	//
+	// // cuts based on psp
+	// float minPSP = 0.0;
+	// float maxPSP = 1.0;
+	//
+	// // max min cuts
+	// TString upPSP = "totPSP >= " + to_string(minPSP);
+	// TString downPSP = "totPSP <= " + to_string(maxPSP);
+	// TCut cutMinPSP;
+	// TCut cutMaxPSP;
+	// cutMinPSP = upPSP;
+	// cutMaxPSP = downPSP;
+	//
+	// // neutron photon cuts
+	// TCut neutronCut;
+	// TCut photonCut;
+	// TString neutPSP = "totPSP >=";
+	// TString photPSP = "totPSP <=";
 
 	/*
 	  __  __      _        _
@@ -111,11 +94,10 @@ int DetectorSystemClass::DetectionAnalysis()
 	                                    |_|
 	*/
 
-
-
 	detFile->cd();
 
 	int channelDet;
+	double tempPSD, tempSlice;
 
 	if (tree == 0) return -1;
 
@@ -136,18 +118,6 @@ int DetectorSystemClass::DetectionAnalysis()
 		 // store the channel number
 		 channelDet = isDetector(totChan[part]);
 
-		 // if(channelDet < 0)
-		 // {
-			//  cout << totChan[part] << " -> " << channelDet << endl;
-			//  cout << "broken less than 0 at " << jentry << " " << ientry << endl;
-			//  cout << "At mult of " << tMult << endl;
-		 // }
-		 //
-		 // if(channelDet > numDetectors)
-		 // {
-			//  cout << "broken outside range" << endl;
-		 // }
-
 		 // fill the appropriate histograms
 		 psdhists[channelDet]->Fill(totPSP[part]); // psd histogram
 		 erghists[channelDet]->Fill(totDep[part]); // energy histogram
@@ -160,28 +130,227 @@ int DetectorSystemClass::DetectionAnalysis()
 		 expHists[channelDet]->Fill(totPSP[part], totDep[part], totToF[part]); // complete point
 	 }
   }
-	cout << "Finished psd loop" << endl;
+	cout << "Finished psd filling loop" << endl;
 
-	// psd discrimination loop delay loop
-	for(int i = 0; i < numDetectors; i++)
+	/*
+	___  _            _       _           _   _
+ |   \(_)___ __ _ _(_)_ __ (_)_ _  __ _| |_(_)___ _ _
+ | |) | (_-</ _| '_| | '  \| | ' \/ _` |  _| / _ \ ' \
+ |___/|_/__/\__|_| |_|_|_|_|_|_||_\__,_|\__|_\___/_||_|
+
+	*/
+
+	int stepSize = 10;
+	long int minEntries = 400;
+
+	// initialize the pointers to the fits
+	TFitResultPtr psdFit;
+	TFitResultPtr tofDelPFit;
+	TFitResultPtr psdDiscFit;
+
+	double psdPhotCounts, psdPhotMean, psdPhotStd;
+	double psdNeutCounts, psdNeutMean, psdNeutStd;
+
+	double *energySliceInd, *discLinePoint;
+
+	// initialize the discrimination line graphs
+	TGraph** discLines;
+	discLines = new TGraph* [numDetectors];
+
+	TF1* fitDisc = new TF1("FitDisc", "pol2", minErg_fit, maxErg_fit);
+	fitDisc->SetLineStyle(kDashed);
+	fitDisc->SetLineColor(kOrange);
+	fitDisc->SetLineWidth(4);
+
+	double p0Disc, p1Disc, p2Disc;
+
+	// initialize the tracker of good slices
+	int numGoodSlices;
+	int energyBins;
+
+	// psd discrimination loop delay over detectors
+	for(int det = 0; det < numDetectors; det++)
 	{
+		cdPsd->cd();
+		cout << "For detector " << det << ":" << endl;
 
+		energyBins = psdErgHists[det]->GetNbinsX(); // get the number of slices
+		energySliceInd = new double [energyBins]; //energy slice
+		discLinePoint = new double [energyBins]; //discrimination
+		numGoodSlices = 0; // reset the number of good slices
 
-		// find the psp parameter
-		psdFit = psdhists[i]->Fit(fitPSD_np, "SQ");
+		// find the profile to get the center
+		TProfile* histErgProfile = psdErgHists[det]->ProfileX("profileEnergy");
 
-		psdPhotMean = psdFit->Parameter(1);
-		psdPhotStd = psdFit->Parameter(2);
-		psdNeutMean = psdFit->Parameter(4);
-		psdNeutStd = psdFit->Parameter(5);
+		cdPsdSLices->cd();
+		// loop over the slices
+		for(int energySlice = 0; energySlice < energyBins; energySlice += stepSize)
+		{
 
-		// find the appropriate psp parameters here
-		cout << psdPhotMean << " " << psdNeutMean << endl;
+			// define the slice
+			TH1D* psdErgSlice = psdErgHists[det]->ProjectionY("psdErgSlice", energySlice, energySlice+stepSize);
+			int numEntriesInSlice = psdErgSlice->GetEntries();
+			psdErgSlice->SetLineColor(kBlack);
 
-		// compute the psd discrimination parameter
-		detectors[i].discPSD = (psdPhotMean + psdNeutMean)/2;
+			// close out of the loop if there is not enough info in the slice
+			if(numEntriesInSlice < minEntries)
+			{
+				continue;
+			}
 
-		cout << "PSD discrimination is: " << detectors[i].discPSD << endl;
+			//smooth histograms before fitting
+			TH1F* smooth = (TH1F*) psdErgSlice->Clone();
+			smooth->SetLineColor(kRed);
+			smooth->Smooth(1);
+
+			// find the initial parameters for the fiting of the photon peak
+			smooth->GetXaxis()->SetRangeUser(minPSD_fit, divPSD_fit);
+			Double_t pMax = smooth->GetMaximum();
+			Double_t binpMax = smooth->GetMaximumBin();
+			Double_t xpMax = smooth->GetXaxis()->GetBinCenter(binpMax);
+			Double_t pMean = smooth->GetMean();
+			Double_t pRMS = smooth->GetRMS();
+
+			// find the initial parameters for the fitting of the neutron peak
+			smooth->GetXaxis()->SetRangeUser(divPSD_fit, maxPSD_fit);
+			Double_t nMax = smooth->GetMaximum();
+			Double_t binnMax = smooth->GetMaximumBin();
+			Double_t xnMax = smooth->GetXaxis()->GetBinCenter(binnMax);
+			Double_t nMean = smooth->GetMean();
+			Double_t nRMS = smooth->GetRMS();
+
+			//reset
+			smooth->GetXaxis()->SetRangeUser(minPSD_fit, maxPSD_fit);
+
+			// set the initial guesses
+			fitPSD->SetParameter(0, pMax);
+			fitPSD->SetParameter(1, xpMax);
+			fitPSD->SetParameter(2, pRMS);
+
+			fitPSD->SetParameter(3, nMax);
+			fitPSD->SetParameter(4, xnMax);
+			fitPSD->SetParameter(5, nRMS);
+
+			// find the psp parameter through fit and reset
+			psdErgSlice->GetXaxis()->SetRangeUser(minPSD_fit, maxPSD_fit);
+			psdFit = psdErgSlice->Fit(fitPSD, "SQ");
+
+			// extract the relevant fit parameters
+			psdPhotCounts = psdFit->Parameter(0);
+			psdPhotMean = psdFit->Parameter(1);
+			psdPhotStd = psdFit->Parameter(2);
+			psdNeutCounts = psdFit->Parameter(3);
+			psdNeutMean = psdFit->Parameter(4);
+			psdNeutStd = psdFit->Parameter(5);
+
+			// cout << "Finished fitting " << endl;
+			// cout << "[" << psdPhotCounts << " " << psdPhotMean << " " << psdPhotStd;
+			// cout << " " << psdNeutCounts << " " << psdNeutMean << " " << psdNeutStd;
+			// cout << "]" << endl;
+
+			// set fitted parameters
+			fitPSD->SetParameter(0, psdPhotCounts);
+			fitPSD->SetParameter(1, psdPhotMean);
+			fitPSD->SetParameter(2, psdPhotStd);
+
+			fitPSD->SetParameter(3, psdNeutCounts);
+			fitPSD->SetParameter(4, psdNeutMean);
+			fitPSD->SetParameter(5, psdNeutStd);
+
+			// set fitted parameters
+			intersection->SetParameter(0, psdPhotCounts);
+			intersection->SetParameter(1, psdPhotMean);
+			intersection->SetParameter(2, psdPhotStd);
+
+			intersection->SetParameter(3, psdNeutCounts);
+			intersection->SetParameter(4, psdNeutMean);
+			intersection->SetParameter(5, psdNeutStd);
+
+			// set fitted parameters to the individual parameters
+			fitPSD_p->SetParameter(0, psdPhotCounts);
+			fitPSD_p->SetParameter(1, psdPhotMean);
+			fitPSD_p->SetParameter(2, psdPhotStd);
+
+			fitPSD_n->SetParameter(0, psdNeutCounts);
+			fitPSD_n->SetParameter(1, psdNeutMean);
+			fitPSD_n->SetParameter(2, psdNeutStd);
+
+			// see if we can find the interesect
+			if((psdNeutMean < psdPhotMean) &
+			   (intersection->Eval(psdNeutMean) > 0) &
+			   (intersection->Eval(psdPhotMean) < 0) )
+			{
+			  continue;
+			}
+			// is is valid
+			else
+			{
+				numGoodSlices++;
+			}
+
+			// find the optimal psd line
+			tempPSD = intersection->GetX(0, psdPhotMean, psdNeutMean);
+			tempSlice = (histErgProfile->GetBinCenter(energySlice) + histErgProfile->GetBinCenter(energySlice + stepSize))/2.0;
+
+			// find the points for the graph
+			energySliceInd[numGoodSlices] = tempSlice;
+			discLinePoint[numGoodSlices] = tempPSD;
+
+			TString canSliceName = "psd" + to_string(det) +  "Proj" + to_string(numGoodSlices);
+
+			// canvas with the psd
+			TCanvas* canvasSlice = new TCanvas(canSliceName, canSliceName, 800, 500);
+
+			psdErgSlice->GetYaxis()->SetRangeUser(-1.5*psdPhotCounts, 1.5*psdPhotCounts);
+
+			canvasSlice->cd();
+
+			psdErgSlice->Draw();
+			fitPSD->Draw("SAME");
+			//fitPSD_n->Draw("SAME");
+			//fitPSD_p->Draw("SAME");
+			intersection->Draw("SAME");
+
+			// discrimination line
+			TLine* line = new TLine(tempPSD, 0, tempPSD, pMax);
+			line->SetLineColor(kBlack);
+			line->Draw("SAME");
+
+			canvasSlice->Write();
+		}
+
+		cdPsd->cd();
+
+		cout << "Finished looping through slices" << endl;
+
+		// create a canvas with the psd discrimination
+		TString canDiscErgName = "psdErg" + to_string(det);
+		TCanvas* canvasDiscErg = new TCanvas(canDiscErgName, canDiscErgName, 800, 500);
+
+		// create a new psd discrimination line
+	  discLines[det] = new TGraph(numGoodSlices, energySliceInd, discLinePoint);
+		discLines[det]->SetLineColor(kRed);
+		discLines[det]->SetLineWidth(3);
+
+		// fit the psd discriminations
+		psdDiscFit = discLines[det]->Fit(fitDisc, "SQ"); // change the bounds here
+
+		// extract fit information
+		p0Disc = psdDiscFit->Parameter(0);
+		p1Disc = psdDiscFit->Parameter(1);
+		p2Disc = psdDiscFit->Parameter(2);
+
+		// set discrimination line
+		fitDisc->SetParameters(p0Disc, p1Disc, p2Disc);
+
+		// draw the line on top of the histogram
+		canvasDiscErg->cd();
+		psdErgHists[det]->Draw();
+		discLines[det]->Draw("SAME");
+		fitDisc->Draw("SAME");
+		canvasDiscErg->Write();
+
+		detectors[det].discPSD = discLinePoint[10];
 	}
 
 
@@ -243,7 +412,6 @@ int DetectorSystemClass::DetectionAnalysis()
 			 tofNhists[channelDet]->Fill(corrTime);
 			 kinematicN[channelDet]->Fill(corrTime, totDep[part]);
 		 }
-
 	 }
 	}
 

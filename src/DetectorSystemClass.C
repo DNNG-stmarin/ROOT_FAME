@@ -32,6 +32,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	//cout << "DetectorSystemClass treeIn: " << treeIn << endl;
 
 	// create the directories to store the results
+
 	//create folders and write things to correct folder
 	cdPsd = detFile->mkdir("PSD");
 	cdToF = detFile->mkdir("TOF");
@@ -41,6 +42,9 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdFigCoinc = detFile->mkdir("CoincFigs");
 	cdBicorr = detFile->mkdir("Bicorr");
 	cdRef = detFile->mkdir("Reflections");
+
+	// create the folder for psd slices
+	cdPsdSLices = cdPsd->mkdir("PSD_slices");
 
 	fissionFile = new TFile(nameFission + ".root", "RECREATE");
 	fissionTree = new TTree(nameFission, nameFission);
