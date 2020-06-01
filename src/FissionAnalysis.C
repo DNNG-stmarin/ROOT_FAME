@@ -51,7 +51,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for neutrons
       if(
-        (totPSP[j] > detectors[numDet].discPSD)
+        (totPSP[j] > detectors[numDet].discPSD->Eval(totDep[j])) 
         &
         (timeDet > -5)
         &
@@ -65,7 +65,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for gammas
       else if(
-        (totPSP[j] < detectors[numDet].discPSD)
+        (totPSP[j] < detectors[numDet].discPSD->Eval(totDep[j]) )
         &
         (timeDet > -5)
         &
@@ -79,7 +79,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for background neutrons
       else if(
-        (totPSP[j] > detectors[numDet].discPSD)
+        (totPSP[j] > detectors[numDet].discPSD->Eval(totDep[j]) )
         &
         (timeDet > -80)
         &
@@ -93,7 +93,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for background photons
       else if(
-        (totPSP[j] < detectors[numDet].discPSD)
+        (totPSP[j] < detectors[numDet].discPSD->Eval(totDep[j]) )
         &
         (timeDet> - 80)
         &
