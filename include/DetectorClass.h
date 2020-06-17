@@ -12,6 +12,7 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include <TChain.h>
 #include <TFile.h>
 #include <TString.h>
+#include <TF1.h>
 
 #include <string.h>
 #include <iostream>
@@ -36,7 +37,7 @@ public:
 	double energyResolution; // store the energy resolution of this detector
 	double timeResolution; // store the time resolution from the fitted gamma peak
 
-	double discPSD; // psd discrimination line
+	TF1* discPSD; // psd discrimination line
 
 	double energyCalibration; // store the energy calibration for each detector
 

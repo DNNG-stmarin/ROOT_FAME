@@ -333,7 +333,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		discLines[det]->SetLineWidth(3);
 
 		// fit the psd discriminations
-		psdDiscFit = discLines[det]->Fit(fitDisc, "SQ"); // change the bounds here
+		psdDiscFit = discLines[det]->Fit(fitDisc, "SQ", "", 0.2, 1.2); // change the bounds here
 
 		// extract fit information
 		p0Disc = psdDiscFit->Parameter(0);
@@ -344,6 +344,10 @@ int DetectorSystemClass::DetectionAnalysis()
 		fitDisc->SetParameters(p0Disc, p1Disc, p2Disc);
 		fitDisc->SetParameters(p0Disc, p1Disc);
 
+		TString nameDisc = "discDet" + to_string(det);
+		detectors[det].discPSD = new TF1(nameDisc, "FitDisc", minErg_fit, maxErg_fit);
+		detectors[det].discPSD->SetParameters(p0Disc, p1Disc, p2Disc);
+
 		// draw the line on top of the histogram
 		canvasDiscErg->cd();
 		psdErgHists[det]->Draw();
@@ -351,7 +355,6 @@ int DetectorSystemClass::DetectionAnalysis()
 		fitDisc->Draw("SAME");
 		canvasDiscErg->Write();
 
-		detectors[det].discPSD = discLinePoint[10];
 	}
 
 
@@ -402,17 +405,18 @@ int DetectorSystemClass::DetectionAnalysis()
 		 corrTime = totToF[part] - detectors[channelDet].timeDelay;
 
 		 // discriminate particles here (make it better)
-		 if(totPSP[part] < detectors[channelDet].discPSD)
+		 if(totPSP[part] < detectors[channelDet].discPSD->Eval(totDep[part]) )
 		 {
 			 tofPhists[channelDet]->Fill(corrTime);
 			 kinematicP[channelDet]->Fill(corrTime, totDep[part]);
 		 }
 
-		 if(totPSP[part] > detectors[channelDet].discPSD)
+		 if(totPSP[part] > detectors[channelDet].discPSD->Eval(totDep[part]) )
 		 {
 			 tofNhists[channelDet]->Fill(corrTime);
 			 kinematicN[channelDet]->Fill(corrTime, totDep[part]);
 		 }
+
 	 }
 	}
 
