@@ -140,7 +140,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 	*/
 
-	int stepSize = 10;
+	int stepSize = 50;
 	long int minEntries = 400;
 
 	// initialize the pointers to the fits
@@ -354,7 +354,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		discLines[det]->Draw("SAME");
 		fitDisc->Draw("SAME");
 		canvasDiscErg->Write();
-		
+
 	}
 
 

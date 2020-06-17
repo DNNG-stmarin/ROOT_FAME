@@ -63,7 +63,7 @@ public:
       }
     }
 
-    if(type == 1) // ChiNu
+    else if(type == 1) // ChiNu
     {
       // experiment specific information
       NUM_BEAMS = 0;
@@ -91,14 +91,38 @@ public:
         DETECTORS[i] = tempDet[i];
       }
     }
-  }
 
-  ~InfoSystemTest()
-  {
-    delete BEAM;
-    delete FISSION_CHAMBERS;
-    delete DETECTORS;
-  }
+    else if(type == 2) // FS3
+      {
+        // experiment specific information
+        NUM_BEAMS = 0;
+        NUM_DETS = 1;
+        NUM_CHAMBERS = 1;
+
+        // location of fission chambers and detectors
+        //BEAM[NUM_BEAMS] = {};
+        FISSION_CHAMBERS = new int[NUM_CHAMBERS];
+        int tempfiss[] = {0};
+        //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
+        for(int i=0; i<NUM_CHAMBERS; i++) {
+          FISSION_CHAMBERS[i] = tempfiss[i];
+        }
+
+        DETECTORS = new int[NUM_DETS];
+        int tempDet[] = {10};
+        //memcpy(DETECTORS, tempDet, sizeof(tempDet));
+        for(int i=0; i<NUM_DETS; i++) {
+          DETECTORS[i] = tempDet[i];
+        }
+      }
+    }
+
+    ~InfoSystemTest()
+    {
+      delete BEAM;
+      delete FISSION_CHAMBERS;
+      delete DETECTORS;
+    }
 };
 
 #endif

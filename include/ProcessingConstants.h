@@ -6,12 +6,12 @@ Purpose: Store the constants used in the processing
 #ifndef ProcessingConstants_h_
 #define ProcessingConstants_h_
 
-// these are too important to be left out like this
-const double DETECTOR_THRESHOLD = 0.1;
-
 // calibration of detectors for energy
 const double INT_CALIBRATION = 0.477/1000; // from Cs calibration
 const double CHAMB_CALIBRATION = 0.477/1000; // from Cs calibration
+
+// these are too important to be left out like this
+const double DETECTOR_THRESHOLD = 0.1;
 
 // fission trigger allowed
 const double CHAMBER_THRESHOLD = 0.2;
