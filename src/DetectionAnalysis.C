@@ -140,8 +140,8 @@ int DetectorSystemClass::DetectionAnalysis()
 
 	*/
 
-	int stepSize = 10;
-	long int minEntries = 400;
+	int stepSize = 500;
+	long int minEntries = 50;
 
 	// initialize the pointers to the fits
 	TFitResultPtr psdFit;
@@ -157,7 +157,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	TGraph** discLines;
 	discLines = new TGraph* [numDetectors];
 
-	TF1* fitDisc = new TF1("FitDisc", "pol2", minErg_fit, maxErg_fit);
+	TF1* fitDisc = new TF1("FitDisc", "pol1", minErg_fit, maxErg_fit);
 	fitDisc->SetLineStyle(kDashed);
 	fitDisc->SetLineColor(kOrange);
 	fitDisc->SetLineWidth(4);
@@ -338,10 +338,11 @@ int DetectorSystemClass::DetectionAnalysis()
 		// extract fit information
 		p0Disc = psdDiscFit->Parameter(0);
 		p1Disc = psdDiscFit->Parameter(1);
-		p2Disc = psdDiscFit->Parameter(2);
+		//p2Disc = psdDiscFit->Parameter(2);
 
 		// set discrimination line
 		fitDisc->SetParameters(p0Disc, p1Disc, p2Disc);
+		fitDisc->SetParameters(p0Disc, p1Disc);
 
 		// draw the line on top of the histogram
 		canvasDiscErg->cd();
