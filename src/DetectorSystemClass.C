@@ -44,7 +44,13 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdRef = detFile->mkdir("Reflections");
 
 	// create the folder for psd slices
-	cdPsdSLices = cdPsd->mkdir("PSD_slices");
+	cdPsdSlices = cdPsd->mkdir("PSD_slices");
+	cdPsdIndividual = cdPsd->mkdir("PSD_individual");
+	cdPsdErg = cdPsd->mkdir("PSDErg_discrimination");
+	cdTofSlices = cdToF->mkdir("TOF_slices");
+	cdTofIndividual = cdToF->mkdir("TOF_individual");
+	cdTOFPSD = cdPsd->mkdir("TOF_PSD");
+	cdTofErg = cdToF->mkdir("TOFErg_discrimination");
 
 	fissionFile = new TFile(nameFission + ".root", "RECREATE");
 	fissionTree = new TTree(nameFission, nameFission);

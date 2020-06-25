@@ -27,4 +27,16 @@ const short PHOTON = 2;
 // multiplicity max to store
 const int MAX_MULTIPLICITY = 50;
 
+//psd discrimination guesses - hard code discrimination
+
+//callibrations for each detector individually
+
+//time discriminations (fissionanalysis.c)
+const int MINTIMEN = -5;
+const int MAXTIMEN = 150;
+const int MINTIMEP = -5;
+const int MAXTIMEP = 10;
+const int BACKSHIFT = -80;
+
+
 #endif

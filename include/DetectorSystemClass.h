@@ -68,7 +68,13 @@ public:
 	TDirectory *cdRef;
 
 	// subdirectory for slices
-	TDirectory * cdPsdSLices;
+	TDirectory * cdPsdSlices;
+	TDirectory * cdPsdIndividual;
+	TDirectory * cdPsdErg;
+	TDirectory * cdTofSlices;
+	TDirectory * cdTofIndividual;
+	TDirectory * cdTOFPSD;
+	TDirectory * cdTofErg;
 
 	// current tree in chain
 	Int_t   fCurrent;
@@ -194,7 +200,7 @@ _  _ _    _
 
 	//bounds
 	double minPSD_fit = 0.00;
-	double divPSD_fit = 0.15;
+	double divPSD_fit = 0.16;
 	double maxPSD_fit = 0.40;
 
 	double minErg_fit = 0.05; // MeVee

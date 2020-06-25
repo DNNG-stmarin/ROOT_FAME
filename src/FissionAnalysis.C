@@ -51,11 +51,11 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for neutrons
       if(
-        (totPSP[j] > detectors[numDet].discPSD->Eval(totDep[j])) 
+        (totPSP[j] > detectors[numDet].discPSD->Eval(totDep[j]))
         &
-        (timeDet > -5)
+        (timeDet > MINTIMEN)
         &
-        (timeDet < 150)
+        (timeDet < MAXTIMEN)
         &
         (totDep[j] > 0.1)
         )
@@ -67,9 +67,9 @@ void DetectorSystemClass::FissionAnalysis()
       else if(
         (totPSP[j] < detectors[numDet].discPSD->Eval(totDep[j]) )
         &
-        (timeDet > -5)
+        (timeDet > MINTIMEP)
         &
-        (timeDet < 10)
+        (timeDet < MAXTIMEP)
         &
         (totDep[j] > 0.1)
         )
@@ -81,7 +81,7 @@ void DetectorSystemClass::FissionAnalysis()
       else if(
         (totPSP[j] > detectors[numDet].discPSD->Eval(totDep[j]) )
         &
-        (timeDet > -80)
+        (timeDet > BACKSHIFT)
         &
         (timeDet < -25)
         &
@@ -95,9 +95,9 @@ void DetectorSystemClass::FissionAnalysis()
       else if(
         (totPSP[j] < detectors[numDet].discPSD->Eval(totDep[j]) )
         &
-        (timeDet> - 80)
+        (timeDet> BACKSHIFT)
         &
-        (timeDet< - 65)
+        (timeDet< -65)
         &
         (totDep[j] > 0.1)
         )

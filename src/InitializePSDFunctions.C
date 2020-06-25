@@ -17,7 +17,7 @@ void DetectorSystemClass::InitializePSDFunctions()
 
   // double fitting
   fitPSD = new TF1("fitPSDnp", "fitPSDn + fitPSDp");
-  intersection = new TF1("intersect", "-1*fitPSDn + fitPSDp");
+  intersection = new TF1("intersect", "abs(fitPSDn - fitPSDp)");
 
   // line colors of the fits
   fitPSD->SetLineColor(kRed);
