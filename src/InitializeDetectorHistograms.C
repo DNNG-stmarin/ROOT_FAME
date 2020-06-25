@@ -126,7 +126,7 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
       // energy-psd
       psdErgHistNameT = psdErgName + numDet;
-      psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 10000, 0, 10, 500, 0, 1);
+      psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 1000, 0, 10, 500, 0, 1);
       psdErgHists[i]->SetOption("COLZ");
 
 
