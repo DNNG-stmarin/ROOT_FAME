@@ -1,5 +1,6 @@
 # ROOT \
 _Author_: Stefano Marin, Isabel Hernandez, DNNG: Fission Division .
+based on: CoMPASS reader, Jason Nattress ORNL.
 
 _Purpose_: This code performs all the analysis required for a fission experiment,
 including the system characterization, error analyisis, and data cuts. 
@@ -15,4 +16,6 @@ $ cmake ../
 $ make
 
 How to run
-./main pathToFile
+./ROOT_FAME pathToFile
+
+(the code is a prototype, reach out to stmarin@umich.edu to actually use it)
