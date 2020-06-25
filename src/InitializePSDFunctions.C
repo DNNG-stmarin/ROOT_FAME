@@ -15,6 +15,10 @@ void DetectorSystemClass::InitializePSDFunctions()
   fitPSD_p = new TF1("fitPSDp", "cauchyPSD");
   fitPSD_n = new TF1("fitPSDn", "gausPSD");
 
+  //fitTOF_p = new TF1("fitTOFp", "[0]*e^(-(x - [1])^2/(2*[2]^2))");
+  //fitTOF_n = new TF1("fitTOFn", "[0]/(1 + ((x - [1])/([2]))^2)");
+  //TOFintersection = new TF1("TOFintersect", "abs(fitTOFn - fitTOFp)");
+
   // double fitting
   fitPSD = new TF1("fitPSDnp", "fitPSDn + fitPSDp");
   intersection = new TF1("intersect", "abs(fitPSDn - fitPSDp)");

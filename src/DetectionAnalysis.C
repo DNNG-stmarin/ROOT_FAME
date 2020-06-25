@@ -95,11 +95,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	*/
 
 	detFile->cd();
-
 	int channelDet;
-	double tempPSD, tempSlice;
-	double tracktof[numDetectors];
-	double trackpsd[numDetectors];
 
 	if (tree == 0) return -1;
 
@@ -140,58 +136,45 @@ int DetectorSystemClass::DetectionAnalysis()
  |___/|_/__/\__|_| |_|_|_|_|_|_||_\__,_|\__|_\___/_||_|
 
 	*/
-
+	//slices
 	int stepSizepsd = 20;
-	int stepSizetof = 20;
 	long int minEntries = 150;
-	long int minEntriestof = 200;
-	// initialize the pointers to the fits
-	TFitResultPtr psdFit;
-	TFitResultPtr tofDelPFit;
-	TFitResultPtr psdDiscFit;
-	TFitResultPtr psdDiscFittof;
+	int numGoodSlicespsd;
+	int energyBinspsd;
+	double tempPSD, tempErgPSD;
 	double psdPhotCounts, psdPhotMean, psdPhotStd;
 	double psdNeutCounts, psdNeutMean, psdNeutStd;
 	double *energySliceInd, *discLinePoint;
-	double *energySliceIndtof, *discLinePointtof;
-
-	// initialize the discrimination line graphs
 	TGraph** discLines;
-	TGraph** discLinestof;
 	discLines = new TGraph* [numDetectors];
-	discLinestof = new TGraph* [numDetectors];
-
-	TF1* fitDisc = new TF1("FitDisc", "pol1", minErg_fit, maxErg_fit);
-	fitDisc->SetLineStyle(kDashed);
-	fitDisc->SetLineColor(kOrange);
-	fitDisc->SetLineWidth(4);
-	TF1* fitDisctof = new TF1("FitDisctof", "pol1", minErg_fit, maxErg_fit);
-	fitDisctof->SetLineStyle(kDashed);
-	fitDisctof->SetLineColor(kOrange);
-	fitDisctof->SetLineWidth(4);
 	double p0Disc, p1Disc, p2Disc;
-	// initialize the tracker of good slices
-	int numGoodSlices;
-	int energyBins;
+
+	TFitResultPtr fitPSD_opt;
+	TFitResultPtr psdDisc_opt;
+	TF1* psdDisc = new TF1("psdDisc", "pol1", minErg_fit, maxErg_fit);
+	psdDisc->SetLineStyle(kDashed);
+	psdDisc->SetLineColor(kOrange);
+	psdDisc->SetLineWidth(4);
 
 
 	// psd slice discrimination
+	cout << "\n******SLICING PSDERG******\n";
 	for(int det = 0; det < numDetectors; det++)
 	{
 		cdPsd->cd();
-		cout << "\nFor detector " << det << ":" << endl;
+		cout << "For detector " << det << ":" << endl;
 
-		energyBins = psdErgHists[det]->GetNbinsX(); // get the number of slices
-		energySliceInd = new double [energyBins]; //energy slice
-		discLinePoint = new double [energyBins]; //discrimination
-		numGoodSlices = -1; // reset the number of good slices
+		energyBinspsd = psdErgHists[det]->GetNbinsX(); // get the number of slices
+		energySliceInd = new double [energyBinspsd]; //energy slice
+		discLinePoint = new double [energyBinspsd]; //discrimination
+		numGoodSlicespsd = -1; // reset the number of good slices
 
 		// find the profile to get the center
 		TProfile* histErgProfile = psdErgHists[det]->ProfileX("profileEnergy");
 
 		cdPsdSlices->cd();
 		// loop over the slices
-		for(int energySlice = 0; energySlice < energyBins; energySlice += stepSizepsd)
+		for(int energySlice = 0; energySlice < energyBinspsd; energySlice += stepSizepsd)
 		{
 
 			// define the slice
@@ -240,15 +223,15 @@ int DetectorSystemClass::DetectionAnalysis()
 
 			// find the psp parameter through fit and reset
 			psdErgSlice->GetXaxis()->SetRangeUser(minPSD_fit, maxPSD_fit);
-			psdFit = psdErgSlice->Fit(fitPSD, "SQ");
+			fitPSD_opt = psdErgSlice->Fit(fitPSD, "SQ");
 
 			// extract the relevant fit parameters
-			psdPhotCounts = psdFit->Parameter(0);
-			psdPhotMean = psdFit->Parameter(1);
-			psdPhotStd = psdFit->Parameter(2);
-			psdNeutCounts = psdFit->Parameter(3);
-			psdNeutMean = psdFit->Parameter(4);
-			psdNeutStd = psdFit->Parameter(5);
+			psdPhotCounts = fitPSD_opt->Parameter(0);
+			psdPhotMean = fitPSD_opt->Parameter(1);
+			psdPhotStd = fitPSD_opt->Parameter(2);
+			psdNeutCounts = fitPSD_opt->Parameter(3);
+			psdNeutMean = fitPSD_opt->Parameter(4);
+			psdNeutStd = fitPSD_opt->Parameter(5);
 
 			// set fitted parameters
 			fitPSD->SetParameter(0, psdPhotCounts);
@@ -279,30 +262,22 @@ int DetectorSystemClass::DetectionAnalysis()
 
 			// find the optimal psd line
 			tempPSD = intersection->GetMinimumX(psdPhotMean, psdNeutMean);
-			tempSlice = (histErgProfile->GetBinCenter(energySlice) + histErgProfile->GetBinCenter(energySlice + stepSizepsd))/2.0;
+			tempErgPSD = (histErgProfile->GetBinCenter(energySlice) + histErgProfile->GetBinCenter(energySlice + stepSizepsd))/2.0;
 			cout << psdPhotMean << "    " << tempPSD << "    " << psdNeutMean;
 
 			if(tempPSD < psdPhotMean || tempPSD > psdNeutMean || tempPSD >= 1) {
 				cout << "     throw" << endl;
 				continue;
 			}
-			// else if (tempPSD < psdPhotMean + psdPhotStd/2 || tempPSD > psdNeutMean - psdNeutStd/2) {
-			// 	cout << "     throw" << endl;
-			// 	continue;
-			// }
-			// else if(tempPSD-psdPhotMean < 0.005 || psdNeutMean-tempPSD < 0.005) {
-			// 	cout << "     throw" << endl;
-			// 	continue;
-			// }
 			else {
-				numGoodSlices++;
+				numGoodSlicespsd++;
 				cout << endl;
 			}
 			// find the points for the graph
-			energySliceInd[numGoodSlices] = tempSlice;
-			discLinePoint[numGoodSlices] = tempPSD;
+			energySliceInd[numGoodSlicespsd] = tempErgPSD;
+			discLinePoint[numGoodSlicespsd] = tempPSD;
 
-			TString canSliceName = "psd" + to_string(det) +  "Proj" + to_string(numGoodSlices);
+			TString canSliceName = "psd" + to_string(det) +  "Proj" + to_string(numGoodSlicespsd);
 
 			// canvas with the psd
 			TCanvas* canvasSlice = new TCanvas(canSliceName, canSliceName, 800, 500);
@@ -310,7 +285,6 @@ int DetectorSystemClass::DetectionAnalysis()
 			psdErgSlice->GetYaxis()->SetRangeUser(0, 1.5*psdPhotCounts);
 
 			canvasSlice->cd();
-
 			psdErgSlice->Draw();
 			fitPSD->Draw("SAME");
 			intersection->Draw("SAME");
@@ -323,15 +297,13 @@ int DetectorSystemClass::DetectionAnalysis()
 			TLine* line = new TLine(tempPSD, 0, tempPSD, 1.5*psdPhotCounts);
 			line->SetLineColor(kBlack);
 			line->Draw("SAME");
-
 			canvasSlice->Write();
 		}
 		cdPsd->cd();
-
 		cout << "Finished looping through slices" << endl;
 
 		cout << "all disc: ";
-		for(int i=0; i<numGoodSlices+1; i++) {
+		for(int i=0; i<numGoodSlicespsd+1; i++) {
 			cout << discLinePoint[i] << " ";
 		}
 		cout << endl << endl;
@@ -341,45 +313,55 @@ int DetectorSystemClass::DetectionAnalysis()
 		TCanvas* canvasDiscErg = new TCanvas(canDiscErgName, canDiscErgName, 800, 500);
 
 		// create a new psd discrimination line
-	  discLines[det] = new TGraph(numGoodSlices+1, energySliceInd, discLinePoint);
+	  discLines[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, discLinePoint);
 		discLines[det]->SetLineColor(kRed);
 		discLines[det]->SetLineWidth(3);
 
 		// fit the psd discriminations
-		psdDiscFit = discLines[det]->Fit(fitDisc, "SQ", 0, 0.4); // change the bounds here
+		psdDisc_opt = discLines[det]->Fit(psdDisc, "SQ", 0, 0.4); // change the bounds here
 
 		// extract fit information
-		p0Disc = psdDiscFit->Parameter(0);
-		p1Disc = psdDiscFit->Parameter(1);
-		//p2Disc = psdDiscFit->Parameter(2);
+		p0Disc = psdDisc_opt->Parameter(0);
+		p1Disc = psdDisc_opt->Parameter(1);
+		//p2Disc = psdDisc_opt->Parameter(2);
 
 		// set discrimination line
-		fitDisc->SetParameters(p0Disc, p1Disc, p2Disc);
-		fitDisc->SetParameters(p0Disc, p1Disc);	//whats the purpose of this?
+		psdDisc->SetParameters(p0Disc, p1Disc, p2Disc);
+		psdDisc->SetParameters(p0Disc, p1Disc);	//whats the purpose of this?
 
 		TString nameDisc = "discDet" + to_string(det);
-		detectors[det].discPSD = new TF1(nameDisc, "FitDisc", minErg_fit, maxErg_fit);
+		detectors[det].discPSD = new TF1(nameDisc, "psdDisc", minErg_fit, maxErg_fit);
 		detectors[det].discPSD->SetParameters(p0Disc, p1Disc, p2Disc);
 
 		// draw the line on top of the histogram
 		canvasDiscErg->cd();
 		psdErgHists[det]->Draw();
 		discLines[det]->Draw("SAME");
-		fitDisc->Draw("SAME");
+		psdDisc->Draw("SAME");
 		cdPsdErg->cd();
 		canvasDiscErg->Write();
 	}
 
-	/*
-	_____ _       _
- |_   _(_)_ __ (_)_ _  __ _
-   | | | | '  \| | ' \/ _` |
-   |_| |_|_|_|_|_|_||_\__, |
-                      |___/
-	*/
+/*
+            )   (         (    (    (
+  *   )  ( /(   )\ )      )\ ) )\ ) )\ )
+` )  /(  )\()) (()/(     (()/((()/((()/(
+ ( )(_))((_)\   /(_))  __ /(_))/(_))/(_))
+(_(_())   ((_) (_))_| / /(_)) (_)) (_))_
+|_   _|  / _ \ | |_  / / | _ \/ __| |   \
+  | |   | (_) || __|/_/  |  _/\__ \ | |) |
+  |_|    \___/ |_|       |_|  |___/ |___/
+*/
 
 	cdToF->cd();
+	// individual
+	TFitResultPtr tofphotpeak_opt;
+	TFitResultPtr tofneutpeak_opt;
+	double tracktof[numDetectors];
+	double trackpsd[numDetectors];
 
+	
+	cout << "\n******COMPOSING PSDTOF******\n";
 	//individual discrimination for each detector loop
 	for(int i=0; i<numDetectors; i++)
 	{
@@ -392,10 +374,9 @@ int DetectorSystemClass::DetectionAnalysis()
 		double xlim = tofDelPhists[i]->GetXaxis()->GetBinCenter(binlim);
 		double xmin = tofDelPhists[i]->GetXaxis()->GetBinCenter(binmin);
 
-		TF1* gausFitTime = new TF1("peakFit", "[0]*e^(-(x - [1])^2/(2*[2]^2))", xmin, xlim);
-		TF1* neutFitTime = new TF1("npeakFit", "[0]/(1 + ((x - [1])/([2]))^2)", xmin, xlim);
-		TF1* TOFintersection = new TF1("TOFintersect", "abs(npeakFit - peakFit)", xmin, xlim);
-
+		TF1* tofphotpeak = new TF1("peakFit", "[0]*e^(-(x - [1])^2/(2*[2]^2))", xmin, xlim);
+		TF1* tofneutpeak = new TF1("npeakFit", "[0]/(1 + ((x - [1])/([2]))^2)", xmin, xlim);
+		TF1* tofintersection = new TF1("TOFintersect", "abs(npeakFit - peakFit)", xmin, xlim);
 
 		//initial parameters photon peak
 		int ctMax = tofDelPhists[i]->GetMaximum();
@@ -405,13 +386,13 @@ int DetectorSystemClass::DetectionAnalysis()
 		cout << "	Peak location at: " << timePeak << endl;
 
 		//fit and optimize photon peak
-		gausFitTime->SetParameter(0, ctMax);
-		gausFitTime->SetParameter(1, timePeak);
-		gausFitTime->SetParameter(2, 1);
-		tofDelPFit = tofDelPhists[i]->Fit(gausFitTime, "SQ");
-		gausFitTime->SetParameter(0, tofDelPFit->Parameter(0));
-		gausFitTime->SetParameter(1, tofDelPFit->Parameter(1));
-		gausFitTime->SetParameter(2, tofDelPFit->Parameter(2));
+		tofphotpeak->SetParameter(0, ctMax);
+		tofphotpeak->SetParameter(1, timePeak);
+		tofphotpeak->SetParameter(2, 1);
+		tofphotpeak_opt = tofDelPhists[i]->Fit(tofphotpeak, "SQ");
+		tofphotpeak->SetParameter(0, tofphotpeak_opt->Parameter(0));
+		tofphotpeak->SetParameter(1, tofphotpeak_opt->Parameter(1));
+		tofphotpeak->SetParameter(2, tofphotpeak_opt->Parameter(2));
 
 		tofDelPhists[i]->GetXaxis()->SetRangeUser(timePeak+10, xlim);
 
@@ -421,21 +402,21 @@ int DetectorSystemClass::DetectionAnalysis()
 		double ntimePeak = tofDelPhists[i]->GetBinCenter(nbinMax);
 
 		//fit and optimize neutron peak
-		neutFitTime->SetParameter(0, neuMax);
-		neutFitTime->SetParameter(1, ntimePeak);
-		neutFitTime->SetParameter(2, tofDelPhists[i]->GetRMS());
-		TFitResultPtr tofDelNFit = tofDelPhists[i]->Fit(neutFitTime, "+SQ");
-		neutFitTime->SetParameter(0, tofDelNFit->Parameter(0));
-		neutFitTime->SetParameter(1, tofDelNFit->Parameter(1));
-		neutFitTime->SetParameter(2, tofDelNFit->Parameter(2));
+		tofneutpeak->SetParameter(0, neuMax);
+		tofneutpeak->SetParameter(1, ntimePeak);
+		tofneutpeak->SetParameter(2, tofDelPhists[i]->GetRMS());
+		tofneutpeak_opt = tofDelPhists[i]->Fit(tofneutpeak, "+SQ");
+		tofneutpeak->SetParameter(0, tofneutpeak_opt->Parameter(0));
+		tofneutpeak->SetParameter(1, tofneutpeak_opt->Parameter(1));
+		tofneutpeak->SetParameter(2, tofneutpeak_opt->Parameter(2));
 
 		tofDelPhists[i]->GetXaxis()->SetRangeUser(xmin, xlim);
 
 		//intersection
-		TOFintersection->SetParameters(gausFitTime->GetParameter(0), gausFitTime->GetParameter(1), gausFitTime->GetParameter(2), neutFitTime->GetParameter(0), neutFitTime->GetParameter(1), neutFitTime->GetParameter(2));
-		TOFintersection->SetLineColor(kGreen);
+		tofintersection->SetParameters(tofphotpeak->GetParameter(0), tofphotpeak->GetParameter(1), tofphotpeak->GetParameter(2), tofneutpeak->GetParameter(0), tofneutpeak->GetParameter(1), tofneutpeak->GetParameter(2));
+		tofintersection->SetLineColor(kGreen);
 
-		double toftempPSD = TOFintersection->GetMinimumX(tofDelPhists[i]->GetXaxis()->GetBinCenter(binMax), tofDelPhists[i]->GetXaxis()->GetBinCenter(nbinMax));
+		double toftempPSD = tofintersection->GetMinimumX(tofDelPhists[i]->GetXaxis()->GetBinCenter(binMax), tofDelPhists[i]->GetXaxis()->GetBinCenter(nbinMax));
 		cout << tofDelPhists[i]->GetXaxis()->GetBinCenter(binMax) << " " << toftempPSD << " " << tofDelPhists[i]->GetXaxis()->GetBinCenter(nbinMax) << endl;
 
 		TString canDiscTOFName = "ToFDiscrimination" + to_string(i);
@@ -449,16 +430,16 @@ int DetectorSystemClass::DetectionAnalysis()
 		canvasDiscTOF->cd();
 		tofDelPhists[i]->Draw();
 		TOFline->Draw("SAME");
-		gausFitTime->Draw("SAME");
-		neutFitTime->SetLineColor(kOrange);
-		neutFitTime->Draw("SAME");
-		TOFintersection->Draw("SAME");
+		tofphotpeak->Draw("SAME");
+		tofneutpeak->SetLineColor(kOrange);
+		tofneutpeak->Draw("SAME");
+		tofintersection->Draw("SAME");
 		cdTofIndividual->cd();
 		canvasDiscTOF->Write();
 
 		// find the delay of photon peak for each detector
-		detectors[i].timeDelay = tofDelPFit->Parameter(1);
-		detectors[i].timeResolution = tofDelPFit->Parameter(2);
+		detectors[i].timeDelay = tofphotpeak_opt->Parameter(1);
+		detectors[i].timeResolution = tofphotpeak_opt->Parameter(2);
 
 		cout << "	Time delay is: " << detectors[i].timeDelay  << endl << endl;
 
@@ -565,20 +546,41 @@ int DetectorSystemClass::DetectionAnalysis()
 		tofpsdcanvas->Write();
 	}
 
-	for(int out=0; out<numDetectors; out++) {
-		cout << trackpsd[out] << " ";
-	}
+		/*
+		_____ _       _
+	 |_   _(_)_ __ (_)_ _  __ _
+	   | | | | '  \| | ' \/ _` |
+	   |_| |_|_|_|_|_|_||_\__, |
+	                      |___/
+		*/
 
+	int stepSizetof = 20;
+	long int minEntriestof = 200;
+	int numGoodSlicestof;
+	int energyBinstof;
+	double tempTOF, tempErgTOF;
+	double *energySliceIndtof, *discLinePointtof;
+	TGraph** discLinestof;
+	discLinestof = new TGraph* [numDetectors];
+
+	TFitResultPtr tofDisc_opt;
+	TF1* tofDisc = new TF1("tofDisc", "pol1", minErg_fit, maxErg_fit);
+	tofDisc->SetLineStyle(kDashed);
+	tofDisc->SetLineColor(kOrange);
+	tofDisc->SetLineWidth(4);
+
+
+	cout << "\n******SLICING TOFERG******\n";
 	//tof slice discrimination
 	for(int det = 0; det < numDetectors; det++)
 	{
 		cdPsd->cd();
-		cout << "\nFor detector " << det << ":" << endl;
+		cout << "For detector " << det << ":" << endl;
 
-		energyBins = tofErgHists[det]->GetNbinsX(); // get the number of slices
-		energySliceIndtof = new double [energyBins]; //energy slice
-		discLinePointtof = new double [energyBins]; //discrimination
-		numGoodSlices = -1; // reset the number of good slices
+		energyBinstof = tofErgHists[det]->GetNbinsX(); // get the number of slices
+		energySliceIndtof = new double [energyBinstof]; //energy slice
+		discLinePointtof = new double [energyBinstof]; //discrimination
+		numGoodSlicestof = -1; // reset the number of good slices
 
 		// find the profile to get the center
 		TProfile* histErgProfile = tofErgHists[det]->ProfileX("profileEnergy");
@@ -586,7 +588,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		cdToF->cd();
 		cdTofSlices->cd();
 		// loop over the slices
-		for(int energySlice = 0; energySlice < energyBins; energySlice += stepSizetof)
+		for(int energySlice = 0; energySlice < energyBinstof; energySlice += stepSizetof)
 		{
 			TF1* gausSlicetof = new TF1("gausSlicetof", "[0]*e^(-(x - [1])^2/(2*[2]^2))");
 			TF1* neutSlicetof = new TF1("neutSlicetof", "[0]/(1 + ((x - [1])/([2]))^2)");
@@ -647,23 +649,23 @@ int DetectorSystemClass::DetectionAnalysis()
 			intersectionSlicetof->SetParameter(5, neutSliceOptimize->Parameter(2));
 
 			// find the optimal psd line
-			double temptofslice = intersectionSlicetof->GetMinimumX(gausSliceOptimize->Parameter(1), neutSliceOptimize->Parameter(1));
-			double tempergSlice = (histErgProfile->GetBinCenter(energySlice) + histErgProfile->GetBinCenter(energySlice + stepSizetof))/2.0;
-			cout << gausSliceOptimize->Parameter(1) << "    " << temptofslice << "," << tempergSlice << "    " << neutSliceOptimize->Parameter(1);
+			tempTOF = intersectionSlicetof->GetMinimumX(gausSliceOptimize->Parameter(1), neutSliceOptimize->Parameter(1));
+			tempErgTOF = (histErgProfile->GetBinCenter(energySlice) + histErgProfile->GetBinCenter(energySlice + stepSizetof))/2.0;
+			cout << gausSliceOptimize->Parameter(1) << "    " << tempTOF << "," << tempErgTOF << "    " << neutSliceOptimize->Parameter(1);
 
-			if(temptofslice < gausSliceOptimize->Parameter(1) || temptofslice > neutSliceOptimize->Parameter(1) || temptofslice >= 200) {
+			if(tempTOF < gausSliceOptimize->Parameter(1) || tempTOF > neutSliceOptimize->Parameter(1) || tempTOF >= 200) {
 				cout << "     throw" << endl;
 				continue;
 			}
 			else {
-				numGoodSlices++;
-				cout << endl << numGoodSlices << endl;
+				numGoodSlicestof++;
+				cout << endl;
 			}
 			// find the points for the graph
-			energySliceIndtof[numGoodSlices] = tempergSlice;
-			discLinePointtof[numGoodSlices] = temptofslice;
+			energySliceIndtof[numGoodSlicestof] = tempErgTOF;
+			discLinePointtof[numGoodSlicestof] = tempTOF;
 
-			TString cantofSliceName = "tof" + to_string(det) +  "Proj" + to_string(numGoodSlices);
+			TString cantofSliceName = "tof" + to_string(det) +  "Proj" + to_string(numGoodSlicestof);
 
 			// canvas with the psd
 			TCanvas* canvastofSlice = new TCanvas(cantofSliceName, cantofSliceName, 800, 500);
@@ -678,7 +680,7 @@ int DetectorSystemClass::DetectionAnalysis()
 			neutSlicetof->SetLineColor(kOrange);
 
 			// discrimination line
-			TLine* tofline = new TLine(temptofslice, 0, temptofslice, 1.5*gausSliceOptimize->Parameter(0));
+			TLine* tofline = new TLine(tempTOF, 0, tempTOF, 1.5*gausSliceOptimize->Parameter(0));
 			tofline->SetLineColor(kBlack);
 			tofline->Draw("SAME");
 
@@ -687,11 +689,10 @@ int DetectorSystemClass::DetectionAnalysis()
 			canvastofSlice->Write();
 		}
 		cdPsd->cd();
-
 		cout << "Finished looping through TOF slices" << endl;
 
 		cout << "all disc: ";
-		for(int i=0; i<numGoodSlices+1; i++) {
+		for(int i=0; i<numGoodSlicestof+1; i++) {
 			cout << discLinePointtof[i] << " ";
 		}
 		cout << endl << endl;
@@ -701,31 +702,27 @@ int DetectorSystemClass::DetectionAnalysis()
 		TCanvas* canvasDiscErgtof = new TCanvas(canDiscErgNametof, canDiscErgNametof, 800, 500);
 
 		// create a new psd discrimination line
-	  discLinestof[det] = new TGraph(numGoodSlices+1, energySliceIndtof, discLinePointtof);
+	  discLinestof[det] = new TGraph(numGoodSlicestof+1, energySliceIndtof, discLinePointtof);
 		discLinestof[det]->SetLineColor(kRed);
 		discLinestof[det]->SetLineWidth(3);
 
 		// fit the psd discriminations
-		psdDiscFittof = discLinestof[det]->Fit(fitDisctof, "SQ", 0, 0.4); // change the bounds here
+		tofDisc_opt = discLinestof[det]->Fit(tofDisc, "SQ", 0, 0.4); // change the bounds here
 
 		// extract fit information
-		p0Disc = psdDiscFittof->Parameter(0);
-		p1Disc = psdDiscFittof->Parameter(1);
-		//p2Disc = psdDiscFit->Parameter(2);
+		p0Disc = tofDisc_opt->Parameter(0);
+		p1Disc = tofDisc_opt->Parameter(1);
 
 		// set discrimination line
-		fitDisctof->SetParameters(p0Disc, p1Disc, p2Disc);
-		fitDisctof->SetParameters(p0Disc, p1Disc);	//whats the purpose of this?
+		tofDisc->SetParameters(p0Disc, p1Disc, p2Disc);
+		tofDisc->SetParameters(p0Disc, p1Disc);	//whats the purpose of this?
 
-		// TString nameDisctof = "discDet" + to_string(det);
-		// detectors[det].discPSD = new TF1(nameDisctof, "FitDisc", minErg_fit, maxErg_fit);
-		// detectors[det].discPSD->SetParameters(p0Disc, p1Disc, p2Disc);
 
 		// draw the line on top of the histogram
 		canvasDiscErgtof->cd();
 		tofErgHists[det]->Draw();
 		discLinestof[det]->Draw("SAME");
-		fitDisctof->Draw("SAME");
+		tofDisc->Draw("SAME");
 		cdTofErg->cd();
 		canvasDiscErgtof->Write();
 	}
