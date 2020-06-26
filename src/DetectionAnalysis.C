@@ -25,6 +25,7 @@ So far, we look at:
 #include <TProfile.h>
 #include <TGraph.h>
 #include <TLine.h>
+#include <TFormula.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -360,7 +361,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	double tracktof[numDetectors];
 	double trackpsd[numDetectors];
 
-	
+
 	cout << "\n******COMPOSING PSDTOF******\n";
 	//individual discrimination for each detector loop
 	for(int i=0; i<numDetectors; i++)
@@ -523,6 +524,13 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		trackpsd[i] = psdtempPSD;
 		tracktof[i] = toftempPSD;
+
+		TString namePointPSD = "detPSD" + to_string(i);
+		//TString namePointTOF = "detTOF" + to_string(i);
+		TFormula *f1 = new TFormula("f1", "[0]");
+		f1->SetParameter(0, psdtempPSD);
+		detectors[i].discPSDPoint = new TF1(namePointPSD, "f1");
+		detectors[i].discTOFPoint = toftempPSD - tofphotpeak_opt->Parameter(1);
 
 		canvaspsd->cd();
 		psdhists[i]->Draw();
