@@ -9,7 +9,7 @@ Date: May 24th, 2020
 
 #define DetectorSystemClass_cxx
 
-// constructor of the detector system class
+// constructor of the detector system class //
 DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest* info)
 {
 	// set the number of detectors and triggers
@@ -51,6 +51,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdTofIndividual = cdToF->mkdir("TOF_individual");
 	cdTOFPSD = cdPsd->mkdir("TOF_PSD");
 	cdTofErg = cdToF->mkdir("TOFErg_discrimination");
+	cdTOFCorr = cdToF->mkdir("TOF_Corrected");
 
 	fissionFile = new TFile(nameFission + ".root", "RECREATE");
 	fissionTree = new TTree(nameFission, nameFission);

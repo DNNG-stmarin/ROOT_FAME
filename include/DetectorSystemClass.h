@@ -75,6 +75,7 @@ public:
 	TDirectory * cdTofIndividual;
 	TDirectory * cdTOFPSD;
 	TDirectory * cdTofErg;
+	TDirectory * cdTOFCorr;
 
 	// current tree in chain
 	Int_t   fCurrent;
@@ -128,6 +129,11 @@ _  _ _    _
 	TH1F** tofDelPhists;
 	TH1F** tofNhists;
 	TH1F** tofPhists;
+
+	//corrected tof histograms
+	TH1F** tofDelPhistsCorr;
+	TH2F** tofPsdHistsCorr;
+	TH2F** tofErgHistsCorr;
 
 	// kinematic histograms
 	TH2F** kinematicAll;
@@ -255,6 +261,7 @@ ___             _   _
 	virtual int      DetectionAnalysis();
 	virtual void     SystemAnalysis();
 	virtual void 		 FissionAnalysis();
+	virtual void     FissionAnalysisLoop();
 
 	// mapping functions
 	int isDetector(int detectorNumber);

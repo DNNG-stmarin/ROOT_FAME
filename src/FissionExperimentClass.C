@@ -141,6 +141,7 @@ int FissionExperimentClass::CreateDetectionAnalysis(TFile* writeFile)
 
 	cout << "Entering fission analysis mode" << endl;
 	detectorData->FissionAnalysis();
+	//detectorData->FissionAnalysisLoop(); //add debug input
 
 	return 1;
 }

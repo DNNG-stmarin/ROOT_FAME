@@ -446,7 +446,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 
 		/////////////////////////individual psd ////////////////////////////////////////////////////////
-
+		//add legend
 		TF1* psdphotpeak = new TF1("psdphotpeak", "[0]*e^(-(x - [1])^2/(2*[2]^2))");
 		TF1* psdneutpeak = new TF1("psdneutpeak", "[0]/(1 + ((x - [1])/([2]))^2)");
 		TF1* psdcombined = new TF1("psdcombined", "psdphotpeak + psdneutpeak");
@@ -484,6 +484,14 @@ int DetectorSystemClass::DetectionAnalysis()
 		psdhists[i]->GetXaxis()->SetRangeUser(minPSD_fit, maxPSD_fit);
 		optimized = psdhists[i]->Fit(psdcombined, "SQ");
 
+		psdphotpeak->SetParameter(0, optimized->Parameter(0));
+		psdphotpeak->SetParameter(1, optimized->Parameter(1));
+		psdphotpeak->SetParameter(2, optimized->Parameter(2));
+
+		psdneutpeak->SetParameter(0, optimized->Parameter(3));
+		psdneutpeak->SetParameter(1, optimized->Parameter(4));
+		psdneutpeak->SetParameter(2, optimized->Parameter(5));
+
 		psdcombined->SetParameter(0, optimized->Parameter(0));
 		psdcombined->SetParameter(1, optimized->Parameter(1));
 		psdcombined->SetParameter(2, optimized->Parameter(2));
@@ -498,13 +506,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		psdintersection->SetParameter(4, optimized->Parameter(4));
 		psdintersection->SetParameter(5, optimized->Parameter(5));
 
-		psdphotpeak->SetParameter(0, optimized->Parameter(0));
-		psdphotpeak->SetParameter(1, optimized->Parameter(1));
-		psdphotpeak->SetParameter(2, optimized->Parameter(2));
 
-		psdneutpeak->SetParameter(0, optimized->Parameter(3));
-		psdneutpeak->SetParameter(1, optimized->Parameter(4));
-		psdneutpeak->SetParameter(2, optimized->Parameter(5));
 
 		double psdtempPSD = psdintersection->GetMinimumX(optimized->Parameter(1), optimized->Parameter(4));
 		//cout << optimized->Parameter(1) << " " << psdtempPSD << " " << optimized->Parameter(4) << endl;
@@ -749,6 +751,11 @@ int DetectorSystemClass::DetectionAnalysis()
 		 // store the channel number
 		 channelDet = isDetector(totChan[part]);
 		 corrTime = totToF[part] - detectors[channelDet].timeDelay;
+		 //totpsd fill histogram w corrtime instead of time
+
+		 tofDelPhistsCorr[channelDet]->Fill(corrTime);
+		 tofPsdHistsCorr[channelDet]->Fill(totPSP[part], corrTime);
+		 tofErgHistsCorr[channelDet]->Fill(totDep[part], corrTime);
 
 		 // discriminate particles here (make it better)
 		 if(totPSP[part] < detectors[channelDet].discPSD->Eval(totDep[part]))
@@ -784,6 +791,11 @@ int DetectorSystemClass::DetectionAnalysis()
 			tofDelPhists[i]->Write();
 			tofNhists[i]->Write();
 			tofPhists[i]->Write();
+
+			cdTOFCorr->cd();
+			tofDelPhistsCorr[i]->Write();
+			tofPsdHistsCorr[i]->Write();
+			tofErgHistsCorr[i]->Write();
 
 			cdKin->cd();
 			kinematicN[i]->Write();

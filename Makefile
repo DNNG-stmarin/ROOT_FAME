@@ -258,6 +258,33 @@ src/FissionAnalysis.C.s:
 	$(MAKE) -f CMakeFiles/ROOT_FAME.dir/build.make CMakeFiles/ROOT_FAME.dir/src/FissionAnalysis.C.s
 .PHONY : src/FissionAnalysis.C.s
 
+src/FissionAnalysisLoopNew.o: src/FissionAnalysisLoopNew.C.o
+
+.PHONY : src/FissionAnalysisLoopNew.o
+
+# target to build an object file
+src/FissionAnalysisLoopNew.C.o:
+	$(MAKE) -f CMakeFiles/ROOT_FAME.dir/build.make CMakeFiles/ROOT_FAME.dir/src/FissionAnalysisLoopNew.C.o
+.PHONY : src/FissionAnalysisLoopNew.C.o
+
+src/FissionAnalysisLoopNew.i: src/FissionAnalysisLoopNew.C.i
+
+.PHONY : src/FissionAnalysisLoopNew.i
+
+# target to preprocess a source file
+src/FissionAnalysisLoopNew.C.i:
+	$(MAKE) -f CMakeFiles/ROOT_FAME.dir/build.make CMakeFiles/ROOT_FAME.dir/src/FissionAnalysisLoopNew.C.i
+.PHONY : src/FissionAnalysisLoopNew.C.i
+
+src/FissionAnalysisLoopNew.s: src/FissionAnalysisLoopNew.C.s
+
+.PHONY : src/FissionAnalysisLoopNew.s
+
+# target to generate assembly for a file
+src/FissionAnalysisLoopNew.C.s:
+	$(MAKE) -f CMakeFiles/ROOT_FAME.dir/build.make CMakeFiles/ROOT_FAME.dir/src/FissionAnalysisLoopNew.C.s
+.PHONY : src/FissionAnalysisLoopNew.C.s
+
 src/FissionExperimentClass.o: src/FissionExperimentClass.C.o
 
 .PHONY : src/FissionExperimentClass.o
@@ -420,6 +447,33 @@ src/TriggerAnalysis.C.s:
 	$(MAKE) -f CMakeFiles/ROOT_FAME.dir/build.make CMakeFiles/ROOT_FAME.dir/src/TriggerAnalysis.C.s
 .PHONY : src/TriggerAnalysis.C.s
 
+src/temp.o: src/temp.C.o
+
+.PHONY : src/temp.o
+
+# target to build an object file
+src/temp.C.o:
+	$(MAKE) -f CMakeFiles/ROOT_FAME.dir/build.make CMakeFiles/ROOT_FAME.dir/src/temp.C.o
+.PHONY : src/temp.C.o
+
+src/temp.i: src/temp.C.i
+
+.PHONY : src/temp.i
+
+# target to preprocess a source file
+src/temp.C.i:
+	$(MAKE) -f CMakeFiles/ROOT_FAME.dir/build.make CMakeFiles/ROOT_FAME.dir/src/temp.C.i
+.PHONY : src/temp.C.i
+
+src/temp.s: src/temp.C.s
+
+.PHONY : src/temp.s
+
+# target to generate assembly for a file
+src/temp.C.s:
+	$(MAKE) -f CMakeFiles/ROOT_FAME.dir/build.make CMakeFiles/ROOT_FAME.dir/src/temp.C.s
+.PHONY : src/temp.C.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -444,6 +498,9 @@ help:
 	@echo "... src/FissionAnalysis.o"
 	@echo "... src/FissionAnalysis.i"
 	@echo "... src/FissionAnalysis.s"
+	@echo "... src/FissionAnalysisLoopNew.o"
+	@echo "... src/FissionAnalysisLoopNew.i"
+	@echo "... src/FissionAnalysisLoopNew.s"
 	@echo "... src/FissionExperimentClass.o"
 	@echo "... src/FissionExperimentClass.i"
 	@echo "... src/FissionExperimentClass.s"
@@ -462,6 +519,9 @@ help:
 	@echo "... src/TriggerAnalysis.o"
 	@echo "... src/TriggerAnalysis.i"
 	@echo "... src/TriggerAnalysis.s"
+	@echo "... src/temp.o"
+	@echo "... src/temp.i"
+	@echo "... src/temp.s"
 .PHONY : help
 
 

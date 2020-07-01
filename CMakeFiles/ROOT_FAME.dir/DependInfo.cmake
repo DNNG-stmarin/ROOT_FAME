@@ -9,12 +9,14 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/isabelhernandez/Desktop/root/src/DetectionAnalysis.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/DetectionAnalysis.C.o"
   "/Users/isabelhernandez/Desktop/root/src/DetectorSystemClass.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/DetectorSystemClass.C.o"
   "/Users/isabelhernandez/Desktop/root/src/FissionAnalysis.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/FissionAnalysis.C.o"
+  "/Users/isabelhernandez/Desktop/root/src/FissionAnalysisLoopNew.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/FissionAnalysisLoopNew.C.o"
   "/Users/isabelhernandez/Desktop/root/src/FissionExperimentClass.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/FissionExperimentClass.C.o"
   "/Users/isabelhernandez/Desktop/root/src/InitializeDetectorHistograms.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/InitializeDetectorHistograms.C.o"
   "/Users/isabelhernandez/Desktop/root/src/InitializePSDFunctions.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/InitializePSDFunctions.C.o"
   "/Users/isabelhernandez/Desktop/root/src/MappingFunctions.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/MappingFunctions.C.o"
   "/Users/isabelhernandez/Desktop/root/src/SystemAnalysis.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/SystemAnalysis.C.o"
   "/Users/isabelhernandez/Desktop/root/src/TriggerAnalysis.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/TriggerAnalysis.C.o"
+  "/Users/isabelhernandez/Desktop/root/src/temp.C" "/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir/src/temp.C.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 

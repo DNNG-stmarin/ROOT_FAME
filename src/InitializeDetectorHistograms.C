@@ -80,7 +80,14 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     TString delayTimeT = "del";
     tofNhists = new TH1F* [numDetectors];
     tofPhists = new TH1F* [numDetectors];
-    tofDelPhists = new TH1F* [numDetectors];;
+    tofDelPhists = new TH1F* [numDetectors];
+
+    //corrected ToF
+    TString delp = "DelP";
+    TString corr = "Corr";
+    tofDelPhistsCorr = new TH1F* [numDetectors];
+    tofPsdHistsCorr = new TH2F* [numDetectors];
+    tofErgHistsCorr = new TH2F* [numDetectors];
 
     // kinematic
   	TString kinematicName = "Kin";
@@ -107,6 +114,7 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   		tofNHistNameT = tofName + neutronName +  numDet;
   		tofPHistNameT = tofName + photonName + numDet;
   		tofDelPhists[i] = new TH1F(tofPHistNameT + delayTimeT, tofPHistNameT + delayTimeT, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      tofDelPhistsCorr[i] = new TH1F(tofName+delp+corr+numDet, tofName+delp+corr+numDet, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
 
       // split by particles
   		tofNhists[i] = new TH1F(tofNHistNameT, tofNHistNameT, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
@@ -118,11 +126,15 @@ void DetectorSystemClass::InitializeDetectorHistograms()
       tofPsdHistNameT = tofPsdNameT + numDet;
       tofPsdHists[i] = new TH2F(tofPsdHistNameT, tofPsdHistNameT, 200, 0, 1, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
       tofPsdHists[i]->SetOption("COLZ");
+      tofPsdHistsCorr[i] = new TH2F(tofName+psdName+corr+numDet, tofName+psdName+corr+numDet, 200, 0, 1, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      tofPsdHistsCorr[i]->SetOption("COLZ");
 
       // tofErg histograms
       tofErgHistNameT = tofErgNameT + numDet;
       tofErgHists[i] = new TH2F(tofErgHistNameT, tofErgHistNameT, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
       tofErgHists[i]->SetOption("COLZ");
+      tofErgHistsCorr[i] = new TH2F(tofName+ergName+corr+numDet, tofName+ergName+corr+numDet, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      tofErgHistsCorr[i]->SetOption("COLZ");
 
       // energy-psd
       psdErgHistNameT = psdErgName + numDet;
