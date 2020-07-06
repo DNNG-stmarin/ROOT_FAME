@@ -37,6 +37,7 @@ private:
 	int expType;
 	int digType;
 	int oldDat;
+	int debug;
 
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";

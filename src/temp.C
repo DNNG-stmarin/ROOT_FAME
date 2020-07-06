@@ -1,6 +1,1 @@
-
-#include "DetectorSystemClass.h"
-
-void DetectorSystemClass::new1() {
-
-}
+//wont let me delete

@@ -30,7 +30,7 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include "DetectorClass.h"
 #include "TriggerClass.h"
 
-#include "PhysicalConstants.h"
+//#include "PhysicalConstants.h"
 #include "ProcessingConstants.h"
 #include "InfoSystemTest.h"
 
@@ -257,7 +257,7 @@ ___             _   _
 	virtual void 		 InitializePSDFunctions();
 
 	// functions to perfom the detection analysis
-	virtual void      TriggerAnalysis();
+	//virtual void      TriggerAnalysis();
 	virtual int      DetectionAnalysis();
 	virtual void     SystemAnalysis();
 	virtual void 		 FissionAnalysis();

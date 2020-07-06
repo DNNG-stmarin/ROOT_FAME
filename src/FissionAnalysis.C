@@ -257,5 +257,5 @@ void DetectorSystemClass::FissionAnalysisLoop()
     deltapsd += step;
   }
   myfile.close();
-  fissionTree->Write();
+  //fissionTree->Write();
 }
