@@ -30,7 +30,7 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include "DetectorClass.h"
 #include "TriggerClass.h"
 
-#include "PhysicalConstants.h"
+//#include "PhysicalConstants.h"
 #include "ProcessingConstants.h"
 #include "InfoSystemTest.h"
 
@@ -68,7 +68,14 @@ public:
 	TDirectory *cdRef;
 
 	// subdirectory for slices
-	TDirectory * cdPsdSLices;
+	TDirectory * cdPsdSlices;
+	TDirectory * cdPsdIndividual;
+	TDirectory * cdPsdErg;
+	TDirectory * cdTofSlices;
+	TDirectory * cdTofIndividual;
+	TDirectory * cdTOFPSD;
+	TDirectory * cdTofErg;
+	TDirectory * cdTOFCorr;
 
 	// current tree in chain
 	Int_t   fCurrent;
@@ -126,6 +133,11 @@ _  _ _    _
 	TH1F** tofDelPhists;
 	TH1F** tofNhists;
 	TH1F** tofPhists;
+
+	//corrected tof histograms
+	TH1F** tofDelPhistsCorr;
+	TH2F** tofPsdHistsCorr;
+	TH2F** tofErgHistsCorr;
 
 	// kinematic histograms
 	TH2F** kinematicAll;
@@ -198,7 +210,7 @@ _  _ _    _
 
 	//bounds
 	double minPSD_fit = 0.00;
-	double divPSD_fit = 0.15;
+	double divPSD_fit = 0.16;
 	double maxPSD_fit = 0.40;
 
 	double minErg_fit = 0.05; // MeVee
@@ -210,6 +222,10 @@ _  _ _    _
 	TF1* fitPSD_n;
 	TF1* fitPSD;
 	TF1* intersection;
+
+	//TF1* fitTOF_p;
+	//TF1* fitTOF_n;
+	//TF1* TOFinteresection
 
 
 /*
@@ -245,10 +261,11 @@ ___             _   _
 	virtual void 		 InitializePSDFunctions();
 
 	// functions to perfom the detection analysis
-	virtual void     TriggerAnalysis();
+	//virtual void     TriggerAnalysis();
 	virtual int      DetectionAnalysis();
 	virtual void     SystemAnalysis();
 	virtual void 		 FissionAnalysis();
+	virtual void     FissionAnalysisLoop();
 
 	// mapping functions
 	int isDetector(int detectorNumber);

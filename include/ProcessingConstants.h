@@ -11,7 +11,7 @@ Purpose: Store the constants used in the processing
 const double CHAN_VUS = (1.0/1000.0)*(1.0/1024.0); // from digitizer channel to Vus
 
 // these are too important to be left out like this
-const double DETECTOR_THRESHOLD = 0.1;
+const double DETECTOR_THRESHOLD = 0.2;
 
 // fission trigger allowed
 const double CHAMBER_THRESHOLD = 0.;
@@ -39,5 +39,17 @@ const double BACKGROUND_SHIFT = MAX_TIME_N - MIN_TIME_P + DELTA_BACK_SIG;
 
 // multiplicity max to store
 const int MAX_MULTIPLICITY = 50;
+
+//psd discrimination guesses - hard code discrimination
+
+//callibrations for each detector individually
+
+//time discriminations (fissionanalysis.c)
+const int MINTIMEN = -5;
+const int MAXTIMEN = 150;
+const int MINTIMEP = -5;
+const int MAXTIMEP = 10;
+const int BACKSHIFT = -80;
+
 
 #endif

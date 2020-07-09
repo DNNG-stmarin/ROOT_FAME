@@ -61,6 +61,9 @@ FissionExperimentClass::FissionExperimentClass()
 	cout << "Do you want to use existing data: no (0), yes (1)" << endl;
 	cin >> oldDat;
 
+	cout << "Do you want to enter debug option: no (0), yes (1)" << endl;
+	cin >> debug;
+
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
 	// read data already written
@@ -140,7 +143,10 @@ int FissionExperimentClass::CreateDetectionAnalysis(TFile* writeFile)
 	detectorData->SystemAnalysis();
 
 	cout << "Entering fission analysis mode" << endl;
-	detectorData->FissionAnalysis();
+	if(debug)
+		detectorData->FissionAnalysisLoop();
+	else
+		detectorData->FissionAnalysis();
 
 	return 1;
 }
