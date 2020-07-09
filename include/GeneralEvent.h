@@ -42,7 +42,7 @@ public:
 	// trigger value constructor
 	GeneralEvent(int detNumber, double timestamp, double energy, double energyShort)
 	{
-		depositedEnergy = INT_CALIBRATION * energy;
+		depositedEnergy = energy;
 		time = timestamp;
 		detChannel = detNumber;
 		psp = energyShort/energy;
