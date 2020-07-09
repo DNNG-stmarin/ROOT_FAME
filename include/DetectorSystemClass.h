@@ -97,6 +97,10 @@ public:
 	TriggerClass* triggers;
 	DetectorClass* detectors;
 
+	// calibrations of the detectors
+	///// ISABEL /////
+	TGraph* detCalibration;
+
 /*
 _  _ _    _
 | || (_)__| |_ ___  __ _ _ _ __ _ _ __  ___
@@ -241,7 +245,7 @@ ___             _   _
 	virtual void 		 InitializePSDFunctions();
 
 	// functions to perfom the detection analysis
-	virtual void      TriggerAnalysis();
+	virtual void     TriggerAnalysis();
 	virtual int      DetectionAnalysis();
 	virtual void     SystemAnalysis();
 	virtual void 		 FissionAnalysis();

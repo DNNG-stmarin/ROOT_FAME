@@ -39,7 +39,7 @@ public:
 
   InfoSystemTest(int type)
   {
-    if(type == 0) // FS3
+    if(type == 0) // FS3_6 detector array
     {
       // experiment specific information
       NUM_BEAMS = 0;
@@ -63,7 +63,7 @@ public:
       }
     }
 
-    else if(type == 1) // ChiNu
+    else if(type == 1) // ChiNu 242Pu
     {
       // experiment specific information
       NUM_BEAMS = 0;
@@ -90,9 +90,15 @@ public:
       for(int i=0; i<NUM_DETS; i++) {
         DETECTORS[i] = tempDet[i];
       }
+
+      // check whether there exists the file CalibCs.txt, and throw an error if its not there
+
+      // read the calibration as a TGraph
+      ///// ISABEL /////
+      TGraph* calibrationDet = TGraph("expParameters/CalibCs.txt")
     }
 
-    else if(type == 2) // FS3
+    else if(type == 2) // Stilbene setup
       {
         // experiment specific information
         NUM_BEAMS = 0;
