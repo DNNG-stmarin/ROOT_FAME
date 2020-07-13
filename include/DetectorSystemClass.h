@@ -21,6 +21,7 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include <TF1.h>
 
 #include <TCut.h>
+#include <TGraph.h>
 
 #include <string.h>
 #include <iostream>
@@ -32,7 +33,7 @@ Date: Ann Arbor, MI, May 3rd, 2020
 
 //#include "PhysicalConstants.h"
 #include "ProcessingConstants.h"
-#include "InfoSystemTest.h"
+#include "InfoSystem.h"
 
 using namespace std;
 
@@ -246,7 +247,7 @@ ___             _   _
 */
 
 	// store all the histograms
-	DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest* info);
+	DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystem* info);
 	virtual ~DetectorSystemClass();
 	virtual Int_t    Cut(Long64_t entry);
 	virtual Int_t    GetEntry(Long64_t entry);

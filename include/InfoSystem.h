@@ -2,13 +2,14 @@
 // Purpose: header file containting useful constants
 // Date: 03.20.2020
 
-#ifndef InfoSystemTest_h
-#define InfoSystemTest_h
+#ifndef InfoSystem_h
+#define InfoSystem_h
 
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
 #include <TString.h>
+#include <TGraph.h>
 
 #include <string.h>
 #include <iostream>
@@ -18,7 +19,7 @@
 
 using namespace std;
 
-class InfoSystemTest
+class InfoSystem
 {
 private:
 
@@ -37,7 +38,7 @@ public:
   int *FISSION_CHAMBERS;
   int *DETECTORS;
 
-  InfoSystemTest(int type)
+  InfoSystem(int type)
   {
     if(type == 0) // FS3_6 detector array
     {
@@ -95,40 +96,40 @@ public:
 
       // read the calibration as a TGraph
       ///// ISABEL /////
-      TGraph* calibrationDet = TGraph("expParameters/CalibCs.txt")
+      TGraph* calibrationDet = new TGraph("expParameters/intCalibrationCs.txt");
     }
 
     else if(type == 2) // Stilbene setup
-      {
-        // experiment specific information
-        NUM_BEAMS = 0;
-        NUM_DETS = 1;
-        NUM_CHAMBERS = 1;
+    {
+      // experiment specific information
+      NUM_BEAMS = 0;
+      NUM_DETS = 1;
+      NUM_CHAMBERS = 1;
 
-        // location of fission chambers and detectors
-        //BEAM[NUM_BEAMS] = {};
-        FISSION_CHAMBERS = new int[NUM_CHAMBERS];
-        int tempfiss[] = {0};
-        //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
-        for(int i=0; i<NUM_CHAMBERS; i++) {
-          FISSION_CHAMBERS[i] = tempfiss[i];
-        }
+      // location of fission chambers and detectors
+      //BEAM[NUM_BEAMS] = {};
+      FISSION_CHAMBERS = new int[NUM_CHAMBERS];
+      int tempfiss[] = {0};
+      //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
+      for(int i=0; i<NUM_CHAMBERS; i++) {
+        FISSION_CHAMBERS[i] = tempfiss[i];
+      }
 
-        DETECTORS = new int[NUM_DETS];
-        int tempDet[] = {10};
-        //memcpy(DETECTORS, tempDet, sizeof(tempDet));
-        for(int i=0; i<NUM_DETS; i++) {
-          DETECTORS[i] = tempDet[i];
-        }
+      DETECTORS = new int[NUM_DETS];
+      int tempDet[] = {10};
+      //memcpy(DETECTORS, tempDet, sizeof(tempDet));
+      for(int i=0; i<NUM_DETS; i++) {
+        DETECTORS[i] = tempDet[i];
       }
     }
+  }
 
-    ~InfoSystemTest()
-    {
-      delete BEAM;
-      delete FISSION_CHAMBERS;
-      delete DETECTORS;
-    }
+  ~InfoSystem()
+  {
+    delete BEAM;
+    delete FISSION_CHAMBERS;
+    delete DETECTORS;
+  }
 };
 
 #endif

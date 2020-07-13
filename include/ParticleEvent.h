@@ -9,7 +9,7 @@
 #include <TChain.h>
 #include <TFile.h>
 //#include "InfoSystem.h"
-#include "InfoSystemTest.h"
+#include "InfoSystem.h"
 
 #include "GeneralEvent.h"
 

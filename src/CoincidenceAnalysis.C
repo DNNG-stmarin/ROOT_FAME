@@ -15,7 +15,7 @@
 #include <queue>
 
 //#include "InfoSystem.h"
-#include "InfoSystemTest.h"
+#include "InfoSystem.h"
 //#include "PhysicalConstants.h"
 #include "ProcessingConstants.h"
 
@@ -27,7 +27,7 @@
 
 using namespace std;
 
-int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystemTest *info, int fileNum, Long64_t entriesToProc)
+int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Long64_t entriesToProc)
 {
 
 	TH1F* hDt = new TH1F("delT", "delT", 1000, 0, 5e12);

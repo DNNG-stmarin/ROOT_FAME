@@ -10,7 +10,7 @@ Date: May 24th, 2020
 #define DetectorSystemClass_cxx
 
 // constructor of the detector system class //
-DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest* info)
+DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystem* info)
 {
 	// set the number of detectors and triggers
 	numTriggers = info->NUM_CHAMBERS;

@@ -12,7 +12,7 @@ Date:  May 12th, 2020, Ann Arbor.
 #include <TChain.h>
 #include <TFile.h>
 //#include "InfoSystem.h"
-#include "InfoSystemTest.h"
+#include "InfoSystem.h"
 #include "ParticleEvent.h"
 
 
@@ -42,7 +42,7 @@ public:
 	// trigger value constructor
 	GeneralEvent(int detNumber, double timestamp, double energy, double energyShort)
 	{
-		depositedEnergy = energy;
+		depositedEnergy = energy * CHAN_VUS;
 		time = timestamp;
 		detChannel = detNumber;
 		psp = energyShort/energy;

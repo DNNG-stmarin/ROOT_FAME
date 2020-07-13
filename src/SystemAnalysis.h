@@ -20,7 +20,7 @@
 #include <sstream>
 
 //#include "InfoSystem.h"
-#include "InfoSystemTest.h"
+#include "InfoSystem.h"
 
 using namespace std;
 
