@@ -38,6 +38,8 @@ public:
   int *FISSION_CHAMBERS;
   int *DETECTORS;
 
+  TGraph *calibrationDet;
+
   InfoSystem(int type)
   {
     if(type == 0) // FS3_6 detector array
@@ -93,10 +95,16 @@ public:
       }
 
       // check whether there exists the file CalibCs.txt, and throw an error if its not there
+      string path = "expParameters/intCalibrationCs.txt";
+      TString pathT = (TString)path;
+      ifstream fin(path);
+      if(!fin.is_open()) {
+        cout << "Failed to open calibration file\n";
+      }
 
       // read the calibration as a TGraph
       ///// ISABEL /////
-      TGraph* calibrationDet = new TGraph("expParameters/intCalibrationCs.txt");
+      calibrationDet = new TGraph(pathT);
     }
 
     else if(type == 2) // Stilbene setup

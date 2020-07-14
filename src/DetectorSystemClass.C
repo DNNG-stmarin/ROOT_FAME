@@ -25,6 +25,10 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 
 	cout << "Detectors and triggers have been created" << endl;
 
+	//calibration for only chinu system
+	if(numDetectors == 54) {
+		detCalibration = new TGraph(*(info->calibrationDet));
+	}
 	// initialize the tree and the file to write to
 	detFile = writeFile;
 	cout << "tree passed at " << treeIn << endl;
