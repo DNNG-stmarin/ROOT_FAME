@@ -24,6 +24,7 @@ void DetectorSystemClass::FissionAnalysis()
   // detection time
   double timeDet;
   int numDet;
+  double engDet;
 
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
   {
@@ -34,7 +35,8 @@ void DetectorSystemClass::FissionAnalysis()
 
      // allocating the fission info
      f_fisTime = tTime;
-     f_fisErg = tDep;
+     //f_fisErg = tDep;
+     f_fisErg = tDep/detectors[numDet].calibration;
 
      // reset the neutron and photon multiplicities
      nMult = 0;
@@ -50,18 +52,17 @@ void DetectorSystemClass::FissionAnalysis()
       // detection time corrected for delay
       timeDet = totToF[j] -  detectors[numDet].timeDelay;
 
-      //cout << endl << detectors[numDet].discPSDPoint->Eval(totDep[j]) << endl;
-
+      engDet = totDep[j]/detectors[numDet].calibration;
 
       // cuts for neutrons
       if(
-        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(totDep[j]))
+        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(totDep[j])) //didn't change totdep here because it doesnt matter since discpsdpoitn is constant
         &
         (timeDet > MIN_TIME_N)
         &
         (timeDet < MAX_TIME_N)
         &
-        (totDep[j] > DETECTOR_THRESHOLD)
+        (engDet > DETECTOR_THRESHOLD)
         )
       {
            nMult++;
@@ -75,7 +76,7 @@ void DetectorSystemClass::FissionAnalysis()
         &
         (timeDet < MAX_TIME_P)
         &
-        (totDep[j] > DETECTOR_THRESHOLD)
+        (engDet > DETECTOR_THRESHOLD)
         )
       {
            pMult++;
@@ -89,7 +90,7 @@ void DetectorSystemClass::FissionAnalysis()
         &
         (timeDet < MAX_TIME_N - BACKGROUND_SHIFT)
         &
-        (totDep[j] > DETECTOR_THRESHOLD)
+        (engDet > DETECTOR_THRESHOLD)
         )
       {
            nBackMult++;
@@ -103,7 +104,7 @@ void DetectorSystemClass::FissionAnalysis()
         &
         (timeDet < MAX_TIME_P - BACKGROUND_SHIFT)
         &
-        (totDep[j] > DETECTOR_THRESHOLD)
+        (engDet > DETECTOR_THRESHOLD)
         )
       {
            pBackMult++;

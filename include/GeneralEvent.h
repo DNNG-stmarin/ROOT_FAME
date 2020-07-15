@@ -42,7 +42,7 @@ public:
 	// trigger value constructor
 	GeneralEvent(int detNumber, double timestamp, double energy, double energyShort)
 	{
-		depositedEnergy = energy * CHAN_VUS;
+		depositedEnergy = energy * CHAN_VUS; //now in vms
 		time = timestamp;
 		detChannel = detNumber;
 		psp = energyShort/energy;

@@ -28,7 +28,14 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	//calibration for only chinu system
 	if(numDetectors == 54) {
 		detCalibration = new TGraph(*(info->calibrationDet));
+
+		for(int i=0; i<numDetectors; i++) {
+			detectors[i].calibration = detCalibration->Eval(i)/CSComptEdge;
+		}
 	}
+
+
+
 	// initialize the tree and the file to write to
 	detFile = writeFile;
 	cout << "tree passed at " << treeIn << endl;

@@ -42,7 +42,7 @@ public:
 	double discTOFPoint; //tof discrimination
 	TF1* discPSDPoint; //psd discrimination
 
-	double energyCalibration; // store the energy calibration for each detector
+	double calibration; // store the energy calibration for each detector (was called energyCalibration)
 
 	double efficiency; // efficiency of this detector to
 

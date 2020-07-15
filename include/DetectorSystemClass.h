@@ -22,6 +22,7 @@ Date: Ann Arbor, MI, May 3rd, 2020
 
 #include <TCut.h>
 #include <TGraph.h>
+#include <TCanvas.h>
 
 #include <string.h>
 #include <iostream>

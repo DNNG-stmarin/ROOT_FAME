@@ -122,14 +122,14 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		 // fill the appropriate histograms
 		 psdhists[channelDet]->Fill(totPSP[part]); // psd histogram
-		 erghists[channelDet]->Fill(totDep[part]); // energy histogram
+		 erghists[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration); // energy histogram
 		 tofDelPhists[channelDet]->Fill(totToF[part]); // tof histograms
 
-		 psdErgHists[channelDet]->Fill(totDep[part], totPSP[part]); // energy-psd histogram
+		 psdErgHists[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, totPSP[part]); // energy-psd histogram
 		 tofPsdHists[channelDet]->Fill(totPSP[part], totToF[part]); // psd-tof histograms
-		 tofErgHists[channelDet]->Fill(totDep[part], totToF[part]); // energy-tof
+		 tofErgHists[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, totToF[part]); // energy-tof
 
-		 expHists[channelDet]->Fill(totPSP[part], totDep[part], totToF[part]); // complete point
+		 expHists[channelDet]->Fill(totPSP[part], totDep[part]/detectors[channelDet].calibration, totToF[part]); // complete point
 	 }
   }
 	cout << "Finished psd filling loop" << endl;
@@ -766,19 +766,19 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		 	tofDelPhistsCorr[channelDet]->Fill(corrTime);
 		 	tofPsdHistsCorr[channelDet]->Fill(totPSP[part], corrTime);
-		 	tofErgHistsCorr[channelDet]->Fill(totDep[part], corrTime);
+		 	tofErgHistsCorr[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, corrTime);
 
 		 	// discriminate particles here (make it better)
 		 	if(totPSP[part] < detectors[channelDet].discPSDPoint->Eval(totDep[part]))
 		 	{
 			 	tofPhists[channelDet]->Fill(corrTime);
-			 	kinematicP[channelDet]->Fill(corrTime, totDep[part]);
+			 	kinematicP[channelDet]->Fill(corrTime, totDep[part]/detectors[channelDet].calibration);
 		 	}
 
 		 	if(totPSP[part] > detectors[channelDet].discPSDPoint->Eval(totDep[part]) )
 		 	{
 			 	tofNhists[channelDet]->Fill(corrTime);
-			 	kinematicN[channelDet]->Fill(corrTime, totDep[part]);
+			 	kinematicN[channelDet]->Fill(corrTime, totDep[part]/detectors[channelDet].calibration);
 		 	}
 		}
 	}
