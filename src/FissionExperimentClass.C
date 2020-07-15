@@ -27,7 +27,7 @@ Purpose: Methods of the Fission Experiment Class
 //#include "InfoSystem.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
-#include "InfoSystemTest.h"
+#include "InfoSystem.h"
 
 
 
@@ -78,7 +78,7 @@ FissionExperimentClass::FissionExperimentClass()
 
 	detFile = new TFile(detFileT, "RECREATE");
 
-	info = new InfoSystemTest(expType);
+	info = new InfoSystem(expType);
 
   // create the chain with all the entries to analyze for the raw coincidence mode
   coincTreeChain = new TChain();

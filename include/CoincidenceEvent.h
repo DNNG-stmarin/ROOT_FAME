@@ -10,7 +10,7 @@
 #include <TFile.h>
 //#include "InfoSystem.h"
 #include "ParticleEvent.h"
-#include "InfoSystemTest.h"
+#include "InfoSystem.h"
 
 class CoincidenceEvent {
 

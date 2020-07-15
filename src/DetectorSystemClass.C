@@ -10,7 +10,7 @@ Date: May 24th, 2020
 #define DetectorSystemClass_cxx
 
 // constructor of the detector system class //
-DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystemTest* info)
+DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystem* info)
 {
 	// set the number of detectors and triggers
 	numTriggers = info->NUM_CHAMBERS;
@@ -24,6 +24,17 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	detectors = new DetectorClass[info->NUM_DETS];
 
 	cout << "Detectors and triggers have been created" << endl;
+
+	//calibration for only chinu system
+	if(numDetectors == 54) {
+		detCalibration = new TGraph(*(info->calibrationDet));
+
+		for(int i=0; i<numDetectors; i++) {
+			detectors[i].calibration = detCalibration->Eval(i)/CSComptEdge;
+		}
+	}
+
+
 
 	// initialize the tree and the file to write to
 	detFile = writeFile;

@@ -4,11 +4,11 @@
 
 #define mappingFunctions_h
 
-#include "InfoSystemTest.h"
+#include "InfoSystem.h"
 #include "mappingFunctions.h"
 
 // returns the index of the detector or -1 if not a detector
-int isDetector(int detectorNumber, InfoSystemTest* info)
+int isDetector(int detectorNumber, InfoSystem* info)
 {
 	int detIndex = -1;
 
@@ -25,7 +25,7 @@ int isDetector(int detectorNumber, InfoSystemTest* info)
 }
 
 
-int isChamber(int detectorNumber, InfoSystemTest* info)
+int isChamber(int detectorNumber, InfoSystem* info)
 {
 	int chamberIndex = -1;
 	for(int index = 0; index < info->NUM_CHAMBERS; index++)

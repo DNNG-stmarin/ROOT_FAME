@@ -71,7 +71,7 @@ public:
 	DetectorSystemClass* detectorData;
 
 	// the information about the system
-	InfoSystemTest* info;
+	InfoSystem* info;
 
 	// chain of raw tree files
 	TChain* coincTreeChain = 0;

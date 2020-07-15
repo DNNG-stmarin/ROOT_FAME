@@ -9,6 +9,7 @@ Purpose: Store the constants used in the processing
 // calibration of detectors for energy
 ///// ISABEL /////
 const double CHAN_VUS = (1.0/1000.0)*(1.0/1024.0); // from digitizer channel to Vus
+const double CSComptEdge = 0.477;
 
 // these are too important to be left out like this
 const double DETECTOR_THRESHOLD = 0.2;
