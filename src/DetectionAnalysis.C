@@ -49,9 +49,9 @@ int DetectorSystemClass::DetectionAnalysis()
 	                       |_|
 	*/
 
-	int answer;
+	int slices;
 	cout << "Would you like to have energy-dependent PSD/TOF analysis: no (0), yes (1)" << endl;
-	cin >> answer;
+	cin >> slices;
 
 	// openFile and create tree
 	TString filePrefix = "FissionOutput";
@@ -142,7 +142,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 	*/
 
-	if(answer) {
+	if(slices) {
 		//slices
 		int stepSizepsd = 20;				//pu: 20
 		long int minEntries = 150;	//pu: 150
@@ -572,7 +572,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	                      |___/
 		*/
 
-	if(answer) {
+	if(slices) {
 		int stepSizetof = 20;
 		long int minEntriestof = 200;
 		int numGoodSlicestof;
@@ -791,7 +791,7 @@ int DetectorSystemClass::DetectionAnalysis()
 			psdhists[i]->Write();
 			erghists[i]->Write();
 
-			if(answer) {
+			if(slices) {
 				cout << "hello" << endl;
 				psdErgHists[i]->Write();
 				tofErgHists[i]->Write();
