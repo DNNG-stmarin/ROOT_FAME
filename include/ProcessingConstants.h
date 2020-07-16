@@ -17,8 +17,8 @@ const double LIGHT_C = 30 // cm/ns
 const double DETECTOR_THRESHOLD = 0.1;
 
 // fission trigger allowed
-const double CHAMBER_THRESHOLD = 0.0004;  //change - intersection
-const double CHAMBER_CLIP = 0.005; //limit
+const double CHAMBER_THRESHOLD = 0.000325;  //change - intersection
+const double CHAMBER_CLIP = 0.001965; //limit
 const double MAX_CHAMBER_DRIFT = 1; // ns
 const double COINC_WINDOW = 500; // ns
 
