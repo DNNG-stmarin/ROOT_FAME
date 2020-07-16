@@ -123,6 +123,7 @@ void DetectorSystemClass::Init(TChain *treeIn)
 void DetectorSystemClass::InitFiss()
 {
 	 // initialize the fission tree
+	 // ISABEL //
    fissionTree->Branch("fisTime", &f_fisTime, "fisTime/D");
    fissionTree->Branch("fisErg", &f_fisErg, "fisErg/D");
    fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");
