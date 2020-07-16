@@ -769,13 +769,13 @@ int DetectorSystemClass::DetectionAnalysis()
 		 	tofErgHistsCorr[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, corrTime);
 
 		 	// discriminate particles here (make it better)
-		 	if(totPSP[part] < detectors[channelDet].discPSDPoint->Eval(totDep[part]))
+		 	if(totPSP[part] < detectors[channelDet].discPSDPoint->Eval(totDep[part]/detectors[channelDet].calibration))
 		 	{
 			 	tofPhists[channelDet]->Fill(corrTime);
 			 	kinematicP[channelDet]->Fill(corrTime, totDep[part]/detectors[channelDet].calibration);
 		 	}
 
-		 	if(totPSP[part] > detectors[channelDet].discPSDPoint->Eval(totDep[part]) )
+		 	if(totPSP[part] > detectors[channelDet].discPSDPoint->Eval(totDep[part]/detectors[channelDet].calibration) )
 		 	{
 			 	tofNhists[channelDet]->Fill(corrTime);
 			 	kinematicN[channelDet]->Fill(corrTime, totDep[part]/detectors[channelDet].calibration);

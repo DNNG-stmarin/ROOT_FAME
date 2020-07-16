@@ -44,6 +44,15 @@ public:
   {
     if(type == 0) // FS3_6 detector array
     {
+      string path = "expParameters/intCalibrationFS3.txt"; //main.cc
+      TString pathT = (TString)path;
+      ifstream fin(path);
+      if(!fin.is_open()) {
+        cout << "Failed to open calibration file\n";
+        exit(0);
+      }
+      calibrationDet = new TGraph(pathT);
+
       // experiment specific information
       NUM_BEAMS = 0;
       NUM_DETS = 6;
@@ -68,6 +77,15 @@ public:
 
     else if(type == 1) // ChiNu 242Pu
     {
+      string path = "expParameters/intCalibrationCs.txt"; //main.cc
+      TString pathT = (TString)path;
+      ifstream fin(path);
+      if(!fin.is_open()) {
+        cout << "Failed to open calibration file\n";
+        exit(0);
+      }
+      calibrationDet = new TGraph(pathT);
+
       // experiment specific information
       NUM_BEAMS = 0;
       NUM_CHAMBERS = 1;
@@ -93,22 +111,20 @@ public:
       for(int i=0; i<NUM_DETS; i++) {
         DETECTORS[i] = tempDet[i];
       }
+    }
 
-      // check whether there exists the file CalibCs.txt, and throw an error if its not there
-      string path = "expParameters/intCalibrationCs.txt";
+    else //if(type == 2) // Stilbene setup
+    {
+      string path = "expParameters/intCalibrationSTIL.txt"; //main.cc
       TString pathT = (TString)path;
       ifstream fin(path);
       if(!fin.is_open()) {
         cout << "Failed to open calibration file\n";
+        exit(0);
       }
-
-      // read the calibration as a TGraph
-      ///// ISABEL /////
       calibrationDet = new TGraph(pathT);
-    }
 
-    else if(type == 2) // Stilbene setup
-    {
+
       // experiment specific information
       NUM_BEAMS = 0;
       NUM_DETS = 1;

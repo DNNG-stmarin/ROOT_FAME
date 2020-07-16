@@ -26,15 +26,12 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cout << "Detectors and triggers have been created" << endl;
 
 	//calibration for only chinu system
-	if(numDetectors == 54) {
-		detCalibration = new TGraph(*(info->calibrationDet));
+	//create fake file of calibrations for fs3/stilbene
+	detCalibration = new TGraph(*(info->calibrationDet));
 
-		for(int i=0; i<numDetectors; i++) {
-			detectors[i].calibration = detCalibration->Eval(i)/CSComptEdge;
-		}
+	for(int i=0; i<numDetectors; i++) {
+		detectors[i].calibration = detCalibration->Eval(i)/CSCOMPTEDGE;
 	}
-
-
 
 	// initialize the tree and the file to write to
 	detFile = writeFile;

@@ -35,8 +35,8 @@ void DetectorSystemClass::FissionAnalysis()
 
      // allocating the fission info
      f_fisTime = tTime;
-     //f_fisErg = tDep;
-     f_fisErg = tDep/detectors[numDet].calibration;
+     f_fisErg = tDep;
+     //f_fisErg = tDep/detectors[numDet].calibration;
 
      // reset the neutron and photon multiplicities
      nMult = 0;
@@ -56,7 +56,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for neutrons
       if(
-        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(totDep[j])) //didn't change totdep here because it doesnt matter since discpsdpoitn is constant
+        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet)) //didn't change totdep here because it doesnt matter since discpsdpoitn is constant
         &
         (timeDet > MIN_TIME_N)
         &
@@ -70,7 +70,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for gammas
       else if(
-        (totPSP[j] < detectors[numDet].discPSDPoint->Eval(totDep[j]))  //^^ -0.03 +0.03
+        (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet))  //^^ -0.03 +0.03
         &
         (timeDet > MIN_TIME_P)
         &
@@ -84,7 +84,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for background neutrons
       else if(
-        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(totDep[j]))
+        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet))
         &
         (timeDet > MIN_TIME_N - BACKGROUND_SHIFT)
         &
@@ -98,7 +98,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for background photons
       else if(
-        (totPSP[j] < detectors[numDet].discPSDPoint->Eval(totDep[j]))
+        (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet))
         &
         (timeDet > MIN_TIME_P - BACKGROUND_SHIFT)
         &
@@ -156,6 +156,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
     // detection time
     double timeDet;
     int numDet;
+    int engDet;
 
     for (Long64_t jentry = 0; jentry < nentries; jentry++)
     {
@@ -182,18 +183,20 @@ void DetectorSystemClass::FissionAnalysisLoop()
         // detection time corrected for delay
         timeDet = totToF[j] -  detectors[numDet].timeDelay;
 
+        engDet = totDep[j]/detectors[numDet].calibration;
+
         //cout << endl << detectors[numDet].discPSDPoint->Eval(totDep[j]) << endl;
 
 
         // cuts for neutrons
         if(
-          (totPSP[j] > detectors[numDet].discPSDPoint->Eval(totDep[j]) + deltapsd)  //+deltapsd
+          (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)  //+deltapsd
           &
           (timeDet > MINTIMEN)
           &
           (timeDet < MAXTIMEN)
           &
-          (totDep[j] > DETECTOR_THRESHOLD)
+          (engDet > DETECTOR_THRESHOLD)
           )
         {
              nMult++;
@@ -201,13 +204,13 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         // cuts for gammas
         else if(
-          (totPSP[j] < detectors[numDet].discPSDPoint->Eval(totDep[j]) + deltapsd)  //^^ -0.03 +0.03
+          (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)  //^^ -0.03 +0.03
           &
           (timeDet > MINTIMEP)
           &
           (timeDet < MAXTIMEP)
           &
-          (totDep[j] > DETECTOR_THRESHOLD)
+          (engDet > DETECTOR_THRESHOLD)
           )
         {
              pMult++;
@@ -215,13 +218,13 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         // cuts for background neutrons
         else if(
-          (totPSP[j] > detectors[numDet].discPSDPoint->Eval(totDep[j]) + deltapsd)
+          (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)
           &
           (timeDet > BACKSHIFT+MINTIMEN)
           &
           (timeDet < BACKSHIFT+MAXTIMEN)
           &
-          (totDep[j] > DETECTOR_THRESHOLD)
+          (engDet > DETECTOR_THRESHOLD)
           )
         {
              nBackMult++;
@@ -229,13 +232,13 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         // cuts for background photons
         else if(
-          (totPSP[j] < detectors[numDet].discPSDPoint->Eval(totDep[j]) + deltapsd)
+          (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)
           &
           (timeDet> BACKSHIFT+MINTIMEP)
           &
           (timeDet< BACKSHIFT+MAXTIMEP)
           &
-          (totDep[j] > DETECTOR_THRESHOLD)
+          (engDet > DETECTOR_THRESHOLD)
           )
         {
              pBackMult++;

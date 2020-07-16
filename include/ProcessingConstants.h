@@ -9,14 +9,14 @@ Purpose: Store the constants used in the processing
 // calibration of detectors for energy
 ///// ISABEL /////
 const double CHAN_VUS = (1.0/1000.0)*(1.0/1024.0); // from digitizer channel to Vus
-const double CSComptEdge = 0.477;
+const double CSCOMPTEDGE = 0.477; 
 
 // these are too important to be left out like this
-const double DETECTOR_THRESHOLD = 0.2;
+const double DETECTOR_THRESHOLD = 0.1;
 
 // fission trigger allowed
-const double CHAMBER_THRESHOLD = 0.;
-const double CHAMBER_CLIP = 16384;
+const double CHAMBER_THRESHOLD = 0.0004;  //change - intersection
+const double CHAMBER_CLIP = 0.005; //limit
 const double MAX_CHAMBER_DRIFT = 1; // ns
 const double COINC_WINDOW = 500; // ns
 
