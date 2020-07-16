@@ -12,7 +12,7 @@ const double CHAN_VUS = (1.0/1000.0)*(1.0/1024.0); // from digitizer channel to 
 const double CSComptEdge = 0.477;
 
 // these are too important to be left out like this
-const double DETECTOR_THRESHOLD = 0.2;
+const double DETECTOR_THRESHOLD = 0.1;
 
 // fission trigger allowed
 const double CHAMBER_THRESHOLD = 0.;
