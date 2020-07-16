@@ -107,7 +107,6 @@ public:
 	DetectorClass* detectors;
 
 	// calibrations of the detectors
-	///// ISABEL /////
 	TGraph* detCalibration;
 
 /*
@@ -194,6 +193,8 @@ _  _ _    _
 
 
 	// properties of the output tree
+	//// ISABEL ////
+	/// add attributes here
 	double    f_fisTime;
 	double    f_fisErg;
 	int       f_neutronMult;
