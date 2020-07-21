@@ -39,14 +39,17 @@ public:
   int *DETECTORS;
 
   TGraph *calibrationDet;
+  string calibrationPath;
+  string detectorPath;
 
   InfoSystem(int type)
   {
     if(type == 0) // FS3_6 detector array
     {
-      string path = "expParameters/intCalibrationFS3.txt"; //main.cc
-      TString pathT = (TString)path;
-      ifstream fin(path);
+      detectorPath = "expParameters/someFileFS3.txt";
+      calibrationPath = "expParameters/intCalibrationFS3.txt"; //main.cc
+      TString pathT = (TString)calibrationPath;
+      ifstream fin(calibrationPath);
       if(!fin.is_open()) {
         cout << "Failed to open calibration file\n";
         exit(0);
@@ -77,9 +80,10 @@ public:
 
     else if(type == 1) // ChiNu 242Pu
     {
-      string path = "expParameters/intCalibrationCs.txt"; //main.cc
-      TString pathT = (TString)path;
-      ifstream fin(path);
+      detectorPath = "expParameters/cartesian.txt";
+      calibrationPath = "expParameters/intCalibrationCs.txt"; //main.cc
+      TString pathT = (TString)calibrationPath;
+      ifstream fin(calibrationPath);
       if(!fin.is_open()) {
         cout << "Failed to open calibration file\n";
         exit(0);
@@ -115,9 +119,10 @@ public:
 
     else //if(type == 2) // Stilbene setup
     {
-      string path = "expParameters/intCalibrationSTIL.txt"; //main.cc
-      TString pathT = (TString)path;
-      ifstream fin(path);
+      detectorPath = "expParameters/someFileFS3.txt";
+      calibrationPath = "expParameters/intCalibrationSTIL.txt"; //main.cc
+      TString pathT = (TString)calibrationPath;
+      ifstream fin(calibrationPath);
       if(!fin.is_open()) {
         cout << "Failed to open calibration file\n";
         exit(0);

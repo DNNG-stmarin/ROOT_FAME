@@ -28,6 +28,7 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 
 #include "DetectorClass.h"
 #include "TriggerClass.h"
@@ -194,6 +195,42 @@ _  _ _    _
 
 	// properties of the output tree
 	//// ISABEL ////
+	double 				neutronDetTimes[MAX_EVENTS] = {0};
+	double 				neutronLightOut[MAX_EVENTS] = {0};
+	double 				neutronPSD[MAX_EVENTS] = {0};
+	double 				neutronToFErg[MAX_EVENTS] = {0};
+	double 				neutronDet[MAX_EVENTS] = {0};
+	double 				neutronVx[MAX_EVENTS] = {0};
+	double 				neutronVy[MAX_EVENTS] = {0};
+	double 				neutronVz[MAX_EVENTS] = {0};
+
+	double 				photonDetTimes[MAX_EVENTS] = {0};
+	double 				photonLightOut[MAX_EVENTS] = {0};
+	double 				photonPSD[MAX_EVENTS] = {0};
+	double 				photonDet[MAX_EVENTS] = {0};
+	double 				photonVx[MAX_EVENTS] = {0};
+	double 				photonVy[MAX_EVENTS] = {0};
+	double 				photonVz[MAX_EVENTS] = {0};
+
+	double 				backNeutronDetTimes[MAX_EVENTS] = {0};
+	double 				backNeutronLightOut[MAX_EVENTS] = {0};
+	double 				backNeutronPSD[MAX_EVENTS] = {0};
+	double 				backNeutronToFErg[MAX_EVENTS] = {0};
+	double 				backNeutronDet[MAX_EVENTS] = {0};
+	double 				backNeutronVx[MAX_EVENTS] = {0};
+	double 				backNeutronVy[MAX_EVENTS] = {0};
+	double 				backNeutronVz[MAX_EVENTS] = {0};
+
+	double 				backPhotonDetTimes[MAX_EVENTS] = {0};
+	double 				backPhotonLightOut[MAX_EVENTS] = {0};
+	double 				backPhotonPSD[MAX_EVENTS] = {0};
+	double 				backPhotonDet[MAX_EVENTS] = {0};
+	double 				backPhotonVx[MAX_EVENTS] = {0};
+	double 				backPhotonVy[MAX_EVENTS] = {0};
+	double 				backPhotonVz[MAX_EVENTS] = {0};
+
+
+
 	/// add attributes here
 	double    f_fisTime;
 	double    f_fisErg;
