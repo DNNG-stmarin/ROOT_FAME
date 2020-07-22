@@ -15,23 +15,35 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	// set the number of detectors and triggers
 	numTriggers = info->NUM_CHAMBERS;
 	numDetectors = info->NUM_DETS;
-
 	listTriggersChan = info->FISSION_CHAMBERS;
 	listDetectorsChan = info->DETECTORS;
 
 	// create the dynamically allocated array of detectors and triggers
 	triggers = new TriggerClass[info->NUM_CHAMBERS];
 	detectors = new DetectorClass[info->NUM_DETS];
-
 	cout << "Detectors and triggers have been created" << endl;
+
+	string line;
+	string x, y, z;
+	ifstream in (info->detectorPath);
+	for(int i=0; i<numDetectors; i++) {
+		getline(in, line);
+		istringstream iss(line);
+		iss >> x >> y >> z;
+		detectors[i].X = stod(x);
+		detectors[i].Y = stod(y);
+		detectors[i].Z = stod(z);
+		detectors[i].distance = sqrt(pow(stod(x),2)+pow(stod(y),2)+pow(stod(z),2));
+	}
+
 
 	//calibration for only chinu system
 	//create fake file of calibrations for fs3/stilbene
 	detCalibration = new TGraph(*(info->calibrationDet));
-
 	for(int i=0; i<numDetectors; i++) {
 		detectors[i].calibration = detCalibration->Eval(i)/CSCOMPTEDGE;
 	}
+	cout << "Detector calibration complete" << endl;
 
 	// initialize the tree and the file to write to
 	detFile = writeFile;
@@ -124,6 +136,39 @@ void DetectorSystemClass::InitFiss()
 {
 	 // initialize the fission tree
 	 // ISABEL //
+	 fissionTree->Branch("neutronDetTimes", &neutronDetTimes[0], "neutronDetTimes[0]/D");
+	 fissionTree->Branch("neutronLightOut", &neutronLightOut[0], "neutronLightOut[0]/D");
+	 fissionTree->Branch("neutronPSD", &neutronPSD[0], "neutronPSD[0]/D");
+	 fissionTree->Branch("neutronToFErg", &neutronToFErg[0], "neutronToFErg[0]/D");
+	 fissionTree->Branch("neutronDet", &neutronDet[0], "neutronDet[0]/D");
+	 fissionTree->Branch("neutronVx", &neutronVx[0], "neutronVx[0]/D");
+	 fissionTree->Branch("neutronVy", &neutronVy[0], "neutronVy[0]/D");
+	 fissionTree->Branch("neutronVz", &neutronVz[0], "neutronVz[0]/D");
+	 fissionTree->Branch("photonDetTimes", &photonDetTimes[0], "photonDetTimes[0]/D");
+	 fissionTree->Branch("photonLightOut", &photonLightOut[0], "photonLightOut[0]/D");
+	 fissionTree->Branch("photonPSD", &photonPSD[0], "photonPSD[0]/D");
+	 fissionTree->Branch("photonDet", &photonDet[0], "photonDet[0]/D");
+	 fissionTree->Branch("photonVx", &photonVx[0], "photonVx[0]/D");
+	 fissionTree->Branch("photonVy", &photonVy[0], "photonVy[0]/D");
+	 fissionTree->Branch("photonVz", &photonVz[0], "photonVz[0]/D");
+
+	 fissionTree->Branch("backNeutronDetTimes", &backNeutronDetTimes[0], "backNeutronDetTimes[0]/D");
+	 fissionTree->Branch("backNeutronLightOut", &backNeutronLightOut[0], "backNeutronLightOut[0]/D");
+	 fissionTree->Branch("backNeutronPSD", &backNeutronPSD[0], "backNeutronPSD[0]/D");
+	 fissionTree->Branch("backNeutronToFErg", &backNeutronToFErg[0], "backNeutronToFErg[0]/D");
+	 fissionTree->Branch("backNeutronDet", &backNeutronDet[0], "backNeutronDet[0]/D");
+	 fissionTree->Branch("backNeutronVx", &backNeutronVx[0], "backNeutronVx[0]/D");
+	 fissionTree->Branch("backNeutronVy", &backNeutronVy[0], "backNeutronVy[0]/D");
+	 fissionTree->Branch("backNeutronVz", &backNeutronVz[0], "backNeutronVz[0]/D");
+	 fissionTree->Branch("backPhotonDetTimes", &backPhotonDetTimes[0], "backPhotonDetTimes[0]/D");
+	 fissionTree->Branch("backPhotonLightOut", &backPhotonLightOut[0], "backPhotonLightOut[0]/D");
+	 fissionTree->Branch("backPhotonPSD", &backPhotonPSD[0], "backPhotonPSD[0]/D");
+	 fissionTree->Branch("backPhotonDet", &backPhotonDet[0], "backPhotonDet[0]/D");
+	 fissionTree->Branch("backPhotonVx", &backPhotonVx[0], "backPhotonVx[0]/D");
+	 fissionTree->Branch("backPhotonVy", &backPhotonVy[0], "backPhotonVy[0]/D");
+	 fissionTree->Branch("backPhotonVz", &backPhotonVz[0], "backPhotonVz[0]/D");
+
+
    fissionTree->Branch("fisTime", &f_fisTime, "fisTime/D");
    fissionTree->Branch("fisErg", &f_fisErg, "fisErg/D");
    fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");

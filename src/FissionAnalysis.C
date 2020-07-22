@@ -25,28 +25,35 @@ void DetectorSystemClass::FissionAnalysis()
   double timeDet;
   int numDet;
   double engDet;
+  bool ncaught = 0, pcaught = 0;
+  bool nbackcaught = 0, pbackcaught = 0;
+  int nindex = 0, pindex = 0, backnindex = 0, backpindex = 0;
 
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
   {
-     // load tree
-     Long64_t ientry = LoadTree(jentry);
-     if (ientry < 0) break;
-     nb = tree->GetEntry(jentry);   nbytes += nb;
+    // load tree
+    Long64_t ientry = LoadTree(jentry);
+    if (ientry < 0) break;
+    nb = tree->GetEntry(jentry);   nbytes += nb;
 
-     // allocating the fission info
-     f_fisTime = tTime;
-     f_fisErg = tDep;
-     //f_fisErg = tDep/detectors[numDet].calibration;
+    // allocating the fission info
+    f_fisTime = tTime;
+    f_fisErg = tDep;
+    //f_fisErg = tDep/detectors[numDet].calibration;
 
-     // reset the neutron and photon multiplicities
-     nMult = 0;
-     pMult = 0;
-     nBackMult = 0;
-     pBackMult = 0;
+    // reset the neutron and photon multiplicities
+    nMult = 0;
+    pMult = 0;
+    nBackMult = 0;
+    pBackMult = 0;
 
-     for(int j = 0; j < tMult; j++)
-     {
-       // find the number of the detector
+    for(int j = 0; j < tMult; j++)
+    {
+      ncaught = 0;
+      pcaught = 0;
+      nbackcaught = 0;
+      pbackcaught = 0;
+      // find the number of the detector
       numDet = isDetector(totChan[j]);
 
       // detection time corrected for delay
@@ -66,6 +73,7 @@ void DetectorSystemClass::FissionAnalysis()
         )
       {
            nMult++;
+           ncaught = 1;
       }
 
       // cuts for gammas
@@ -80,6 +88,7 @@ void DetectorSystemClass::FissionAnalysis()
         )
       {
            pMult++;
+           pcaught = 1;
       }
 
       // cuts for background neutrons
@@ -94,6 +103,7 @@ void DetectorSystemClass::FissionAnalysis()
         )
       {
            nBackMult++;
+           nbackcaught = 1;
       }
 
       // cuts for background photons
@@ -108,19 +118,66 @@ void DetectorSystemClass::FissionAnalysis()
         )
       {
            pBackMult++;
+           pbackcaught = 1;
       }
 
-     }
+      if(ncaught) {
+        neutronDetTimes[nindex] = timeDet;
+        neutronLightOut[nindex] = engDet;
+        neutronPSD[nindex] = totPSP[j];
+        neutronToFErg[nindex] = (1/2)*MASS_NEUTRONS*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        neutronDet[nindex] = numDet;
+        neutronVx[nindex] = detectors[numDet].X*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        neutronVy[nindex] = detectors[numDet].Y*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        neutronVz[nindex] = detectors[numDet].Z*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        //nindex++;
+      }
 
-     // set branches of final tree
-     f_neutronMult = nMult;
-     f_gammaMult = pMult;
-     f_neutronBackMult = nBackMult;
-     f_gammaBackMult = pBackMult;
+      if(pcaught) {
+        photonDetTimes[pindex] = timeDet;
+        photonLightOut[pindex] = engDet;
+        photonPSD[pindex] = totPSP[j];
+        photonDet[pindex] = numDet;
+        photonVx[pindex] = detectors[numDet].X*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        photonVy[pindex] = detectors[numDet].Y*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        photonVz[pindex] = detectors[numDet].Z*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        //pindex++;
+      }
 
-     fissionTree->Fill();
+      if(nbackcaught) {
+        backNeutronDetTimes[backnindex] = timeDet;
+        backNeutronLightOut[backnindex] = engDet;
+        backNeutronPSD[backnindex] = totPSP[j];
+        backNeutronToFErg[backnindex] = (1/2)*MASS_NEUTRONS*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        backNeutronDet[backnindex] = numDet;
+        backNeutronVx[backnindex] = detectors[numDet].X*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        backNeutronVy[backnindex] = detectors[numDet].Y*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        backNeutronVz[backnindex] = detectors[numDet].Z*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        //backnindex++;
+      }
+
+      if(pbackcaught) {
+        backPhotonDetTimes[backpindex] = timeDet;
+        backPhotonLightOut[backpindex] = engDet;
+        backPhotonPSD[backpindex] = totPSP[j];
+        backPhotonDet[backpindex] = numDet;
+        backPhotonVx[backpindex] = detectors[numDet].X*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        backPhotonVy[backpindex] = detectors[numDet].Y*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        backPhotonVz[backpindex] = detectors[numDet].Z*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
+        //backpindex++;
+      }
+    }
+
+    // set branches of final tree
+    f_neutronMult = nMult;
+    f_gammaMult = pMult;
+    f_neutronBackMult = nBackMult;
+    f_gammaBackMult = pBackMult;
+
+
+
+    fissionTree->Fill();
   }
-
   fissionTree->Write();
 }
 

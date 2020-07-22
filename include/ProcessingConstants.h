@@ -10,8 +10,8 @@ Purpose: Store the constants used in the processing
 const double CHAN_VUS = (1.0/1000.0)*(1.0/1024.0); // from digitizer channel to Vus
 const double CSCOMPTEDGE = 0.477;
 // ISABEL // see constants
-const double MASS_NEUTRONS = 939.6 // MeV/c^2
-const double LIGHT_C = 30 // cm/ns
+const double MASS_NEUTRONS = 939.6; // MeV/c^2
+const double LIGHT_C = 30; // cm/ns
 
 // these are too important to be left out like this
 const double DETECTOR_THRESHOLD = 0.1;
@@ -42,6 +42,8 @@ const double BACKGROUND_SHIFT = MAX_TIME_N - MIN_TIME_P + DELTA_BACK_SIG;
 
 // multiplicity max to store
 const int MAX_MULTIPLICITY = 50;
+const int MAX_EVENTS = 50; //10000000; //5786013 should be higher? the number of events possible for each particle
+
 
 //psd discrimination guesses - hard code discrimination
 

@@ -792,7 +792,6 @@ int DetectorSystemClass::DetectionAnalysis()
 			erghists[i]->Write();
 
 			if(slices) {
-				cout << "hello" << endl;
 				psdErgHists[i]->Write();
 				tofErgHists[i]->Write();
 			}
