@@ -136,7 +136,16 @@ void DetectorSystemClass::InitFiss()
 {
 	 // initialize the fission tree
 	 // ISABEL //
-	 fissionTree->Branch("neutronDetTimes", &neutronDetTimes[0], "neutronDetTimes[0]/D");
+
+	 fissionTree->Branch("fisTime", &f_fisTime, "fisTime/D");
+	 fissionTree->Branch("fisErg", &f_fisErg, "fisErg/D");
+	 fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");
+	 fissionTree->Branch("gammaMult", &f_gammaMult, "neutronMult/I");
+	 fissionTree->Branch("neutronBackMult", &f_neutronBackMult, "neutronBackMult/I");
+	 fissionTree->Branch("gammaBackMult", &f_gammaBackMult, "gammaBackMult/I");
+
+	 // pass the array without dereferencing.
+	 fissionTree->Branch("neutronDetTimes", neutronDetTimes, "neutronDetTimes[neutronMult]/D"); // ISABEL note that the object is passed normally, and the name of the branch is given the dimensions 
 	 fissionTree->Branch("neutronLightOut", &neutronLightOut[0], "neutronLightOut[0]/D");
 	 fissionTree->Branch("neutronPSD", &neutronPSD[0], "neutronPSD[0]/D");
 	 fissionTree->Branch("neutronToFErg", &neutronToFErg[0], "neutronToFErg[0]/D");
@@ -167,14 +176,6 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("backPhotonVx", &backPhotonVx[0], "backPhotonVx[0]/D");
 	 fissionTree->Branch("backPhotonVy", &backPhotonVy[0], "backPhotonVy[0]/D");
 	 fissionTree->Branch("backPhotonVz", &backPhotonVz[0], "backPhotonVz[0]/D");
-
-
-   fissionTree->Branch("fisTime", &f_fisTime, "fisTime/D");
-   fissionTree->Branch("fisErg", &f_fisErg, "fisErg/D");
-   fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");
-   fissionTree->Branch("gammaMult", &f_gammaMult, "neutronMult/I");
-   fissionTree->Branch("neutronBackMult", &f_neutronBackMult, "neutronBackMult/I");
-   fissionTree->Branch("gammaBackMult", &f_gammaBackMult, "gammaBackMult/I");
 
    cout << "Fission tree has been created." << endl;
 }

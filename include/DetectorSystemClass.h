@@ -232,12 +232,18 @@ _  _ _    _
 
 
 	/// add attributes here
+	// ISABEL //
 	double    f_fisTime;
 	double    f_fisErg;
 	int       f_neutronMult;
 	int       f_gammaMult;
 	int       f_neutronBackMult;
 	int       f_gammaBackMult;
+
+	// add the extra attributes here
+	double neutronDetTimes[MAX_MULTIPLICITY] = {0};
+	// ... continue for all other attributes
+	// ...
 
 
 	/*
