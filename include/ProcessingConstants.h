@@ -42,7 +42,7 @@ const double BACKGROUND_SHIFT = MAX_TIME_N - MIN_TIME_P + DELTA_BACK_SIG;
 
 // multiplicity max to store
 const int MAX_MULTIPLICITY = 50;
-const int MAX_EVENTS = 50; //10000000; //5786013 should be higher? the number of events possible for each particle
+const int MAX_EVENTS = 50; 
 
 
 //psd discrimination guesses - hard code discrimination
