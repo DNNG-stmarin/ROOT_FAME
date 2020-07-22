@@ -140,42 +140,42 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("fisTime", &f_fisTime, "fisTime/D");
 	 fissionTree->Branch("fisErg", &f_fisErg, "fisErg/D");
 	 fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");
-	 fissionTree->Branch("gammaMult", &f_gammaMult, "neutronMult/I");
+	 fissionTree->Branch("gammaMult", &f_gammaMult, "gammaMult/I"); //changed third argument from neutronmult/I
 	 fissionTree->Branch("neutronBackMult", &f_neutronBackMult, "neutronBackMult/I");
 	 fissionTree->Branch("gammaBackMult", &f_gammaBackMult, "gammaBackMult/I");
 
 	 // pass the array without dereferencing.
-	 fissionTree->Branch("neutronDetTimes", neutronDetTimes, "neutronDetTimes[neutronMult]/D"); // ISABEL note that the object is passed normally, and the name of the branch is given the dimensions 
-	 fissionTree->Branch("neutronLightOut", &neutronLightOut[0], "neutronLightOut[0]/D");
-	 fissionTree->Branch("neutronPSD", &neutronPSD[0], "neutronPSD[0]/D");
-	 fissionTree->Branch("neutronToFErg", &neutronToFErg[0], "neutronToFErg[0]/D");
-	 fissionTree->Branch("neutronDet", &neutronDet[0], "neutronDet[0]/D");
-	 fissionTree->Branch("neutronVx", &neutronVx[0], "neutronVx[0]/D");
-	 fissionTree->Branch("neutronVy", &neutronVy[0], "neutronVy[0]/D");
-	 fissionTree->Branch("neutronVz", &neutronVz[0], "neutronVz[0]/D");
-	 fissionTree->Branch("photonDetTimes", &photonDetTimes[0], "photonDetTimes[0]/D");
-	 fissionTree->Branch("photonLightOut", &photonLightOut[0], "photonLightOut[0]/D");
-	 fissionTree->Branch("photonPSD", &photonPSD[0], "photonPSD[0]/D");
-	 fissionTree->Branch("photonDet", &photonDet[0], "photonDet[0]/D");
-	 fissionTree->Branch("photonVx", &photonVx[0], "photonVx[0]/D");
-	 fissionTree->Branch("photonVy", &photonVy[0], "photonVy[0]/D");
-	 fissionTree->Branch("photonVz", &photonVz[0], "photonVz[0]/D");
+	 fissionTree->Branch("neutronDetTimes", neutronDetTimes, "neutronDetTimes[neutronMult]/D"); // ISABEL note that the object is passed normally, and the name of the branch is given the dimensions
+	 fissionTree->Branch("neutronLightOut", neutronLightOut, "neutronLightOut[neutronMult]/D");
+	 fissionTree->Branch("neutronPSD", neutronPSD, "neutronPSD[neutronMult]/D");
+	 fissionTree->Branch("neutronToFErg", neutronToFErg, "neutronToFErg[neutronMult]/D");
+	 fissionTree->Branch("neutronDet", neutronDet, "neutronDet[neutronMult]/D");
+	 fissionTree->Branch("neutronVx", neutronVx, "neutronVx[neutronMult]/D");
+	 fissionTree->Branch("neutronVy", neutronVy, "neutronVy[neutronMult]/D");
+	 fissionTree->Branch("neutronVz", neutronVz, "neutronVz[neutronMult]/D");
+	 fissionTree->Branch("photonDetTimes", photonDetTimes, "photonDetTimes[gammaMult]/D");
+	 fissionTree->Branch("photonLightOut", photonLightOut, "photonLightOut[gammaMult]/D");
+	 fissionTree->Branch("photonPSD", photonPSD, "photonPSD[gammaMult]/D");
+	 fissionTree->Branch("photonDet", photonDet, "photonDet[gammaMult]/D");
+	 fissionTree->Branch("photonVx", photonVx, "photonVx[gammaMult]/D");
+	 fissionTree->Branch("photonVy", photonVy, "photonVy[gammaMult]/D");
+	 fissionTree->Branch("photonVz", photonVz, "photonVz[gammaMult]/D");
 
-	 fissionTree->Branch("backNeutronDetTimes", &backNeutronDetTimes[0], "backNeutronDetTimes[0]/D");
-	 fissionTree->Branch("backNeutronLightOut", &backNeutronLightOut[0], "backNeutronLightOut[0]/D");
-	 fissionTree->Branch("backNeutronPSD", &backNeutronPSD[0], "backNeutronPSD[0]/D");
-	 fissionTree->Branch("backNeutronToFErg", &backNeutronToFErg[0], "backNeutronToFErg[0]/D");
-	 fissionTree->Branch("backNeutronDet", &backNeutronDet[0], "backNeutronDet[0]/D");
-	 fissionTree->Branch("backNeutronVx", &backNeutronVx[0], "backNeutronVx[0]/D");
-	 fissionTree->Branch("backNeutronVy", &backNeutronVy[0], "backNeutronVy[0]/D");
-	 fissionTree->Branch("backNeutronVz", &backNeutronVz[0], "backNeutronVz[0]/D");
-	 fissionTree->Branch("backPhotonDetTimes", &backPhotonDetTimes[0], "backPhotonDetTimes[0]/D");
-	 fissionTree->Branch("backPhotonLightOut", &backPhotonLightOut[0], "backPhotonLightOut[0]/D");
-	 fissionTree->Branch("backPhotonPSD", &backPhotonPSD[0], "backPhotonPSD[0]/D");
-	 fissionTree->Branch("backPhotonDet", &backPhotonDet[0], "backPhotonDet[0]/D");
-	 fissionTree->Branch("backPhotonVx", &backPhotonVx[0], "backPhotonVx[0]/D");
-	 fissionTree->Branch("backPhotonVy", &backPhotonVy[0], "backPhotonVy[0]/D");
-	 fissionTree->Branch("backPhotonVz", &backPhotonVz[0], "backPhotonVz[0]/D");
+	 fissionTree->Branch("backNeutronDetTimes", backNeutronDetTimes, "backNeutronDetTimes[neutronBackMult]/D");
+	 fissionTree->Branch("backNeutronLightOut", backNeutronLightOut, "backNeutronLightOut[neutronBackMult]/D");
+	 fissionTree->Branch("backNeutronPSD", backNeutronPSD, "backNeutronPSD[neutronBackMult]/D");
+	 fissionTree->Branch("backNeutronToFErg", backNeutronToFErg, "backNeutronToFErg[neutronBackMult]/D");
+	 fissionTree->Branch("backNeutronDet", backNeutronDet, "backNeutronDet[neutronBackMult]/D");
+	 fissionTree->Branch("backNeutronVx", backNeutronVx, "backNeutronVx[neutronBackMult]/D");
+	 fissionTree->Branch("backNeutronVy", backNeutronVy, "backNeutronVy[neutronBackMult]/D");
+	 fissionTree->Branch("backNeutronVz", backNeutronVz, "backNeutronVz[neutronBackMult]/D");
+	 fissionTree->Branch("backPhotonDetTimes", backPhotonDetTimes, "backPhotonDetTimes[gammaBackMult]/D");
+	 fissionTree->Branch("backPhotonLightOut", backPhotonLightOut, "backPhotonLightOut[gammaBackMult]/D");
+	 fissionTree->Branch("backPhotonPSD", backPhotonPSD, "backPhotonPSD[gammaBackMult]/D");
+	 fissionTree->Branch("backPhotonDet", backPhotonDet, "backPhotonDet[gammaBackMult]/D");
+	 fissionTree->Branch("backPhotonVx", backPhotonVx, "backPhotonVx[gammaBackMult]/D");
+	 fissionTree->Branch("backPhotonVy", backPhotonVy, "backPhotonVy[gammaBackMult]/D");
+	 fissionTree->Branch("backPhotonVz", backPhotonVz, "backPhotonVz[gammaBackMult]/D");
 
    cout << "Fission tree has been created." << endl;
 }

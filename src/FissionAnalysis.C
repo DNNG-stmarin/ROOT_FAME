@@ -47,12 +47,51 @@ void DetectorSystemClass::FissionAnalysis()
     nBackMult = 0;
     pBackMult = 0;
 
+    nindex = 0;
+    pindex = 0;
+    backnindex = 0;
+    backpindex = 0;
+
+    for(int reset=0; reset<(sizeof(neutronDetTimes)/sizeof(neutronDetTimes[0])); reset++) {
+      neutronDetTimes[reset] = 0;
+      neutronLightOut[reset] = 0;
+      neutronPSD[reset] = 0;
+      neutronToFErg[reset] = 0;
+      neutronDet[reset] = 0;
+      neutronVx[reset] = 0;
+      neutronVy[reset] = 0;
+      neutronVz[reset] = 0;
+      photonDetTimes[reset] = 0;
+      photonLightOut[reset] = 0;
+      photonPSD[reset] = 0;
+      photonDet[reset] = 0;
+      photonVx[reset] = 0;
+      photonVy[reset] = 0;
+      photonVz[reset] = 0;
+      backNeutronDetTimes[reset] = 0;
+      backNeutronLightOut[reset] = 0;
+      backNeutronPSD[reset] = 0;
+      backNeutronToFErg[reset] = 0;
+      backNeutronDet[reset] = 0;
+      backNeutronVx[reset] = 0;
+      backNeutronVy[reset] = 0;
+      backNeutronVz[reset] = 0;
+      backPhotonDetTimes[reset] = 0;
+      backPhotonLightOut[reset] = 0;
+      backPhotonPSD[reset] = 0;
+      backPhotonDet[reset] = 0;
+      backPhotonVx[reset] = 0;
+      backPhotonVy[reset] = 0;
+      backPhotonVz[reset] = 0;
+    }
+
     for(int j = 0; j < tMult; j++)
     {
       ncaught = 0;
       pcaught = 0;
       nbackcaught = 0;
       pbackcaught = 0;
+      
       // find the number of the detector
       numDet = isDetector(totChan[j]);
 
@@ -130,7 +169,7 @@ void DetectorSystemClass::FissionAnalysis()
         neutronVx[nindex] = detectors[numDet].X*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
         neutronVy[nindex] = detectors[numDet].Y*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
         neutronVz[nindex] = detectors[numDet].Z*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
-        //nindex++;
+        nindex++;
       }
 
       if(pcaught) {
@@ -141,7 +180,7 @@ void DetectorSystemClass::FissionAnalysis()
         photonVx[pindex] = detectors[numDet].X*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
         photonVy[pindex] = detectors[numDet].Y*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
         photonVz[pindex] = detectors[numDet].Z*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
-        //pindex++;
+        pindex++;
       }
 
       if(nbackcaught) {
@@ -153,7 +192,7 @@ void DetectorSystemClass::FissionAnalysis()
         backNeutronVx[backnindex] = detectors[numDet].X*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
         backNeutronVy[backnindex] = detectors[numDet].Y*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
         backNeutronVz[backnindex] = detectors[numDet].Z*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
-        //backnindex++;
+        backnindex++;
       }
 
       if(pbackcaught) {
@@ -164,8 +203,10 @@ void DetectorSystemClass::FissionAnalysis()
         backPhotonVx[backpindex] = detectors[numDet].X*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
         backPhotonVy[backpindex] = detectors[numDet].Y*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
         backPhotonVz[backpindex] = detectors[numDet].Z*pow(LIGHT_C,2)*pow(detectors[numDet].distance/timeDet,2);
-        //backpindex++;
+        backpindex++;
       }
+
+      //cout << nindex << " " << pindex << " " << backnindex << " " << backpindex << "\n";
     }
 
     // set branches of final tree

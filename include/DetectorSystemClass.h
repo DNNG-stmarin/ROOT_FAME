@@ -195,39 +195,39 @@ _  _ _    _
 
 	// properties of the output tree
 	//// ISABEL ////
-	double 				neutronDetTimes[MAX_EVENTS] = {0};
-	double 				neutronLightOut[MAX_EVENTS] = {0};
-	double 				neutronPSD[MAX_EVENTS] = {0};
-	double 				neutronToFErg[MAX_EVENTS] = {0};
-	double 				neutronDet[MAX_EVENTS] = {0};
-	double 				neutronVx[MAX_EVENTS] = {0};
-	double 				neutronVy[MAX_EVENTS] = {0};
-	double 				neutronVz[MAX_EVENTS] = {0};
-
-	double 				photonDetTimes[MAX_EVENTS] = {0};
-	double 				photonLightOut[MAX_EVENTS] = {0};
-	double 				photonPSD[MAX_EVENTS] = {0};
-	double 				photonDet[MAX_EVENTS] = {0};
-	double 				photonVx[MAX_EVENTS] = {0};
-	double 				photonVy[MAX_EVENTS] = {0};
-	double 				photonVz[MAX_EVENTS] = {0};
-
-	double 				backNeutronDetTimes[MAX_EVENTS] = {0};
-	double 				backNeutronLightOut[MAX_EVENTS] = {0};
-	double 				backNeutronPSD[MAX_EVENTS] = {0};
-	double 				backNeutronToFErg[MAX_EVENTS] = {0};
-	double 				backNeutronDet[MAX_EVENTS] = {0};
-	double 				backNeutronVx[MAX_EVENTS] = {0};
-	double 				backNeutronVy[MAX_EVENTS] = {0};
-	double 				backNeutronVz[MAX_EVENTS] = {0};
-
-	double 				backPhotonDetTimes[MAX_EVENTS] = {0};
-	double 				backPhotonLightOut[MAX_EVENTS] = {0};
-	double 				backPhotonPSD[MAX_EVENTS] = {0};
-	double 				backPhotonDet[MAX_EVENTS] = {0};
-	double 				backPhotonVx[MAX_EVENTS] = {0};
-	double 				backPhotonVy[MAX_EVENTS] = {0};
-	double 				backPhotonVz[MAX_EVENTS] = {0};
+	// double 				neutronDetTimes[MAX_EVENTS] = {0};
+	// double 				neutronLightOut[MAX_EVENTS] = {0};
+	// double 				neutronPSD[MAX_EVENTS] = {0};
+	// double 				neutronToFErg[MAX_EVENTS] = {0};
+	// double 				neutronDet[MAX_EVENTS] = {0};
+	// double 				neutronVx[MAX_EVENTS] = {0};
+	// double 				neutronVy[MAX_EVENTS] = {0};
+	// double 				neutronVz[MAX_EVENTS] = {0};
+	//
+	// double 				photonDetTimes[MAX_EVENTS] = {0};
+	// double 				photonLightOut[MAX_EVENTS] = {0};
+	// double 				photonPSD[MAX_EVENTS] = {0};
+	// double 				photonDet[MAX_EVENTS] = {0};
+	// double 				photonVx[MAX_EVENTS] = {0};
+	// double 				photonVy[MAX_EVENTS] = {0};
+	// double 				photonVz[MAX_EVENTS] = {0};
+	//
+	// double 				backNeutronDetTimes[MAX_EVENTS] = {0};
+	// double 				backNeutronLightOut[MAX_EVENTS] = {0};
+	// double 				backNeutronPSD[MAX_EVENTS] = {0};
+	// double 				backNeutronToFErg[MAX_EVENTS] = {0};
+	// double 				backNeutronDet[MAX_EVENTS] = {0};
+	// double 				backNeutronVx[MAX_EVENTS] = {0};
+	// double 				backNeutronVy[MAX_EVENTS] = {0};
+	// double 				backNeutronVz[MAX_EVENTS] = {0};
+	//
+	// double 				backPhotonDetTimes[MAX_EVENTS] = {0};
+	// double 				backPhotonLightOut[MAX_EVENTS] = {0};
+	// double 				backPhotonPSD[MAX_EVENTS] = {0};
+	// double 				backPhotonDet[MAX_EVENTS] = {0};
+	// double 				backPhotonVx[MAX_EVENTS] = {0};
+	// double 				backPhotonVy[MAX_EVENTS] = {0};
+	// double 				backPhotonVz[MAX_EVENTS] = {0};
 
 
 
@@ -242,8 +242,38 @@ _  _ _    _
 
 	// add the extra attributes here
 	double neutronDetTimes[MAX_MULTIPLICITY] = {0};
-	// ... continue for all other attributes
-	// ...
+	double neutronLightOut[MAX_MULTIPLICITY] = {0};
+	double neutronPSD[MAX_MULTIPLICITY] = {0};
+	double neutronToFErg[MAX_MULTIPLICITY] = {0};
+	double neutronDet[MAX_MULTIPLICITY] = {0};
+	double neutronVx[MAX_MULTIPLICITY] = {0};
+	double neutronVy[MAX_MULTIPLICITY] = {0};
+	double neutronVz[MAX_MULTIPLICITY] = {0};
+
+	double photonDetTimes[MAX_MULTIPLICITY] = {0};
+	double photonLightOut[MAX_MULTIPLICITY] = {0};
+	double photonPSD[MAX_MULTIPLICITY] = {0};
+	double photonDet[MAX_MULTIPLICITY] = {0};
+	double photonVx[MAX_MULTIPLICITY] = {0};
+	double photonVy[MAX_MULTIPLICITY] = {0};
+	double photonVz[MAX_MULTIPLICITY] = {0};
+
+	double backNeutronDetTimes[MAX_MULTIPLICITY] = {0};
+	double backNeutronLightOut[MAX_MULTIPLICITY] = {0};
+	double backNeutronPSD[MAX_MULTIPLICITY] = {0};
+	double backNeutronToFErg[MAX_MULTIPLICITY] = {0};
+	double backNeutronDet[MAX_MULTIPLICITY] = {0};
+	double backNeutronVx[MAX_MULTIPLICITY] = {0};
+	double backNeutronVy[MAX_MULTIPLICITY] = {0};
+	double backNeutronVz[MAX_MULTIPLICITY] = {0};
+
+	double backPhotonDetTimes[MAX_MULTIPLICITY] = {0};
+	double backPhotonLightOut[MAX_MULTIPLICITY] = {0};
+	double backPhotonPSD[MAX_MULTIPLICITY] = {0};
+	double backPhotonDet[MAX_MULTIPLICITY] = {0};
+	double backPhotonVx[MAX_MULTIPLICITY] = {0};
+	double backPhotonVy[MAX_MULTIPLICITY] = {0};
+	double backPhotonVz[MAX_MULTIPLICITY] = {0};
 
 
 	/*
