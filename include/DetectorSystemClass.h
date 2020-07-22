@@ -194,7 +194,16 @@ _  _ _    _
 
 
 	// properties of the output tree
-	//// ISABEL ////
+
+	// macro properties
+	double    f_fisTime;
+	double    f_fisErg;
+	int       f_neutronMult;
+	int       f_gammaMult;
+	int       f_neutronBackMult;
+	int       f_gammaBackMult;
+
+	// particle properties
 	double 				neutronDetTimes[MAX_EVENTS] = {0};
 	double 				neutronLightOut[MAX_EVENTS] = {0};
 	double 				neutronPSD[MAX_EVENTS] = {0};
@@ -228,22 +237,6 @@ _  _ _    _
 	double 				backPhotonVx[MAX_EVENTS] = {0};
 	double 				backPhotonVy[MAX_EVENTS] = {0};
 	double 				backPhotonVz[MAX_EVENTS] = {0};
-
-
-
-	/// add attributes here
-	// ISABEL //
-	double    f_fisTime;
-	double    f_fisErg;
-	int       f_neutronMult;
-	int       f_gammaMult;
-	int       f_neutronBackMult;
-	int       f_gammaBackMult;
-
-	// add the extra attributes here
-	double neutronDetTimes[MAX_MULTIPLICITY] = {0};
-	// ... continue for all other attributes
-	// ...
 
 
 	/*

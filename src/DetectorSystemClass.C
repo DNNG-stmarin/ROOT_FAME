@@ -145,7 +145,9 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("gammaBackMult", &f_gammaBackMult, "gammaBackMult/I");
 
 	 // pass the array without dereferencing.
-	 fissionTree->Branch("neutronDetTimes", neutronDetTimes, "neutronDetTimes[neutronMult]/D"); // ISABEL note that the object is passed normally, and the name of the branch is given the dimensions 
+	 fissionTree->Branch("neutronDetTimes", neutronDetTimes, "neutronDetTimes[neutronMult]/D"); // ISABEL note that the object is passed normally, and the name of the branch is given the dimensions
+
+	 // repeat for the ones here, remember to use different multiplicities for each of the particle types 
 	 fissionTree->Branch("neutronLightOut", &neutronLightOut[0], "neutronLightOut[0]/D");
 	 fissionTree->Branch("neutronPSD", &neutronPSD[0], "neutronPSD[0]/D");
 	 fissionTree->Branch("neutronToFErg", &neutronToFErg[0], "neutronToFErg[0]/D");
