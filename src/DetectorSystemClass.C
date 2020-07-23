@@ -30,10 +30,11 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		getline(in, line);
 		istringstream iss(line);
 		iss >> x >> y >> z;
-		detectors[i].X = stod(x);
-		detectors[i].Y = stod(y);
-		detectors[i].Z = stod(z);
-		detectors[i].distance = sqrt(pow(stod(x),2)+pow(stod(y),2)+pow(stod(z),2));
+		detectors[i].X = stod(x)*100;
+		detectors[i].Y = stod(y)*100;
+		detectors[i].Z = stod(z)*100;
+		detectors[i].distance = sqrt(pow(stod(x),2)+pow(stod(y),2)+pow(stod(z),2))*100;
+		//cout << detectors[i].distance << "\n";
 	}
 
 

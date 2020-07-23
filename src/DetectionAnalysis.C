@@ -761,7 +761,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	 {
 			// store the channel number
 		 	channelDet = isDetector(totChan[part]);
-		 	corrTime = totToF[part] - detectors[channelDet].timeDelay;
+		 	corrTime = totToF[part] - detectors[channelDet].timeDelay + detectors[channelDet].distance/LIGHT_C;
 		 	//totpsd fill histogram w corrtime instead of time
 
 		 	tofDelPhistsCorr[channelDet]->Fill(corrTime);
