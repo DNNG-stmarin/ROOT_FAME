@@ -15,8 +15,10 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	// set the number of detectors and triggers
 	numTriggers = info->NUM_CHAMBERS;
 	numDetectors = info->NUM_DETS;
+	numBroken = info->NUM_BROKEN;
 	listTriggersChan = info->FISSION_CHAMBERS;
 	listDetectorsChan = info->DETECTORS;
+	listBrokenDetectors = info->BROKENDETECTORS;
 
 	// create the dynamically allocated array of detectors and triggers
 	triggers = new TriggerClass[info->NUM_CHAMBERS];

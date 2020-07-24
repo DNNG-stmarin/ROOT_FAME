@@ -447,7 +447,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		canvasDiscTOF->Write();
 
 		// find the delay of photon peak for each detector
-		detectors[i].timeDelay = tofphotpeak_opt->Parameter(1);
+		detectors[i].timeDelay = tofphotpeak_opt->Parameter(1) - detectors[channelDet].distance/LIGHT_C;
 		detectors[i].timeResolution = tofphotpeak_opt->Parameter(2);
 
 		cout << "	Time delay is: " << detectors[i].timeDelay  << endl << endl;
@@ -761,7 +761,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	 {
 			// store the channel number
 		 	channelDet = isDetector(totChan[part]);
-		 	corrTime = totToF[part] - detectors[channelDet].timeDelay + detectors[channelDet].distance/LIGHT_C;
+		 	corrTime = totToF[part] - detectors[channelDet].timeDelay;
 		 	//totpsd fill histogram w corrtime instead of time
 
 		 	tofDelPhistsCorr[channelDet]->Fill(corrTime);
