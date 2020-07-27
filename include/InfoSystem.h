@@ -38,6 +38,9 @@ public:
   int *FISSION_CHAMBERS;
   int *DETECTORS;
 
+  int *BROKENDETECTORS;
+  int NUM_BROKEN;
+
   TGraph *calibrationDet;
   string calibrationPath;
   string detectorPath;
@@ -60,6 +63,7 @@ public:
       NUM_BEAMS = 0;
       NUM_DETS = 6;
       NUM_CHAMBERS = 3;
+      NUM_BROKEN = 0;
 
       // location of fission chambers and detectors
       //BEAM[NUM_BEAMS] = {};
@@ -68,6 +72,12 @@ public:
       //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
       for(int i=0; i<NUM_CHAMBERS; i++) {
         FISSION_CHAMBERS[i] = tempfiss[i];
+      }
+
+      BROKENDETECTORS = new int[NUM_BROKEN];
+      int tempBroke[] = {};
+      for(int i=0; i<NUM_BROKEN; i++) {
+        BROKENDETECTORS[i] = tempBroke[i];
       }
 
       DETECTORS = new int[NUM_DETS];
@@ -94,6 +104,7 @@ public:
       NUM_BEAMS = 0;
       NUM_CHAMBERS = 1;
       NUM_DETS = 54;
+      NUM_BROKEN = 2;
 
       // location of fission chambers and detectors
       FISSION_CHAMBERS = new int[NUM_CHAMBERS];
@@ -101,6 +112,13 @@ public:
       //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
       for(int i=0; i<NUM_CHAMBERS; i++) {
         FISSION_CHAMBERS[i] = tempfiss[i];
+      }
+
+      //broken detectors 45&46
+      BROKENDETECTORS = new int[NUM_BROKEN];
+      int tempBroke[] = {45, 46};
+      for(int i=0; i<NUM_BROKEN; i++) {
+        BROKENDETECTORS[i] = tempBroke[i];
       }
 
       DETECTORS = new int[NUM_DETS];
@@ -134,6 +152,7 @@ public:
       NUM_BEAMS = 0;
       NUM_DETS = 1;
       NUM_CHAMBERS = 1;
+      NUM_BROKEN = 0;
 
       // location of fission chambers and detectors
       //BEAM[NUM_BEAMS] = {};
@@ -142,6 +161,12 @@ public:
       //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
       for(int i=0; i<NUM_CHAMBERS; i++) {
         FISSION_CHAMBERS[i] = tempfiss[i];
+      }
+
+      BROKENDETECTORS = new int[NUM_BROKEN];
+      int tempBroke[] = {};
+      for(int i=0; i<NUM_BROKEN; i++) {
+        BROKENDETECTORS[i] = tempBroke[i];
       }
 
       DETECTORS = new int[NUM_DETS];
