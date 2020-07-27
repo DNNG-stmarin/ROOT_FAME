@@ -90,12 +90,13 @@ void DetectorSystemClass::FissionAnalysis()
       engDet = totDep[j]/detectors[numDet].calibration;
 
       // cuts for neutrons & lower than something
-      if(totPSP[j] < 0 || totPSP[j] > 1) {
+      if(totPSP[j] < 0 || totPSP[j] > 1)
+      {
         continue;
       }
 
       if(
-        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet)) //didn't change totdep here because it doesnt matter since discpsdpoitn is constant
+        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet))
         &
         (timeDet > MIN_TIME_N)
         &
