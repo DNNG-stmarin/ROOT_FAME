@@ -36,25 +36,18 @@ const double MIN_TIME_N = 20.0;
 const double MAX_TIME_N = 150.0;
 
 // bacgkround regions
-const double DELTA_BACK_SIG = 10;
+const double DELTA_BACK_SIG = 10.0;
 const double BACKGROUND_SHIFT = MAX_TIME_N - MIN_TIME_P + DELTA_BACK_SIG;
 
 
 // multiplicity max to store
 const int MAX_MULTIPLICITY = 50;
-const int MAX_EVENTS = 50; 
+const int MAX_EVENTS = 50;
 
 
 //psd discrimination guesses - hard code discrimination
 
 //callibrations for each detector individually
-
-//time discriminations (fissionanalysis.c)
-const int MINTIMEN = -5;
-const int MAXTIMEN = 150;
-const int MINTIMEP = -5;
-const int MAXTIMEP = 10;
-const int BACKSHIFT = -80;
 
 
 #endif

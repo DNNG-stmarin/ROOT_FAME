@@ -87,6 +87,7 @@ void DetectorSystemClass::FissionAnalysis()
         neutronLightOut[nMult] = engDet;
         neutronPSD[nMult] = totPSP[j];
         neutVelocity = (1.0/LIGHT_C)*detectors[numDet].distance/timeDet;
+        cout << numDet << " " << detectors[numDet].distance << endl;
         neutronToFErg[nMult] = (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2);
         neutronDet[nMult] = numDet;
         neutronVx[nMult] = detectors[numDet].X/detectors[numDet].distance*neutVelocity;
@@ -241,9 +242,9 @@ void DetectorSystemClass::FissionAnalysisLoop()
         if(
           (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)  //+deltapsd
           &
-          (timeDet > MINTIMEN)
+          (timeDet > MIN_TIME_N)
           &
-          (timeDet < MAXTIMEN)
+          (timeDet < MAX_TIME_N)
           &
           (engDet > DETECTOR_THRESHOLD)
           )
@@ -255,9 +256,9 @@ void DetectorSystemClass::FissionAnalysisLoop()
         else if(
           (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)  //^^ -0.03 +0.03
           &
-          (timeDet > MINTIMEP)
+          (timeDet > MIN_TIME_P)
           &
-          (timeDet < MAXTIMEP)
+          (timeDet < MAX_TIME_P)
           &
           (engDet > DETECTOR_THRESHOLD)
           )
@@ -269,9 +270,9 @@ void DetectorSystemClass::FissionAnalysisLoop()
         else if(
           (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)
           &
-          (timeDet > BACKSHIFT+MINTIMEN)
+          (timeDet > BACKGROUND_SHIFT + MIN_TIME_N)
           &
-          (timeDet < BACKSHIFT+MAXTIMEN)
+          (timeDet < BACKGROUND_SHIFT + MAX_TIME_N)
           &
           (engDet > DETECTOR_THRESHOLD)
           )
@@ -283,9 +284,9 @@ void DetectorSystemClass::FissionAnalysisLoop()
         else if(
           (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)
           &
-          (timeDet> BACKSHIFT+MINTIMEP)
+          (timeDet> BACKGROUND_SHIFT + MIN_TIME_P)
           &
-          (timeDet< BACKSHIFT+MAXTIMEP)
+          (timeDet< BACKGROUND_SHIFT + MAX_TIME_P)
           &
           (engDet > DETECTOR_THRESHOLD)
           )
