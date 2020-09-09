@@ -89,7 +89,7 @@ public:
 
     else if(type == 1) // ChiNu 242Pu
     {
-      detectorPath = "expParameters/cartesianMod.txt";
+      detectorPath = "expParameters/cartesian.txt";
       calibrationPath = "expParameters/intCalibrationCs.txt"; //main.cc
       TString pathT = (TString)calibrationPath;
       ifstream fin(calibrationPath);
