@@ -1,3 +1,0 @@
-/Users/isabelhernandez/Desktop/root/CMakeFiles/rebuild_cache.dir
-/Users/isabelhernandez/Desktop/root/CMakeFiles/edit_cache.dir
-/Users/isabelhernandez/Desktop/root/CMakeFiles/ROOT_FAME.dir
