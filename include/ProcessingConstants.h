@@ -9,7 +9,6 @@ Purpose: Store the constants used in the processing
 // calibration of detectors for energy
 const double CHAN_VUS = (1.0/1000.0)*(1.0/1024.0); // from digitizer channel to Vus
 const double CSCOMPTEDGE = 0.477;
-// ISABEL // see constants
 const double MASS_NEUTRONS = 939.6; // MeV/c^2
 const double LIGHT_C = 30; // cm/ns
 
@@ -27,7 +26,6 @@ const short NO_PARTICLE = 0;
 const short NEUTRON = 1;
 const short PHOTON = 2;
 
-
 // time regions
 const double MIN_TIME_P = -5.0;
 const double MAX_TIME_P = 10.0;
@@ -39,15 +37,9 @@ const double MAX_TIME_N = 150.0;
 const double DELTA_BACK_SIG = 10;
 const double BACKGROUND_SHIFT = MAX_TIME_N - MIN_TIME_P + DELTA_BACK_SIG;
 
-
 // multiplicity max to store
 const int MAX_MULTIPLICITY = 50;
-const int MAX_EVENTS = 50; 
-
-
-//psd discrimination guesses - hard code discrimination
-
-//callibrations for each detector individually
+const int MAX_EVENTS = 50;
 
 //time discriminations (fissionanalysis.c)
 const int MINTIMEN = -5;

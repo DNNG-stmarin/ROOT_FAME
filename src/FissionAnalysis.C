@@ -38,7 +38,6 @@ void DetectorSystemClass::FissionAnalysis()
     // allocating the fission info
     f_fisTime = tTime;
     f_fisErg = tDep;
-    //f_fisErg = tDep/detectors[numDet].calibration;
 
     // reset the neutron and photon multiplicities
     nMult = 0;
@@ -175,7 +174,6 @@ void DetectorSystemClass::FissionAnalysis()
 
 
 //deltapsd, save covariances,
-//comment
 void DetectorSystemClass::FissionAnalysisLoop()
 {
   fissionFile->cd();

@@ -36,7 +36,6 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		detectors[i].Y = stod(y)*100;
 		detectors[i].Z = stod(z)*100;
 		detectors[i].distance = sqrt(pow(stod(x),2)+pow(stod(y),2)+pow(stod(z),2))*100;
-		//cout << detectors[i].distance << "\n";
 	}
 
 

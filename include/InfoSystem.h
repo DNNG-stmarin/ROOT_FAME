@@ -32,15 +32,16 @@ public:
   int NUM_DETS;
   int NUM_CHAMBERS;
 
-
   // store the channels
   int *BEAM;
   int *FISSION_CHAMBERS;
   int *DETECTORS;
 
+  //(optional) broken detectors
   int *BROKENDETECTORS;
   int NUM_BROKEN;
 
+  //calibration attributes
   TGraph *calibrationDet;
   string calibrationPath;
   string detectorPath;
@@ -57,6 +58,7 @@ public:
         cout << "Failed to open calibration file\n";
         exit(0);
       }
+      //store calibration values in TGraph
       calibrationDet = new TGraph(pathT);
 
       // experiment specific information
@@ -66,10 +68,8 @@ public:
       NUM_BROKEN = 0;
 
       // location of fission chambers and detectors
-      //BEAM[NUM_BEAMS] = {};
       FISSION_CHAMBERS = new int[NUM_CHAMBERS];
       int tempfiss[] = {0, 16, 32};
-      //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
       for(int i=0; i<NUM_CHAMBERS; i++) {
         FISSION_CHAMBERS[i] = tempfiss[i];
       }
@@ -82,7 +82,6 @@ public:
 
       DETECTORS = new int[NUM_DETS];
       int tempDet[] = {2, 10, 18, 26, 34, 42};
-      //memcpy(DETECTORS, tempDet, sizeof(tempDet));
       for(int i=0; i<NUM_DETS; i++) {
         DETECTORS[i] = tempDet[i];
       }
@@ -90,7 +89,7 @@ public:
 
     else if(type == 1) // ChiNu 242Pu
     {
-      detectorPath = "expParameters/cartesian.txt";
+      detectorPath = "expParameters/cartesianMod.txt";
       calibrationPath = "expParameters/intCalibrationCs.txt"; //main.cc
       TString pathT = (TString)calibrationPath;
       ifstream fin(calibrationPath);
@@ -98,6 +97,7 @@ public:
         cout << "Failed to open calibration file\n";
         exit(0);
       }
+      //store calibration values in TGraph
       calibrationDet = new TGraph(pathT);
 
       // experiment specific information
@@ -109,7 +109,6 @@ public:
       // location of fission chambers and detectors
       FISSION_CHAMBERS = new int[NUM_CHAMBERS];
       int tempfiss[] = {7};
-      //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
       for(int i=0; i<NUM_CHAMBERS; i++) {
         FISSION_CHAMBERS[i] = tempfiss[i];
       }
@@ -129,7 +128,6 @@ public:
       	            	61, 62, 63, 64, 65, 66, 67, 68, 69,
       	            	70, 71, 72, 73, 74, 75, 76, 77, 78};
 
-      //memcpy(DETECTORS, tempDet, sizeof(tempDet));
       for(int i=0; i<NUM_DETS; i++) {
         DETECTORS[i] = tempDet[i];
       }
@@ -145,8 +143,8 @@ public:
         cout << "Failed to open calibration file\n";
         exit(0);
       }
+      //store calibration values in TGraph
       calibrationDet = new TGraph(pathT);
-
 
       // experiment specific information
       NUM_BEAMS = 0;
@@ -155,10 +153,8 @@ public:
       NUM_BROKEN = 0;
 
       // location of fission chambers and detectors
-      //BEAM[NUM_BEAMS] = {};
       FISSION_CHAMBERS = new int[NUM_CHAMBERS];
       int tempfiss[] = {0};
-      //memcpy(FISSION_CHAMBERS, tempfiss, sizeof(tempfiss));
       for(int i=0; i<NUM_CHAMBERS; i++) {
         FISSION_CHAMBERS[i] = tempfiss[i];
       }
@@ -171,7 +167,6 @@ public:
 
       DETECTORS = new int[NUM_DETS];
       int tempDet[] = {10};
-      //memcpy(DETECTORS, tempDet, sizeof(tempDet));
       for(int i=0; i<NUM_DETS; i++) {
         DETECTORS[i] = tempDet[i];
       }
@@ -183,6 +178,8 @@ public:
     delete BEAM;
     delete FISSION_CHAMBERS;
     delete DETECTORS;
+    delete BROKENDETECTORS;
+    delete calibrationDet;
   }
 };
 

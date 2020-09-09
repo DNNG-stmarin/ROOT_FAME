@@ -47,7 +47,7 @@ public:
 	double efficiency; // efficiency of this detector to
 
 	double X, Y, Z; // position of the center of the detector
-	double distance;
+	double distance; // distance of detector from source
 
 };
 
