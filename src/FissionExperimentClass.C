@@ -78,7 +78,10 @@ FissionExperimentClass::FissionExperimentClass()
 
 	detFile = new TFile(detFileT, "RECREATE");
 
-	info = new InfoSystem(expType);
+	info = new InfoSystem(expType); // remove argument,
+
+	// info = new InfoSystem(); 
+	// info->ReadInput();
 
   // create the chain with all the entries to analyze for the raw coincidence mode
   coincTreeChain = new TChain();

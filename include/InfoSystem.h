@@ -32,7 +32,6 @@ public:
   int NUM_DETS;
   int NUM_CHAMBERS;
 
-
   // store the channels
   int *BEAM;
   int *FISSION_CHAMBERS;

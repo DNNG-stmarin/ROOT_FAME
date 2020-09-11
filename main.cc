@@ -15,6 +15,8 @@ int main(int argc, char** argv)
 
   cout << "Welcome to ROOT FAME" << endl;
 
+  FissionExperimentClass experiment = FissionExperimentClass();
+
   // find the name of the file to use
   TString fileName;
 
@@ -29,8 +31,6 @@ int main(int argc, char** argv)
 
   // now that name is acquired proceed to read root file
   //cout << "Reading from file " << fileName << endl;
-
-  FissionExperimentClass experiment = FissionExperimentClass();
 
   cout << "Forming Coincidences" << endl;
   experiment.CreateCoincidenceTree(fileName, experiment.expFile, -1);
