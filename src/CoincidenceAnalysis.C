@@ -42,7 +42,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 	 //                   |_|                |__/
 
 	// use an array of fifo to store particles and chambers
-	queue<TriggerEvent> TriggerBuffer[info->NUM_CHAMBERS]; //from InfoSystem
+	queue<TriggerEvent> TriggerBuffer[info->NUM_CHAMBERS];
 	queue<ParticleEvent> DetectorBuffer[info->NUM_DETS];
 
 
@@ -216,9 +216,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 	queue<CoincidenceEvent> FissionBuffer;
 
 	// keep track of the iterator in each of the channels
-	//Long64_t indexTrig[info.NUM_CHAMBERS] = {0};
 	Long64_t *indexTrig = new Long64_t[info->NUM_CHAMBERS];
-
 
 	// keep track of the earliest times in each of the channels
 	double *DetectorLastTime = new double[info->NUM_DETS];
@@ -381,7 +379,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 		}
 
 		// assign fission event from first list
-		// cout << FissionBuffer.size() << endl;
 		qFission = FissionBuffer.front();
 		fissionTime = qFission.getTriggerTime();
 		fissionEnergy = qFission.getEnergy();

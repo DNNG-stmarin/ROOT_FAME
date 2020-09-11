@@ -263,10 +263,6 @@ _  _ _    _
 	TF1* fitPSD;
 	TF1* intersection;
 
-	//TF1* fitTOF_p;
-	//TF1* fitTOF_n;
-	//TF1* TOFinteresection
-
 
 /*
   ___     _

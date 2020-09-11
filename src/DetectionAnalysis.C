@@ -57,8 +57,6 @@ int DetectorSystemClass::DetectionAnalysis()
 	TString filePrefix = "FissionOutput";
 	TString fileInName;
 
-
-
 	/*
 		___     _
 	  / __|  _| |_ ___
@@ -183,7 +181,6 @@ int DetectorSystemClass::DetectionAnalysis()
 			// loop over the slices
 			for(int energySlice = 0; energySlice < energyBinspsd; energySlice += stepSizepsd)
 			{
-
 				// define the slice
 				TH1D* psdErgSlice = psdErgHists[det]->ProjectionY("psdErgSlice", energySlice, energySlice+stepSizepsd);
 				int numEntriesInSlice = psdErgSlice->GetEntries();
@@ -223,7 +220,6 @@ int DetectorSystemClass::DetectionAnalysis()
 				fitPSD->SetParameter(0, pMax);
 				fitPSD->SetParameter(1, xpMax);
 				fitPSD->SetParameter(2, pRMS);
-
 				fitPSD->SetParameter(3, nMax);
 				fitPSD->SetParameter(4, xnMax);
 				fitPSD->SetParameter(5, nRMS);
@@ -244,7 +240,6 @@ int DetectorSystemClass::DetectionAnalysis()
 				fitPSD->SetParameter(0, psdPhotCounts);
 				fitPSD->SetParameter(1, psdPhotMean);
 				fitPSD->SetParameter(2, psdPhotStd);
-
 				fitPSD->SetParameter(3, psdNeutCounts);
 				fitPSD->SetParameter(4, psdNeutMean);
 				fitPSD->SetParameter(5, psdNeutStd);
@@ -253,7 +248,6 @@ int DetectorSystemClass::DetectionAnalysis()
 				intersection->SetParameter(0, psdPhotCounts);
 				intersection->SetParameter(1, psdPhotMean);
 				intersection->SetParameter(2, psdPhotStd);
-
 				intersection->SetParameter(3, psdNeutCounts);
 				intersection->SetParameter(4, psdNeutMean);
 				intersection->SetParameter(5, psdNeutStd);
@@ -262,7 +256,6 @@ int DetectorSystemClass::DetectionAnalysis()
 				fitPSD_p->SetParameter(0, psdPhotCounts);
 				fitPSD_p->SetParameter(1, psdPhotMean);
 				fitPSD_p->SetParameter(2, psdPhotStd);
-
 				fitPSD_n->SetParameter(0, psdNeutCounts);
 				fitPSD_n->SetParameter(1, psdNeutMean);
 				fitPSD_n->SetParameter(2, psdNeutStd);
@@ -454,7 +447,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 
 		/////////////////////////individual psd ////////////////////////////////////////////////////////
-		//add legend
+
 		TF1* psdphotpeak = new TF1("psdphotpeak", "[0]*e^(-(x - [1])^2/(2*[2]^2))");
 		TF1* psdneutpeak = new TF1("psdneutpeak", "[0]/(1 + ((x - [1])/([2]))^2)");
 		TF1* psdcombined = new TF1("psdcombined", "psdphotpeak + psdneutpeak");
@@ -465,6 +458,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		smoothpsd->SetLineColor(kRed);
 		smoothpsd->Smooth(1);
 
+		//photon fit
 		smoothpsd->GetXaxis()->SetRangeUser(minPSD_fit, divPSD_fit);
 		Double_t psdmaxP = smoothpsd->GetMaximum();
 		Double_t binpsdmaxP = smoothpsd->GetMaximumBin();
@@ -472,6 +466,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		Double_t meanP = smoothpsd->GetMean();
 		Double_t rmsP = smoothpsd->GetRMS();
 
+		//neutron fit
 		smoothpsd->GetXaxis()->SetRangeUser(divPSD_fit, maxPSD_fit);
 		Double_t psdmaxN = smoothpsd->GetMaximum();
 		Double_t binpsdmaxN = smoothpsd->GetMaximumBin();
@@ -481,25 +476,27 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		smoothpsd->GetXaxis()->SetRangeUser(minPSD_fit, maxPSD_fit);
 
+		//combined fit
 		psdcombined->SetParameter(0, psdmaxP);
 		psdcombined->SetParameter(1, xpsdmaxP);
 		psdcombined->SetParameter(2, rmsP);
-
 		psdcombined->SetParameter(3, psdmaxN);
 		psdcombined->SetParameter(4, xpsdmaxN);
 		psdcombined->SetParameter(5, rmsN);
 
 		psdhists[i]->GetXaxis()->SetRangeUser(minPSD_fit, maxPSD_fit);
+		//optimize combined fit
 		optimized = psdhists[i]->Fit(psdcombined, "SQ");
 
+		//set optimized parameters to photon and neutron fit
 		psdphotpeak->SetParameter(0, optimized->Parameter(0));
 		psdphotpeak->SetParameter(1, optimized->Parameter(1));
 		psdphotpeak->SetParameter(2, optimized->Parameter(2));
-
 		psdneutpeak->SetParameter(0, optimized->Parameter(3));
 		psdneutpeak->SetParameter(1, optimized->Parameter(4));
 		psdneutpeak->SetParameter(2, optimized->Parameter(5));
 
+		//set optimized parameters to combined fit
 		psdcombined->SetParameter(0, optimized->Parameter(0));
 		psdcombined->SetParameter(1, optimized->Parameter(1));
 		psdcombined->SetParameter(2, optimized->Parameter(2));
@@ -507,6 +504,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		psdcombined->SetParameter(4, optimized->Parameter(4));
 		psdcombined->SetParameter(5, optimized->Parameter(5));
 
+		//set optimized parameters to intersection fit
 		psdintersection->SetParameter(0, optimized->Parameter(0));
 		psdintersection->SetParameter(1, optimized->Parameter(1));
 		psdintersection->SetParameter(2, optimized->Parameter(2));
@@ -514,11 +512,9 @@ int DetectorSystemClass::DetectionAnalysis()
 		psdintersection->SetParameter(4, optimized->Parameter(4));
 		psdintersection->SetParameter(5, optimized->Parameter(5));
 
-
-
 		double psdtempPSD = psdintersection->GetMinimumX(optimized->Parameter(1), optimized->Parameter(4));
-		//cout << optimized->Parameter(1) << " " << psdtempPSD << " " << optimized->Parameter(4) << endl;
 
+		//in prediction completely off, use default intersection
 		if(psdtempPSD < optimized->Parameter(1) || psdtempPSD > optimized->Parameter(4) || psdtempPSD >= 1) {
 			psdtempPSD = divPSD_fit;
 		}
@@ -528,7 +524,6 @@ int DetectorSystemClass::DetectionAnalysis()
 		TLine* TOFPSDlinepsd = new TLine(psdtempPSD, -200, psdtempPSD, 200);
 		TOFPSDlinepsd->SetLineColor(kRed);
 
-
 		TString tempName = "PSD" + to_string(i);
 		TCanvas* canvaspsd = new TCanvas(tempName, tempName, 800, 500);
 
@@ -536,7 +531,6 @@ int DetectorSystemClass::DetectionAnalysis()
 		tracktof[i] = toftempPSD;
 
 		TString namePointPSD = "detPSD" + to_string(i);
-		//TString namePointTOF = "detTOF" + to_string(i);
 		TFormula *f1 = new TFormula("f1", "[0]");
 		f1->SetParameter(0, psdtempPSD);
 		detectors[i].discPSDPoint = new TF1(namePointPSD, "f1");
@@ -572,6 +566,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	                      |___/
 		*/
 
+	//slicing tof erg
 	if(slices) {
 		int stepSizetof = 20;
 		long int minEntriestof = 200;
@@ -644,7 +639,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				//reset
 				tofErgSlice->GetXaxis()->SetRangeUser(-200, 200);
 
-				// set the initial guesses
+				// set the initial guesses of gaus fit
 				gausSlicetof->SetParameter(0, tofpMax);
 				gausSlicetof->SetParameter(1, tofxpMax);
 				gausSlicetof->SetParameter(2, tofpRMS);
@@ -653,6 +648,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				gausSlicetof->SetParameter(1, gausSliceOptimize->Parameter(1));
 				gausSlicetof->SetParameter(2, gausSliceOptimize->Parameter(2));
 
+				//set initial guess of neut fit
 				neutSlicetof->SetParameter(0, tofnMax);
 				neutSlicetof->SetParameter(1, tofxnMax);
 				neutSlicetof->SetParameter(2, tofnRMS);
@@ -661,6 +657,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				neutSlicetof->SetParameter(1, neutSliceOptimize->Parameter(1));
 				neutSlicetof->SetParameter(2, neutSliceOptimize->Parameter(2));
 
+				//set initial guesses of intersection fit (no combined fit this time)
 				intersectionSlicetof->SetParameter(0, gausSliceOptimize->Parameter(0));
 				intersectionSlicetof->SetParameter(1, gausSliceOptimize->Parameter(1));
 				intersectionSlicetof->SetParameter(2, gausSliceOptimize->Parameter(2));

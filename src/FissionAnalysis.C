@@ -38,7 +38,6 @@ void DetectorSystemClass::FissionAnalysis()
     // allocating the fission info
     f_fisTime = tTime;
     f_fisErg = tDep;
-    //f_fisErg = tDep/detectors[numDet].calibration;
 
     // reset the neutron and photon multiplicities
     nMult = 0;
@@ -87,7 +86,7 @@ void DetectorSystemClass::FissionAnalysis()
         neutronLightOut[nMult] = engDet;
         neutronPSD[nMult] = totPSP[j];
         neutVelocity = (1.0/LIGHT_C)*detectors[numDet].distance/timeDet;
-        cout << numDet << " " << detectors[numDet].distance << endl;
+        //cout << numDet << " " << detectors[numDet].distance << endl;
         neutronToFErg[nMult] = (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2);
         neutronDet[nMult] = numDet;
         neutronVx[nMult] = detectors[numDet].X/detectors[numDet].distance*neutVelocity;
@@ -176,7 +175,6 @@ void DetectorSystemClass::FissionAnalysis()
 
 
 //deltapsd, save covariances,
-//comment
 void DetectorSystemClass::FissionAnalysisLoop()
 {
   fissionFile->cd();
