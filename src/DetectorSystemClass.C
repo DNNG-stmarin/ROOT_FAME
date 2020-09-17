@@ -10,9 +10,12 @@ Date: May 24th, 2020
 #define DetectorSystemClass_cxx
 
 // constructor of the detector system class //
+//do same thing as CoincidenceAnalysis - take info in constructor and not here (already done)
 DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystem* info)
 {
 	// set the number of detectors and triggers
+	//keep left and right same
+	//change "chambers" to "triggers"
 	numTriggers = info->NUM_CHAMBERS;
 	numDetectors = info->NUM_DETS;
 	numBroken = info->NUM_BROKEN;

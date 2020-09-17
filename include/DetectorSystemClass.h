@@ -304,6 +304,7 @@ ___             _   _
 	virtual void     FissionAnalysisLoop();
 
 	// mapping functions
+	// delete mapping function.c and .h
 	int isDetector(int detectorNumber);
 	int isChamber(int detectorNumber);
 

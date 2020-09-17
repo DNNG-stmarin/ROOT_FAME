@@ -35,8 +35,10 @@ using namespace std;
 
 
 // methods to acquire from the user the info about the system
-FissionExperimentClass::FissionExperimentClass()
+FissionExperimentClass::FissionExperimentClass(/*inputFileName*/)
 {
+	//call info System
+
 	//string inName;
 	cout << "What is the name of your experiment: ";
 	cin >> nameOfExp;
@@ -78,7 +80,9 @@ FissionExperimentClass::FissionExperimentClass()
 
 	detFile = new TFile(detFileT, "RECREATE");
 
-	info = new InfoSystem(expType);
+	//info = new InfoSystem(expType);
+	info = new InfoSystem();
+	info->ReadInput(inputFileName);
 
   // create the chain with all the entries to analyze for the raw coincidence mode
   coincTreeChain = new TChain();
@@ -100,10 +104,11 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 	{
 		cout << "Writing coincidence trees to " << expFileWrite->GetName() << "." << endl;
 
+		//info->min_file... etc
 		for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
 		{
 			cout << "reading file number " << fileNum << endl;
-			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
+			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType); //replace digType w info->DATA_TYPE
 			inputData->CreateCoincidenceTree(info, fileNum, numEntries);
 		}
 	}

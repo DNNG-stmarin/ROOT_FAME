@@ -42,6 +42,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 	 //                   |_|                |__/
 
 	// use an array of fifo to store particles and chambers
+	//replace info->... with coincidence analysis attributes
 	queue<TriggerEvent> TriggerBuffer[info->NUM_CHAMBERS];
 	queue<ParticleEvent> DetectorBuffer[info->NUM_DETS];
 

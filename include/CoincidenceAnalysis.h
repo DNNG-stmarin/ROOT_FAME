@@ -46,6 +46,8 @@ public :
 
    TString inputTreeName;
 
+   //infosystem attributes (not info)
+
 
    CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree* tree = 0);
    virtual ~CoincidenceAnalysis();
@@ -59,6 +61,7 @@ public :
 
 #ifdef CoincidenceAnalysis_cxx
 
+//pass info to constructor - take info out of parameter of CreateCoincidenceTree function
 CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree* tree) : fChain(0)
 {
 

@@ -85,7 +85,7 @@ public:
 */
 
 	// class constructor
-	FissionExperimentClass();
+	FissionExperimentClass(/*inputfilename*/);
 	//~FissionExperimentClass();
 
 	// operations

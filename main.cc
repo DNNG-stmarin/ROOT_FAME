@@ -17,10 +17,21 @@ int main(int argc, char** argv)
 
   // find the name of the file to use
   TString fileName;
+  TString inputFileName;
 
-  if(argc >= 2)
-  {
-    fileName =  argv[1];
+  // if(argc >= 2)
+  // {
+  //   fileName =  argv[1];
+  // }
+  if(argc = 1) {
+    cout << "ERROR: input file not given\n"
+    return 0;
+  }
+
+  inputFileName = argv[1];
+
+  if(argc >= 3) {
+    fileName = argv[1];
   }
   else
   {
@@ -30,7 +41,7 @@ int main(int argc, char** argv)
   // now that name is acquired proceed to read root file
   //cout << "Reading from file " << fileName << endl;
 
-  FissionExperimentClass experiment = FissionExperimentClass();
+  FissionExperimentClass experiment = FissionExperimentClass(/*inputfilename*/);
 
   cout << "Forming Coincidences" << endl;
   experiment.CreateCoincidenceTree(fileName, experiment.expFile, -1);

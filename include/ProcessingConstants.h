@@ -6,6 +6,7 @@ Purpose: Store the constants used in the processing
 #ifndef ProcessingConstants_h_
 #define ProcessingConstants_h_
 
+//delete infosystem attributes
 // calibration of detectors for energy
 const double CHAN_VUS = (1.0/1000.0)*(1.0/1024.0); // from digitizer channel to Vus
 const double CSCOMPTEDGE = 0.477;
