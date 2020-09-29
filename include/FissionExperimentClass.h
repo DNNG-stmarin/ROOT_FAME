@@ -31,13 +31,12 @@ class FissionExperimentClass
 
 private:
 	TString nameOfExp;
-	int startFile = 0;
-	int numFiles = 1;
+	int MIN_FILE = 0;
+	int NUM_FILES = 1;
 
-	int expType;
-	int digType;
-	int oldDat;
-	int debug;
+	int DATA_TYPE;
+	int REUSE_DATA;
+	int DEBUG;
 
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";
@@ -85,8 +84,8 @@ public:
 */
 
 	// class constructor
-	FissionExperimentClass(/*inputfilename*/);
-	//~FissionExperimentClass();
+	FissionExperimentClass(TString inputfilename);
+	~FissionExperimentClass();
 
 	// operations
 	int CreateCoincidenceTree(TString filename, TFile* expFile, int numEntries = - 1);

@@ -5,7 +5,6 @@ Purpose: Loop through the entire the coincidence tree and create the fission
 Date: May 14th, Ann Arbor
 */
 
-//pls work
 #include "DetectorSystemClass.h"
 #include "mappingFunctions.h"
 #include <fstream>
@@ -57,8 +56,8 @@ void DetectorSystemClass::FissionAnalysis()
 
       //if numdet is broken,, continue
       bool quit = 0;
-      for(int k=0; k<numBroken; k++) {
-        if(numDet == listBrokenDetectors[k]) {
+      for(int k=0; k<NUM_BROKEN; k++) {
+        if(numDet == BROKEN_DETECTORS[k]) {
           quit = 1;
         }
       }
@@ -233,8 +232,6 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         engDet = totDep[j]/detectors[numDet].calibration;
 
-        //cout << endl << detectors[numDet].discPSDPoint->Eval(totDep[j]) << endl;
-
 
         // cuts for neutrons
         if(
@@ -309,5 +306,4 @@ void DetectorSystemClass::FissionAnalysisLoop()
     deltapsd += step;
   }
   myfile.close();
-  //fissionTree->Write();
 }

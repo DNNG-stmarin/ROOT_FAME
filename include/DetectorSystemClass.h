@@ -33,7 +33,6 @@ Date: Ann Arbor, MI, May 3rd, 2020
 #include "DetectorClass.h"
 #include "TriggerClass.h"
 
-//#include "PhysicalConstants.h"
 #include "ProcessingConstants.h"
 #include "InfoSystem.h"
 
@@ -51,12 +50,22 @@ public:
 
 	*/
 
-	// inputs given by the fission experiment class file, made up of the data collected and
-	// where to write
+	//InfoSystem info;
+	double DETECTOR_THRESHOLD;
+	double COINC_WINDOW;
+	double MIN_TIME_P;
+	double MAX_TIME_P;
+	double MIN_TIME_N;
+	double MAX_TIME_N;
+	double DELTA_BACK_SIG;
+	double BACKGROUND_SHIFT;
+	int DEBUG;
+
+	// inputs given by the fission experiment class file, made up of the data collected and where to write
 	TChain* tree;
 	TFile*  detFile;
 
-	// inpu variables
+	// input variables
 	TTree* fissionTree;
 	TFile* fissionFile;
 
@@ -96,14 +105,14 @@ public:
 	*/
 
 	// characterize the detector system
-	int numTriggers;
-	int numDetectors;
-	int numBroken;
+	int NUM_CHAMBERS;
+	int NUM_DETS;
+	int NUM_BROKEN;
 
 	// list of channels for triggers and detectors
-	int* listTriggersChan;
-	int* listDetectorsChan;
-	int* listBrokenDetectors;
+	int* FISSION_CHAMBERS;
+	int* DETECTORS;
+	int* BROKEN_DETECTORS;
 
 	// arrays of detectors to modify
 	TriggerClass* triggers;
@@ -195,8 +204,6 @@ _  _ _    _
 	TBranch        *b_totChan;   //!
 
 
-	/// add attributes here
-	// ISABEL //
 	double    f_fisTime;
 	double    f_fisErg;
 	int       f_neutronMult;
@@ -204,7 +211,6 @@ _  _ _    _
 	int       f_neutronBackMult;
 	int       f_gammaBackMult;
 
-	// add the extra attributes here
 	double neutronDetTimes[MAX_MULTIPLICITY] = {0};
 	double neutronLightOut[MAX_MULTIPLICITY] = {0};
 	double neutronPSD[MAX_MULTIPLICITY] = {0};
@@ -304,7 +310,6 @@ ___             _   _
 	virtual void     FissionAnalysisLoop();
 
 	// mapping functions
-	// delete mapping function.c and .h
 	int isDetector(int detectorNumber);
 	int isChamber(int detectorNumber);
 
