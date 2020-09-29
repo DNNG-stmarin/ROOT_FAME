@@ -183,6 +183,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 	int tMult = 0;
 	double tTime = 0;
 	double tDep = 0;
+	// ISABEL
+	// int tChan = 0;
 	double totToF[MAX_MULTIPLICITY] = {0};
 	double totPSP[MAX_MULTIPLICITY] = {0};
 	double totDep[MAX_MULTIPLICITY] = {0};
@@ -193,6 +195,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 	coincTree->Branch("tMult", &tMult, "tMult/I");
 	coincTree->Branch("tTime", &tTime, "fissionTime/D");
 	coincTree->Branch("tDep", &tDep, "fissionErg/D");
+	// ISABEL
+	// coincTree->Branch("tChan", &tChan, "fissionChan/I");
 
 	// list variables
 	coincTree->Branch("totToF", totToF, "totToF[tMult]/D");
@@ -380,6 +384,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 
 		// assign fission event from first list
 		qFission = FissionBuffer.front();
+		// ISABEL
+		// assign the detector channel
 		fissionTime = qFission.getTriggerTime();
 		fissionEnergy = qFission.getEnergy();
 

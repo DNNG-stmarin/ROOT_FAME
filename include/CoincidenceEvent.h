@@ -17,9 +17,18 @@ class CoincidenceEvent {
 private:
 
 public:
+	// ISABEL
+	// beamTime;
+	// beamEnergy;
+	// beamChannel;
+	// beamMicroIndex;
+
 	// attributes of the coincidence class
 	int totalMultiplicity;
 
+	// ISABEL
+	// add the channel of the target
+	// int triggerChannel;
 	double triggerEnergy;
 	long double triggerTime;
 	bool isValidFission;
@@ -27,6 +36,7 @@ public:
 	ParticleEvent particles[MAX_MULTIPLICITY];
 	ParticleEvent neutrons[MAX_MULTIPLICITY];
 	ParticleEvent photons[MAX_MULTIPLICITY];
+
 
 
 	CoincidenceEvent()
