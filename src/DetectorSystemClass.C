@@ -117,14 +117,13 @@ Long64_t DetectorSystemClass::LoadTree(Long64_t entry)
    return centry;
 }
 
-void DetectorSystemClass::Init(TChain *treeIn)
+void DetectorSystemClass::Init(TChain* treeIn)
 {
    // Set branch addresses and branch pointers for the coincidence tree
-   if (!tree) {
+   if (!treeIn) {
 		 cout << "No tree!" << endl;
 		 return;
 	 }
-
 	 else
 	 {
 		 tree = treeIn;
