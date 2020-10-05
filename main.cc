@@ -13,28 +13,32 @@ using namespace std;
 int main(int argc, char** argv)
 {
 
-  cout << "Welcome to ROOT FAME" << endl;
+  cout << "\nWelcome to ROOT FAME" << endl;
 
-  FissionExperimentClass experiment = FissionExperimentClass();
-
-  // find the name of the file to use
   TString fileName;
+  TString inputFileName;
 
-  if(argc >= 2)
-  {
-    fileName =  argv[1];
+  if(argc == 1) {
+    cout << "ERROR: input file not given\n";
+    return 0;
+  }
+
+  inputFileName = TString(argv[1]);
+
+  if(argc >= 3) {
+    fileName = argv[2];
   }
   else
   {
     fileName = "compassCf_";
   }
 
-  // now that name is acquired proceed to read root file
-  //cout << "Reading from file " << fileName << endl;
 
-  cout << "Forming Coincidences" << endl;
+  FissionExperimentClass experiment = FissionExperimentClass(inputFileName);
+
+  cout << "\nForming Coincidences" << endl;
   experiment.CreateCoincidenceTree(fileName, experiment.expFile, -1);
-  cout << "Done CreateCoincidenceTree\n";
+  cout << "Done CreateCoincidenceTree";
 
   cout << "\n";
 

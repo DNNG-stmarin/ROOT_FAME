@@ -10,7 +10,6 @@ Date: Ann Arbor, May 14th 2020
 
 void DetectorSystemClass::InitializeDetectorHistograms()
 {
-
     // important axes to have
     TString timeAxis = "time (ns)";
     TString energyAxis = "energy (MeVee)";
@@ -35,12 +34,12 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     // experiment
   	TString expNameT = "Exp";
     TString expHistNameT;
-    expHists = new TH3F* [numDetectors];
+    expHists = new TH3F* [NUM_DETS];
 
-    for(int i = 0; i < numDetectors; i++)
+    for(int i = 0; i < NUM_DETS; i++)
   	{
   		// find the string name of the detector
-  		numDet = to_string(listDetectorsChan[i]);
+  		numDet = to_string(DETECTORS[i]);
 
       // exp histograms
   		expHistNameT = expNameT + numDet;
@@ -51,56 +50,56 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     // psd
   	TString psdName = "PSD";
     TString psdHistNameT;
-    psdhists = new TH1F* [numDetectors];
+    psdhists = new TH1F* [NUM_DETS];
 
     // energy
   	TString ergName = "Erg";
     TString ergHistNameT;
-    erghists = new TH1F* [numDetectors];
+    erghists = new TH1F* [NUM_DETS];
 
     // psd energy
   	TString psdErgName = "PSD_Erg";
     TString psdErgHistNameT;
-    psdErgHists = new TH2F* [numDetectors];
+    psdErgHists = new TH2F* [NUM_DETS];
 
     // TofPSD
     TString tofPsdNameT = "ToF_Psd";
     TString tofPsdHistNameT;
-    tofPsdHists = new TH2F* [numDetectors];
+    tofPsdHists = new TH2F* [NUM_DETS];
 
     // TofPSD
     TString tofErgNameT = "ToF_Erg";
     TString tofErgHistNameT;
-    tofErgHists = new TH2F* [numDetectors];
+    tofErgHists = new TH2F* [NUM_DETS];
 
     // time of flight
   	TString tofName = "TOF";
     TString tofNHistNameT;
     TString tofPHistNameT;
     TString delayTimeT = "del";
-    tofNhists = new TH1F* [numDetectors];
-    tofPhists = new TH1F* [numDetectors];
-    tofDelPhists = new TH1F* [numDetectors];
+    tofNhists = new TH1F* [NUM_DETS];
+    tofPhists = new TH1F* [NUM_DETS];
+    tofDelPhists = new TH1F* [NUM_DETS];
 
     //corrected ToF
     TString delp = "DelP";
     TString corr = "Corr";
-    tofDelPhistsCorr = new TH1F* [numDetectors];
-    tofPsdHistsCorr = new TH2F* [numDetectors];
-    tofErgHistsCorr = new TH2F* [numDetectors];
+    tofDelPhistsCorr = new TH1F* [NUM_DETS];
+    tofPsdHistsCorr = new TH2F* [NUM_DETS];
+    tofErgHistsCorr = new TH2F* [NUM_DETS];
 
     // kinematic
   	TString kinematicName = "Kin";
   	TString kinematicNHistNameT, kinematicPHistNameT, kinematicAllHistNameT;
-    kinematicN = new TH2F* [numDetectors];
-    kinematicP = new TH2F* [numDetectors];
-    kinematicAll = new TH2F* [numDetectors];
+    kinematicN = new TH2F* [NUM_DETS];
+    kinematicP = new TH2F* [NUM_DETS];
+    kinematicAll = new TH2F* [NUM_DETS];
 
 
-    for(int i = 0; i < numDetectors; i++)
+    for(int i = 0; i < NUM_DETS; i++)
   	{
   		// find the string name of the detector
-  		numDet = to_string(listDetectorsChan[i]);
+  		numDet = to_string(DETECTORS[i]);
 
   		// psd histograms
   		psdHistNameT = psdName + numDet;
@@ -174,12 +173,12 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   TString bicorrT = "bicorr_det_";
   TString bicorrHistName, bicorrHistTitle;
 
-  hBicorr = new TH2F** [numDetectors]; // initialize rows
-  for(int det1 = 0; det1 < numDetectors; det1++)
+  hBicorr = new TH2F** [NUM_DETS]; // initialize rows
+  for(int det1 = 0; det1 < NUM_DETS; det1++)
   {
-    hBicorr[det1] = new TH2F* [numDetectors]; // initialize columns
+    hBicorr[det1] = new TH2F* [NUM_DETS]; // initialize columns
 
-     for(int det2 = 0; det2 < numDetectors; det2++)
+     for(int det2 = 0; det2 < NUM_DETS; det2++)
      {
         bicorrHistName = bicorrT + to_string(det1) + "_" + to_string(det2);
         bicorrHistTitle = bicorrHistName + ";" + timeAxis + ";" + timeAxis;
@@ -199,8 +198,8 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   cout << "Bicorrelation histograms have been created" << endl;
 
   // singles and doubles histograms
-  hSingles = new TH1I("singles", "singles; detector; counts", numDetectors + 1, 0, numDetectors);
-  hDoubles = new TH2I("doubles", "doubles; detector; detector", numDetectors + 1, 0, numDetectors, numDetectors + 1, 0, numDetectors);
+  hSingles = new TH1I("singles", "singles; detector; counts", NUM_DETS + 1, 0, NUM_DETS);
+  hDoubles = new TH2I("doubles", "doubles; detector; detector", NUM_DETS + 1, 0, NUM_DETS, NUM_DETS + 1, 0, NUM_DETS);
 
   cout << "Detection histograms have been created" << endl;
 
@@ -229,21 +228,21 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   TString nnHistTitle, ngHistTitle, gnHistTitle, ggHistTitle, allCoincTitle;
 
   // populate histograms with pointers
-  allCoinc = new THStack** [numDetectors]; // initialize rows
-  nnMult = new TH1F** [numDetectors]; // initialize rows
-  ngMult = new TH1F** [numDetectors]; // initialize rows
-  gnMult = new TH1F** [numDetectors]; // initialize rows
-  ggMult = new TH1F** [numDetectors]; // initialize rows
+  allCoinc = new THStack** [NUM_DETS]; // initialize rows
+  nnMult = new TH1F** [NUM_DETS]; // initialize rows
+  ngMult = new TH1F** [NUM_DETS]; // initialize rows
+  gnMult = new TH1F** [NUM_DETS]; // initialize rows
+  ggMult = new TH1F** [NUM_DETS]; // initialize rows
 
-  for(int det1 = 0; det1 < numDetectors; det1++)
+  for(int det1 = 0; det1 < NUM_DETS; det1++)
   {
-      allCoinc[det1] = new THStack* [numDetectors]; // initialize rows
-      nnMult[det1] = new TH1F* [numDetectors]; // initialize rows
-      ngMult[det1] = new TH1F* [numDetectors]; // initialize rows
-      gnMult[det1] = new TH1F* [numDetectors]; // initialize rows
-      ggMult[det1] = new TH1F* [numDetectors]; // initialize rows
+      allCoinc[det1] = new THStack* [NUM_DETS]; // initialize rows
+      nnMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
+      ngMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
+      gnMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
+      ggMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
 
-     for(int det2 = 0; det2 < numDetectors; det2++)
+     for(int det2 = 0; det2 < NUM_DETS; det2++)
      {
         allCoincName = allCoincT + to_string(det1) + "_" + to_string(det2);
         allCoincTitle = allCoincName + ";" + timeAxis + ";" + countAxis;
@@ -293,11 +292,11 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   // create the reflections
   TString refT = "ref_det_";
   TString refHistName, refHistTitle;
-  reflections = new TH2F** [numDetectors]; // initialize rows
-  for(int det1 = 0; det1 < numDetectors; det1++)
+  reflections = new TH2F** [NUM_DETS]; // initialize rows
+  for(int det1 = 0; det1 < NUM_DETS; det1++)
   {
-     reflections[det1] = new TH2F* [numDetectors]; // initialize rows
-     for(int det2 = 0; det2 < numDetectors; det2++)
+     reflections[det1] = new TH2F* [NUM_DETS]; // initialize rows
+     for(int det2 = 0; det2 < NUM_DETS; det2++)
      {
         refHistName = refT + to_string(det1) + "_" + to_string(det2);
         refHistTitle = refHistName + ";" + timeAxis + ";" + energyAxis + ";" + countAxis;

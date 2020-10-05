@@ -21,93 +21,60 @@ Purpose: Methods of the Fission Experiment Class
 #include <stdlib.h>
 #include <stdio.h>
 
-
 #include <queue>
 
-//#include "InfoSystem.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
 #include "InfoSystem.h"
 
-
-
 using namespace std;
 
 
-// methods to acquire from the user the info about the system
-FissionExperimentClass::FissionExperimentClass()
+FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 {
-	//string inName;
-	cout << "What is the name of your experiment: ";
-	cin >> nameOfExp;
-	//nameOfExp = TString(inName);
+	//call info System
+	info = new InfoSystem;
+	info->ReadInput(inputFileName);
 
-	cout << "What type is your experiment: " << endl;
-	cout << "(0): FS-3" << endl;
-	cout << "(1): ChiNu" << endl;
-	cin >> expType;
-
-	cout << "What is your initial start file: ";
-	cin >> startFile;
-
-	cout << "How many files are you analyzing: ";
-	cin >> numFiles;
-
-	cout << "What is the format of your data file: " << endl;
-	cout << "(0): CoMPASS" << endl;
-	cout << "(1): MIDAS (LANSCE)" << endl;
-	cin >> digType;
-
-	cout << "Do you want to use existing data: no (0), yes (1)" << endl;
-	cin >> oldDat;
-
-	cout << "Do you want to enter debug option: no (0), yes (1)" << endl;
-	cin >> debug;
+	nameOfExp = info->nameOfExp;
+	MIN_FILE = info->MIN_FILE;
+	NUM_FILES = info->NUM_FILES;
+	DATA_TYPE = info->DATA_TYPE;
+	REUSE_DATA = info->REUSE_DATA;
 
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
-	// read data already written
-	if(oldDat == 0)
-	{
+	if(REUSE_DATA == 0) {
 		expFile = new TFile(treeFileT, "RECREATE");
 	}
-	else
-	{
+	else {
 		expFile = new TFile(treeFileT, "READ");
 	}
-
 	detFile = new TFile(detFileT, "RECREATE");
-
-	info = new InfoSystem(expType); // remove argument,
-
-	// info = new InfoSystem(); 
-	// info->ReadInput();
 
   // create the chain with all the entries to analyze for the raw coincidence mode
   coincTreeChain = new TChain();
 }
 
 // destructor closes all the remaining loose ends
-/*
 FissionExperimentClass::~FissionExperimentClass()
 {
-
+	delete info;
 }
-*/
 
 // Now go ahead and create all the fission tree
 int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFileWrite, int numEntries)
 {
 	// produce the data if not already present
-	if(oldDat == 0)
+	if(REUSE_DATA == 0)
 	{
 		cout << "Writing coincidence trees to " << expFileWrite->GetName() << "." << endl;
 
-		for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
+		for(int fileNum = MIN_FILE; fileNum < MIN_FILE + NUM_FILES; fileNum++)
 		{
 			cout << "reading file number " << fileNum << endl;
-			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, digType);
-			inputData->CreateCoincidenceTree(info, fileNum, numEntries);
+			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(*info, filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, 0); //replace digType w info->DATA_TYPE
+			inputData->CreateCoincidenceTree(fileNum, numEntries);
 		}
 	}
 	// coincidence tree must be closed in order to read from them
@@ -116,13 +83,10 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 	gROOT->cd();
 
 	// attach the coincidence tree to the chain
-	for(int fileNum = startFile; fileNum < startFile + numFiles; fileNum++)
+	for(int fileNum = MIN_FILE; fileNum < MIN_FILE + NUM_FILES; fileNum++)
 	{
 		coincTreeChain->Add(treeFileT + "/" + TString(to_string(fileNum)) + "/" + nameCoincTree);
 	}
-	//expFile->Close();
-
-	//cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
 
 	return 1;
 }
@@ -146,7 +110,7 @@ int FissionExperimentClass::CreateDetectionAnalysis(TFile* writeFile)
 	detectorData->SystemAnalysis();
 
 	cout << "Entering fission analysis mode" << endl;
-	if(debug)
+	if(DEBUG==1)
 		detectorData->FissionAnalysisLoop();
 	else
 		detectorData->FissionAnalysis();
@@ -157,12 +121,12 @@ int FissionExperimentClass::CreateDetectionAnalysis(TFile* writeFile)
 // getSystemInfo
 int FissionExperimentClass::getStartFile()
 {
-	return startFile;
+	return MIN_FILE;
 }
 
 int FissionExperimentClass::getEndFile()
 {
-	return startFile + numFiles;
+	return MIN_FILE + NUM_FILES;
 }
 
 void FissionExperimentClass::saveAll()

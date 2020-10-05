@@ -8,14 +8,13 @@
 #include "mappingFunctions.h"
 
 // returns the index of the detector or -1 if not a detector
-int isDetector(int detectorNumber, InfoSystem* info)
+int isDetector(int detectorNumber, int NUM_DETS, int* DETECTORS)
 {
 	int detIndex = -1;
 
-	for(int index = 0; index < info->NUM_DETS; index++)
+	for(int index = 0; index < NUM_DETS; index++)
 	{
-		//cout << "In loop!!\n";
-		if(detectorNumber == info->DETECTORS[index])
+		if(detectorNumber == DETECTORS[index])
 		{
 			detIndex = index;
 			break;
@@ -25,12 +24,12 @@ int isDetector(int detectorNumber, InfoSystem* info)
 }
 
 
-int isChamber(int detectorNumber, InfoSystem* info)
+int isChamber(int detectorNumber, int NUM_CHAMBERS, int* FISSION_CHAMBERS)
 {
 	int chamberIndex = -1;
-	for(int index = 0; index < info->NUM_CHAMBERS; index++)
+	for(int index = 0; index < NUM_CHAMBERS; index++)
 	{
-		if(detectorNumber == info->FISSION_CHAMBERS[index])
+		if(detectorNumber == FISSION_CHAMBERS[index])
 		{
 			chamberIndex = index;
 			break;

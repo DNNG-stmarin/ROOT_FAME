@@ -6,8 +6,8 @@
 #define mappingFunctions_h
 
 // returns the index of the detector or -1 if not a detector
-int isDetector(int detectorNumber, InfoSystem* info);
+int isDetector(int detectorNumber, int NUM_DETS, int* DETECTORS);
 
-int isChamber(int detectorNumber, InfoSystem* info);
+int isChamber(int detectorNumber, int NUM_CHAMBERS, int* FISSION_CHAMBERS);
 
 #endif

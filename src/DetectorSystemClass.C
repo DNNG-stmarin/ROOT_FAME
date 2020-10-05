@@ -9,26 +9,35 @@ Date: May 24th, 2020
 
 #define DetectorSystemClass_cxx
 
-// constructor of the detector system class //
+// constructor of the detector system class
 DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystem* info)
 {
-	// set the number of detectors and triggers
-	numTriggers = info->NUM_CHAMBERS;
-	numDetectors = info->NUM_DETS;
-	numBroken = info->NUM_BROKEN;
-	listTriggersChan = info->FISSION_CHAMBERS;
-	listDetectorsChan = info->DETECTORS;
-	listBrokenDetectors = info->BROKENDETECTORS;
+	DETECTOR_THRESHOLD = info->DETECTOR_THRESHOLD;
+	COINC_WINDOW = info->COINC_WINDOW;
+	MIN_TIME_P = info->MIN_TIME_P;
+	MAX_TIME_P = info->MAX_TIME_P;
+	MIN_TIME_N = info->MIN_TIME_N;
+	MAX_TIME_N = info->MAX_TIME_N;
+	DELTA_BACK_SIG = info->DELTA_BACK_SIG;
+	BACKGROUND_SHIFT = MAX_TIME_N - MIN_TIME_P + DELTA_BACK_SIG;
+	DEBUG = info->DEBUG;
+
+	NUM_CHAMBERS = info->NUM_CHAMBERS;
+	NUM_DETS = info->NUM_DETS;
+	NUM_BROKEN = info->NUM_BROKEN;
+	FISSION_CHAMBERS = info->FISSION_CHAMBERS;
+	DETECTORS = info->DETECTORS;
+	BROKEN_DETECTORS = info->BROKEN_DETECTORS;
 
 	// create the dynamically allocated array of detectors and triggers
-	triggers = new TriggerClass[info->NUM_CHAMBERS];
-	detectors = new DetectorClass[info->NUM_DETS];
+	triggers = new TriggerClass[NUM_CHAMBERS];
+	detectors = new DetectorClass[NUM_DETS];
 	cout << "Detectors and triggers have been created" << endl;
 
 	string line;
 	string x, y, z;
 	ifstream in (info->detectorPath);
-	for(int i=0; i<numDetectors; i++) {
+	for(int i=0; i<NUM_DETS; i++) {
 		getline(in, line);
 		istringstream iss(line);
 		iss >> x >> y >> z;
@@ -38,22 +47,17 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		detectors[i].distance = sqrt(pow(stod(x),2)+pow(stod(y),2)+pow(stod(z),2))*100;
 	}
 
-
 	//calibration for only chinu system
-	//create fake file of calibrations for fs3/stilbene
 	detCalibration = new TGraph(*(info->calibrationDet));
-	for(int i=0; i<numDetectors; i++) {
+	for(int i=0; i<NUM_DETS; i++) {
 		detectors[i].calibration = detCalibration->Eval(i)/CSCOMPTEDGE;
 	}
-	cout << "Detector calibration complete" << endl;
+	cout << "Detector calibration complete\n" << endl;
 
 	// initialize the tree and the file to write to
 	detFile = writeFile;
-	cout << "tree passed at " << treeIn << endl;
+	cout << "Tree passed at " << treeIn << endl;
 	Init(treeIn);
-	//cout << "DetectorSystemClass treeIn: " << treeIn << endl;
-
-	// create the directories to store the results
 
 	//create folders and write things to correct folder
 	cdPsd = detFile->mkdir("PSD");
@@ -84,6 +88,14 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 DetectorSystemClass::~DetectorSystemClass()
 {
    delete tree;
+
+	 delete triggers;
+	 delete detectors;
+
+	 delete DETECTORS;
+	 delete FISSION_CHAMBERS;
+	 delete BROKEN_DETECTORS;
+	 delete detCalibration;
 }
 
 Int_t DetectorSystemClass::GetEntry(Long64_t entry)
@@ -109,7 +121,7 @@ void DetectorSystemClass::Init(TChain *treeIn)
 {
    // Set branch addresses and branch pointers for the coincidence tree
    if (!tree) {
-		 cout << "no tree!" << endl;
+		 cout << "No tree!" << endl;
 		 return;
 	 }
 
@@ -129,7 +141,7 @@ void DetectorSystemClass::Init(TChain *treeIn)
 		 tree->SetBranchAddress("totChan", totChan, &b_totChan);
 		 Notify();
 
-		 cout << "Tree being read in correctly " << tree << endl;
+		 cout << "Tree being read in correctly " << tree << endl;;
 	 }
 
 }
@@ -137,17 +149,15 @@ void DetectorSystemClass::Init(TChain *treeIn)
 void DetectorSystemClass::InitFiss()
 {
 	 // initialize the fission tree
-	 // ISABEL //
-
 	 fissionTree->Branch("fisTime", &f_fisTime, "fisTime/D");
 	 fissionTree->Branch("fisErg", &f_fisErg, "fisErg/D");
 	 fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");
-	 fissionTree->Branch("gammaMult", &f_gammaMult, "gammaMult/I"); //changed third argument from neutronmult/I
+	 fissionTree->Branch("gammaMult", &f_gammaMult, "gammaMult/I");
 	 fissionTree->Branch("neutronBackMult", &f_neutronBackMult, "neutronBackMult/I");
 	 fissionTree->Branch("gammaBackMult", &f_gammaBackMult, "gammaBackMult/I");
 
 	 // pass the array without dereferencing.
-	 fissionTree->Branch("neutronDetTimes", neutronDetTimes, "neutronDetTimes[neutronMult]/D"); // ISABEL note that the object is passed normally, and the name of the branch is given the dimensions
+	 fissionTree->Branch("neutronDetTimes", neutronDetTimes, "neutronDetTimes[neutronMult]/D");
 	 fissionTree->Branch("neutronLightOut", neutronLightOut, "neutronLightOut[neutronMult]/D");
 	 fissionTree->Branch("neutronPSD", neutronPSD, "neutronPSD[neutronMult]/D");
 	 fissionTree->Branch("neutronToFErg", neutronToFErg, "neutronToFErg[neutronMult]/D");
@@ -199,7 +209,6 @@ Int_t DetectorSystemClass::Cut(Long64_t entry)
 {
    return 1;
 }
-// mapping functions
 
 
 // returns the index of the detector or -1 if not a detector
@@ -207,10 +216,10 @@ int DetectorSystemClass::isDetector(int detectorNumber)
 {
 	int detIndex = -1;
 
-	for(int index = 0; index < numDetectors; index++)
+	for(int index = 0; index < NUM_DETS; index++)
 	{
 		//cout << "In loop!!\n";
-		if(detectorNumber == listDetectorsChan[index])
+		if(detectorNumber == DETECTORS[index])
 		{
 			detIndex = index;
 			break;
@@ -222,9 +231,9 @@ int DetectorSystemClass::isDetector(int detectorNumber)
 int DetectorSystemClass::isChamber(int detectorNumber)
 {
 	int chamberIndex = -1;
-	for(int index = 0; index < numTriggers; index++)
+	for(int index = 0; index < NUM_CHAMBERS; index++)
 	{
-		if(detectorNumber == listTriggersChan[index])
+		if(detectorNumber == FISSION_CHAMBERS[index])
 		{
 			chamberIndex = index;
 			break;

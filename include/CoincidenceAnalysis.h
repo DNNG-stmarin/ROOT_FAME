@@ -34,7 +34,7 @@ public :
    TDirectory* fileTreeDir = 0;
 
    // declare the digitizer classes
-   int digType = 1;
+   int DATA_TYPE = 1;
    // 0: CoMPASS
    // 1: MIDAS
 
@@ -46,21 +46,43 @@ public :
 
    TString inputTreeName;
 
+   //infosystem attributes (not info)
+   int NUM_CHAMBERS = 0;
+   int NUM_DETS = 0;
 
-   CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree* tree = 0);
+   double CHAMBER_THRESHOLD = 0;
+   double CHAMBER_CLIP = 0;
+   double MAX_CHAMBER_DRIFT = 0;
+   double COINC_WINDOW = 0;
+
+   int* FISSION_CHAMBERS;
+   int* DETECTORS;
+
+
+   CoincidenceAnalysis(InfoSystem info, TString filename, int fileNum, TFile* expFileWrite, TTree* tree = 0);
    virtual ~CoincidenceAnalysis();
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual int   CreateCoincidenceTree(InfoSystem *info, int fileNum, Long64_t entriesToProc = -1);
+   virtual int   CreateCoincidenceTree(int fileNum, Long64_t entriesToProc = -1);
 };
 
 #endif
 
 #ifdef CoincidenceAnalysis_cxx
 
-CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, int digTypeIn, TTree* tree) : fChain(0)
+CoincidenceAnalysis::CoincidenceAnalysis(InfoSystem info, TString filename, int fileNum, TFile* expFileWrite, TTree* tree) : fChain(0)
 {
+  DATA_TYPE = info.DATA_TYPE;
+  CHAMBER_THRESHOLD = info.CHAMBER_THRESHOLD;
+  CHAMBER_CLIP = info.CHAMBER_CLIP;
+  MAX_CHAMBER_DRIFT = info.MAX_CHAMBER_DRIFT;
+  COINC_WINDOW = info.COINC_WINDOW;
+
+  NUM_CHAMBERS = info.NUM_CHAMBERS;
+  NUM_DETS = info.NUM_DETS;
+  FISSION_CHAMBERS = info.FISSION_CHAMBERS;
+  DETECTORS = info.DETECTORS;
 
    // set the output stream
    expFile = expFileWrite;
@@ -69,12 +91,11 @@ CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* e
    fileTreeDir = expFile->mkdir(treeNumT);
 
    // set the input tree
-   digType = digTypeIn;
-   if(digType == 0)
+   if(DATA_TYPE == 0)
    {
       inputTreeName = compassName;
    }
-   else if(digType == 1)
+   else if(DATA_TYPE == 1)
    {
       inputTreeName = midasName;
    }
@@ -96,6 +117,9 @@ CoincidenceAnalysis::~CoincidenceAnalysis()
    if (!fChain) return;
    delete fChain->GetCurrentFile();
    delete coincTree;
+
+   delete FISSION_CHAMBERS;
+   delete DETECTORS;
 }
 
 Int_t CoincidenceAnalysis::GetEntry(Long64_t entry)
@@ -126,7 +150,7 @@ void CoincidenceAnalysis::Init(TTree *tree)
    fCurrent = -1;
    fChain->SetMakeClass(1);
 
-   if(digType == 0)
+   if(DATA_TYPE == 0)
    {
       fChain->SetBranchAddress("Board", &(cp->Board), &(cp->b_Board) );
       fChain->SetBranchAddress("Channel", &(cp->Channel), &(cp->b_Channel) );
@@ -138,7 +162,7 @@ void CoincidenceAnalysis::Init(TTree *tree)
 
    cout << "Branches of input tree have been initialized" << endl;
 
-   if(digType == 1)
+   if(DATA_TYPE == 1)
    {
       fChain->SetBranchAddress("interpolation", &(md->interpolation), &(md->b_interpolation) );
       fChain->SetBranchAddress("time", &(md->time), &(md->b_time) );

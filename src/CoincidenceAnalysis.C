@@ -14,9 +14,7 @@
 #include <stdio.h>
 #include <queue>
 
-//#include "InfoSystem.h"
 #include "InfoSystem.h"
-//#include "PhysicalConstants.h"
 #include "ProcessingConstants.h"
 
 #include "CoincidenceEvent.h"
@@ -27,7 +25,7 @@
 
 using namespace std;
 
-int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Long64_t entriesToProc)
+int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToProc)
 {
 
 	TH1F* hDt = new TH1F("delT", "delT", 1000, 0, 5e12);
@@ -42,8 +40,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 	 //                   |_|                |__/
 
 	// use an array of fifo to store particles and chambers
-	queue<TriggerEvent> TriggerBuffer[info->NUM_CHAMBERS];
-	queue<ParticleEvent> DetectorBuffer[info->NUM_DETS];
+	queue<TriggerEvent> TriggerBuffer[NUM_CHAMBERS];
+	queue<ParticleEvent> DetectorBuffer[NUM_DETS];
 
 
 	/*
@@ -101,7 +99,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 		}
 
 
-		if(digType == 0) //compass type digitizer
+		if(DATA_TYPE == 0) //compass type digitizer
 		{
 			detChannel = cp->getDetector();
 			timeDet = cp->getTime();
@@ -109,7 +107,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 			energyTail = cp->getTail();
 
 		}
-		else if(digType == 1) //midas type digitizer
+		else if(DATA_TYPE == 1) //midas type digitizer
 		{
 			detChannel = md->getDetector();
 			timeDet = md->getTime();
@@ -117,21 +115,16 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 			energyTail = md->getTail();
 		}
 
-		//cout << "\ndetChannel=" << detChannel << endl;
-		//cout << "isDetector()= " << isDetector(detChannel, info) << endl;
-		//cout << "Detector mapping done\n";
-		//cout << isChamber(detChannel, info) << endl;
-		if(isDetector(detChannel, info) >= 0)
+
+		if(isDetector(detChannel, NUM_DETS, DETECTORS) >= 0)
 		{
 			newParticle = ParticleEvent(detChannel, timeDet, energyDep, energyTail);
-			DetectorBuffer[isDetector(detChannel, info)].push(newParticle);
+			DetectorBuffer[isDetector(detChannel, NUM_DETS, DETECTORS)].push(newParticle);
 		}
-		else if(isChamber(detChannel, info) >= 0)
+		else if(isChamber(detChannel, NUM_CHAMBERS, FISSION_CHAMBERS) >= 0)
 		{
-			//cout << "\nChamber if statement\n";
-
 			newTrigger = TriggerEvent(detChannel, timeDet, energyDep, energyTail);
-			TriggerBuffer[isChamber(detChannel, info)].push(newTrigger);
+			TriggerBuffer[isChamber(detChannel, NUM_CHAMBERS, FISSION_CHAMBERS)].push(newTrigger);
 		}
 
 	}
@@ -146,17 +139,17 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 	cout << endl;
 	cout << "Triggers: " << endl;
 
-	for(int d = 0; d < info->NUM_CHAMBERS; d++)
+	for(int d = 0; d < NUM_CHAMBERS; d++)
 	{
-		cout << "trigger: " << info->FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
+		cout << "trigger: " << FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
 	}
 
 	cout << endl;
 	cout << "Detectors: " << endl;
 
-	for(int d = 0; d < info->NUM_DETS; d++)
+	for(int d = 0; d < NUM_DETS; d++)
 	{
-		cout << "channel: " << info->DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
+		cout << "channel: " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
 	}
 
 	cout << endl;
@@ -169,9 +162,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 	    | | | |  __/  __/ | |__| |  __/ (__| | (_| | | | (_| | |_| | (_) | | | |
 	    |_|_|  \___|\___| |_____/ \___|\___|_|\__,_|_|  \__,_|\__|_|\___/|_| |_|
 */
-	//create TFile object
-	// TString fileName = "FissionOutput" + to_string(fileNum) + ".root";
-	// TFile *first = new TFile(fileName, "RECREATE");	//filename/option/filetitle
 
 	expFile->cd();
 	fileTreeDir->cd();
@@ -220,14 +210,14 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 	queue<CoincidenceEvent> FissionBuffer;
 
 	// keep track of the iterator in each of the channels
-	Long64_t *indexTrig = new Long64_t[info->NUM_CHAMBERS];
+	Long64_t *indexTrig = new Long64_t[NUM_CHAMBERS];
 
 	// keep track of the earliest times in each of the channels
-	double *DetectorLastTime = new double[info->NUM_DETS];
+	double *DetectorLastTime = new double[NUM_DETS];
 
 	// distribution of chamber times and energy
-	double *chamberTimes = new double[info->NUM_CHAMBERS];
-	double *chamberErgs = new double[info->NUM_CHAMBERS];
+	double *chamberTimes = new double[NUM_CHAMBERS];
+	double *chamberErgs = new double[NUM_CHAMBERS];
 
 	// initialize the new particle
 	TriggerEvent qTrigger = TriggerEvent();
@@ -250,7 +240,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 		bool validFiss = true;
 
 		// reset the times and energies
-		for(int chambIndex = 0; chambIndex < info->NUM_CHAMBERS; chambIndex++)
+		for(int chambIndex = 0; chambIndex < NUM_CHAMBERS; chambIndex++)
 		{
 			chamberTimes[chambIndex] = 0;
 			chamberErgs[chambIndex] = 0;
@@ -262,7 +252,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 		chamberErgs[0] = qTrigger.getEnergy();
 
 		// look at the other fission lists
-		for(int chambIndex = 1; chambIndex < info->NUM_CHAMBERS; chambIndex++)
+		for(int chambIndex = 1; chambIndex < NUM_CHAMBERS; chambIndex++)
 		{
 
 			if(!TriggerBuffer[chambIndex].empty())
@@ -287,12 +277,12 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 		averageTrigTime = 0;
 		sumTrigErg = 0;
 
-		for(int chambIndex = 0; chambIndex < info->NUM_CHAMBERS; chambIndex++)
+		for(int chambIndex = 0; chambIndex < NUM_CHAMBERS; chambIndex++)
 		{
 			averageTrigTime += chamberTimes[chambIndex];
 			sumTrigErg += chamberErgs[chambIndex];
 		}
-		averageTrigTime /= info->NUM_CHAMBERS;
+		averageTrigTime /= NUM_CHAMBERS;
 
 		// energy discrimination of fission
 		if((sumTrigErg < CHAMBER_THRESHOLD) or (sumTrigErg > CHAMBER_CLIP))
@@ -392,7 +382,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 		//cout << "Fission at time " << fissionTime << endl;
 
 		// look at the detection events
-		for(int detIndex = 0; detIndex < info->NUM_DETS; detIndex++)
+		for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
 		{
 			// match the indices for other queues
 			if(!DetectorBuffer[detIndex].empty())
@@ -405,7 +395,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 			// detector has no more valid detection events, skip it.
 			else
 			{
-				//cout << "detector " << detIndex << " is empty." << endl;
 				continue;
 			}
 
@@ -437,7 +426,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 			}
 		}
 
-		//cout << "_____________________________" << endl;
 
 		// get rid of analyzed fission event
 		FissionBuffer.pop();
@@ -461,17 +449,17 @@ int CoincidenceAnalysis::CreateCoincidenceTree(InfoSystem *info, int fileNum, Lo
 	cout << endl;
 	cout << "Triggers: " << endl;
 
-	for(int d = 0; d < info->NUM_CHAMBERS; d++)
+	for(int d = 0; d < NUM_CHAMBERS; d++)
 	{
-		cout << "trigger: " << info->FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
+		cout << "trigger: " << FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
 	}
 
 	cout << endl;
 	cout << "Detectors: " << endl;
 
-	for(int d = 0; d < info->NUM_DETS; d++)
+	for(int d = 0; d < NUM_DETS; d++)
 	{
-		cout << "channel: " << info->DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
+		cout << "channel: " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
 	}
 
 	cout << endl;

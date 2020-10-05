@@ -49,9 +49,6 @@ int DetectorSystemClass::DetectionAnalysis()
 	                       |_|
 	*/
 
-	int slices;
-	cout << "Would you like to have energy-dependent PSD/TOF analysis: no (0), yes (1)" << endl;
-	cin >> slices;
 
 	// openFile and create tree
 	TString filePrefix = "FissionOutput";
@@ -140,10 +137,10 @@ int DetectorSystemClass::DetectionAnalysis()
 
 	*/
 
-	if(slices) {
+	if(DEBUG==1) {
 		//slices
-		int stepSizepsd = 20;				//pu: 20
-		long int minEntries = 150;	//pu: 150
+		int stepSizepsd = 20;
+		long int minEntries = 150;
 		int numGoodSlicespsd;
 		int energyBinspsd;
 		double tempPSD, tempErgPSD;
@@ -151,7 +148,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		double psdNeutCounts, psdNeutMean, psdNeutStd;
 		double *energySliceInd, *discLinePoint;
 		TGraph** discLines;
-		discLines = new TGraph* [numDetectors];
+		discLines = new TGraph* [NUM_DETS];
 		double p0Disc, p1Disc, p2Disc;
 
 		TFitResultPtr fitPSD_opt;
@@ -164,7 +161,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		// psd slice discrimination
 		cout << "\n******SLICING PSDERG******\n";
-		for(int det = 0; det < numDetectors; det++)
+		for(int det = 0; det < NUM_DETS; det++)
 		{
 			cdPsd->cd();
 			cout << "For detector " << det << ":" << endl;
@@ -327,7 +324,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 			// set discrimination line
 			psdDisc->SetParameters(p0Disc, p1Disc, p2Disc);
-			psdDisc->SetParameters(p0Disc, p1Disc);	//whats the purpose of this?
+			psdDisc->SetParameters(p0Disc, p1Disc);
 
 			TString nameDisc = "discDet" + to_string(det);
 			detectors[det].discPSD = new TF1(nameDisc, "psdDisc", minErg_fit, maxErg_fit);
@@ -359,13 +356,13 @@ int DetectorSystemClass::DetectionAnalysis()
 	// individual
 	TFitResultPtr tofphotpeak_opt;
 	TFitResultPtr tofneutpeak_opt;
-	double tracktof[numDetectors];
-	double trackpsd[numDetectors];
+	double tracktof[NUM_DETS];
+	double trackpsd[NUM_DETS];
 
 
 	cout << "\n******COMPOSING PSDTOF******\n";
 	//individual discrimination for each detector loop
-	for(int i=0; i<numDetectors; i++)
+	for(int i=0; i<NUM_DETS; i++)
 	{
 		TString tofpsdname = "TOF_PSD" + to_string(i);
 		TCanvas* tofpsdcanvas = new TCanvas(tofpsdname, tofpsdname, 800, 500);
@@ -567,7 +564,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		*/
 
 	//slicing tof erg
-	if(slices) {
+	if(DEBUG==1) {
 		int stepSizetof = 20;
 		long int minEntriestof = 200;
 		int numGoodSlicestof;
@@ -575,7 +572,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		double tempTOF, tempErgTOF;
 		double *energySliceIndtof, *discLinePointtof;
 		TGraph** discLinestof;
-		discLinestof = new TGraph* [numDetectors];
+		discLinestof = new TGraph* [NUM_DETS];
 		double p0Disc, p1Disc, p2Disc;
 
 		TFitResultPtr tofDisc_opt;
@@ -587,7 +584,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		cout << "\n******SLICING TOFERG******\n";
 		//tof slice discrimination
-		for(int det = 0; det < numDetectors; det++)
+		for(int det = 0; det < NUM_DETS; det++)
 		{
 			cdPsd->cd();
 			cout << "For detector " << det << ":" << endl;
@@ -781,14 +778,14 @@ int DetectorSystemClass::DetectionAnalysis()
 	}
 
 	// write the output histograms
-	for(int i = 0; i < numDetectors; i++)
+	for(int i = 0; i < NUM_DETS; i++)
 	{
 			// save the results
 			cdPsd->cd();
 			psdhists[i]->Write();
 			erghists[i]->Write();
 
-			if(slices) {
+			if(DEBUG==1) {
 				psdErgHists[i]->Write();
 				tofErgHists[i]->Write();
 			}
@@ -819,11 +816,11 @@ int DetectorSystemClass::DetectionAnalysis()
 	tofCanvas->Divide(3,2);
 	TString titleCanvas;
 
-	for(int i = 0; i < numDetectors; i++)
+	for(int i = 0; i < NUM_DETS; i++)
 	{
 		tofCanvas->cd(i+1);
 
-		titleCanvas = "ToF detector " + to_string(listDetectorsChan[i]) + "; Time (ns); Counts";
+		titleCanvas = "ToF detector " + to_string(DETECTORS[i]) + "; Time (ns); Counts";
 
 		THStack *tofStack = new THStack("tofStack", titleCanvas);
 		tofStack->Add(tofNhists[i]);
@@ -837,6 +834,5 @@ int DetectorSystemClass::DetectionAnalysis()
 	}
 	tofCanvas->Write();
 
-	//outF->Close();
 	return 0;
 }
