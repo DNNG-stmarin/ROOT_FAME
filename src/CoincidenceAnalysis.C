@@ -57,6 +57,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 
 	// get the number of entries
 	Long64_t nentries = fChain->GetEntriesFast();
+	nentries = 100000;
 	cout << "For this file there are: " << nentries << " entries." << endl;
 
 	if(entriesToProc > 0)
@@ -80,6 +81,24 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 
 	// debugging
 	double oldTime = 0;
+
+
+	cout << "Triggers: " << NUM_CHAMBERS << endl;
+
+	for(int d = 0; d < NUM_CHAMBERS; d++)
+	{
+		cout << "trigger at " << d << ": "  << FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
+	}
+
+	cout << endl;
+	cout << "Detectors: " << NUM_DETS << endl;
+
+	for(int d = 0; d < NUM_DETS; d++)
+	{
+		cout << "channel at "  << d <<  ": " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
+	}
+
+	cout << endl;
 
 
 	// loop through array
@@ -137,19 +156,19 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 
 
 	cout << endl;
-	cout << "Triggers: " << endl;
+	cout << "Triggers: " << NUM_CHAMBERS << endl;
 
 	for(int d = 0; d < NUM_CHAMBERS; d++)
 	{
-		cout << "trigger: " << FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
+		cout << "trigger at " << d << ": "  << FISSION_CHAMBERS[d] << ": " << TriggerBuffer[d].size() << endl;
 	}
 
 	cout << endl;
-	cout << "Detectors: " << endl;
+	cout << "Detectors: " << NUM_DETS << endl;
 
 	for(int d = 0; d < NUM_DETS; d++)
 	{
-		cout << "channel: " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
+		cout << "channel at "  << d <<  ": " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
 	}
 
 	cout << endl;
