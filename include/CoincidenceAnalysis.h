@@ -59,7 +59,7 @@ public :
    int* DETECTORS;
 
 
-   CoincidenceAnalysis(InfoSystem info, TString filename, int fileNum, TFile* expFileWrite, TTree* tree = 0);
+   CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, TTree* tree = 0, InfoSystem* info = 0);
    virtual ~CoincidenceAnalysis();
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
@@ -71,18 +71,18 @@ public :
 
 #ifdef CoincidenceAnalysis_cxx
 
-CoincidenceAnalysis::CoincidenceAnalysis(InfoSystem info, TString filename, int fileNum, TFile* expFileWrite, TTree* tree) : fChain(0)
+CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, TTree* tree, InfoSystem* info) : fChain(0)
 {
-  DATA_TYPE = info.DATA_TYPE;
-  CHAMBER_THRESHOLD = info.CHAMBER_THRESHOLD;
-  CHAMBER_CLIP = info.CHAMBER_CLIP;
-  MAX_CHAMBER_DRIFT = info.MAX_CHAMBER_DRIFT;
-  COINC_WINDOW = info.COINC_WINDOW;
+  DATA_TYPE = info->DATA_TYPE;
+  CHAMBER_THRESHOLD = info->CHAMBER_THRESHOLD;
+  CHAMBER_CLIP = info->CHAMBER_CLIP;
+  MAX_CHAMBER_DRIFT = info->MAX_CHAMBER_DRIFT;
+  COINC_WINDOW = info->COINC_WINDOW;
 
-  NUM_CHAMBERS = info.NUM_CHAMBERS;
-  NUM_DETS = info.NUM_DETS;
-  FISSION_CHAMBERS = info.FISSION_CHAMBERS;
-  DETECTORS = info.DETECTORS;
+  NUM_CHAMBERS = info->NUM_CHAMBERS;
+  NUM_DETS = info->NUM_DETS;
+  FISSION_CHAMBERS = info->FISSION_CHAMBERS;
+  DETECTORS = info->DETECTORS;
 
    // set the output stream
    expFile = expFileWrite;

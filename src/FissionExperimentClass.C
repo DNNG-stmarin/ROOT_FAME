@@ -73,7 +73,7 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 		for(int fileNum = MIN_FILE; fileNum < MIN_FILE + NUM_FILES; fileNum++)
 		{
 			cout << "reading file number " << fileNum << endl;
-			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(*info, filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, 0); //replace digType w info->DATA_TYPE
+			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, 0, info); //replace digType w info->DATA_TYPE
 			inputData->CreateCoincidenceTree(fileNum, numEntries);
 		}
 	}
