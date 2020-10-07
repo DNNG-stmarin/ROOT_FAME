@@ -8,6 +8,6 @@
 // returns the index of the detector or -1 if not a detector
 int isDetector(int detectorNumber, int NUM_DETS, int* DETECTORS);
 
-int isChamber(int detectorNumber, int NUM_CHAMBERS, int* FISSION_CHAMBERS);
+int isChamber(int detectorNumber, int NUM_TRIGGERS, int* FISSION_TRIGGERS);
 
 #endif

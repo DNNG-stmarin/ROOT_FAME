@@ -56,8 +56,8 @@ void DetectorSystemClass::FissionAnalysis()
 
       //if numdet is broken,, continue
       bool quit = 0;
-      for(int k=0; k<NUM_BROKEN; k++) {
-        if(numDet == BROKEN_DETECTORS[k]) {
+      for(int k=0; k<NUM_EXCLUDED; k++) {
+        if(numDet == EXCLUDE_DETECTORS[k]) {
           quit = 1;
         }
       }

@@ -28,16 +28,16 @@ public:
   // store the channel multiplcities
   int NUM_BEAMS;
   int NUM_DETS;
-  int NUM_CHAMBERS;
+  int NUM_TRIGGERS;
 
   // store the channels
   int *BEAM;
   int *DETECTORS;
-  int *FISSION_CHAMBERS;
+  int *FISSION_TRIGGERS;
 
   //(optional) broken detectors
-  int *BROKEN_DETECTORS;
-  int NUM_BROKEN;
+  int *EXCLUDE_DETECTORS;
+  int NUM_EXCLUDED;
 
   //calibration attributes
   TGraph *calibrationDet;
@@ -73,12 +73,12 @@ public:
 
     NUM_BEAMS = 0;
     NUM_DETS = 0;
-    NUM_CHAMBERS = 0;
+    NUM_TRIGGERS = 0;
 
     BEAM = NULL;
-    FISSION_CHAMBERS =  NULL;
+    FISSION_TRIGGERS =  NULL;
     DETECTORS = NULL;
-    BROKEN_DETECTORS = NULL;
+    EXCLUDE_DETECTORS = NULL;
 
     MIN_FILE = 0;
     NUM_FILES = 0;
@@ -158,26 +158,26 @@ public:
           DETECTORS[i] = stoi(value);
         }
       }
-      else if(tag == "<NUM_CHAMBERS>:") {
+      else if(tag == "<NUM_TRIGGERS>:") {
         file >> value;
-        NUM_CHAMBERS = stoi(value);
+        NUM_TRIGGERS = stoi(value);
       }
       else if(tag == "<CHAMBERS>:") {
-        FISSION_CHAMBERS = new int[NUM_CHAMBERS];
-        for(int i=0; i<NUM_CHAMBERS; i++) {
+        FISSION_TRIGGERS = new int[NUM_TRIGGERS];
+        for(int i=0; i<NUM_TRIGGERS; i++) {
           file >> value;
-          FISSION_CHAMBERS[i] = stoi(value);
+          FISSION_TRIGGERS[i] = stoi(value);
         }
       }
-      else if(tag == "<NUM_BROKEN>:") {
+      else if(tag == "<NUM_EXCLUDED>:") {
         file >> value;
-        NUM_BROKEN = stoi(value);
+        NUM_EXCLUDED = stoi(value);
       }
-      else if(tag == "<BROKEN_DETECTORS>:") {
-        BROKEN_DETECTORS = new int[NUM_BROKEN];
-        for(int i=0; i<NUM_BROKEN; i++) {
+      else if(tag == "<EXCLUDE_DETECTORS>:") {
+        EXCLUDE_DETECTORS = new int[NUM_EXCLUDED];
+        for(int i=0; i<NUM_EXCLUDED; i++) {
           file >> value;
-          BROKEN_DETECTORS[i] = stoi(value);
+          EXCLUDE_DETECTORS[i] = stoi(value);
         }
       }
       else if(tag == "<COINC_WINDOW>:") {
@@ -241,9 +241,9 @@ public:
   ~InfoSystem()
   {
     delete BEAM;
-    delete FISSION_CHAMBERS;
+    delete FISSION_TRIGGERS;
     delete DETECTORS;
-    delete BROKEN_DETECTORS;
+    delete EXCLUDE_DETECTORS;
     delete calibrationDet;
   }
 };

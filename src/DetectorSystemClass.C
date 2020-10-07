@@ -22,15 +22,15 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	BACKGROUND_SHIFT = MAX_TIME_N - MIN_TIME_P + DELTA_BACK_SIG;
 	DEBUG = info->DEBUG;
 
-	NUM_CHAMBERS = info->NUM_CHAMBERS;
+	NUM_TRIGGERS = info->NUM_TRIGGERS;
 	NUM_DETS = info->NUM_DETS;
-	NUM_BROKEN = info->NUM_BROKEN;
-	FISSION_CHAMBERS = info->FISSION_CHAMBERS;
+	NUM_EXCLUDED = info->NUM_EXCLUDED;
+	FISSION_TRIGGERS = info->FISSION_TRIGGERS;
 	DETECTORS = info->DETECTORS;
-	BROKEN_DETECTORS = info->BROKEN_DETECTORS;
+	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
 
 	// create the dynamically allocated array of detectors and triggers
-	triggers = new TriggerClass[NUM_CHAMBERS];
+	triggers = new TriggerClass[NUM_TRIGGERS];
 	detectors = new DetectorClass[NUM_DETS];
 	cout << "Detectors and triggers have been created" << endl;
 
@@ -93,8 +93,8 @@ DetectorSystemClass::~DetectorSystemClass()
 	 delete detectors;
 
 	 delete DETECTORS;
-	 delete FISSION_CHAMBERS;
-	 delete BROKEN_DETECTORS;
+	 delete FISSION_TRIGGERS;
+	 delete EXCLUDE_DETECTORS;
 	 delete detCalibration;
 }
 
@@ -230,9 +230,9 @@ int DetectorSystemClass::isDetector(int detectorNumber)
 int DetectorSystemClass::isChamber(int detectorNumber)
 {
 	int chamberIndex = -1;
-	for(int index = 0; index < NUM_CHAMBERS; index++)
+	for(int index = 0; index < NUM_TRIGGERS; index++)
 	{
-		if(detectorNumber == FISSION_CHAMBERS[index])
+		if(detectorNumber == FISSION_TRIGGERS[index])
 		{
 			chamberIndex = index;
 			break;

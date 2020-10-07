@@ -24,12 +24,12 @@ int isDetector(int detectorNumber, int NUM_DETS, int* DETECTORS)
 }
 
 
-int isChamber(int detectorNumber, int NUM_CHAMBERS, int* FISSION_CHAMBERS)
+int isChamber(int detectorNumber, int NUM_TRIGGERS, int* FISSION_TRIGGERS)
 {
 	int chamberIndex = -1;
-	for(int index = 0; index < NUM_CHAMBERS; index++)
+	for(int index = 0; index < NUM_TRIGGERS; index++)
 	{
-		if(detectorNumber == FISSION_CHAMBERS[index])
+		if(detectorNumber == FISSION_TRIGGERS[index])
 		{
 			chamberIndex = index;
 			break;

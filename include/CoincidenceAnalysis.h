@@ -47,7 +47,7 @@ public :
    TString inputTreeName;
 
    //infosystem attributes (not info)
-   int NUM_CHAMBERS = 0;
+   int NUM_TRIGGERS = 0;
    int NUM_DETS = 0;
 
    double CHAMBER_THRESHOLD = 0;
@@ -55,7 +55,7 @@ public :
    double MAX_CHAMBER_DRIFT = 0;
    double COINC_WINDOW = 0;
 
-   int* FISSION_CHAMBERS;
+   int* FISSION_TRIGGERS;
    int* DETECTORS;
 
 
@@ -79,9 +79,9 @@ CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* e
   MAX_CHAMBER_DRIFT = info->MAX_CHAMBER_DRIFT;
   COINC_WINDOW = info->COINC_WINDOW;
 
-  NUM_CHAMBERS = info->NUM_CHAMBERS;
+  NUM_TRIGGERS = info->NUM_TRIGGERS;
   NUM_DETS = info->NUM_DETS;
-  FISSION_CHAMBERS = info->FISSION_CHAMBERS;
+  FISSION_TRIGGERS = info->FISSION_TRIGGERS;
   DETECTORS = info->DETECTORS;
 
    // set the output stream
@@ -118,7 +118,7 @@ CoincidenceAnalysis::~CoincidenceAnalysis()
    delete fChain->GetCurrentFile();
    delete coincTree;
 
-   delete FISSION_CHAMBERS;
+   delete FISSION_TRIGGERS;
    delete DETECTORS;
 }
 

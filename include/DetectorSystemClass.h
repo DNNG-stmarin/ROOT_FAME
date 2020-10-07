@@ -105,14 +105,14 @@ public:
 	*/
 
 	// characterize the detector system
-	int NUM_CHAMBERS;
+	int NUM_TRIGGERS;
 	int NUM_DETS;
-	int NUM_BROKEN;
+	int NUM_EXCLUDED;
 
 	// list of channels for triggers and detectors
-	int* FISSION_CHAMBERS;
+	int* FISSION_TRIGGERS;
 	int* DETECTORS;
-	int* BROKEN_DETECTORS;
+	int* EXCLUDE_DETECTORS;
 
 	// arrays of detectors to modify
 	TriggerClass* triggers;
