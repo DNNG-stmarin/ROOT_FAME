@@ -285,7 +285,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 		averageTrigTime /= NUM_TRIGGERS;
 
 		// energy discrimination of fission
-		if((sumTrigErg < CHAMBER_THRESHOLD) or (sumTrigErg > CHAMBER_CLIP))
+		if((sumTrigErg < TRIGGER_THRESHOLD) or (sumTrigErg > TRIGGER_CLIP))
 		{
 			validFiss = false;
 		}

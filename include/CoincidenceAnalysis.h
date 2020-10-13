@@ -50,8 +50,8 @@ public :
    int NUM_TRIGGERS = 0;
    int NUM_DETS = 0;
 
-   double CHAMBER_THRESHOLD = 0;
-   double CHAMBER_CLIP = 0;
+   double TRIGGER_THRESHOLD = 0;
+   double TRIGGER_CLIP = 0;
    double MAX_CHAMBER_DRIFT = 0;
    double COINC_WINDOW = 0;
 
@@ -74,8 +74,8 @@ public :
 CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, TTree* tree, InfoSystem* info) : fChain(0)
 {
   DATA_TYPE = info->DATA_TYPE;
-  CHAMBER_THRESHOLD = info->CHAMBER_THRESHOLD;
-  CHAMBER_CLIP = info->CHAMBER_CLIP;
+  TRIGGER_THRESHOLD = info->TRIGGER_THRESHOLD;
+  TRIGGER_CLIP = info->TRIGGER_CLIP;
   MAX_CHAMBER_DRIFT = info->MAX_CHAMBER_DRIFT;
   COINC_WINDOW = info->COINC_WINDOW;
 

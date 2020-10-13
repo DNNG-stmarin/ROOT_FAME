@@ -52,8 +52,8 @@ public:
   int REUSE_DATA;
   double COINC_WINDOW;
   double DETECTOR_THRESHOLD;
-  double CHAMBER_THRESHOLD;
-  double CHAMBER_CLIP;
+  double TRIGGER_THRESHOLD;
+  double TRIGGER_CLIP;
   double MAX_CHAMBER_DRIFT;
   double MIN_TIME_P;
   double MAX_TIME_P;
@@ -86,8 +86,8 @@ public:
     REUSE_DATA = 0;
     COINC_WINDOW = 0.0;
     DETECTOR_THRESHOLD = 0.0;
-    CHAMBER_THRESHOLD = 0.0;
-    CHAMBER_CLIP = 0.0;
+    TRIGGER_THRESHOLD = 0.0;
+    TRIGGER_CLIP = 0.0;
     MAX_CHAMBER_DRIFT = 0.0;
     MIN_TIME_P = 0.0;
     MAX_TIME_P = 0.0;
@@ -188,13 +188,13 @@ public:
         file >> value;
         DETECTOR_THRESHOLD = stod(value);
       }
-      else if(tag == "<CHAMBER_THRESHOLD>:") {
+      else if(tag == "<TRIGGER_THRESHOLD>:") {
         file >> value;
-        CHAMBER_THRESHOLD = stod(value);
+        TRIGGER_THRESHOLD = stod(value);
       }
-      else if(tag == "<CHAMBER_CLIP>:") {
+      else if(tag == "<TRIGGER_CLIP>:") {
         file >> value;
-        CHAMBER_CLIP = stod(value);
+        TRIGGER_CLIP = stod(value);
       }
       else if(tag == "<MAX_CHAMBER_DRIFT>:") {
         file >> value;
