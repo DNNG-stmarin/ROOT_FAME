@@ -54,7 +54,7 @@ public:
   double DETECTOR_THRESHOLD;
   double TRIGGER_THRESHOLD;
   double TRIGGER_CLIP;
-  double MAX_CHAMBER_DRIFT;
+  double MAX_TRIGGER_DRIFT;
   double MIN_TIME_P;
   double MAX_TIME_P;
   double MIN_TIME_N;
@@ -88,7 +88,7 @@ public:
     DETECTOR_THRESHOLD = 0.0;
     TRIGGER_THRESHOLD = 0.0;
     TRIGGER_CLIP = 0.0;
-    MAX_CHAMBER_DRIFT = 0.0;
+    MAX_TRIGGER_DRIFT = 0.0;
     MIN_TIME_P = 0.0;
     MAX_TIME_P = 0.0;
     MIN_TIME_N = 0.0;
@@ -196,9 +196,9 @@ public:
         file >> value;
         TRIGGER_CLIP = stod(value);
       }
-      else if(tag == "<MAX_CHAMBER_DRIFT>:") {
+      else if(tag == "<MAX_TRIGGER_DRIFT>:") {
         file >> value;
-        MAX_CHAMBER_DRIFT = stod(value);
+        MAX_TRIGGER_DRIFT = stod(value);
       }
       else if(tag == "<MIN_TIME_P>:") {
         file >> value;

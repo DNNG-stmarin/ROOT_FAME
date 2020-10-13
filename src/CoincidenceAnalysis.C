@@ -268,7 +268,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 				chamberErgs[chambIndex] = TriggerBuffer[chambIndex].front().getEnergy();
 			}
 			// find coincidences, set validity to 0 if one of the events is lost
-			if(abs(chamberTimes[0] - chamberTimes[chambIndex]) > MAX_CHAMBER_DRIFT)
+			if(abs(chamberTimes[0] - chamberTimes[chambIndex]) > MAX_TRIGGER_DRIFT)
 			{
 				validFiss = false;
 			}
