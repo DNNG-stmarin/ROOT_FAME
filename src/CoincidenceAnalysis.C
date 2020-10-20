@@ -82,6 +82,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	// debugging
 	double oldTime = 0;
 
+	cout << NUM_TRIGGERS << endl;
+
 	// loop through array
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
 	{
@@ -114,6 +116,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 			energyDep = md->getEnergy();
 			energyTail = md->getTail();
 		}
+
+		// cout << detChannel << endl;
 
 
 		if(isDetector(detChannel, NUM_DETS, DETECTORS) >= 0)
