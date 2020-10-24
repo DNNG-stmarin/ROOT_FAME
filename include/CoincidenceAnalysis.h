@@ -52,6 +52,7 @@ public :
 
    double TRIGGER_THRESHOLD = 0;
    double TRIGGER_CLIP = 0;
+   bool TRIGGER_SPLIT = 0;
    double MAX_TRIGGER_DRIFT = 0;
    double COINC_WINDOW = 0;
 
@@ -76,6 +77,7 @@ CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* e
   DATA_TYPE = info->DATA_TYPE;
   TRIGGER_THRESHOLD = info->TRIGGER_THRESHOLD;
   TRIGGER_CLIP = info->TRIGGER_CLIP;
+  TRIGGER_SPLIT = info->TRIGGER_SPLIT;
   MAX_TRIGGER_DRIFT = info->MAX_TRIGGER_DRIFT;
   COINC_WINDOW = info->COINC_WINDOW;
 

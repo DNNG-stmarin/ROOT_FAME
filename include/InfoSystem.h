@@ -54,6 +54,7 @@ public:
   double DETECTOR_THRESHOLD;
   double TRIGGER_THRESHOLD;
   double TRIGGER_CLIP;
+  bool TRIGGER_SPLIT;
   double MAX_TRIGGER_DRIFT;
   double MIN_TIME_P;
   double MAX_TIME_P;
@@ -88,6 +89,7 @@ public:
     DETECTOR_THRESHOLD = 0.0;
     TRIGGER_THRESHOLD = 0.0;
     TRIGGER_CLIP = 0.0;
+    TRIGGER_SPLIT = 0;
     MAX_TRIGGER_DRIFT = 0.0;
     MIN_TIME_P = 0.0;
     MAX_TIME_P = 0.0;
@@ -195,6 +197,15 @@ public:
       else if(tag == "<TRIGGER_CLIP>:") {
         file >> value;
         TRIGGER_CLIP = stod(value);
+      }
+      else if(tag == "<TRIGGER_SPLIT>:") {
+        file >> value;
+        if(stoi(value) == 0) {
+          TRIGGER_SPLIT = 0;
+        }
+        if(stoi(value) == 1) {
+          TRIGGER_SPLIT = 1;
+        }
       }
       else if(tag == "<MAX_TRIGGER_DRIFT>:") {
         file >> value;

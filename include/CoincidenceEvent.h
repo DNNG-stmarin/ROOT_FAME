@@ -8,7 +8,6 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
-//#include "InfoSystem.h"
 #include "ParticleEvent.h"
 #include "InfoSystem.h"
 
@@ -28,10 +27,11 @@ public:
 
 	// ISABEL
 	// add the channel of the target
-	// int triggerChannel;
+	int triggerChannel;
 	double triggerEnergy;
 	long double triggerTime;
 	bool isValidFission;
+	double triggerPSP;
 
 	ParticleEvent particles[MAX_MULTIPLICITY];
 	ParticleEvent neutrons[MAX_MULTIPLICITY];
@@ -44,13 +44,23 @@ public:
 		totalMultiplicity = 0;
 		triggerTime = 0;
 		triggerEnergy = 0;
+		triggerChannel = 0;
+		triggerPSP = 0;
 	}
 
-	CoincidenceEvent(double triggerTimeIn, double triggerEnergyIn)
-	{
+	// CoincidenceEvent(double triggerTimeIn, double triggerEnergyIn)
+	// {
+	// 	totalMultiplicity = 0;
+	// 	triggerTime = triggerTimeIn;
+	// 	triggerEnergy = triggerEnergyIn;
+	// }
+
+	CoincidenceEvent(double triggerTimein, double triggerEnergyin, int triggerChannelin, double triggerPSPin) {
 		totalMultiplicity = 0;
-		triggerTime = triggerTimeIn;
-		triggerEnergy = triggerEnergyIn;
+		triggerTime = triggerTimein;
+		triggerEnergy = triggerEnergyin;
+		triggerChannel = triggerChannelin;
+		triggerPSP = triggerPSPin;
 	}
 
 	// default destructor
@@ -67,6 +77,16 @@ public:
 	double getEnergy()
 	{
 		return triggerEnergy;
+	}
+
+	int getTriggerChan()
+	{
+		return triggerChannel;
+	}
+
+	double getTriggerPSP()
+	{
+		return triggerPSP;
 	}
 
 };
