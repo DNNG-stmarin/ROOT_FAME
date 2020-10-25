@@ -52,6 +52,9 @@ public :
 
    double TRIGGER_THRESHOLD = 0;
    double TRIGGER_CLIP = 0;
+   double TRIGGER_MIN_PSP = 0.0;
+   double TRIGGER_MAX_PSP = 1.0;
+
    bool TRIGGER_SPLIT = 0;
    double MAX_TRIGGER_DRIFT = 0;
    double COINC_WINDOW = 0;
@@ -78,8 +81,12 @@ CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* e
   TRIGGER_THRESHOLD = info->TRIGGER_THRESHOLD;
   TRIGGER_CLIP = info->TRIGGER_CLIP;
   TRIGGER_SPLIT = info->TRIGGER_SPLIT;
+  TRIGGER_MIN_PSP = info->TRIGGER_MIN_PSP;
+  TRIGGER_MAX_PSP = info->TRIGGER_MAX_PSP;
+  
   MAX_TRIGGER_DRIFT = info->MAX_TRIGGER_DRIFT;
   COINC_WINDOW = info->COINC_WINDOW;
+
 
   NUM_TRIGGERS = info->NUM_TRIGGERS;
   NUM_DETS = info->NUM_DETS;

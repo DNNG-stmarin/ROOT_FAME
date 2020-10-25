@@ -50,22 +50,31 @@ public:
   int NUM_FILES;
   int DATA_TYPE;
   int REUSE_DATA;
+
   double COINC_WINDOW;
   double DETECTOR_THRESHOLD;
+
   double TRIGGER_THRESHOLD;
   double TRIGGER_CLIP;
+
+  double TRIGGER_MIN_PSP; 
+  double TRIGGER_MAX_PSP;
+
   bool TRIGGER_SPLIT;
+
   double MAX_TRIGGER_DRIFT;
   double MIN_TIME_P;
   double MAX_TIME_P;
   double MIN_TIME_N;
   double MAX_TIME_N;
+
   double DELTA_BACK_SIG;
 
   int DEBUG;
   int PSD_ERG;
 
-  InfoSystem() {
+  InfoSystem() 
+  {
     detectorPath = "";
     calibrationPath = "";
     nameOfExp = "";
@@ -85,17 +94,22 @@ public:
     NUM_FILES = 0;
     DATA_TYPE = 0;
     REUSE_DATA = 0;
-    COINC_WINDOW = 0.0;
-    DETECTOR_THRESHOLD = 0.0;
-    TRIGGER_THRESHOLD = 0.0;
+    COINC_WINDOW = 200;
+    DETECTOR_THRESHOLD = 0.1;
+    TRIGGER_THRESHOLD = 0.1;
     TRIGGER_CLIP = 0.0;
+    TRIGGER_MIN_PSP = 0.0; 
+    TRIGGER_MAX_PSP = 1.0;
+
     TRIGGER_SPLIT = 0;
-    MAX_TRIGGER_DRIFT = 0.0;
+    MAX_TRIGGER_DRIFT = 1.0;
+
     MIN_TIME_P = 0.0;
-    MAX_TIME_P = 0.0;
+    MAX_TIME_P = 100.0;
     MIN_TIME_N = 0.0;
-    MAX_TIME_N = 0.0;
-    DELTA_BACK_SIG = 0.0;
+    MAX_TIME_N = 100.0;
+
+    DELTA_BACK_SIG = 10.0;
   }
 
   void ReadInput(TString inputFile) {
@@ -198,7 +212,18 @@ public:
         file >> value;
         TRIGGER_CLIP = stod(value);
       }
-      else if(tag == "<TRIGGER_SPLIT>:") {
+      else if(tag == "<TRIGGER_MIN_PSP>:") 
+      {
+        file >> value;
+        TRIGGER_MIN_PSP = stod(value);
+      }
+      else if(tag == "<TRIGGER_MAX_PSP>:") 
+      {
+        file >> value;
+        TRIGGER_MAX_PSP = stod(value);
+      }
+      else if(tag == "<TRIGGER_SPLIT>:") 
+      {
         file >> value;
         if(stoi(value) == 0) {
           TRIGGER_SPLIT = 0;

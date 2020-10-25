@@ -82,7 +82,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	// debugging
 	double oldTime = 0;
 
-	cout << NUM_TRIGGERS << endl;
+	//cout << NUM_TRIGGERS << endl;
 
 	// loop through array
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
@@ -279,7 +279,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 			chamberPSP[0] = qTrigger.getPsp();
 
 			// energy discrimination of fission
-			if((chamberErgs[0] < TRIGGER_THRESHOLD) || (chamberErgs[0] > TRIGGER_CLIP))
+			if((chamberErgs[0] < TRIGGER_THRESHOLD) || (chamberErgs[0] > TRIGGER_CLIP) || (chamberPSP[0] < TRIGGER_MIN_PSP) || (chamberPSP[0] > TRIGGER_MAX_PSP) )
 			{
 				validFiss = false;
 			}
@@ -370,7 +370,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 			averageTrigPSP /= NUM_TRIGGERS;
 
 			// energy discrimination of fission
-			if((sumTrigErg < TRIGGER_THRESHOLD) or (sumTrigErg > TRIGGER_CLIP))
+			if((sumTrigErg < TRIGGER_THRESHOLD) or (sumTrigErg > TRIGGER_CLIP) or (averageTrigPSP < TRIGGER_MIN_PSP) or (averageTrigPSP > TRIGGER_MAX_PSP) )
 			{
 				validFiss = false;
 			}
