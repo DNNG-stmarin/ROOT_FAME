@@ -6,7 +6,7 @@ Date: May 14th, Ann Arbor
 */
 
 #include "DetectorSystemClass.h"
-#include "mappingFunctions.h"
+// #include "mappingFunctions.h"
 #include <fstream>
 
 void DetectorSystemClass::FissionAnalysis()
@@ -27,12 +27,20 @@ void DetectorSystemClass::FissionAnalysis()
 
   double neutVelocity;
 
+  // cout << "NUM_DET: " << NUM_DETS << endl;
+  // for(int d =0; d < NUM_DETS; d++)
+  // {
+  //     cout << DETECTORS[d] << endl;
+  // }
+
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
   {
     // load tree
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = tree->GetEntry(jentry);   nbytes += nb;
+
+    //cout << jentry << endl;
 
     // allocating the fission info
     f_fisTime = tTime;
@@ -44,8 +52,11 @@ void DetectorSystemClass::FissionAnalysis()
     nBackMult = 0;
     pBackMult = 0;
 
+    // cout << tMult << endl;
+
     for(int j = 0; j < tMult; j++)
     {
+      // cout << j << endl;
       // find the number of the detector
       numDet = isDetector(totChan[j]);
 
@@ -54,9 +65,9 @@ void DetectorSystemClass::FissionAnalysis()
 
       engDet = totDep[j]/detectors[numDet].calibration;
 
-      //if numdet is broken,, continue
+      //if numdet is broken, continue and skip this detector
       bool quit = 0;
-      for(int k=0; k<NUM_EXCLUDED; k++) {
+      for(int k=0; k< NUM_EXCLUDED; k++) {
         if(numDet == EXCLUDE_DETECTORS[k]) {
           quit = 1;
         }

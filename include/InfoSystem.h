@@ -164,7 +164,7 @@ public:
         file >> value;
         NUM_TRIGGERS = stoi(value);
       }
-      else if(tag == "<CHAMBERS>:") {
+      else if(tag == "<TRIGGERS>:") {
         FISSION_TRIGGERS = new int[NUM_TRIGGERS];
         for(int i=0; i<NUM_TRIGGERS; i++) {
           file >> value;

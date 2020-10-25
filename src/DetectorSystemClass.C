@@ -37,7 +37,10 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	string line;
 	string x, y, z;
 	ifstream in (info->detectorPath);
-	for(int i=0; i<NUM_DETS; i++) {
+	for(int i=0; i<NUM_DETS; i++)
+	{
+		// cout << "reading detector coordinates from file" << endl;
+		// cout << i << endl;
 		getline(in, line);
 		istringstream iss(line);
 		iss >> x >> y >> z;
@@ -49,7 +52,9 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 
 	//calibration for only chinu system
 	detCalibration = new TGraph(*(info->calibrationDet));
-	for(int i=0; i<NUM_DETS; i++) {
+	for(int i=0; i<NUM_DETS; i++)
+	{
+		// cout << "Reading detector calibration from file" << endl;
 		detectors[i].calibration = detCalibration->Eval(i)/CSCOMPTEDGE;
 	}
 	cout << "Detector calibration complete\n" << endl;

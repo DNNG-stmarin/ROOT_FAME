@@ -20,8 +20,8 @@ Personal comments by user can go in here
 <REUSE_DATA>: 0
 
 # specify where to find the information on the system
-<DETECTOR_PATH>: expParameters/cartesian.txt
-<CALIBRATION_PATH>: expParameters/intCalibrationCs.txt
+<DETECTOR_PATH>: expChiNu/cartesian.txt
+<CALIBRATION_PATH>: expChiNu/intCalibrationCs.txt
 
 # number of beam channels
 <NUM_BEAMS>: 0

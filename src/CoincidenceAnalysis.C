@@ -117,7 +117,11 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 			energyTail = md->getTail();
 		}
 
-		// cout << detChannel << endl;
+		//cout << detChannel << endl;
+
+		//cout << isDetector(detChannel, NUM_DETS, DETECTORS) << endl;
+		//cout << isChamber(detChannel, NUM_TRIGGERS, FISSION_TRIGGERS) << endl;
+
 
 
 		if(isDetector(detChannel, NUM_DETS, DETECTORS) >= 0)
@@ -130,6 +134,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 			newTrigger = TriggerEvent(detChannel, timeDet, energyDep, energyTail);
 			TriggerBuffer[isChamber(detChannel, NUM_TRIGGERS, FISSION_TRIGGERS)].push(newTrigger);
 		}
+
+
 
 	}
 
@@ -248,13 +254,15 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	if(!TRIGGER_SPLIT) {
 		//cout << "hello\n";
 		bool allEmpty = false;
-		while(!allEmpty) {
+		while(!allEmpty)
+		{
 
 			bool validFiss = true;
 
 			//find most recent fission trigger
 			int recentIndex = 0;
-			for(int chambIndex=0; chambIndex<NUM_TRIGGERS; chambIndex++) {
+			for(int chambIndex=0; chambIndex<NUM_TRIGGERS; chambIndex++)
+			{
 				while(TriggerBuffer[recentIndex].empty()) {
 					recentIndex++;
 				}
