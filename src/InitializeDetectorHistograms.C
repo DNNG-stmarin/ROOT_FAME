@@ -31,13 +31,15 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
     */
 
-    // experiment
+    // // experiment
+    cout << "Initializing experiment 3D histograms" << endl;
   	TString expNameT = "Exp";
     TString expHistNameT;
     expHists = new TH3F* [NUM_DETS];
 
     for(int i = 0; i < NUM_DETS; i++)
   	{
+      cout << i << endl;
   		// find the string name of the detector
   		numDet = to_string(DETECTORS[i]);
 
@@ -95,9 +97,9 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     kinematicP = new TH2F* [NUM_DETS];
     kinematicAll = new TH2F* [NUM_DETS];
 
-
     for(int i = 0; i < NUM_DETS; i++)
   	{
+      cout << "initializing histograms for detector number " << i << endl;
   		// find the string name of the detector
   		numDet = to_string(DETECTORS[i]);
 

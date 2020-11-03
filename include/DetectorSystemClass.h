@@ -257,7 +257,7 @@ _  _ _    _
 	//bounds
 	double minPSD_fit = 0.00;
 	double divPSD_fit = 0.16;
-	double maxPSD_fit = 0.40;
+	double maxPSD_fit = 0.60;
 
 	double minErg_fit = 0.05; // MeVee
 	double maxErg_fit = 4.00; // MeVee

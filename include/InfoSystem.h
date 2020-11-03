@@ -57,7 +57,7 @@ public:
   double TRIGGER_THRESHOLD;
   double TRIGGER_CLIP;
 
-  double TRIGGER_MIN_PSP; 
+  double TRIGGER_MIN_PSP;
   double TRIGGER_MAX_PSP;
 
   bool TRIGGER_SPLIT;
@@ -73,7 +73,7 @@ public:
   int DEBUG;
   int PSD_ERG;
 
-  InfoSystem() 
+  InfoSystem()
   {
     detectorPath = "";
     calibrationPath = "";
@@ -98,10 +98,10 @@ public:
     DETECTOR_THRESHOLD = 0.1;
     TRIGGER_THRESHOLD = 0.1;
     TRIGGER_CLIP = 0.0;
-    TRIGGER_MIN_PSP = 0.0; 
+    TRIGGER_MIN_PSP = 0.0;
     TRIGGER_MAX_PSP = 1.0;
 
-    TRIGGER_SPLIT = 0;
+    TRIGGER_SPLIT = 1;
     MAX_TRIGGER_DRIFT = 1.0;
 
     MIN_TIME_P = 0.0;
@@ -110,6 +110,10 @@ public:
     MAX_TIME_N = 100.0;
 
     DELTA_BACK_SIG = 10.0;
+
+    DEBUG = 0;
+
+    PSD_ERG = 0;
   }
 
   void ReadInput(TString inputFile) {
@@ -212,17 +216,17 @@ public:
         file >> value;
         TRIGGER_CLIP = stod(value);
       }
-      else if(tag == "<TRIGGER_MIN_PSP>:") 
+      else if(tag == "<TRIGGER_MIN_PSP>:")
       {
         file >> value;
         TRIGGER_MIN_PSP = stod(value);
       }
-      else if(tag == "<TRIGGER_MAX_PSP>:") 
+      else if(tag == "<TRIGGER_MAX_PSP>:")
       {
         file >> value;
         TRIGGER_MAX_PSP = stod(value);
       }
-      else if(tag == "<TRIGGER_SPLIT>:") 
+      else if(tag == "<TRIGGER_SPLIT>:")
       {
         file >> value;
         if(stoi(value) == 0) {

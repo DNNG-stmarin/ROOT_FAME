@@ -197,7 +197,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	coincTree->Branch("tMult", &tMult, "tMult/I");
 	coincTree->Branch("tTime", &tTime, "fissionTime/D");
 	coincTree->Branch("tDep", &tDep, "fissionErg/D");
-	// ISABEL
 	coincTree->Branch("tChan", &tChan, "fissionChan/I");
 	coincTree->Branch("tPSP", &tPSP, "fissionPSP/D");
 
@@ -251,6 +250,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 
 	long double beginTime = TriggerBuffer[0].front().getTime();
 
+	cout << "now looking for fission triggers" << endl;
+
 	if(!TRIGGER_SPLIT) {
 		//cout << "hello\n";
 		bool allEmpty = false;
@@ -281,6 +282,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 			// energy discrimination of fission
 			if((chamberErgs[0] < TRIGGER_THRESHOLD) || (chamberErgs[0] > TRIGGER_CLIP) || (chamberPSP[0] < TRIGGER_MIN_PSP) || (chamberPSP[0] > TRIGGER_MAX_PSP) )
 			{
+				// cout << "invalid fission encountered" << endl;
 				validFiss = false;
 			}
 
@@ -310,6 +312,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 		}//end of while loop
 	}//end of if statement
 
+
 	else if(TRIGGER_SPLIT) {
 		// first start by looking for valid fission triggers
 		while (!TriggerBuffer[0].empty())
@@ -322,6 +325,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 			{
 				chamberTimes[chambIndex] = 0;
 				chamberErgs[chambIndex] = 0;
+				chamberPSP[chambIndex] = 0;
 			}
 
 			// assign fission event from first list
@@ -352,14 +356,15 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 				// find coincidences, set validity to 0 if one of the events is lost
 				if(abs(chamberTimes[0] - chamberTimes[chambIndex]) > MAX_TRIGGER_DRIFT)
 				{
+					// cout << "invalid fission encountered" << endl;
 					validFiss = false;
 				}
 			}
+
 			// calculate the average of times and sum of energies
 			averageTrigTime = 0;
 			averageTrigPSP = 0;
 			sumTrigErg = 0;
-
 			for(int chambIndex = 0; chambIndex < NUM_TRIGGERS; chambIndex++)
 			{
 				averageTrigTime += chamberTimes[chambIndex];

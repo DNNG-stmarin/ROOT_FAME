@@ -40,8 +40,6 @@ void DetectorSystemClass::FissionAnalysis()
     if (ientry < 0) break;
     nb = tree->GetEntry(jentry);   nbytes += nb;
 
-    //cout << jentry << endl;
-
     // allocating the fission info
     f_fisTime = tTime;
     f_fisErg = tDep;
@@ -52,11 +50,9 @@ void DetectorSystemClass::FissionAnalysis()
     nBackMult = 0;
     pBackMult = 0;
 
-    // cout << tMult << endl;
-
     for(int j = 0; j < tMult; j++)
     {
-      // cout << j << endl;
+
       // find the number of the detector
       numDet = isDetector(totChan[j]);
 
