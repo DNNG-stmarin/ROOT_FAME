@@ -67,7 +67,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	double totToF[MAX_MULTIPLICITY] = {0};
 	double totPSP[MAX_MULTIPLICITY] = {0};
 	double totDep[MAX_MULTIPLICITY] = {0};
-	double totTail[MAX_MULTIPLICITY] = {0};
+	// double totTail[MAX_MULTIPLICITY] = {0};
 	int totChan[MAX_MULTIPLICITY] = {0};
 
 	// scalar variables
@@ -489,7 +489,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						totToF[totMult] = deltaT;
 						totPSP[totMult] = qParticle.getPsp();
 						totDep[totMult] = qParticle.getEnergy();
-						totTail[totMult] = qParticle.getTail();
+						// totTail[totMult] = qParticle.getTail();
 						totChan[totMult] = qParticle.getDetector();
 						totMult++;
 					}

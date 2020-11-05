@@ -141,7 +141,7 @@ void DetectorSystemClass::Init(TChain* treeIn)
 		 tree->SetBranchAddress("totToF", totToF, &b_totToF);
 		 tree->SetBranchAddress("totPSP", totPSP, &b_totPSP);
 		 tree->SetBranchAddress("totDep", totDep, &b_totDep);
-		 tree->SetBranchAddress("totTail", totTail, &b_totTail);
+		 // tree->SetBranchAddress("totTail", totTail, &b_totTail);
 		 tree->SetBranchAddress("totChan", totChan, &b_totChan);
 		 Notify();
 

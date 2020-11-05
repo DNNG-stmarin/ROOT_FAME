@@ -190,7 +190,7 @@ _  _ _    _
 	double        totToF[MAX_MULTIPLICITY];   //[tMult]
 	double        totPSP[MAX_MULTIPLICITY];   //[tMult]
 	double        totDep[MAX_MULTIPLICITY];   //[tMult]
-	double        totTail[MAX_MULTIPLICITY];   //[tMult]
+	// double        totTail[MAX_MULTIPLICITY];   //[tMult]
 	int           totChan[MAX_MULTIPLICITY];   //[tMult]
 
 	// List of branches
@@ -200,7 +200,7 @@ _  _ _    _
 	TBranch        *b_totToF;   //!
 	TBranch        *b_totPSP;   //!
 	TBranch        *b_totDep;   //!
-	TBranch        *b_totTail;   //!
+	// TBranch        *b_totTail;   //!
 	TBranch        *b_totChan;   //!
 
 
