@@ -31,23 +31,23 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
     */
 
-    // // // experiment
-    // cout << "Initializing experiment 3D histograms" << endl;
-  	// TString expNameT = "Exp";
-    // TString expHistNameT;
-    // expHists = new TH3F* [NUM_DETS];
-    //
-    // for(int i = 0; i < NUM_DETS; i++)
-  	// {
-    //   cout << i << endl;
-  	// 	// find the string name of the detector
-  	// 	numDet = to_string(DETECTORS[i]);
-    //
-    //   // exp histograms
-  	// 	expHistNameT = expNameT + numDet;
-    //   expHists[i] = new TH3F(expHistNameT, expHistNameT, 200, 0, 1, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
-    //
-    // }
+    // // experiment
+    cout << "Initializing experiment 3D histograms" << endl;
+  	TString expNameT = "Exp";
+    TString expHistNameT;
+    expHists = new TH3F* [NUM_DETS];
+
+    for(int i = 0; i < NUM_DETS; i++)
+  	{
+      cout << i << endl;
+  		// find the string name of the detector
+  		numDet = to_string(DETECTORS[i]);
+
+      // exp histograms
+  		expHistNameT = expNameT + numDet;
+      expHists[i] = new TH3F(expHistNameT, expHistNameT, 200, 0, 1, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+
+    }
 
     // psd
   	TString psdName = "PSD";

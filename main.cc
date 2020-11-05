@@ -37,7 +37,7 @@ int main(int argc, char** argv)
   FissionExperimentClass experiment = FissionExperimentClass(inputFileName);
 
   cout << "\nForming Coincidences" << endl;
-  experiment.CreateCoincidenceTree(fileName, experiment.expFile, 1000000);
+  experiment.CreateCoincidenceTree(fileName, experiment.expFile);
   cout << "Done CreateCoincidenceTree";
 
   cout << "\n";
