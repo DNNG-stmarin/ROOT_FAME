@@ -19,11 +19,20 @@ Date: Ann Arbor, May 6th, 2020
 #include "InfoSystem.h"
 #include "DigitizerBranchClass.h"
 
+#include <queue>
+
+#include "CoincidenceEvent.h"
+#include "ParticleEvent.h"
+#include "TriggerEvent.h"
+
+#include "InfoSystem.h"
+#include "ProcessingConstants.h"
+
 using namespace std;
 
 class CoincidenceAnalysis {
 public :
-   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
+   TChain         *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
 
    //create TTree object to contain the output coincidence tree
@@ -31,20 +40,15 @@ public :
 
    // output file
    TFile* expFile = 0;
-   TDirectory* fileTreeDir = 0;
+   // TDirectory* fileTreeDir = 0;
 
    // declare the digitizer classes
-   int DATA_TYPE = 1;
+   int DATA_TYPE;
    // 0: CoMPASS
    // 1: MIDAS
 
    COMPASS_DIG* cp = new COMPASS_DIG();
    MIDAS_DIG* md = new MIDAS_DIG();
-
-   TString compassName = "Data_F";
-   TString midasName = "midas_data";
-
-   TString inputTreeName;
 
    //infosystem attributes (not info)
    int NUM_TRIGGERS = 0;
@@ -62,20 +66,36 @@ public :
    int* FISSION_TRIGGERS;
    int* DETECTORS;
 
+   //  _                          ____  _     _           _
+   // | |                        / __ \| |   (_)         | |
+   // | |     ___   ___  _ __   | |  | | |__  _  ___  ___| |_ ___
+   // | |    / _ \ / _ \| '_ \  | |  | | '_ \| |/ _ \/ __| __/ __|
+   // | |___| (_) | (_) | |_) | | |__| | |_) | |  __/ (__| |_\__ \
+   // |______\___/ \___/| .__/   \____/|_.__/| |\___|\___|\__|___/
+   //                   | |                 _/ |
+   //                   |_|                |__/
 
-   CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, TTree* tree = 0, InfoSystem* info = 0);
+  // use an array of fifo to store particles and chambers
+  queue<TriggerEvent>* TriggerBuffer;
+  queue<ParticleEvent>* DetectorBuffer;
+
+  // queue containing valid fission events
+	queue<CoincidenceEvent> FissionBuffer;
+
+
+   CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, InfoSystem* info = 0);
    virtual ~CoincidenceAnalysis();
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init(TTree *tree);
-   virtual int   CreateCoincidenceTree(int fileNum, Long64_t entriesToProc = -1);
+   virtual void     Init(TChain *tree);
+   virtual int   CreateCoincidenceTree(Long64_t entriesToProc = -1);
 };
 
 #endif
 
 #ifdef CoincidenceAnalysis_cxx
 
-CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* expFileWrite, TTree* tree, InfoSystem* info) : fChain(0)
+CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, InfoSystem* info)
 {
   DATA_TYPE = info->DATA_TYPE;
   TRIGGER_THRESHOLD = info->TRIGGER_THRESHOLD;
@@ -83,7 +103,7 @@ CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* e
   TRIGGER_SPLIT = info->TRIGGER_SPLIT;
   TRIGGER_MIN_PSP = info->TRIGGER_MIN_PSP;
   TRIGGER_MAX_PSP = info->TRIGGER_MAX_PSP;
-  
+
   MAX_TRIGGER_DRIFT = info->MAX_TRIGGER_DRIFT;
   COINC_WINDOW = info->COINC_WINDOW;
 
@@ -96,28 +116,11 @@ CoincidenceAnalysis::CoincidenceAnalysis(TString filename, int fileNum, TFile* e
    // set the output stream
    expFile = expFileWrite;
 
-   TString treeNumT = TString(to_string(fileNum));
-   fileTreeDir = expFile->mkdir(treeNumT);
-
-   // set the input tree
-   if(DATA_TYPE == 0)
-   {
-      inputTreeName = compassName;
-   }
-   else if(DATA_TYPE == 1)
-   {
-      inputTreeName = midasName;
-   }
-   if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(filename);
-      if (!f || !f->IsOpen()) {
-         f = new TFile(filename);
-      }
-      f->GetObject(inputTreeName,tree);
-
-      cout << "tree found at " << tree << endl;
-   }
    Init(tree);
+
+   // use an array of fifo to store particles and chambers
+   TriggerBuffer = new queue<TriggerEvent> [NUM_TRIGGERS];
+   DetectorBuffer = new queue<ParticleEvent> [NUM_DETS];
 
 }
 
@@ -150,7 +153,7 @@ Long64_t CoincidenceAnalysis::LoadTree(Long64_t entry)
    return centry;
 }
 
-void CoincidenceAnalysis::Init(TTree *tree)
+void CoincidenceAnalysis::Init(TChain *tree)
 {
 
    // Set branch addresses and branch pointers

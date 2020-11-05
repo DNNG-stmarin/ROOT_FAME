@@ -311,7 +311,7 @@ ___             _   _
 
 	// mapping functions
 	int isDetector(int detectorNumber);
-	int isChamber(int detectorNumber);
+	int isTrigger(int detectorNumber);
 
 };
 #endif

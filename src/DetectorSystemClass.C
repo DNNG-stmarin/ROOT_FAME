@@ -232,7 +232,7 @@ int DetectorSystemClass::isDetector(int detectorNumber)
 	return detIndex;
 }
 
-int DetectorSystemClass::isChamber(int detectorNumber)
+int DetectorSystemClass::isTrigger(int detectorNumber)
 {
 	int chamberIndex = -1;
 	for(int index = 0; index < NUM_TRIGGERS; index++)

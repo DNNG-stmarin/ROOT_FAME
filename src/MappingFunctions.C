@@ -24,7 +24,7 @@ int isDetector(int detectorNumber, int NUM_DETS, int* DETECTORS)
 }
 
 
-int isChamber(int detectorNumber, int NUM_TRIGGERS, int* FISSION_TRIGGERS)
+int isTrigger(int detectorNumber, int NUM_TRIGGERS, int* FISSION_TRIGGERS)
 {
 	int chamberIndex = -1;
 	for(int index = 0; index < NUM_TRIGGERS; index++)
@@ -36,4 +36,20 @@ int isChamber(int detectorNumber, int NUM_TRIGGERS, int* FISSION_TRIGGERS)
 		}
 	}
 	return chamberIndex;
+}
+
+// returns the index of the detector or -1 if not a detector
+int isExcluded(int detectorNumber, int NUM_EXCLUDED, int* EXCLUDE_DETECTORS)
+{
+	int detIndex = -1;
+
+	for(int index = 0; index < NUM_EXCLUDED; index++)
+	{
+		if(detectorNumber == EXCLUDE_DETECTORS[index])
+		{
+			detIndex = index;
+			break;
+		}
+	}
+	return detIndex;
 }

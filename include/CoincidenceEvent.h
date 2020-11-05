@@ -11,6 +11,8 @@
 #include "ParticleEvent.h"
 #include "InfoSystem.h"
 
+#include "ProcessingConstants.h"
+
 class CoincidenceEvent {
 
 private:
@@ -29,7 +31,7 @@ public:
 	// add the channel of the target
 	int triggerChannel;
 	double triggerEnergy;
-	long double triggerTime;
+	double triggerTime;
 	bool isValidFission;
 	double triggerPSP;
 

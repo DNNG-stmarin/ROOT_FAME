@@ -25,144 +25,20 @@
 
 using namespace std;
 
-int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToProc)
+int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 {
-
-	TH1F* hDt = new TH1F("delT", "delT", 1000, 0, 5e12);
-
-	 //  _                          ____  _     _           _
-	 // | |                        / __ \| |   (_)         | |
-	 // | |     ___   ___  _ __   | |  | | |__  _  ___  ___| |_ ___
-	 // | |    / _ \ / _ \| '_ \  | |  | | '_ \| |/ _ \/ __| __/ __|
-	 // | |___| (_) | (_) | |_) | | |__| | |_) | |  __/ (__| |_\__ \
-	 // |______\___/ \___/| .__/   \____/|_.__/| |\___|\___|\__|___/
-	 //                   | |                 _/ |
-	 //                   |_|                |__/
-
-	// use an array of fifo to store particles and chambers
-	queue<TriggerEvent> TriggerBuffer[NUM_TRIGGERS];
-	queue<ParticleEvent> DetectorBuffer[NUM_DETS];
-
-
 	/*
-	  __  __       _         _
-	 |  \/  |     (_)       | |
-	 | \  / | __ _ _ _ __   | |     ___   ___  _ __
-	 | |\/| |/ _` | | '_ \  | |    / _ \ / _ \| '_ \
-	 | |  | | (_| | | | | | | |___| (_) | (_) | |_) |
-	 |_|  |_|\__,_|_|_| |_| |______\___/ \___/| .__/
-	                                          | |
-	                                          |_|
+	  _  _ _    _
+	 | || (_)__| |_ ___  __ _ _ _ __ _ _ __  ___
+	 | __ | (_-<  _/ _ \/ _` | '_/ _` | '  \(_-<
+	 |_||_|_/__/\__\___/\__, |_| \__,_|_|_|_/__/
+	                    |___/
 	*/
+	cout << "Initializing coincidence THistogram " << endl;
 
-	// get the number of entries
-	Long64_t nentries = fChain->GetEntriesFast();
-	// nentries = 100000; for debug
-	cout << "For this file there are: " << nentries << " entries." << endl;
-
-	if(entriesToProc > 0)
-	{
-		cout << "Reading the first " << entriesToProc << " events." << endl;
-		nentries = entriesToProc;
-	}
-
-	// keep track of the number of bytes in the chain
-	Long64_t nbytes = 0, nb = 0;
-
-	// initialize the particle
-	ParticleEvent newParticle = ParticleEvent();
-	TriggerEvent newTrigger = TriggerEvent();
-
-	// initialize the detector channel
-	int detChannel = 0;
-	double timeDet = 0;
-	double energyDep = 0;
-	double energyTail = 0;
-
-	// debugging
-	double oldTime = 0;
-
-	//cout << NUM_TRIGGERS << endl;
-
-	// loop through array
-	for (Long64_t jentry = 0; jentry < nentries; jentry++)
-	{
-
-		Long64_t ientry = LoadTree(jentry);
-	    if (ientry < 0) break;
-
-		// load current entry
-		nb = fChain->GetEntry(jentry);   nbytes += nb;
-
-		// update user on status of processing
-		if(jentry%1000000 == 0)
-		{
-			cout << "now reading entry " << jentry << endl;
-		}
+	TH1F* h_Dt = new TH1F("delT", "delT", 1000, 0, 5e12);
 
 
-		if(DATA_TYPE == 0) //compass type digitizer
-		{
-			detChannel = cp->getDetector();
-			timeDet = cp->getTime();
-			energyDep = cp->getEnergy();
-			energyTail = cp->getTail();
-
-		}
-		else if(DATA_TYPE == 1) //midas type digitizer
-		{
-			detChannel = md->getDetector();
-			timeDet = md->getTime();
-			energyDep = md->getEnergy();
-			energyTail = md->getTail();
-		}
-
-		//cout << detChannel << endl;
-
-		//cout << isDetector(detChannel, NUM_DETS, DETECTORS) << endl;
-		//cout << isChamber(detChannel, NUM_TRIGGERS, FISSION_TRIGGERS) << endl;
-
-
-
-		if(isDetector(detChannel, NUM_DETS, DETECTORS) >= 0)
-		{
-			newParticle = ParticleEvent(detChannel, timeDet, energyDep, energyTail);
-			DetectorBuffer[isDetector(detChannel, NUM_DETS, DETECTORS)].push(newParticle);
-		}
-		else if(isChamber(detChannel, NUM_TRIGGERS, FISSION_TRIGGERS) >= 0)
-		{
-			newTrigger = TriggerEvent(detChannel, timeDet, energyDep, energyTail);
-			TriggerBuffer[isChamber(detChannel, NUM_TRIGGERS, FISSION_TRIGGERS)].push(newTrigger);
-		}
-
-
-
-	}
-
-
-	// output the content of the buffers
-
-	cout << endl;
-	cout << "Buffers are ready: " << endl;
-
-
-	cout << endl;
-	cout << "Triggers: " << NUM_TRIGGERS << endl;
-
-	for(int d = 0; d < NUM_TRIGGERS; d++)
-	{
-		cout << "trigger at " << d << ": "  << FISSION_TRIGGERS[d] << ": " << TriggerBuffer[d].size() << endl;
-	}
-
-	cout << endl;
-	cout << "Detectors: " << NUM_DETS << endl;
-
-	for(int d = 0; d < NUM_DETS; d++)
-	{
-		cout << "channel at "  << d <<  ": " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
-	}
-
-	cout << endl;
 
 	/*
 	  _______              _____            _                 _   _
@@ -171,10 +47,11 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	    | |  __/ _ \/ _ \ | |  | |/ _ \/ __| |/ _  |  __/ _  | __| |/ _ \|  _ \
 	    | | | |  __/  __/ | |__| |  __/ (__| | (_| | | | (_| | |_| | (_) | | | |
 	    |_|_|  \___|\___| |_____/ \___|\___|_|\__,_|_|  \__,_|\__|_|\___/|_| |_|
-*/
+  */
+
+	cout << "Initializing coincidence TTree " << endl;
 
 	expFile->cd();
-	fileTreeDir->cd();
 
 	coincTree = new TTree("CoincidenceTree", "Tree of Experimental Coincidences");
 
@@ -205,364 +82,444 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 	coincTree->Branch("totPSP", totPSP, "totPSP[tMult]/D");
 	coincTree->Branch("totDep", totDep, "totDep[tMult]/D");
 	coincTree->Branch("totChan", totChan, "totChan[tMult]/I");
-	coincTree->Branch("totTail", totTail, "totTail[tMult]/D");
+	// coincTree->Branch("totTail", totTail, "totTail[tMult]/D");
 
 
-/*
-	   _____      _            _     _                       _
-	  / ____|    (_)          (_)   | |                     | |
-	 | |     ___  _ _ __   ___ _  __| | ___ _ __   ___ ___  | |     ___   ___  _ __
-	 | |    / _ \| | '_ \ / __| |/ _` |/ _ \ '_ \ / __/ _ \ | |    / _ \ / _ \| '_ \
-	 | |___| (_) | | | | | (__| | (_| |  __/ | | | (_|  __/ | |___| (_) | (_) | |_) |
-	  \_____\___/|_|_| |_|\___|_|\__,_|\___|_| |_|\___\___| |______\___/ \___/| .__/
-	                                                                          | |
-	                                                                          |_|
-*/
+	/*
+		   _____      _            _     _                       _
+		  / ____|    (_)          (_)   | |                     | |
+		 | |     ___  _ _ __   ___ _  __| | ___ _ __   ___ ___  | |     ___   ___  _ __
+		 | |    / _ \| | '_ \ / __| |/ _` |/ _ \ '_ \ / __/ _ \ | |    / _ \ / _ \| '_ \
+		 | |___| (_) | | | | | (__| | (_| |  __/ | | | (_|  __/ | |___| (_) | (_) | |_) |
+		  \_____\___/|_|_| |_|\___|_|\__,_|\___|_| |_|\___\___| |______\___/ \___/| .__/
+		                                                                          | |
+		                                                                          |_|
+	*/
+		cout << "Initializing coincidence queue " << endl;
 
-	// queue containing valid fission events
-	queue<CoincidenceEvent> FissionBuffer;
 
-	// keep track of the iterator in each of the channels
-	Long64_t *indexTrig = new Long64_t[NUM_TRIGGERS];
+		// keep track of the iterator in each of the channels
+		Long64_t *indexTrig = new Long64_t[NUM_TRIGGERS];
 
-	// keep track of the earliest times in each of the channels
-	double *DetectorLastTime = new double[NUM_DETS];
+		// keep track of the earliest times in each of the channels
+		double *DetectorLastTime = new double[NUM_DETS];
 
-	// distribution of chamber times and energy
-	double *chamberTimes = new double[NUM_TRIGGERS];
-	double *chamberErgs = new double[NUM_TRIGGERS];
-	double *chamberPSP = new double[NUM_TRIGGERS];
-	int chamberChan = 0;
+		// distribution of chamber times and energy
+		double *chamberTimes = new double[NUM_TRIGGERS];
+		double *chamberErgs = new double[NUM_TRIGGERS];
+		double *chamberPSP = new double[NUM_TRIGGERS];
+		int chamberChan = 0;
 
-	// initialize the new particle
-	TriggerEvent qTrigger = TriggerEvent();
-	//CoincidenceEvent newFission = CoincidenceEvent(0, 0);
-	CoincidenceEvent newFission = CoincidenceEvent(0, 0, 0, 0);
+		// initialize the new particle
+		TriggerEvent qTrigger = TriggerEvent();
+		//CoincidenceEvent newFission = CoincidenceEvent(0, 0);
+		CoincidenceEvent newFission = CoincidenceEvent(0, 0, 0, 0);
 
-	// start at the beginning of the array and also keep track of the the number of coincidence events found.
-	ULong64_t numFissEvents = 0;
+		// start at the beginning of the array and also keep track of the the number of coincidence events found.
+		ULong64_t numFissEvents = 0;
 
-	// initialize fission tracker
-	bool validFiss = true;
-	double averageTrigTime = 0;
-	double sumTrigErg = 0;
-	double averageTrigPSP = 0;
+		// initialize fission tracker
+		bool validFiss = true;
+		double averageTrigTime = 0;
+		double sumTrigErg = 0;
+		double averageTrigPSP = 0;
 
-	long double beginTime = TriggerBuffer[0].front().getTime();
+		long double beginTime = 0;
 
-	cout << "now looking for fission triggers" << endl;
 
-	if(!TRIGGER_SPLIT) {
-		//cout << "hello\n";
-		bool allEmpty = false;
-		while(!allEmpty)
+		/*
+			______ _         _               _
+		 |  ____(_)       (_)             | |
+		 | |__   _ ___ ___ _  ___  _ __   | |     ___   ___  _ __
+		 |  __| | / __/ __| |/ _ \| '_ \  | |    / _ \ / _ \| '_ \
+		 | |    | \__ \__ \ | (_) | | | | | |___| (_) | (_) | |_) |
+		 |_|    |_|___/___/_|\___/|_| |_| |______\___/ \___/| .__/
+																												| |
+																												|_|
+		*/
+		cout << "Initializing fission queue. " << endl;
+
+		// now loop thrugh fission events to find valid fission events
+		CoincidenceEvent qFission = CoincidenceEvent(0, 0, 0, 0);
+		double fissionTime = 0;
+		double fissionEnergy = 0;
+		int fissionChan = 0;
+		double fissionPSP = 0;
+
+		// dynamical variables
+		double detTime = 0;
+		double detPSP = 0;
+
+		// store multiplicities
+		int totMult = 0;
+
+		// find coincidences option
+		ParticleEvent qParticle = ParticleEvent();
+
+		// time to compare to fission
+		double compDetTime;
+		double deltaT;
+
+		// keep track of the fission index
+		int fisTracker = 0;
+
+
+
+	/*
+	  __  __       _         _
+	 |  \/  |     (_)       | |
+	 | \  / | __ _ _ _ __   | |     ___   ___  _ __
+	 | |\/| |/ _` | | '_ \  | |    / _ \ / _ \| '_ \
+	 | |  | | (_| | | | | | | |___| (_) | (_) | |_) |
+	 |_|  |_|\__,_|_|_| |_| |______\___/ \___/| .__/
+	                                          | |
+	                                          |_|
+	*/
+
+	// get the number of entries
+	Long64_t nentries = fChain->GetEntries();
+	// nentries = 100000; for debug
+	cout << "For this file there are: " << nentries << " entries." << endl;
+
+	if(entriesToProc > 0)
+	{
+		cout << "Reading the first " << entriesToProc << " events." << endl;
+		nentries = entriesToProc;
+	}
+
+	// keep track of the number of bytes in the chain
+	Long64_t nbytes = 0, nb = 0;
+
+	// initialize the particle
+	ParticleEvent newParticle = ParticleEvent();
+	TriggerEvent newTrigger = TriggerEvent();
+
+	// initialize the detector channel
+	int detChannel = 0;
+	double timeDet = 0;
+	double energyDep = 0;
+	double energyTail = 0;
+	int entryChannel = 0;
+
+	int refTrig = 0;
+	double refTrigTime = 0;
+	double compTrigTime = 0;
+
+	bool pastRef, trigReady;
+
+	// loop through array
+	for (Long64_t jentry = 0; jentry < nentries; jentry++)
+	{
+
+		Long64_t ientry = LoadTree(jentry);
+	  	if (ientry < 0) break;
+
+		// load current entry
+		nb = fChain->GetEntry(jentry);   nbytes += nb;
+
+
+		//  ___ _ _ _ _
+		// | __(_) | (_)_ _  __ _
+		// | _|| | | | | ' \/ _` |
+		// |_| |_|_|_|_|_||_\__, |
+		// 							   	|___/
+
+		// choose the correct data format
+		if(DATA_TYPE == 0) //compass type digitizer
+		{
+			detChannel = cp->getDetector();
+			timeDet = cp->getTime();
+			energyDep = cp->getEnergy();
+			energyTail = cp->getTail();
+
+		}
+		else if(DATA_TYPE == 1) //midas type digitizer
+		{
+			detChannel = md->getDetector();
+			timeDet = md->getTime();
+			energyDep = md->getEnergy();
+			energyTail = md->getTail();
+		}
+
+		// new events is in a detector
+		if(isDetector(detChannel, NUM_DETS, DETECTORS) >= 0)
+		{
+			entryChannel = isDetector(detChannel, NUM_DETS, DETECTORS);
+			newParticle = ParticleEvent(detChannel, timeDet, energyDep, energyTail);
+			DetectorBuffer[entryChannel].push(newParticle);
+		}
+
+		// new event is in a trigger
+		else if(isTrigger(detChannel, NUM_TRIGGERS, FISSION_TRIGGERS) >= 0)
+		{
+			entryChannel = isTrigger(detChannel, NUM_TRIGGERS, FISSION_TRIGGERS);
+			newTrigger = TriggerEvent(detChannel, timeDet, energyDep, energyTail);
+
+			// energy discrimination of fission
+			if((newTrigger.getEnergy() < TRIGGER_THRESHOLD) || (newTrigger.getEnergy() > TRIGGER_CLIP) || (newTrigger.getPsp() > TRIGGER_MIN_PSP) || (newTrigger.getPsp() < TRIGGER_MAX_PSP) )
+			{
+				TriggerBuffer[entryChannel].push(newTrigger);
+
+				// for(int trigIndex = 0; trigIndex < NUM_TRIGGERS; trigIndex++)
+				// {
+				// 	cout << trigIndex << " " << TriggerBuffer[trigIndex].size() << endl;
+				// }
+
+			}
+		}
+
+		//  _____    _
+		// |_   _| _(_)__ _ __ _ ___ _ _
+		//  | || '_| / _` / _` / -_) '_|
+		//  |_||_| |_\__, \__, \___|_|
+		// 					 |___/|___/
+
+		// if trigger is not split, check if you can store in a fission
+		if(!TRIGGER_SPLIT)
+		{
+			// check whether all trigs queues are populated
+			bool allFill = true;
+
+			while(allFill)
+			{
+				for(int trigIndex = 0; trigIndex < NUM_TRIGGERS; trigIndex++)
+				{
+					if(TriggerBuffer[trigIndex].empty())
+					{
+						allFill = false;
+						// cout << trigIndex << " " << TriggerBuffer[trigIndex].empty() <<  endl;
+					}
+				}
+
+				// find minimum trigger
+				if(allFill)
+				{
+					// cout << "oh hello" << endl;
+					int recentIndex = 0;
+					for(int trigIndex=0; trigIndex<NUM_TRIGGERS; trigIndex++)
+					{
+						if(TriggerBuffer[trigIndex].front().getTime() < TriggerBuffer[recentIndex].front().getTime())
+						{
+						   recentIndex = trigIndex;
+						}
+					}
+
+					newFission = CoincidenceEvent(TriggerBuffer[recentIndex].front().getTime(),
+					 															TriggerBuffer[recentIndex].front().getEnergy(),
+																				TriggerBuffer[recentIndex].front().getDetector(),
+																				TriggerBuffer[recentIndex].front().getPsp());
+					FissionBuffer.push(newFission);
+
+					TriggerBuffer[recentIndex].pop();
+
+					// cout << "tM: " << TriggerBuffer[recentIndex].front().getTime() << endl;
+
+
+					// cout << FissionBuffer.front().getTriggerTime();
+				}
+			}
+		}
+
+		// if trigger split, check if you can form a coincidence between the triggers
+		else if(TRIGGER_SPLIT)
 		{
 
-			bool validFiss = true;
+			trigReady = true;
+			pastRef = false;
 
-			//find most recent fission trigger
-			int recentIndex = 0;
-			for(int chambIndex=0; chambIndex<NUM_TRIGGERS; chambIndex++)
+			if(!TriggerBuffer[refTrig].empty())
 			{
-				while(TriggerBuffer[recentIndex].empty()) {
-					recentIndex++;
-				}
-				if(!TriggerBuffer[chambIndex].empty()) {
-					if(TriggerBuffer[chambIndex].front().getTime() < TriggerBuffer[recentIndex].front().getTime()) {
-						recentIndex = chambIndex;
+				refTrigTime = TriggerBuffer[refTrig].front().getTime();
+
+				// cycle through the other triggers and make sure that they are empty
+				for(int trigIndex = 1; trigIndex < NUM_TRIGGERS; trigIndex++)
+				{
+					// check whether more data needs to be read in
+					if(!TriggerBuffer[trigIndex].empty())
+					{
+						compTrigTime = TriggerBuffer[trigIndex].front().getTime();
+					}
+
+					// eliminate bad coincidence events
+					while( (!TriggerBuffer[trigIndex].empty() ) &  (refTrigTime - compTrigTime > MAX_TRIGGER_DRIFT) )
+					{
+						TriggerBuffer[trigIndex].pop();
+						compTrigTime = TriggerBuffer[trigIndex].front().getTime();
+					}
+
+					// check whether more data needs to be read in
+					if(TriggerBuffer[trigIndex].empty())
+					{
+						// split fission not reached yet
+						trigReady = false;
+					}
+
+					// coincidence can be formed
+					else if(abs(compTrigTime - refTrigTime) < MAX_TRIGGER_DRIFT)
+					{
+						h_Dt->Fill(compTrigTime - refTrigTime);
+						trigReady = true; // does this work, or does it cancel 2/3
+					}
+
+					// reference channel is lagging
+					else if(compTrigTime - refTrigTime > MAX_TRIGGER_DRIFT)
+					{
+						trigReady = false;
+						pastRef = true;
 					}
 				}
 			}
 
-			qTrigger = TriggerBuffer[recentIndex].front();
-			chamberTimes[0] = qTrigger.getTime();
-			chamberErgs[0] = qTrigger.getEnergy();
-			chamberPSP[0] = qTrigger.getPsp();
-
-			// energy discrimination of fission
-			if((chamberErgs[0] < TRIGGER_THRESHOLD) || (chamberErgs[0] > TRIGGER_CLIP) || (chamberPSP[0] < TRIGGER_MIN_PSP) || (chamberPSP[0] > TRIGGER_MAX_PSP) )
+			// if the time is right for coincidence, create a new fission
+			if(trigReady)
 			{
-				// cout << "invalid fission encountered" << endl;
-				validFiss = false;
-			}
-
-			// if fission is valid, store it in queue
-			if(validFiss)
-			{
-				// update the number of valid fissions and populate queue
-				newFission = CoincidenceEvent(chamberTimes[0], chamberErgs[0], recentIndex, chamberPSP[0]);
+				newFission = CoincidenceEvent(TriggerBuffer[refTrig].front().getTime(),
+				 															TriggerBuffer[refTrig].front().getEnergy(),
+																			TriggerBuffer[refTrig].front().getDetector(),
+																			TriggerBuffer[refTrig].front().getPsp());
 				FissionBuffer.push(newFission);
+				TriggerBuffer[refTrig].pop();
 			}
 
-			TriggerBuffer[recentIndex].pop();
-
-			//count the #events left before killed
-			// int h=0;
-			// for(int i=0; i<NUM_TRIGGERS; i++) {
-			// 	h += TriggerBuffer[i].size();
-			// }
-			// cout << h << "\n";
-
-			allEmpty = true;
-			for(int i=0; i<NUM_TRIGGERS; i++) {
-				if(!TriggerBuffer[i].empty()) {
-					allEmpty = false;
-				}
-			}
-		}//end of while loop
-	}//end of if statement
-
-
-	else if(TRIGGER_SPLIT) {
-		// first start by looking for valid fission triggers
-		while (!TriggerBuffer[0].empty())
-		{
-			// boolean to keep track of valid fissions
-			bool validFiss = true;
-
-			// reset the times and energies
-			for(int chambIndex = 0; chambIndex < NUM_TRIGGERS; chambIndex++)
+			// if the reference channel is outdated, pop and proceed
+			else if(pastRef)
 			{
-				chamberTimes[chambIndex] = 0;
-				chamberErgs[chambIndex] = 0;
-				chamberPSP[chambIndex] = 0;
+				TriggerBuffer[refTrig].pop();
 			}
 
-			// assign fission event from first list
-			qTrigger = TriggerBuffer[0].front();
-			chamberTimes[0] = qTrigger.getTime();
-			chamberErgs[0] = qTrigger.getEnergy();
-			chamberPSP[0] = qTrigger.getPsp();
-
-			chamberChan = 0;
-
-			// look at the other fission lists
-			for(int chambIndex = 1; chambIndex < NUM_TRIGGERS; chambIndex++)
-			{
-				if(!TriggerBuffer[chambIndex].empty())
-				{
-					chamberTimes[chambIndex] = TriggerBuffer[chambIndex].front().getTime();
-					chamberErgs[chambIndex] = TriggerBuffer[chambIndex].front().getEnergy();
-					chamberPSP[chambIndex] = TriggerBuffer[chambIndex].front().getPsp();
-				}
-				// match the indices for other queus
-				while((chamberTimes[0] - chamberTimes[chambIndex] > COINC_WINDOW) and (!TriggerBuffer[chambIndex].empty()) )
-				{
-					TriggerBuffer[chambIndex].pop();
-					chamberTimes[chambIndex] = TriggerBuffer[chambIndex].front().getTime();
-					chamberErgs[chambIndex] = TriggerBuffer[chambIndex].front().getEnergy();
-					chamberPSP[chambIndex] = TriggerBuffer[chambIndex].front().getPsp();
-				}
-				// find coincidences, set validity to 0 if one of the events is lost
-				if(abs(chamberTimes[0] - chamberTimes[chambIndex]) > MAX_TRIGGER_DRIFT)
-				{
-					// cout << "invalid fission encountered" << endl;
-					validFiss = false;
-				}
-			}
-
-			// calculate the average of times and sum of energies
-			averageTrigTime = 0;
-			averageTrigPSP = 0;
-			sumTrigErg = 0;
-			for(int chambIndex = 0; chambIndex < NUM_TRIGGERS; chambIndex++)
-			{
-				averageTrigTime += chamberTimes[chambIndex];
-				sumTrigErg += chamberErgs[chambIndex];
-				averageTrigPSP += chamberPSP[chambIndex];
-			}
-			averageTrigTime /= NUM_TRIGGERS;
-			averageTrigPSP /= NUM_TRIGGERS;
-
-			// energy discrimination of fission
-			if((sumTrigErg < TRIGGER_THRESHOLD) or (sumTrigErg > TRIGGER_CLIP) or (averageTrigPSP < TRIGGER_MIN_PSP) or (averageTrigPSP > TRIGGER_MAX_PSP) )
-			{
-				validFiss = false;
-			}
-
-			// if fission is valid, store it in queue
-			if(validFiss)
-			{
-				// update the number of valid fissions and populate queue
-				newFission = CoincidenceEvent(averageTrigTime, sumTrigErg, chamberChan, averageTrigPSP);
-				FissionBuffer.push(newFission);
-			}
-
-			// get rid of currently analyzed event in queue
-			TriggerBuffer[0].pop();
-		}
-	}
-
-	/*
-	___       _             _     ___       __  __
- / _ \ _  _| |_ _ __ _  _| |_  | _ )_  _ / _|/ _|___ _ _
-| (_) | || |  _| '_ \ || |  _| | _ \ || |  _|  _/ -_) '_|
- \___/ \_,_|\__| .__/\_,_|\__| |___/\_,_|_| |_| \___|_|
-							 |_|
-	*/
-
-	cout << TriggerBuffer[0].size() << " events remaining in buffer" << endl;
-
-	long double stopTime = averageTrigTime;
-
-	cout << "Number of Fissions is " << FissionBuffer.size() << endl;
-
-	long double elapTime = (stopTime - beginTime)*1e-9;
-
-	cout << "Time elapsed is: " << elapTime << endl;
-
-	cout << "Fission rate at: " << FissionBuffer.size()/elapTime << " fissions/s" <<  endl;
-
-	/*
-	  ______ _         _               _
-	 |  ____(_)       (_)             | |
-	 | |__   _ ___ ___ _  ___  _ __   | |     ___   ___  _ __
-	 |  __| | / __/ __| |/ _ \| '_ \  | |    / _ \ / _ \| '_ \
-	 | |    | \__ \__ \ | (_) | | | | | |___| (_) | (_) | |_) |
-	 |_|    |_|___/___/_|\___/|_| |_| |______\___/ \___/| .__/
-	                                                    | |
-	                                                    |_|
-	*/
-	cout << endl;
-	cout << "Now looping throught detectors. " << endl;
-
-	// now loop thrugh fission events to find valid fission events
-	CoincidenceEvent qFission = CoincidenceEvent(0, 0, 0, 0);
-	double fissionTime = 0;
-	double fissionEnergy = 0;
-	int fissionChan = 0;
-	double fissionPSP = 0;
-
-	// dynamical variables
-	double detTime = 0;
-	double detPSP = 0;
-
-	// store multiplicities
-	int totMult = 0;
-
-	// find coincidences option
-	double deltaT = 0;
-	ParticleEvent qParticle = ParticleEvent();
-
-	// keep track of the fission index
-	int fisTracker = 0;
-
-	// first start by looking for valid fission triggers
-	while (!FissionBuffer.empty())
-	{
-		// increment the fission tracker
-		fisTracker++;
-
-		// reset the attributes of the fission event
-		totMult = 0;
-
-		// reset all the indices to 0
-		for(int jMult = 0; jMult < MAX_MULTIPLICITY; jMult++)
-		{
-			totToF[jMult] = 0;
-			totDep[jMult] = 0;
-			totPSP[jMult] = 0;
-			totChan[jMult] = 0;
 		}
 
-		// assign fission event from first list
-		qFission = FissionBuffer.front();
-		// ISABEL
-		// assign the detector channel
-		fissionChan = qFission.getTriggerChan();
-		fissionTime = qFission.getTriggerTime();
-		fissionEnergy = qFission.getEnergy();
-		fissionPSP = qFission.getTriggerPSP();
 
-		//cout << "Fission at time " << fissionTime << endl;
 
+		//  ___ _       _
+		// | __(_)_____(_)___ _ _
+		// | _|| (_-<_-< / _ \ ' \
+		// |_| |_/__/__/_\___/_||_|
+		//
+
+		bool readyDet = true;
 		// look at the detection events
 		for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
 		{
-			// match the indices for other queues
-			if(!DetectorBuffer[detIndex].empty())
+			// assign detection time
+			if(DetectorBuffer[detIndex].empty())
 			{
-				qParticle = DetectorBuffer[detIndex].front();
-				detTime = qParticle.getTime();
-				deltaT = detTime - fissionTime;
-			}
-
-			// detector has no more valid detection events, skip it.
-			else
-			{
-				continue;
-			}
-
-			// cycle through the indices of the other array
-			while( (fissionTime - detTime > COINC_WINDOW) and !DetectorBuffer[detIndex].empty())
-			{
-				DetectorBuffer[detIndex].pop();
-				qParticle = DetectorBuffer[detIndex].front();
-				detTime = qParticle.getTime();
-				deltaT = detTime - fissionTime;
-			}
-
-
-			//cout << "detC " << qParticle.getDetector() << ": " <<  deltaT << endl;
-
-			// create the coincidence event
-			if(abs(deltaT) < COINC_WINDOW)
-			{
-				totToF[totMult] = deltaT;
-				totPSP[totMult] = qParticle.getPsp();
-				totDep[totMult] = qParticle.getEnergy();
-				totTail[totMult] = qParticle.getTail();
-				totChan[totMult] = qParticle.getDetector();
-				if(totChan[totMult] == 0)
-				{
-					cout << "0 channel inserted" << endl;
-				}
-				totMult++;
+				readyDet = false;
 			}
 		}
 
+		while(!FissionBuffer.empty() & readyDet)
+		{
 
-		// get rid of analyzed fission event
-		FissionBuffer.pop();
+			// cout << "Fissions in buffer: " << FissionBuffer.size() << endl;
 
-		// now fill the histogram of particle-particle coincidences
-		tMult = totMult;
-		tTime = fissionTime;
-		tDep = fissionEnergy;
-		tPSP = fissionPSP;
-		tChan = fissionChan;
+			totMult = 0;
 
-		// fill the tree branches
-		coincTree->Fill();
-	}
+			// reset all the indices to 0
+			for(int jMult = 0; jMult < MAX_MULTIPLICITY; jMult++)
+			{
+				totToF[jMult] = 0;
+				totDep[jMult] = 0;
+				totPSP[jMult] = 0;
+				totChan[jMult] = 0;
+			}
 
+			// assign fission event from first list
+			qFission = FissionBuffer.front();
 
-	// output the content of the buffers
+			// assign the detector channel
+			fissionChan = qFission.getTriggerChan();
+			fissionTime = qFission.getTriggerTime();
+			fissionEnergy = qFission.getEnergy();
+			fissionPSP = qFission.getTriggerPSP();
 
-	cout << endl;
-	cout << "Buffers are finished: " << endl;
+			// look at the detection events
+			for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
+			{
+				// assign detection time
+				if(!DetectorBuffer[detIndex].empty())
+				{
+					compDetTime = DetectorBuffer[detIndex].front().getTime();
+					// cout << fissionTime << " - " << compDetTime << " = " << fissionTime - compDetTime <<  endl;
+				}
 
+				// eliminate bad coincidence events
+				while((!DetectorBuffer[detIndex].empty() ) & (fissionTime - compDetTime > COINC_WINDOW) )
+				{
+					// cout << fissionTime - compDetTime << endl;
+					DetectorBuffer[detIndex].pop();
+					compDetTime = DetectorBuffer[detIndex].front().getTime();
+					// cout << "time checked" << endl;
+				}
 
-	cout << endl;
-	cout << "Triggers: " << endl;
+				// if the next event is empty, we don't know for sure if it was in coincidence, back to the drawing board
 
-	for(int d = 0; d < NUM_TRIGGERS; d++)
-	{
-		cout << "trigger: " << FISSION_TRIGGERS[d] << ": " << TriggerBuffer[d].size() << endl;
-	}
+				// cout << DetectorBuffer[detIndex].empty() << " ";
+				if(DetectorBuffer[detIndex].empty())
+				{
+					readyDet = false;
+				}
 
-	cout << endl;
-	cout << "Detectors: " << endl;
+			}
 
-	for(int d = 0; d < NUM_DETS; d++)
-	{
-		cout << "channel: " << DETECTORS[d] << ": " << DetectorBuffer[d].size() << endl;
-	}
+			if(FissionBuffer.size() > 1e6)
+			{
+				for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
+				{
+					cout << DetectorBuffer[detIndex].size() << " ";
+				}
+				cout << "\n";
+			}
 
-	cout << endl;
+			// cout << "\n";
 
+			if(readyDet)
+			{
+				// cout << "hello " << endl;
 
+				for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
+				{
+					qParticle = DetectorBuffer[detIndex].front();
+					detTime = qParticle.getTime();
+					deltaT = detTime - fissionTime;
 
+					// create the coincidence event
+					if(abs(deltaT) < COINC_WINDOW)
+					{
+						totToF[totMult] = deltaT;
+						totPSP[totMult] = qParticle.getPsp();
+						totDep[totMult] = qParticle.getEnergy();
+						totTail[totMult] = qParticle.getTail();
+						totChan[totMult] = qParticle.getDetector();
+						totMult++;
+					}
+				}
+
+				// get rid of analyzed fission event
+				FissionBuffer.pop();
+
+				// now fill the histogram of particle-particle coincidences
+				tMult = totMult;
+				tTime = fissionTime;
+				tDep = fissionEnergy;
+				tPSP = fissionPSP;
+				tChan = fissionChan;
+
+				// fill the tree branches
+				coincTree->Fill();
+				fisTracker++;
+
+				// cout << tTime << " " << tMult << " " << tDep << " " << tPSP << " " << tChan << endl;
+
+				// update user on status of processing
+				if(fisTracker%1000000 == 0)
+				{
+					cout << fisTracker << " fissions in " << tTime/1e9 << "seconds " << endl;
+				}
+			}
+
+		 }
+		}
 
 	 //   _____             _               _____        _
 	 //  / ____|           (_)             |  __ \      | |
@@ -576,11 +533,9 @@ int CoincidenceAnalysis::CreateCoincidenceTree(int fileNum, Long64_t entriesToPr
 
 	// cd back into the main file
 	cout << "Saving the tree to file. " << endl;
-	//first->cd();
 
 	coincTree->Write();
-	hDt->Write();
-	//expFile->Close();
+	h_Dt->Write();
 
 	return 1;
 }
