@@ -108,11 +108,13 @@ public:
 	int NUM_TRIGGERS;
 	int NUM_DETS;
 	int NUM_EXCLUDED;
+	//NUM_BEAMS;
 
 	// list of channels for triggers and detectors
 	int* FISSION_TRIGGERS;
 	int* DETECTORS;
 	int* EXCLUDE_DETECTORS;
+	//int* BEAM;
 
 	// arrays of detectors to modify
 	TriggerClass* triggers;

@@ -25,9 +25,11 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	NUM_TRIGGERS = info->NUM_TRIGGERS;
 	NUM_DETS = info->NUM_DETS;
 	NUM_EXCLUDED = info->NUM_EXCLUDED;
+	//NUM_BEAMS = info->NUM_BEAMS;
 	FISSION_TRIGGERS = info->FISSION_TRIGGERS;
 	DETECTORS = info->DETECTORS;
 	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
+	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
 	triggers = new TriggerClass[NUM_TRIGGERS];
@@ -75,10 +77,10 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdRef = detFile->mkdir("Reflections");
 
 	// create the folder for psd slices
-	cdPsdSlices = cdPsd->mkdir("PSD_slices");
+	//cdPsdSlices = cdPsd->mkdir("PSD_slices");
 	cdPsdIndividual = cdPsd->mkdir("PSD_individual");
 	cdPsdErg = cdPsd->mkdir("PSDErg_discrimination");
-	cdTofSlices = cdToF->mkdir("TOF_slices");
+	//cdTofSlices = cdToF->mkdir("TOF_slices");
 	cdTofIndividual = cdToF->mkdir("TOF_individual");
 	cdTOFPSD = cdPsd->mkdir("TOF_PSD");
 	cdTofErg = cdToF->mkdir("TOFErg_discrimination");

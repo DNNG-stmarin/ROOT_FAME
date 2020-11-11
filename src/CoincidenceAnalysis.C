@@ -411,7 +411,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		while(!FissionBuffer.empty() & readyDet)
 		{
 
-			cout << "Fissions in buffer: " << FissionBuffer.size() << endl;
+			//cout << "Fissions in buffer: " << FissionBuffer.size() << endl;
 
 			totMult = 0;
 
@@ -462,7 +462,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				if(DetectorBuffer[detIndex].empty())
 				{
 					readyDet = false;
-					cout << detIndex << endl;
+					//cout << detIndex << endl;
 				}
 
 

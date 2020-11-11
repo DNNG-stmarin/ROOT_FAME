@@ -53,6 +53,7 @@ public :
    //infosystem attributes (not info)
    int NUM_TRIGGERS = 0;
    int NUM_DETS = 0;
+   //int NUM_BEAMS = 0;
 
    double TRIGGER_THRESHOLD = 0;
    double TRIGGER_CLIP = 0;
@@ -65,6 +66,7 @@ public :
 
    int* FISSION_TRIGGERS;
    int* DETECTORS;
+   //int* BEAM;
 
    //  _                          ____  _     _           _
    // | |                        / __ \| |   (_)         | |
@@ -107,11 +109,12 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, Info
   MAX_TRIGGER_DRIFT = info->MAX_TRIGGER_DRIFT;
   COINC_WINDOW = info->COINC_WINDOW;
 
-
   NUM_TRIGGERS = info->NUM_TRIGGERS;
   NUM_DETS = info->NUM_DETS;
+  //NUM_BEAMS = info->NUM_BEAMS;
   FISSION_TRIGGERS = info->FISSION_TRIGGERS;
   DETECTORS = info->DETECTORS;
+  //BEAM = info->BEAM;
 
    // set the output stream
    expFile = expFileWrite;

@@ -124,7 +124,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		 tofPsdHists[channelDet]->Fill(totPSP[part], totToF[part]); // psd-tof histograms
 		 tofErgHists[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, totToF[part]); // energy-tof
 
-		 expHists[channelDet]->Fill(totPSP[part], totDep[part]/detectors[channelDet].calibration, totToF[part]); // complete point
+		 //expHists[channelDet]->Fill(totPSP[part], totDep[part]/detectors[channelDet].calibration, totToF[part]); // complete point
 	 }
   }
 	cout << "Finished psd filling loop" << endl;
@@ -136,7 +136,7 @@ int DetectorSystemClass::DetectionAnalysis()
  |___/|_/__/\__|_| |_|_|_|_|_|_||_\__,_|\__|_\___/_||_|
 
 	*/
-
+//if psderg
 	if(DEBUG==1) {
 		//slices
 		int stepSizepsd = 20;
@@ -281,20 +281,20 @@ int DetectorSystemClass::DetectionAnalysis()
 
 				psdErgSlice->GetYaxis()->SetRangeUser(0, 1.5*psdPhotCounts);
 
-				canvasSlice->cd();
-				psdErgSlice->Draw();
-				fitPSD->Draw("SAME");
-				intersection->Draw("SAME");
-				fitPSD_p->SetLineColor(kYellow);
-				fitPSD_n->SetLineColor(kOrange);
-				fitPSD_p->Draw("SAME");
-				fitPSD_n->Draw("SAME");
+				// canvasSlice->cd();
+				// psdErgSlice->Draw();
+				// fitPSD->Draw("SAME");
+				// intersection->Draw("SAME");
+				// fitPSD_p->SetLineColor(kYellow);
+				// fitPSD_n->SetLineColor(kOrange);
+				// fitPSD_p->Draw("SAME");
+				// fitPSD_n->Draw("SAME");
 
 				// discrimination line
 				TLine* line = new TLine(tempPSD, 0, tempPSD, 1.5*psdPhotCounts);
-				line->SetLineColor(kBlack);
-				line->Draw("SAME");
-				canvasSlice->Write();
+				// line->SetLineColor(kBlack);
+				// line->Draw("SAME");
+				// canvasSlice->Write();
 			}
 			cdPsd->cd();
 			cout << "Finished looping through slices" << endl;
@@ -331,12 +331,12 @@ int DetectorSystemClass::DetectionAnalysis()
 			detectors[det].discPSD->SetParameters(p0Disc, p1Disc, p2Disc);
 
 			// draw the line on top of the histogram
-			canvasDiscErg->cd();
-			psdErgHists[det]->Draw();
-			discLines[det]->Draw("SAME");
-			psdDisc->Draw("SAME");
-			cdPsdErg->cd();
-			canvasDiscErg->Write();
+			// canvasDiscErg->cd();
+			// psdErgHists[det]->Draw();
+			// discLines[det]->Draw("SAME");
+			// psdDisc->Draw("SAME");
+			// cdPsdErg->cd();
+			// canvasDiscErg->Write();
 		}
 	}
 
@@ -598,7 +598,7 @@ int DetectorSystemClass::DetectionAnalysis()
 			TProfile* histErgProfile = tofErgHists[det]->ProfileX("profileEnergy");
 
 			cdToF->cd();
-			cdTofSlices->cd();
+			//cdTofSlices->cd();
 			// loop over the slices
 			for(int energySlice = 0; energySlice < energyBinstof; energySlice += stepSizetof)
 			{
@@ -686,21 +686,21 @@ int DetectorSystemClass::DetectionAnalysis()
 
 				tofErgSlice->GetYaxis()->SetRangeUser(0, 1.5*gausSliceOptimize->Parameter(0));
 
-				canvastofSlice->cd();
-
-				tofErgSlice->Draw();
-				intersectionSlicetof->Draw("SAME");
-				gausSlicetof->SetLineColor(kYellow);
-				neutSlicetof->SetLineColor(kOrange);
+				// canvastofSlice->cd();
+				//
+				// tofErgSlice->Draw();
+				// intersectionSlicetof->Draw("SAME");
+				// gausSlicetof->SetLineColor(kYellow);
+				// neutSlicetof->SetLineColor(kOrange);
 
 				// discrimination line
 				TLine* tofline = new TLine(tempTOF, 0, tempTOF, 1.5*gausSliceOptimize->Parameter(0));
-				tofline->SetLineColor(kBlack);
-				tofline->Draw("SAME");
-
-				cdToF->cd();
-				cdTofSlices->cd();
-				canvastofSlice->Write();
+				// tofline->SetLineColor(kBlack);
+				// tofline->Draw("SAME");
+				//
+				// cdToF->cd();
+				// cdTofSlices->cd();
+				// canvastofSlice->Write();
 			}
 			cdPsd->cd();
 			cout << "Finished looping through TOF slices" << endl;
@@ -733,12 +733,12 @@ int DetectorSystemClass::DetectionAnalysis()
 
 
 			// draw the line on top of the histogram
-			canvasDiscErgtof->cd();
-			tofErgHists[det]->Draw();
-			discLinestof[det]->Draw("SAME");
-			tofDisc->Draw("SAME");
-			cdTofErg->cd();
-			canvasDiscErgtof->Write();
+			// canvasDiscErgtof->cd();
+			// tofErgHists[det]->Draw();
+			// discLinestof[det]->Draw("SAME");
+			// tofDisc->Draw("SAME");
+			// cdTofErg->cd();
+			//canvasDiscErgtof->Write();
 		}
 	}
 
@@ -782,21 +782,21 @@ int DetectorSystemClass::DetectionAnalysis()
 	{
 			// save the results
 			cdPsd->cd();
-			psdhists[i]->Write();
-			erghists[i]->Write();
+			// psdhists[i]->Write(); //
+			// erghists[i]->Write(); //
 
 			if(DEBUG==1) {
 				psdErgHists[i]->Write();
 				tofErgHists[i]->Write();
 			}
 
-			tofPsdHists[i]->Write();
-			expHists[i]->Write();
+			// tofPsdHists[i]->Write(); //
+			// expHists[i]->Write(); //
 
 			cdToF->cd();
-			tofDelPhists[i]->Write();
-			tofNhists[i]->Write();
-			tofPhists[i]->Write();
+			tofDelPhists[i]->Write(); //
+			tofNhists[i]->Write(); //
+			tofPhists[i]->Write(); //
 
 			cdTOFCorr->cd();
 			tofDelPhistsCorr[i]->Write();
