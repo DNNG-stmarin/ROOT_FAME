@@ -268,6 +268,10 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			}
 		}
 
+		//else if isbeam()
+			//create beam events
+			//add to beam buffer
+
 		//  _____    _
 		// |_   _| _(_)__ _ __ _ ___ _ _
 		//  | || '_| / _` / _` / -_) '_|

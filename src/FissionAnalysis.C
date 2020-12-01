@@ -79,7 +79,7 @@ void DetectorSystemClass::FissionAnalysis()
       }
 
       if(
-        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet))
+        (totPSP[j] > detectors[numDet].discPSD->Eval(engDet))
         &
         (timeDet > MIN_TIME_N)
         &
@@ -103,7 +103,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for gammas
       else if(
-        (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet))  //^^ -0.03 +0.03
+        (totPSP[j] < detectors[numDet].discPSD->Eval(engDet))  //^^ -0.03 +0.03
         &
         (timeDet > MIN_TIME_P)
         &
@@ -124,7 +124,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for background neutrons
       else if(
-        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet))
+        (totPSP[j] > detectors[numDet].discPSD->Eval(engDet))
         &
         (timeDet > MIN_TIME_N - BACKGROUND_SHIFT)
         &
@@ -147,7 +147,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for background photons
       else if(
-        (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet))
+        (totPSP[j] < detectors[numDet].discPSD->Eval(engDet))
         &
         (timeDet > MIN_TIME_P - BACKGROUND_SHIFT)
         &
@@ -242,7 +242,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         // cuts for neutrons
         if(
-          (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)  //+deltapsd
+          (totPSP[j] > detectors[numDet].discPSD->Eval(engDet) + deltapsd)  //+deltapsd
           &
           (timeDet > MIN_TIME_N)
           &
@@ -256,7 +256,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         // cuts for gammas
         else if(
-          (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)  //^^ -0.03 +0.03
+          (totPSP[j] < detectors[numDet].discPSD->Eval(engDet) + deltapsd)  //^^ -0.03 +0.03
           &
           (timeDet > MIN_TIME_P)
           &
@@ -270,7 +270,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         // cuts for background neutrons
         else if(
-          (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)
+          (totPSP[j] > detectors[numDet].discPSD->Eval(engDet) + deltapsd)
           &
           (timeDet > BACKGROUND_SHIFT + MIN_TIME_N)
           &
@@ -284,7 +284,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         // cuts for background photons
         else if(
-          (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)
+          (totPSP[j] < detectors[numDet].discPSD->Eval(engDet) + deltapsd)
           &
           (timeDet> BACKGROUND_SHIFT + MIN_TIME_P)
           &

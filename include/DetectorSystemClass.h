@@ -60,6 +60,8 @@ public:
 	double DELTA_BACK_SIG;
 	double BACKGROUND_SHIFT;
 	int DEBUG;
+	int PSD_ERG;
+	int STEP_SIZE;
 
 	// inputs given by the fission experiment class file, made up of the data collected and where to write
 	TChain* tree;
@@ -257,12 +259,12 @@ _  _ _    _
 	*/
 
 	//bounds
-	double minPSD_fit = 0.00;
-	double divPSD_fit = 0.16;
-	double maxPSD_fit = 0.60;
+	double MINPSD_FIT; //= 0.00;
+	double DIVPSD_FIT; //= 0.16;
+	double MAXPSD_FIT; //= 0.60;
 
-	double minErg_fit = 0.05; // MeVee
-	double maxErg_fit = 4.00; // MeVee
+	double MINERG_FIT; //= 0.05; // MeVee
+	double MAXERG_FIT; //= 4.00; // MeVee
 
 
 	// initialize the fitting functions

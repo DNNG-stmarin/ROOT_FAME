@@ -18,9 +18,16 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	MAX_TIME_P = info->MAX_TIME_P;
 	MIN_TIME_N = info->MIN_TIME_N;
 	MAX_TIME_N = info->MAX_TIME_N;
+	MINPSD_FIT = info->MINPSD_FIT;
+	DIVPSD_FIT = info->DIVPSD_FIT;
+	MAXPSD_FIT = info->MAXPSD_FIT;
+	MINERG_FIT = info->MINERG_FIT;
+	MAXERG_FIT = info->MAXERG_FIT;
 	DELTA_BACK_SIG = info->DELTA_BACK_SIG;
 	BACKGROUND_SHIFT = MAX_TIME_N - MIN_TIME_P + DELTA_BACK_SIG;
 	DEBUG = info->DEBUG;
+	PSD_ERG = info->PSD_ERG;
+	STEP_SIZE = info->STEP_SIZE;
 
 	NUM_TRIGGERS = info->NUM_TRIGGERS;
 	NUM_DETS = info->NUM_DETS;
@@ -77,10 +84,10 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdRef = detFile->mkdir("Reflections");
 
 	// create the folder for psd slices
-	//cdPsdSlices = cdPsd->mkdir("PSD_slices");
+	cdPsdSlices = cdPsd->mkdir("PSD_slices");
 	cdPsdIndividual = cdPsd->mkdir("PSD_individual");
 	cdPsdErg = cdPsd->mkdir("PSDErg_discrimination");
-	//cdTofSlices = cdToF->mkdir("TOF_slices");
+	cdTofSlices = cdToF->mkdir("TOF_slices");
 	cdTofIndividual = cdToF->mkdir("TOF_individual");
 	cdTOFPSD = cdPsd->mkdir("TOF_PSD");
 	cdTofErg = cdToF->mkdir("TOFErg_discrimination");

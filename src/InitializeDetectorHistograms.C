@@ -132,14 +132,14 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
       // tofErg histograms
       tofErgHistNameT = tofErgNameT + numDet;
-      tofErgHists[i] = new TH2F(tofErgHistNameT, tofErgHistNameT, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      tofErgHists[i] = new TH2F(tofErgHistNameT, tofErgHistNameT, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW); //each slice is 10 kev
       tofErgHists[i]->SetOption("COLZ");
       tofErgHistsCorr[i] = new TH2F(tofName+ergName+corr+numDet, tofName+ergName+corr+numDet, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
       tofErgHistsCorr[i]->SetOption("COLZ");
 
       // energy-psd
       psdErgHistNameT = psdErgName + numDet;
-      psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 1000, 0, 10, 500, 0, 1);
+      psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 1000, 0, 10, 500, 0, 1); //each slice is 10 kev 
       psdErgHists[i]->SetOption("COLZ");
 
 

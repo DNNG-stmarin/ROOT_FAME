@@ -8,8 +8,8 @@ Date: Ann Arbor, June 1st, 2020
 void DetectorSystemClass::InitializePSDFunctions()
 {
   // define the fitting function for the psd discrimination
-  TF1* gaussian = new TF1("gausPSD", "[0]/(1 + ((x - [1])/([2]))^2)", minPSD_fit, maxPSD_fit);
-  TF1* cauchy = new TF1("cauchyPSD", "[0]*e^(-(x - [1])^2/(2*[2]^2))", minPSD_fit, maxPSD_fit);
+  TF1* gaussian = new TF1("gausPSD", "[0]/(1 + ((x - [1])/([2]))^2)", MINPSD_FIT, MAXPSD_FIT);
+  TF1* cauchy = new TF1("cauchyPSD", "[0]*e^(-(x - [1])^2/(2*[2]^2))", MINPSD_FIT, MAXPSD_FIT);
 
   // fitting functions for the two
   fitPSD_p = new TF1("fitPSDp", "cauchyPSD");
