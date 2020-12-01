@@ -104,7 +104,8 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 				 cout << "tree found at " << treeRaw << " added to chain" << endl;
 			 }
 
-			 // fileRaw->Close();
+			 //fileRaw->Close();
+			 delete fileRaw;
 		}
 
 		CoincidenceAnalysis* inputData = new CoincidenceAnalysis(expFileWrite, rawTreeChain, info); //replace digType w info->DATA_TYPE

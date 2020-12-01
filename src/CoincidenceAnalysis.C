@@ -268,6 +268,10 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			}
 		}
 
+		//else if isbeam()
+			//create beam events
+			//add to beam buffer
+
 		//  _____    _
 		// |_   _| _(_)__ _ __ _ ___ _ _
 		//  | || '_| / _` / _` / -_) '_|
@@ -411,7 +415,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		while(!FissionBuffer.empty() & readyDet)
 		{
 
-			// cout << "Fissions in buffer: " << FissionBuffer.size() << endl;
+			//cout << "Fissions in buffer: " << FissionBuffer.size() << endl;
 
 			totMult = 0;
 
@@ -454,22 +458,29 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 				// if the next event is empty, we don't know for sure if it was in coincidence, back to the drawing board
 
-				// cout << DetectorBuffer[detIndex].empty() << " ";
+				// if(detIndex == 22)
+				// {
+				// 	continue;
+				// }
+
 				if(DetectorBuffer[detIndex].empty())
 				{
 					readyDet = false;
+					//cout << detIndex << endl;
 				}
+
+
 
 			}
 
-			if(FissionBuffer.size() > 1e6)
-			{
-				for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
-				{
-					cout << DetectorBuffer[detIndex].size() << " ";
-				}
-				cout << "\n";
-			}
+			// if(FissionBuffer.size() > 1e6)
+			// {
+			// 	for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
+			// 	{
+			// 		cout << DetectorBuffer[detIndex].size() << " ";
+			// 	}
+			// 	cout << "\n";
+			// }
 
 			// cout << "\n";
 

@@ -67,11 +67,17 @@ public:
   double MAX_TIME_P;
   double MIN_TIME_N;
   double MAX_TIME_N;
+  double MINPSD_FIT;
+  double DIVPSD_FIT;
+  double MAXPSD_FIT;
+  double MINERG_FIT;
+  double MAXERG_FIT;
 
   double DELTA_BACK_SIG;
 
   int DEBUG;
   int PSD_ERG;
+  int STEP_SIZE;
 
   InfoSystem()
   {
@@ -109,11 +115,18 @@ public:
     MIN_TIME_N = 0.0;
     MAX_TIME_N = 100.0;
 
+    MINPSD_FIT = 0;
+    DIVPSD_FIT = 0;
+    MAXPSD_FIT = 0;
+    MINERG_FIT = 0;
+    MAXERG_FIT = 0;
+
     DELTA_BACK_SIG = 10.0;
 
     DEBUG = 0;
 
     PSD_ERG = 0;
+    STEP_SIZE = 0;
   }
 
   void ReadInput(TString inputFile) {
@@ -260,6 +273,26 @@ public:
         file >> value;
         DELTA_BACK_SIG = stod(value);
       }
+      else if(tag == "<MINPSD_FIT>:") {
+        file >> value;
+        MINPSD_FIT = stod(value);
+      }
+      else if(tag == "<DIVPSD_FIT>:") {
+        file >> value;
+        DIVPSD_FIT = stod(value);
+      }
+      else if(tag == "<MAXPSD_FIT>:") {
+        file >> value;
+        MAXPSD_FIT = stod(value);
+      }
+      else if(tag == "<MINERG_FIT>:") {
+        file >> value;
+        MINERG_FIT = stod(value);
+      }
+      else if(tag == "<MAXERG_FIT>:") {
+        file >> value;
+        MAXERG_FIT = stod(value);
+      }
       else if(tag == "<DEBUG>:") {
         file >> value;
         DEBUG = stoi(value);
@@ -267,6 +300,10 @@ public:
       else if(tag == "<PSD_ERG>:") {
         file >> value;
         PSD_ERG = stoi(value);
+      }
+      else if(tag == "<STEP_SIZE>:") {
+        file >> value;
+        STEP_SIZE = stoi(value);
       }
     }
 

@@ -18,16 +18,25 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	MAX_TIME_P = info->MAX_TIME_P;
 	MIN_TIME_N = info->MIN_TIME_N;
 	MAX_TIME_N = info->MAX_TIME_N;
+	MINPSD_FIT = info->MINPSD_FIT;
+	DIVPSD_FIT = info->DIVPSD_FIT;
+	MAXPSD_FIT = info->MAXPSD_FIT;
+	MINERG_FIT = info->MINERG_FIT;
+	MAXERG_FIT = info->MAXERG_FIT;
 	DELTA_BACK_SIG = info->DELTA_BACK_SIG;
 	BACKGROUND_SHIFT = MAX_TIME_N - MIN_TIME_P + DELTA_BACK_SIG;
 	DEBUG = info->DEBUG;
+	PSD_ERG = info->PSD_ERG;
+	STEP_SIZE = info->STEP_SIZE;
 
 	NUM_TRIGGERS = info->NUM_TRIGGERS;
 	NUM_DETS = info->NUM_DETS;
 	NUM_EXCLUDED = info->NUM_EXCLUDED;
+	//NUM_BEAMS = info->NUM_BEAMS;
 	FISSION_TRIGGERS = info->FISSION_TRIGGERS;
 	DETECTORS = info->DETECTORS;
 	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
+	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
 	triggers = new TriggerClass[NUM_TRIGGERS];
