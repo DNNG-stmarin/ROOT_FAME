@@ -124,7 +124,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		 tofPsdHists[channelDet]->Fill(totPSP[part], totToF[part]); // psd-tof histograms
 		 tofErgHists[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, totToF[part]); // energy-tof
 
-		 expHists[channelDet]->Fill(totPSP[part], totDep[part]/detectors[channelDet].calibration, totToF[part]); // complete point
+		 //expHists[channelDet]->Fill(totPSP[part], totDep[part]/detectors[channelDet].calibration, totToF[part]); // complete point
 	 }
   }
 	cout << "Finished psd filling loop" << endl;
@@ -136,10 +136,11 @@ int DetectorSystemClass::DetectionAnalysis()
  |___/|_/__/\__|_| |_|_|_|_|_|_||_\__,_|\__|_\___/_||_|
 
 	*/
-
-	if(DEBUG==1) {
+//if psderg
+	if(PSD_ERG==1) {
 		//slices
-		int stepSizepsd = 20;
+		//int stepSizepsd = 20; //add to input file kev
+		int stepSizepsd = int(STEP_SIZE/10);
 		long int minEntries = 150;
 		int numGoodSlicespsd;
 		int energyBinspsd;
@@ -147,13 +148,13 @@ int DetectorSystemClass::DetectionAnalysis()
 		double psdPhotCounts, psdPhotMean, psdPhotStd;
 		double psdNeutCounts, psdNeutMean, psdNeutStd;
 		double *energySliceInd, *discLinePoint;
+		TF1* psdDisc = new TF1("psdDisc", "pol2", MINERG_FIT, MAXERG_FIT);
 		TGraph** discLines;
 		discLines = new TGraph* [NUM_DETS];
 		double p0Disc, p1Disc, p2Disc;
 
 		TFitResultPtr fitPSD_opt;
 		TFitResultPtr psdDisc_opt;
-		TF1* psdDisc = new TF1("psdDisc", "pol1", minErg_fit, maxErg_fit);
 		psdDisc->SetLineStyle(kDashed);
 		psdDisc->SetLineColor(kOrange);
 		psdDisc->SetLineWidth(4);
@@ -172,7 +173,7 @@ int DetectorSystemClass::DetectionAnalysis()
 			numGoodSlicespsd = -1; // reset the number of good slices
 
 			// find the profile to get the center
-			TProfile* histErgProfile = psdErgHists[det]->ProfileX("profileEnergy");
+			TProfile* histErgProfile = psdErgHists[det]->ProfileX("profileEnergy"); //see whats difference between profile and projection
 
 			cdPsdSlices->cd();
 			// loop over the slices
@@ -181,10 +182,11 @@ int DetectorSystemClass::DetectionAnalysis()
 				// define the slice
 				TH1D* psdErgSlice = psdErgHists[det]->ProjectionY("psdErgSlice", energySlice, energySlice+stepSizepsd);
 				int numEntriesInSlice = psdErgSlice->GetEntries();
+				double stdSlice = psdErgSlice->GetStdDev();
 				psdErgSlice->SetLineColor(kBlack);
 
 				// close out of the loop if there is not enough info in the slice
-				if(numEntriesInSlice < minEntries)
+				if(numEntriesInSlice < minEntries || stdSlice == 0) //send pic of files that have std=0
 				{
 					continue;
 				}
@@ -195,7 +197,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				smooth->Smooth(1);
 
 				// find the initial parameters for the fiting of the photon peak
-				smooth->GetXaxis()->SetRangeUser(minPSD_fit, divPSD_fit);
+				smooth->GetXaxis()->SetRangeUser(MINPSD_FIT, DIVPSD_FIT);
 				Double_t pMax = smooth->GetMaximum();
 				Double_t binpMax = smooth->GetMaximumBin();
 				Double_t xpMax = smooth->GetXaxis()->GetBinCenter(binpMax);
@@ -203,7 +205,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				Double_t pRMS = smooth->GetRMS();
 
 				// find the initial parameters for the fitting of the neutron peak
-				smooth->GetXaxis()->SetRangeUser(divPSD_fit, maxPSD_fit);
+				smooth->GetXaxis()->SetRangeUser(DIVPSD_FIT, MAXPSD_FIT);
 				Double_t nMax = smooth->GetMaximum();
 				Double_t binnMax = smooth->GetMaximumBin();
 				Double_t xnMax = smooth->GetXaxis()->GetBinCenter(binnMax);
@@ -211,7 +213,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				Double_t nRMS = smooth->GetRMS();
 
 				//reset
-				smooth->GetXaxis()->SetRangeUser(minPSD_fit, maxPSD_fit);
+				smooth->GetXaxis()->SetRangeUser(MINPSD_FIT, MAXPSD_FIT);
 
 				// set the initial guesses
 				fitPSD->SetParameter(0, pMax);
@@ -222,7 +224,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				fitPSD->SetParameter(5, nRMS);
 
 				// find the psp parameter through fit and reset
-				psdErgSlice->GetXaxis()->SetRangeUser(minPSD_fit, maxPSD_fit);
+				psdErgSlice->GetXaxis()->SetRangeUser(MINPSD_FIT, MAXPSD_FIT);
 				fitPSD_opt = psdErgSlice->Fit(fitPSD, "SQ");
 
 				// extract the relevant fit parameters
@@ -271,15 +273,15 @@ int DetectorSystemClass::DetectionAnalysis()
 					cout << endl;
 				}
 				// find the points for the graph
-				energySliceInd[numGoodSlicespsd] = tempErgPSD;
-				discLinePoint[numGoodSlicespsd] = tempPSD;
+				energySliceInd[numGoodSlicespsd] = tempErgPSD; //xvalue
+				discLinePoint[numGoodSlicespsd] = tempPSD; //yvalue
 
 				TString canSliceName = "psd" + to_string(det) +  "Proj" + to_string(numGoodSlicespsd);
 
 				// canvas with the psd
 				TCanvas* canvasSlice = new TCanvas(canSliceName, canSliceName, 800, 500);
 
-				psdErgSlice->GetYaxis()->SetRangeUser(0, 1.5*psdPhotCounts);
+				psdErgSlice->GetYaxis()->SetRangeUser(0, 1.5*psdPhotCounts); //maxcounts
 
 				canvasSlice->cd();
 				psdErgSlice->Draw();
@@ -315,19 +317,26 @@ int DetectorSystemClass::DetectionAnalysis()
 			discLines[det]->SetLineWidth(3);
 
 			// fit the psd discriminations
-			psdDisc_opt = discLines[det]->Fit(psdDisc, "SQ", 0, 0.4); // change the bounds here
+			psdDisc_opt = discLines[det]->Fit(psdDisc, "SQ", 0, 2); //wont let me use variables
+			// stringstream ss1, ss2;
+			// ss1 << MINERG_FIT;
+			// const char* tempminergfit = ss1.str().c_str();
+			// ss2 << MAXERG_FIT;
+			// const char* tempmaxergfit = ss2.str().c_str();
+			// psdDisc_opt = discLines[det]->Fit(psdDisc, "SQ", tempminergfit, tempmaxergfit);
+			// psdDisc_opt = discLines[det]->Fit(psdDisc, "SQ", to_string(MINERG_FIT).c_str(), to_string(MAXERG_FIT).c_str());
 
 			// extract fit information
 			p0Disc = psdDisc_opt->Parameter(0);
 			p1Disc = psdDisc_opt->Parameter(1);
-			//p2Disc = psdDisc_opt->Parameter(2);
+			p2Disc = psdDisc_opt->Parameter(2);
 
 			// set discrimination line
 			psdDisc->SetParameters(p0Disc, p1Disc, p2Disc);
-			psdDisc->SetParameters(p0Disc, p1Disc);
+			//psdDisc->SetParameters(p0Disc, p1Disc);
 
 			TString nameDisc = "discDet" + to_string(det);
-			detectors[det].discPSD = new TF1(nameDisc, "psdDisc", minErg_fit, maxErg_fit);
+			detectors[det].discPSD = new TF1(nameDisc, "psdDisc", MINERG_FIT, MAXERG_FIT);
 			detectors[det].discPSD->SetParameters(p0Disc, p1Disc, p2Disc);
 
 			// draw the line on top of the histogram
@@ -444,7 +453,8 @@ int DetectorSystemClass::DetectionAnalysis()
 
 
 		/////////////////////////individual psd ////////////////////////////////////////////////////////
-
+//psderg==0
+//
 		TF1* psdphotpeak = new TF1("psdphotpeak", "[0]*e^(-(x - [1])^2/(2*[2]^2))");
 		TF1* psdneutpeak = new TF1("psdneutpeak", "[0]/(1 + ((x - [1])/([2]))^2)");
 		TF1* psdcombined = new TF1("psdcombined", "psdphotpeak + psdneutpeak");
@@ -456,7 +466,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		smoothpsd->Smooth(1);
 
 		//photon fit
-		smoothpsd->GetXaxis()->SetRangeUser(minPSD_fit, divPSD_fit);
+		smoothpsd->GetXaxis()->SetRangeUser(MINPSD_FIT, DIVPSD_FIT);
 		Double_t psdmaxP = smoothpsd->GetMaximum();
 		Double_t binpsdmaxP = smoothpsd->GetMaximumBin();
 		Double_t xpsdmaxP = smoothpsd->GetXaxis()->GetBinCenter(binpsdmaxP);
@@ -464,14 +474,14 @@ int DetectorSystemClass::DetectionAnalysis()
 		Double_t rmsP = smoothpsd->GetRMS();
 
 		//neutron fit
-		smoothpsd->GetXaxis()->SetRangeUser(divPSD_fit, maxPSD_fit);
+		smoothpsd->GetXaxis()->SetRangeUser(DIVPSD_FIT, MAXPSD_FIT);
 		Double_t psdmaxN = smoothpsd->GetMaximum();
 		Double_t binpsdmaxN = smoothpsd->GetMaximumBin();
 		Double_t xpsdmaxN = smoothpsd->GetXaxis()->GetBinCenter(binpsdmaxN);
 		Double_t meanN = smoothpsd->GetMean();
 		Double_t rmsN = smoothpsd->GetRMS();
 
-		smoothpsd->GetXaxis()->SetRangeUser(minPSD_fit, maxPSD_fit);
+		smoothpsd->GetXaxis()->SetRangeUser(MINPSD_FIT, MAXPSD_FIT);
 
 		//combined fit
 		psdcombined->SetParameter(0, psdmaxP);
@@ -481,7 +491,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		psdcombined->SetParameter(4, xpsdmaxN);
 		psdcombined->SetParameter(5, rmsN);
 
-		psdhists[i]->GetXaxis()->SetRangeUser(minPSD_fit, maxPSD_fit);
+		psdhists[i]->GetXaxis()->SetRangeUser(MINPSD_FIT, MAXPSD_FIT);
 		//optimize combined fit
 		optimized = psdhists[i]->Fit(psdcombined, "SQ");
 
@@ -513,7 +523,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		//in prediction completely off, use default intersection
 		if(psdtempPSD < optimized->Parameter(1) || psdtempPSD > optimized->Parameter(4) || psdtempPSD >= 1) {
-			psdtempPSD = divPSD_fit;
+			psdtempPSD = DIVPSD_FIT;
 		}
 
 		TLine* psdline = new TLine(psdtempPSD, 0, psdtempPSD, optimized->Parameter(0));
@@ -530,8 +540,20 @@ int DetectorSystemClass::DetectionAnalysis()
 		TString namePointPSD = "detPSD" + to_string(i);
 		TFormula *f1 = new TFormula("f1", "[0]");
 		f1->SetParameter(0, psdtempPSD);
-		detectors[i].discPSDPoint = new TF1(namePointPSD, "f1");
+		//detectors[i].discPSDPoint = new TF1(namePointPSD, "f1"); //detectors[i].discPSD
+		detectors[i].discPSD = new TF1(namePointPSD, "f1");
 		detectors[i].discTOFPoint = toftempPSD - detectors[i].timeDelay;
+
+		if(PSD_ERG==0) {
+			TString canDiscErgName = "psdErg" + to_string(i);
+			TCanvas* canvasDiscErg = new TCanvas(canDiscErgName, canDiscErgName, 800, 500);
+			canvasDiscErg->cd();
+			psdErgHists[i]->Draw();
+			detectors[i].discPSD->Draw("SAME");
+			//detectors[i].discPSDPoint->Draw("SAME");
+			cdPsdErg->cd();
+			canvasDiscErg->Write();
+		}
 
 		canvaspsd->cd();
 		psdhists[i]->Draw();
@@ -564,7 +586,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		*/
 
 	//slicing tof erg
-	if(DEBUG==1) {
+	if(PSD_ERG==1) {
 		int stepSizetof = 20;
 		long int minEntriestof = 200;
 		int numGoodSlicestof;
@@ -576,7 +598,7 @@ int DetectorSystemClass::DetectionAnalysis()
 		double p0Disc, p1Disc, p2Disc;
 
 		TFitResultPtr tofDisc_opt;
-		TF1* tofDisc = new TF1("tofDisc", "pol1", minErg_fit, maxErg_fit);
+		TF1* tofDisc = new TF1("tofDisc", "pol1", MINERG_FIT, MAXERG_FIT);
 		tofDisc->SetLineStyle(kDashed);
 		tofDisc->SetLineColor(kOrange);
 		tofDisc->SetLineWidth(4);
@@ -598,7 +620,7 @@ int DetectorSystemClass::DetectionAnalysis()
 			TProfile* histErgProfile = tofErgHists[det]->ProfileX("profileEnergy");
 
 			cdToF->cd();
-			cdTofSlices->cd();
+			//cdTofSlices->cd();
 			// loop over the slices
 			for(int energySlice = 0; energySlice < energyBinstof; energySlice += stepSizetof)
 			{
@@ -686,21 +708,21 @@ int DetectorSystemClass::DetectionAnalysis()
 
 				tofErgSlice->GetYaxis()->SetRangeUser(0, 1.5*gausSliceOptimize->Parameter(0));
 
-				canvastofSlice->cd();
-
-				tofErgSlice->Draw();
-				intersectionSlicetof->Draw("SAME");
-				gausSlicetof->SetLineColor(kYellow);
-				neutSlicetof->SetLineColor(kOrange);
+				// canvastofSlice->cd();
+				//
+				// tofErgSlice->Draw();
+				// intersectionSlicetof->Draw("SAME");
+				// gausSlicetof->SetLineColor(kYellow);
+				// neutSlicetof->SetLineColor(kOrange);
 
 				// discrimination line
 				TLine* tofline = new TLine(tempTOF, 0, tempTOF, 1.5*gausSliceOptimize->Parameter(0));
-				tofline->SetLineColor(kBlack);
-				tofline->Draw("SAME");
-
-				cdToF->cd();
-				cdTofSlices->cd();
-				canvastofSlice->Write();
+				// tofline->SetLineColor(kBlack);
+				// tofline->Draw("SAME");
+				//
+				// cdToF->cd();
+				// cdTofSlices->cd();
+				// canvastofSlice->Write();
 			}
 			cdPsd->cd();
 			cout << "Finished looping through TOF slices" << endl;
@@ -733,12 +755,12 @@ int DetectorSystemClass::DetectionAnalysis()
 
 
 			// draw the line on top of the histogram
-			canvasDiscErgtof->cd();
-			tofErgHists[det]->Draw();
-			discLinestof[det]->Draw("SAME");
-			tofDisc->Draw("SAME");
-			cdTofErg->cd();
-			canvasDiscErgtof->Write();
+			// canvasDiscErgtof->cd();
+			// tofErgHists[det]->Draw();
+			// discLinestof[det]->Draw("SAME");
+			// tofDisc->Draw("SAME");
+			// cdTofErg->cd();
+			//canvasDiscErgtof->Write();
 		}
 	}
 
@@ -762,14 +784,14 @@ int DetectorSystemClass::DetectionAnalysis()
 		 	tofPsdHistsCorr[channelDet]->Fill(totPSP[part], corrTime);
 		 	tofErgHistsCorr[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, corrTime);
 
-		 	// discriminate particles here (make it better)
-		 	if(totPSP[part] < detectors[channelDet].discPSDPoint->Eval(totDep[part]/detectors[channelDet].calibration))
+		 	// discriminate particles here (make it better) -changed discPSDPoint to discPSD in 2 ifstatements
+		 	if(totPSP[part] < detectors[channelDet].discPSD->Eval(totDep[part]/detectors[channelDet].calibration))
 		 	{
 			 	tofPhists[channelDet]->Fill(corrTime);
 			 	kinematicP[channelDet]->Fill(corrTime, totDep[part]/detectors[channelDet].calibration);
 		 	}
 
-		 	if(totPSP[part] > detectors[channelDet].discPSDPoint->Eval(totDep[part]/detectors[channelDet].calibration) )
+		 	if(totPSP[part] > detectors[channelDet].discPSD->Eval(totDep[part]/detectors[channelDet].calibration) )
 		 	{
 			 	tofNhists[channelDet]->Fill(corrTime);
 			 	kinematicN[channelDet]->Fill(corrTime, totDep[part]/detectors[channelDet].calibration);
@@ -782,21 +804,21 @@ int DetectorSystemClass::DetectionAnalysis()
 	{
 			// save the results
 			cdPsd->cd();
-			psdhists[i]->Write();
-			erghists[i]->Write();
+			// psdhists[i]->Write(); //
+			// erghists[i]->Write(); //
 
-			if(DEBUG==1) {
-				psdErgHists[i]->Write();
-				tofErgHists[i]->Write();
+			if(PSD_ERG==1) {
+				//psdErgHists[i]->Write();
+				//tofErgHists[i]->Write();
 			}
 
-			tofPsdHists[i]->Write();
-			expHists[i]->Write();
+			// tofPsdHists[i]->Write(); //
+			// expHists[i]->Write(); //
 
 			cdToF->cd();
-			tofDelPhists[i]->Write();
-			tofNhists[i]->Write();
-			tofPhists[i]->Write();
+			// tofDelPhists[i]->Write(); //
+			// tofNhists[i]->Write(); //
+			// tofPhists[i]->Write(); //
 
 			cdTOFCorr->cd();
 			tofDelPhistsCorr[i]->Write();

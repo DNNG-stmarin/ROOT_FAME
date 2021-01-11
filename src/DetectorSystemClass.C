@@ -18,26 +18,38 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	MAX_TIME_P = info->MAX_TIME_P;
 	MIN_TIME_N = info->MIN_TIME_N;
 	MAX_TIME_N = info->MAX_TIME_N;
+	MINPSD_FIT = info->MINPSD_FIT;
+	DIVPSD_FIT = info->DIVPSD_FIT;
+	MAXPSD_FIT = info->MAXPSD_FIT;
+	MINERG_FIT = info->MINERG_FIT;
+	MAXERG_FIT = info->MAXERG_FIT;
 	DELTA_BACK_SIG = info->DELTA_BACK_SIG;
 	BACKGROUND_SHIFT = MAX_TIME_N - MIN_TIME_P + DELTA_BACK_SIG;
 	DEBUG = info->DEBUG;
+	PSD_ERG = info->PSD_ERG;
+	STEP_SIZE = info->STEP_SIZE;
 
-	NUM_CHAMBERS = info->NUM_CHAMBERS;
+	NUM_TRIGGERS = info->NUM_TRIGGERS;
 	NUM_DETS = info->NUM_DETS;
-	NUM_BROKEN = info->NUM_BROKEN;
-	FISSION_CHAMBERS = info->FISSION_CHAMBERS;
+	NUM_EXCLUDED = info->NUM_EXCLUDED;
+	//NUM_BEAMS = info->NUM_BEAMS;
+	FISSION_TRIGGERS = info->FISSION_TRIGGERS;
 	DETECTORS = info->DETECTORS;
-	BROKEN_DETECTORS = info->BROKEN_DETECTORS;
+	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
+	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
-	triggers = new TriggerClass[NUM_CHAMBERS];
+	triggers = new TriggerClass[NUM_TRIGGERS];
 	detectors = new DetectorClass[NUM_DETS];
 	cout << "Detectors and triggers have been created" << endl;
 
 	string line;
 	string x, y, z;
 	ifstream in (info->detectorPath);
-	for(int i=0; i<NUM_DETS; i++) {
+	for(int i=0; i<NUM_DETS; i++)
+	{
+		// cout << "reading detector coordinates from file" << endl;
+		// cout << i << endl;
 		getline(in, line);
 		istringstream iss(line);
 		iss >> x >> y >> z;
@@ -49,7 +61,9 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 
 	//calibration for only chinu system
 	detCalibration = new TGraph(*(info->calibrationDet));
-	for(int i=0; i<NUM_DETS; i++) {
+	for(int i=0; i<NUM_DETS; i++)
+	{
+		// cout << "Reading detector calibration from file" << endl;
 		detectors[i].calibration = detCalibration->Eval(i)/CSCOMPTEDGE;
 	}
 	cout << "Detector calibration complete\n" << endl;
@@ -93,8 +107,8 @@ DetectorSystemClass::~DetectorSystemClass()
 	 delete detectors;
 
 	 delete DETECTORS;
-	 delete FISSION_CHAMBERS;
-	 delete BROKEN_DETECTORS;
+	 delete FISSION_TRIGGERS;
+	 delete EXCLUDE_DETECTORS;
 	 delete detCalibration;
 }
 
@@ -136,7 +150,7 @@ void DetectorSystemClass::Init(TChain* treeIn)
 		 tree->SetBranchAddress("totToF", totToF, &b_totToF);
 		 tree->SetBranchAddress("totPSP", totPSP, &b_totPSP);
 		 tree->SetBranchAddress("totDep", totDep, &b_totDep);
-		 tree->SetBranchAddress("totTail", totTail, &b_totTail);
+		 // tree->SetBranchAddress("totTail", totTail, &b_totTail);
 		 tree->SetBranchAddress("totChan", totChan, &b_totChan);
 		 Notify();
 
@@ -227,12 +241,12 @@ int DetectorSystemClass::isDetector(int detectorNumber)
 	return detIndex;
 }
 
-int DetectorSystemClass::isChamber(int detectorNumber)
+int DetectorSystemClass::isTrigger(int detectorNumber)
 {
 	int chamberIndex = -1;
-	for(int index = 0; index < NUM_CHAMBERS; index++)
+	for(int index = 0; index < NUM_TRIGGERS; index++)
 	{
-		if(detectorNumber == FISSION_CHAMBERS[index])
+		if(detectorNumber == FISSION_TRIGGERS[index])
 		{
 			chamberIndex = index;
 			break;

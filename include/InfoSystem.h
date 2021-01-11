@@ -28,16 +28,16 @@ public:
   // store the channel multiplcities
   int NUM_BEAMS;
   int NUM_DETS;
-  int NUM_CHAMBERS;
+  int NUM_TRIGGERS;
 
   // store the channels
   int *BEAM;
   int *DETECTORS;
-  int *FISSION_CHAMBERS;
+  int *FISSION_TRIGGERS;
 
   //(optional) broken detectors
-  int *BROKEN_DETECTORS;
-  int NUM_BROKEN;
+  int *EXCLUDE_DETECTORS;
+  int NUM_EXCLUDED;
 
   //calibration attributes
   TGraph *calibrationDet;
@@ -50,21 +50,37 @@ public:
   int NUM_FILES;
   int DATA_TYPE;
   int REUSE_DATA;
+
   double COINC_WINDOW;
   double DETECTOR_THRESHOLD;
-  double CHAMBER_THRESHOLD;
-  double CHAMBER_CLIP;
-  double MAX_CHAMBER_DRIFT;
+
+  double TRIGGER_THRESHOLD;
+  double TRIGGER_CLIP;
+
+  double TRIGGER_MIN_PSP;
+  double TRIGGER_MAX_PSP;
+
+  bool TRIGGER_SPLIT;
+
+  double MAX_TRIGGER_DRIFT;
   double MIN_TIME_P;
   double MAX_TIME_P;
   double MIN_TIME_N;
   double MAX_TIME_N;
+  double MINPSD_FIT;
+  double DIVPSD_FIT;
+  double MAXPSD_FIT;
+  double MINERG_FIT;
+  double MAXERG_FIT;
+
   double DELTA_BACK_SIG;
 
   int DEBUG;
   int PSD_ERG;
+  int STEP_SIZE;
 
-  InfoSystem() {
+  InfoSystem()
+  {
     detectorPath = "";
     calibrationPath = "";
     nameOfExp = "";
@@ -73,27 +89,44 @@ public:
 
     NUM_BEAMS = 0;
     NUM_DETS = 0;
-    NUM_CHAMBERS = 0;
+    NUM_TRIGGERS = 0;
 
     BEAM = NULL;
-    FISSION_CHAMBERS =  NULL;
+    FISSION_TRIGGERS =  NULL;
     DETECTORS = NULL;
-    BROKEN_DETECTORS = NULL;
+    EXCLUDE_DETECTORS = NULL;
 
     MIN_FILE = 0;
     NUM_FILES = 0;
     DATA_TYPE = 0;
     REUSE_DATA = 0;
-    COINC_WINDOW = 0.0;
-    DETECTOR_THRESHOLD = 0.0;
-    CHAMBER_THRESHOLD = 0.0;
-    CHAMBER_CLIP = 0.0;
-    MAX_CHAMBER_DRIFT = 0.0;
+    COINC_WINDOW = 200;
+    DETECTOR_THRESHOLD = 0.1;
+    TRIGGER_THRESHOLD = 0.1;
+    TRIGGER_CLIP = 0.0;
+    TRIGGER_MIN_PSP = 0.0;
+    TRIGGER_MAX_PSP = 1.0;
+
+    TRIGGER_SPLIT = 1;
+    MAX_TRIGGER_DRIFT = 1.0;
+
     MIN_TIME_P = 0.0;
-    MAX_TIME_P = 0.0;
+    MAX_TIME_P = 100.0;
     MIN_TIME_N = 0.0;
-    MAX_TIME_N = 0.0;
-    DELTA_BACK_SIG = 0.0;
+    MAX_TIME_N = 100.0;
+
+    MINPSD_FIT = 0;
+    DIVPSD_FIT = 0;
+    MAXPSD_FIT = 0;
+    MINERG_FIT = 0;
+    MAXERG_FIT = 0;
+
+    DELTA_BACK_SIG = 10.0;
+
+    DEBUG = 0;
+
+    PSD_ERG = 0;
+    STEP_SIZE = 0;
   }
 
   void ReadInput(TString inputFile) {
@@ -158,26 +191,26 @@ public:
           DETECTORS[i] = stoi(value);
         }
       }
-      else if(tag == "<NUM_CHAMBERS>:") {
+      else if(tag == "<NUM_TRIGGERS>:") {
         file >> value;
-        NUM_CHAMBERS = stoi(value);
+        NUM_TRIGGERS = stoi(value);
       }
-      else if(tag == "<CHAMBERS>:") {
-        FISSION_CHAMBERS = new int[NUM_CHAMBERS];
-        for(int i=0; i<NUM_CHAMBERS; i++) {
+      else if(tag == "<TRIGGERS>:") {
+        FISSION_TRIGGERS = new int[NUM_TRIGGERS];
+        for(int i=0; i<NUM_TRIGGERS; i++) {
           file >> value;
-          FISSION_CHAMBERS[i] = stoi(value);
+          FISSION_TRIGGERS[i] = stoi(value);
         }
       }
-      else if(tag == "<NUM_BROKEN>:") {
+      else if(tag == "<NUM_EXCLUDED>:") {
         file >> value;
-        NUM_BROKEN = stoi(value);
+        NUM_EXCLUDED = stoi(value);
       }
-      else if(tag == "<BROKEN_DETECTORS>:") {
-        BROKEN_DETECTORS = new int[NUM_BROKEN];
-        for(int i=0; i<NUM_BROKEN; i++) {
+      else if(tag == "<EXCLUDE_DETECTORS>:") {
+        EXCLUDE_DETECTORS = new int[NUM_EXCLUDED];
+        for(int i=0; i<NUM_EXCLUDED; i++) {
           file >> value;
-          BROKEN_DETECTORS[i] = stoi(value);
+          EXCLUDE_DETECTORS[i] = stoi(value);
         }
       }
       else if(tag == "<COINC_WINDOW>:") {
@@ -188,17 +221,37 @@ public:
         file >> value;
         DETECTOR_THRESHOLD = stod(value);
       }
-      else if(tag == "<CHAMBER_THRESHOLD>:") {
+      else if(tag == "<TRIGGER_THRESHOLD>:") {
         file >> value;
-        CHAMBER_THRESHOLD = stod(value);
+        TRIGGER_THRESHOLD = stod(value);
       }
-      else if(tag == "<CHAMBER_CLIP>:") {
+      else if(tag == "<TRIGGER_CLIP>:") {
         file >> value;
-        CHAMBER_CLIP = stod(value);
+        TRIGGER_CLIP = stod(value);
       }
-      else if(tag == "<MAX_CHAMBER_DRIFT>:") {
+      else if(tag == "<TRIGGER_MIN_PSP>:")
+      {
         file >> value;
-        MAX_CHAMBER_DRIFT = stod(value);
+        TRIGGER_MIN_PSP = stod(value);
+      }
+      else if(tag == "<TRIGGER_MAX_PSP>:")
+      {
+        file >> value;
+        TRIGGER_MAX_PSP = stod(value);
+      }
+      else if(tag == "<TRIGGER_SPLIT>:")
+      {
+        file >> value;
+        if(stoi(value) == 0) {
+          TRIGGER_SPLIT = 0;
+        }
+        if(stoi(value) == 1) {
+          TRIGGER_SPLIT = 1;
+        }
+      }
+      else if(tag == "<MAX_TRIGGER_DRIFT>:") {
+        file >> value;
+        MAX_TRIGGER_DRIFT = stod(value);
       }
       else if(tag == "<MIN_TIME_P>:") {
         file >> value;
@@ -220,6 +273,26 @@ public:
         file >> value;
         DELTA_BACK_SIG = stod(value);
       }
+      else if(tag == "<MINPSD_FIT>:") {
+        file >> value;
+        MINPSD_FIT = stod(value);
+      }
+      else if(tag == "<DIVPSD_FIT>:") {
+        file >> value;
+        DIVPSD_FIT = stod(value);
+      }
+      else if(tag == "<MAXPSD_FIT>:") {
+        file >> value;
+        MAXPSD_FIT = stod(value);
+      }
+      else if(tag == "<MINERG_FIT>:") {
+        file >> value;
+        MINERG_FIT = stod(value);
+      }
+      else if(tag == "<MAXERG_FIT>:") {
+        file >> value;
+        MAXERG_FIT = stod(value);
+      }
       else if(tag == "<DEBUG>:") {
         file >> value;
         DEBUG = stoi(value);
@@ -227,6 +300,10 @@ public:
       else if(tag == "<PSD_ERG>:") {
         file >> value;
         PSD_ERG = stoi(value);
+      }
+      else if(tag == "<STEP_SIZE>:") {
+        file >> value;
+        STEP_SIZE = stoi(value);
       }
     }
 
@@ -241,9 +318,9 @@ public:
   ~InfoSystem()
   {
     delete BEAM;
-    delete FISSION_CHAMBERS;
+    delete FISSION_TRIGGERS;
     delete DETECTORS;
-    delete BROKEN_DETECTORS;
+    delete EXCLUDE_DETECTORS;
     delete calibrationDet;
   }
 };

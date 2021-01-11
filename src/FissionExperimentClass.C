@@ -53,6 +53,7 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	detFile = new TFile(detFileT, "RECREATE");
 
   // create the chain with all the entries to analyze for the raw coincidence mode
+	rawTreeChain = new TChain();
   coincTreeChain = new TChain();
 }
 
@@ -65,28 +66,57 @@ FissionExperimentClass::~FissionExperimentClass()
 // Now go ahead and create all the fission tree
 int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFileWrite, int numEntries)
 {
-	// produce the data if not already present
+
+	// attach the data file to the chain
 	if(REUSE_DATA == 0)
 	{
 		cout << "Writing coincidence trees to " << expFileWrite->GetName() << "." << endl;
 
+		// iterator for adding data to the fchain
+		TFile *fileRaw;
+		TTree *treeRaw;
+		TString s_fileRaw;
+
+		// set the input tree
+		if(DATA_TYPE == 0)
+		{
+			 inputTreeName = compassName;
+		}
+		else if(DATA_TYPE == 1)
+		{
+			 inputTreeName = midasName;
+		}
+
 		for(int fileNum = MIN_FILE; fileNum < MIN_FILE + NUM_FILES; fileNum++)
 		{
-			cout << "reading file number " << fileNum << endl;
-			CoincidenceAnalysis* inputData = new CoincidenceAnalysis(filename + TString(to_string(fileNum)) + extExpFile, fileNum, expFileWrite, 0, info); //replace digType w info->DATA_TYPE
-			inputData->CreateCoincidenceTree(fileNum, numEntries);
+			 cout << "reading file number " << fileNum << endl;
+			 // find the file
+			 s_fileRaw =  filename + TString(to_string(fileNum)) + extExpFile;
+       fileRaw = (TFile*)gROOT->GetListOfFiles()->FindObject(s_fileRaw);
+       if (!fileRaw || !fileRaw->IsOpen()) {
+          fileRaw = new TFile(s_fileRaw);
+       }
+       fileRaw->GetObject(inputTreeName, treeRaw);
+
+			 if(treeRaw != 0)
+			 {
+	 			 rawTreeChain->Add(s_fileRaw + "/" + inputTreeName);
+				 cout << "tree found at " << treeRaw << " added to chain" << endl;
+			 }
+
+			 //fileRaw->Close();
+			 delete fileRaw;
 		}
+
+		CoincidenceAnalysis* inputData = new CoincidenceAnalysis(expFileWrite, rawTreeChain, info); //replace digType w info->DATA_TYPE
+		inputData->CreateCoincidenceTree(numEntries);
 	}
-	// coincidence tree must be closed in order to read from them
+
 	expFile->Close();
 
 	gROOT->cd();
 
-	// attach the coincidence tree to the chain
-	for(int fileNum = MIN_FILE; fileNum < MIN_FILE + NUM_FILES; fileNum++)
-	{
-		coincTreeChain->Add(treeFileT + "/" + TString(to_string(fileNum)) + "/" + nameCoincTree);
-	}
+	coincTreeChain->Add(treeFileT + "/" + nameCoincTree);
 
 	return 1;
 }

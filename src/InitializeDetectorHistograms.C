@@ -31,21 +31,23 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
     */
 
-    // experiment
-  	TString expNameT = "Exp";
-    TString expHistNameT;
-    expHists = new TH3F* [NUM_DETS];
+    // // experiment
+    // cout << "Initializing experiment 3D histograms" << endl;
+  	// TString expNameT = "Exp";
+    // TString expHistNameT;
+    // expHists = new TH3F* [NUM_DETS];
 
-    for(int i = 0; i < NUM_DETS; i++)
-  	{
-  		// find the string name of the detector
-  		numDet = to_string(DETECTORS[i]);
-
-      // exp histograms
-  		expHistNameT = expNameT + numDet;
-      expHists[i] = new TH3F(expHistNameT, expHistNameT, 200, 0, 1, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
-
-    }
+    // for(int i = 0; i < NUM_DETS; i++)
+  	// {
+    //   cout << i << endl;
+  	// 	// find the string name of the detector
+  	// 	numDet = to_string(DETECTORS[i]);
+    //
+    //   // exp histograms
+  	// 	//expHistNameT = expNameT + numDet;
+    //   //expHists[i] = new TH3F(expHistNameT, expHistNameT, 200, 0, 1, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+    //
+    // }
 
     // psd
   	TString psdName = "PSD";
@@ -95,9 +97,9 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     kinematicP = new TH2F* [NUM_DETS];
     kinematicAll = new TH2F* [NUM_DETS];
 
-
     for(int i = 0; i < NUM_DETS; i++)
   	{
+      cout << "initializing histograms for detector number " << i << endl;
   		// find the string name of the detector
   		numDet = to_string(DETECTORS[i]);
 
@@ -130,14 +132,14 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
       // tofErg histograms
       tofErgHistNameT = tofErgNameT + numDet;
-      tofErgHists[i] = new TH2F(tofErgHistNameT, tofErgHistNameT, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      tofErgHists[i] = new TH2F(tofErgHistNameT, tofErgHistNameT, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW); //each slice is 10 kev
       tofErgHists[i]->SetOption("COLZ");
       tofErgHistsCorr[i] = new TH2F(tofName+ergName+corr+numDet, tofName+ergName+corr+numDet, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
       tofErgHistsCorr[i]->SetOption("COLZ");
 
       // energy-psd
       psdErgHistNameT = psdErgName + numDet;
-      psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 1000, 0, 10, 500, 0, 1);
+      psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 1000, 0, 10, 500, 0, 1); //each slice is 10 kev 
       psdErgHists[i]->SetOption("COLZ");
 
 
