@@ -136,8 +136,9 @@ int FissionExperimentClass::CreateDetectionAnalysis(TFile* writeFile)
 	cout << "Entering detector analysis mode" << endl;
 	detectorData->DetectionAnalysis();
 
-	cout << "Entering system analysis mode" << endl;
-	detectorData->SystemAnalysis();
+	// System analysis needs to be fixed before running it
+	// cout << "Entering system analysis mode" << endl;
+	// detectorData->SystemAnalysis();
 
 	cout << "Entering fission analysis mode" << endl;
 	if(DEBUG==1)

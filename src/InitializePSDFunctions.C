@@ -5,6 +5,7 @@ Date: Ann Arbor, June 1st, 2020
 */
 #define InitializePSDFunctions_cxx
 #include "DetectorSystemClass.h"
+#include "ProcessingConstants.h"
 void DetectorSystemClass::InitializePSDFunctions()
 {
   // define the fitting function for the psd discrimination
@@ -12,12 +13,9 @@ void DetectorSystemClass::InitializePSDFunctions()
   TF1* cauchy = new TF1("cauchyPSD", "[0]*e^(-(x - [1])^2/(2*[2]^2))", MINPSD_FIT, MAXPSD_FIT);
 
   // fitting functions for the two
-  fitPSD_p = new TF1("fitPSDp", "cauchyPSD");
+  fitPSD_p = new TF1("fitPSDp", "gausPSD");
   fitPSD_n = new TF1("fitPSDn", "gausPSD");
 
-  //fitTOF_p = new TF1("fitTOFp", "[0]*e^(-(x - [1])^2/(2*[2]^2))");
-  //fitTOF_n = new TF1("fitTOFn", "[0]/(1 + ((x - [1])/([2]))^2)");
-  //TOFintersection = new TF1("TOFintersect", "abs(fitTOFn - fitTOFp)");
 
   // double fitting
   fitPSD = new TF1("fitPSDnp", "fitPSDn + fitPSDp");
@@ -35,6 +33,9 @@ void DetectorSystemClass::InitializePSDFunctions()
   fitPSD_n->SetParNames("AP", "mP", "sP");
   intersection->SetParNames("AP", "mP", "sP", "AN", "mN", "sN");
 
-  // fitPSD->SetParLimits(4, 0.15, 0.3);
+  // guesses for the limit of the PSD distribution
+  fitPSD->SetParLimits(1, MINPSD_FIT, DIVPSD_FIT);
+  fitPSD->SetParLimits(4, DIVPSD_FIT, MAXPSD_FIT);
+
   // fitPSD->SetParLimits(5, 0.01, 0.05);
 }

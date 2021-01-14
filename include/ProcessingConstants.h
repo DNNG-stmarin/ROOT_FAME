@@ -21,4 +21,18 @@ const short PHOTON = 2;
 const int MAX_MULTIPLICITY = 50;
 const int MAX_EVENTS = 50;
 
+// specifications of PSD bins
+const double MIN_PSD_HIST = 0;
+const double MAX_PSD_HIST = 1;
+const int NUM_PSD_HIST = 100;
+
+// specifications of LO bins
+const double MIN_LO_HIST = 0;
+const double MAX_LO_HIST = 10;
+const int NUM_LO_HIST = 1000;
+
+const int MIN_ENTRIES = 150;
+
+
+
 #endif

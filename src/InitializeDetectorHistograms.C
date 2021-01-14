@@ -7,6 +7,7 @@ Date: Ann Arbor, May 14th 2020
 
 #define InitializeDetectorHistograms_cxx
 #include "DetectorSystemClass.h"
+#include "ProcessingConstants.h"
 
 void DetectorSystemClass::InitializeDetectorHistograms()
 {
@@ -22,32 +23,6 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
     // name generators
     TString numDet;
-
-    /*
-        _     _          _
-     __| |___| |_ ___ __| |_ ___ _ _ ___
-    / _` / -_)  _/ -_) _|  _/ _ \ '_(_-<
-    \__,_\___|\__\___\__|\__\___/_| /__/
-
-    */
-
-    // // experiment
-    // cout << "Initializing experiment 3D histograms" << endl;
-  	// TString expNameT = "Exp";
-    // TString expHistNameT;
-    // expHists = new TH3F* [NUM_DETS];
-
-    // for(int i = 0; i < NUM_DETS; i++)
-  	// {
-    //   cout << i << endl;
-  	// 	// find the string name of the detector
-  	// 	numDet = to_string(DETECTORS[i]);
-    //
-    //   // exp histograms
-  	// 	//expHistNameT = expNameT + numDet;
-    //   //expHists[i] = new TH3F(expHistNameT, expHistNameT, 200, 0, 1, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
-    //
-    // }
 
     // psd
   	TString psdName = "PSD";
@@ -105,11 +80,11 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
   		// psd histograms
   		psdHistNameT = psdName + numDet;
-  		psdhists[i] = new TH1F(psdHistNameT, psdHistNameT, 200, 0, 1);
+  		psdhists[i] = new TH1F(psdHistNameT, psdHistNameT, NUM_PSD_HIST, MIN_PSD_HIST, MAX_PSD_HIST);
 
       // energy histograms
       ergHistNameT = ergName + numDet;
-      erghists[i] = new TH1F(ergHistNameT, ergHistNameT, 1000, 0, 10);
+      erghists[i] = new TH1F(ergHistNameT, ergHistNameT, NUM_LO_HIST, MIN_LO_HIST, MAX_LO_HIST);
 
       // time of flight histograms
   		tofNHistNameT = tofName + neutronName +  numDet;
@@ -125,21 +100,21 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
       // tofPSd histograms
       tofPsdHistNameT = tofPsdNameT + numDet;
-      tofPsdHists[i] = new TH2F(tofPsdHistNameT, tofPsdHistNameT, 200, 0, 1, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      tofPsdHists[i] = new TH2F(tofPsdHistNameT, tofPsdHistNameT, NUM_PSD_HIST, MIN_PSD_HIST, MAX_PSD_HIST, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
       tofPsdHists[i]->SetOption("COLZ");
-      tofPsdHistsCorr[i] = new TH2F(tofName+psdName+corr+numDet, tofName+psdName+corr+numDet, 200, 0, 1, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      tofPsdHistsCorr[i] = new TH2F(tofName+psdName+corr+numDet, tofName+psdName+corr+numDet, NUM_PSD_HIST, MIN_PSD_HIST, MAX_PSD_HIST, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
       tofPsdHistsCorr[i]->SetOption("COLZ");
 
       // tofErg histograms
       tofErgHistNameT = tofErgNameT + numDet;
-      tofErgHists[i] = new TH2F(tofErgHistNameT, tofErgHistNameT, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW); //each slice is 10 kev
+      tofErgHists[i] = new TH2F(tofErgHistNameT, tofErgHistNameT, NUM_LO_HIST, MIN_LO_HIST, MAX_LO_HIST, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW); //each slice is 10 kev
       tofErgHists[i]->SetOption("COLZ");
-      tofErgHistsCorr[i] = new TH2F(tofName+ergName+corr+numDet, tofName+ergName+corr+numDet, 1000, 0, 10, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      tofErgHistsCorr[i] = new TH2F(tofName+ergName+corr+numDet, tofName+ergName+corr+numDet, NUM_LO_HIST, MIN_LO_HIST, MAX_LO_HIST, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
       tofErgHistsCorr[i]->SetOption("COLZ");
 
       // energy-psd
       psdErgHistNameT = psdErgName + numDet;
-      psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 1000, 0, 10, 500, 0, 1); //each slice is 10 kev 
+      psdErgHists[i] = new TH2F(psdErgHistNameT, psdErgHistNameT, 1000, 0, 10, NUM_PSD_HIST, MIN_PSD_HIST, MAX_PSD_HIST); //each slice is 10 kev
       psdErgHists[i]->SetOption("COLZ");
 
 

@@ -77,6 +77,7 @@ public:
 
   int DEBUG;
   int PSD_ERG;
+  int TOF_ERG;
   int STEP_SIZE;
 
   InfoSystem()
@@ -103,11 +104,11 @@ public:
     COINC_WINDOW = 200;
     DETECTOR_THRESHOLD = 0.1;
     TRIGGER_THRESHOLD = 0.1;
-    TRIGGER_CLIP = 0.0;
+    TRIGGER_CLIP = 100.0;
     TRIGGER_MIN_PSP = 0.0;
     TRIGGER_MAX_PSP = 1.0;
 
-    TRIGGER_SPLIT = 1;
+    TRIGGER_SPLIT = 0;
     MAX_TRIGGER_DRIFT = 1.0;
 
     MIN_TIME_P = 0.0;
@@ -115,17 +116,18 @@ public:
     MIN_TIME_N = 0.0;
     MAX_TIME_N = 100.0;
 
-    MINPSD_FIT = 0;
-    DIVPSD_FIT = 0;
-    MAXPSD_FIT = 0;
-    MINERG_FIT = 0;
-    MAXERG_FIT = 0;
+    MINPSD_FIT = 0.0;
+    DIVPSD_FIT = 0.25;
+    MAXPSD_FIT = 1.0;
+    MINERG_FIT = 0.0;
+    MAXERG_FIT = 10.0;
 
     DELTA_BACK_SIG = 10.0;
 
     DEBUG = 0;
 
     PSD_ERG = 0;
+    TOF_ERG = 0;
     STEP_SIZE = 0;
   }
 
@@ -301,6 +303,12 @@ public:
         file >> value;
         PSD_ERG = stoi(value);
       }
+
+      else if(tag == "<TOF_ERG>:") {
+        file >> value;
+        TOF_ERG = stoi(value);
+      }
+
       else if(tag == "<STEP_SIZE>:") {
         file >> value;
         STEP_SIZE = stoi(value);

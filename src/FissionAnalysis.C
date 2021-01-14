@@ -14,6 +14,7 @@ void DetectorSystemClass::FissionAnalysis()
   fissionFile->cd();
 
   Long64_t nentries = tree->GetEntriesFast();
+  // nentries = 10000000;
   Long64_t nbytes = 0, nb = 0;
 
   // neutron and photon multiplicities

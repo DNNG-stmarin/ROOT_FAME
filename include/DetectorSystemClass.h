@@ -61,6 +61,7 @@ public:
 	double BACKGROUND_SHIFT;
 	int DEBUG;
 	int PSD_ERG;
+	int TOF_ERG;
 	int STEP_SIZE;
 
 	// inputs given by the fission experiment class file, made up of the data collected and where to write

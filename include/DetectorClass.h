@@ -39,12 +39,12 @@ public:
 
 	TF1* discPSD; // psd discrimination line
 
-	double discTOFPoint; //tof discrimination
+	// double discTOFPoint; //tof discrimination
 	//TF1* discPSDPoint; //psd discrimination //have just one s
 
 	double calibration; // store the energy calibration for each detector (was called energyCalibration)
 
-	double efficiency; // efficiency of this detector to
+	double efficiency; // efficiency of this detector
 
 	double X, Y, Z; // position of the center of the detector
 	double distance; // distance of detector from source
