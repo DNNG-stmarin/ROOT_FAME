@@ -253,6 +253,9 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	bool pastRef, trigReady;
 
+	double timeDel = 0;
+	int fileInd = 0;
+
 	// loop through the raw data
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
 	{
@@ -265,9 +268,18 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		Long64_t ientry = LoadTree(jentry);
 	  	if (ientry < 0) break;
 
+
+
 		// load current entry
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
 
+		//correct for time delay
+		if(ientry == 0)
+		{
+			cout << "Loading file number " << fileInd++ << endl;
+			timeDel += timeDet;
+			// cout << timeDel << endl;
+		}
 
 		//  ___ _ _ _ _
 		// | __(_) | (_)_ _  __ _
@@ -279,7 +291,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		if(DATA_TYPE == 0) //compass type digitizer
 		{
 			detChannel = cp->getDetector();
-			timeDet = cp->getTime();
+			timeDet = cp->getTime() + timeDel;
 			energyDep = cp->getEnergy();
 			energyTail = cp->getTail();
 
@@ -287,7 +299,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		else if(DATA_TYPE == 1) //midas type digitizer
 		{
 			detChannel = md->getDetector();
-			timeDet = md->getTime();
+			timeDet = md->getTime() + timeDel;
 			energyDep = md->getEnergy();
 			energyTail = md->getTail();
 		}
@@ -326,6 +338,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			cout << "channel not recognized, stopping the processing and check your input file" << endl;
 			exit(3);
 		}
+
 
 		/*
 		 ____                         _
