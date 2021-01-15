@@ -223,7 +223,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	// get the number of entries
 	Long64_t nentries = fChain->GetEntries();
-	nentries = 1000000; // for debug
+	//nentries = 1000000; // for debug
 	cout << "For this file there are: " << nentries << " entries." << endl;
 
 	if(entriesToProc > 0)
