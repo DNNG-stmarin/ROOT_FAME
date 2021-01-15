@@ -23,6 +23,7 @@ Date: Ann Arbor, May 6th, 2020
 
 #include "CoincidenceEvent.h"
 #include "ParticleEvent.h"
+#include "BeamEvent.h"
 #include "TriggerEvent.h"
 
 #include "InfoSystem.h"
@@ -53,7 +54,7 @@ public :
    //infosystem attributes (not info)
    int NUM_TRIGGERS = 0;
    int NUM_DETS = 0;
-   //int NUM_BEAMS = 0;
+   int NUM_BEAMS = 0;
 
    double TRIGGER_THRESHOLD = 0;
    double TRIGGER_CLIP = 0;
@@ -66,7 +67,11 @@ public :
 
    int* FISSION_TRIGGERS;
    int* DETECTORS;
-   //int* BEAM;
+   int* BEAM;
+
+   double MICRO_SEP;
+   double MACRO_SEP;
+   int MICRO_NUM;
 
    //  _                          ____  _     _           _
    // | |                        / __ \| |   (_)         | |
@@ -80,8 +85,12 @@ public :
   // use an array of fifo to store particles and chambers
   queue<TriggerEvent>* TriggerBuffer;
   queue<ParticleEvent>* DetectorBuffer;
+  queue<BeamEvent>* BeamBuffer;
 
   // queue containing valid fission events
+
+  queue<CoincidenceEvent> ValidTriggerBuffer;
+  queue<BeamEvent> ValidBeamBuffer;
 	queue<CoincidenceEvent> FissionBuffer;
 
 
@@ -99,22 +108,27 @@ public :
 
 CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, InfoSystem* info)
 {
-  DATA_TYPE = info->DATA_TYPE;
-  TRIGGER_THRESHOLD = info->TRIGGER_THRESHOLD;
-  TRIGGER_CLIP = info->TRIGGER_CLIP;
-  TRIGGER_SPLIT = info->TRIGGER_SPLIT;
-  TRIGGER_MIN_PSP = info->TRIGGER_MIN_PSP;
-  TRIGGER_MAX_PSP = info->TRIGGER_MAX_PSP;
+    DATA_TYPE = info->DATA_TYPE;
+    TRIGGER_THRESHOLD = info->TRIGGER_THRESHOLD;
+    TRIGGER_CLIP = info->TRIGGER_CLIP;
+    TRIGGER_SPLIT = info->TRIGGER_SPLIT;
+    TRIGGER_MIN_PSP = info->TRIGGER_MIN_PSP;
+    TRIGGER_MAX_PSP = info->TRIGGER_MAX_PSP;
 
-  MAX_TRIGGER_DRIFT = info->MAX_TRIGGER_DRIFT;
-  COINC_WINDOW = info->COINC_WINDOW;
+    MAX_TRIGGER_DRIFT = info->MAX_TRIGGER_DRIFT;
+    COINC_WINDOW = info->COINC_WINDOW;
 
-  NUM_TRIGGERS = info->NUM_TRIGGERS;
-  NUM_DETS = info->NUM_DETS;
-  //NUM_BEAMS = info->NUM_BEAMS;
-  FISSION_TRIGGERS = info->FISSION_TRIGGERS;
-  DETECTORS = info->DETECTORS;
-  //BEAM = info->BEAM;
+    NUM_TRIGGERS = info->NUM_TRIGGERS;
+    NUM_DETS = info->NUM_DETS;
+    NUM_BEAMS = info->NUM_BEAMS;
+    FISSION_TRIGGERS = info->FISSION_TRIGGERS;
+    DETECTORS = info->DETECTORS;
+    BEAM = info->BEAM;
+
+    MICRO_SEP = info->MICRO_SEP;
+    MACRO_SEP = info->MACRO_SEP;
+    MICRO_NUM = info->MICRO_NUM;
+    cout << MICRO_NUM << endl;
 
    // set the output stream
    expFile = expFileWrite;
@@ -124,6 +138,7 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, Info
    // use an array of fifo to store particles and chambers
    TriggerBuffer = new queue<TriggerEvent> [NUM_TRIGGERS];
    DetectorBuffer = new queue<ParticleEvent> [NUM_DETS];
+   BeamBuffer = new queue<BeamEvent> [NUM_BEAMS];
 
 }
 

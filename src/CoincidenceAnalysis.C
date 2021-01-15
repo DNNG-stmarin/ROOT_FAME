@@ -20,6 +20,7 @@
 #include "CoincidenceEvent.h"
 #include "ParticleEvent.h"
 #include "TriggerEvent.h"
+#include "BeamEvent.h"
 
 #include "mappingFunctions.h"
 
@@ -36,7 +37,14 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	*/
 	cout << "Initializing coincidence THistogram " << endl;
 
-	TH1F* h_Dt = new TH1F("delT", "delT", 1000, 0, 5e12);
+	//TH1F* h_Dt = new TH1F("delT", "delT", 1000, 0, 5e12);
+	TH1D* h_microTimeDiff = new TH1D("microDelta", "Time Interval Micro; Time Difference (ns); Counts", 1000, 1750, 1800);
+	TH1D* h_macroTimeDiff = new TH1D("macroDelta", "Time Interval Macro; Time Difference (ns); Counts", 1000, 0, 5e7);
+	TH1D* h_microTime = new TH1D("microTime", "Time in Micro; Time (ns); Counts", 10000, 0, 1e6);
+	TH1I* h_macroPop = new TH1I("macroPop", "Population in Macro; Number of Micropulses; Counts", 500, 0, 500);
+
+
+	queue<BeamEvent> microStructure;
 
 
 
@@ -57,32 +65,45 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 
 	// declatre the variables to store the fission branches
+	// fission trigger
 	int tMult = 0;
 	double tTime = 0;
 	double tDep = 0;
 	int tChan = 0;
 	double tPSP = 0;
 
+	// fission beam
+	double bTime = 0;
+	double bErg = 0;
+	int bChan = 0;
+	int bIndex = 0;
+	double bPSP = 0;
 
+	// particles
 	double totToF[MAX_MULTIPLICITY] = {0};
 	double totPSP[MAX_MULTIPLICITY] = {0};
 	double totDep[MAX_MULTIPLICITY] = {0};
-	// double totTail[MAX_MULTIPLICITY] = {0};
 	int totChan[MAX_MULTIPLICITY] = {0};
 
-	// scalar variables
+	// trigger variables
 	coincTree->Branch("tMult", &tMult, "tMult/I");
 	coincTree->Branch("tTime", &tTime, "fissionTime/D");
 	coincTree->Branch("tDep", &tDep, "fissionErg/D");
 	coincTree->Branch("tChan", &tChan, "fissionChan/I");
 	coincTree->Branch("tPSP", &tPSP, "fissionPSP/D");
 
+	// beam variables
+	coincTree->Branch("bTime", &bTime, "beamTime/D");
+	coincTree->Branch("bErg", &bErg, "beamEnergy/D");
+	coincTree->Branch("bChan", &bChan, "beamChan/I");
+	coincTree->Branch("bIndex", &bIndex, "beamIndex/I");
+	coincTree->Branch("bPSP", &bPSP, "beamPSP/D");
+
 	// list variables
 	coincTree->Branch("totToF", totToF, "totToF[tMult]/D");
 	coincTree->Branch("totPSP", totPSP, "totPSP[tMult]/D");
 	coincTree->Branch("totDep", totDep, "totDep[tMult]/D");
 	coincTree->Branch("totChan", totChan, "totChan[tMult]/I");
-	// coincTree->Branch("totTail", totTail, "totTail[tMult]/D");
 
 
 	/*
@@ -112,7 +133,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		// initialize the new particle
 		TriggerEvent qTrigger = TriggerEvent();
-		//CoincidenceEvent newFission = CoincidenceEvent(0, 0);
+		BeamEvent qBeam = BeamEvent();
 		CoincidenceEvent newFission = CoincidenceEvent(0, 0, 0, 0);
 
 		// start at the beginning of the array and also keep track of the the number of coincidence events found.
@@ -125,6 +146,24 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		double averageTrigPSP = 0;
 
 		long double beginTime = 0;
+
+		double firstMicro;
+		double lastMicro;
+		double timeDiffMacro;
+		double timeDiffMicro;
+
+		double microTime;
+		double timeHead;
+
+	  int microIndex;
+
+		// variables for validation
+		CoincidenceEvent curFis;
+		CoincidenceEvent goodFis;
+		BeamEvent curBeam;
+
+		double deltaFissBeam;
+		double curFisTime, curBeamTime;
 
 
 		/*
@@ -141,10 +180,16 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		// now loop thrugh fission events to find valid fission events
 		CoincidenceEvent qFission = CoincidenceEvent(0, 0, 0, 0);
+
+		// trigger variables
 		double fissionTime = 0;
 		double fissionEnergy = 0;
 		int fissionChan = 0;
 		double fissionPSP = 0;
+
+		// same but for beam variables
+		double beamPSP, beamTime, beamEnergy;
+		int beamChan, beamIndex;
 
 		// dynamical variables
 		double detTime = 0;
@@ -178,7 +223,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	// get the number of entries
 	Long64_t nentries = fChain->GetEntries();
-	// nentries = 100000; for debug
+	nentries = 1000000; // for debug
 	cout << "For this file there are: " << nentries << " entries." << endl;
 
 	if(entriesToProc > 0)
@@ -193,6 +238,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	// initialize the particle
 	ParticleEvent newParticle = ParticleEvent();
 	TriggerEvent newTrigger = TriggerEvent();
+	BeamEvent newBeam = BeamEvent();
 
 	// initialize the detector channel
 	int detChannel = 0;
@@ -207,9 +253,14 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	bool pastRef, trigReady;
 
-	// loop through array
+	// loop through the raw data
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
 	{
+
+		// if(jentry%100000 == 0)
+		// {
+		// 	cout << jentry << endl;
+		// }
 
 		Long64_t ientry = LoadTree(jentry);
 	  	if (ientry < 0) break;
@@ -259,18 +310,110 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			if((newTrigger.getEnergy() < TRIGGER_THRESHOLD) || (newTrigger.getEnergy() > TRIGGER_CLIP) || (newTrigger.getPsp() > TRIGGER_MIN_PSP) || (newTrigger.getPsp() < TRIGGER_MAX_PSP) )
 			{
 				TriggerBuffer[entryChannel].push(newTrigger);
-
-				// for(int trigIndex = 0; trigIndex < NUM_TRIGGERS; trigIndex++)
-				// {
-				// 	cout << trigIndex << " " << TriggerBuffer[trigIndex].size() << endl;
-				// }
-
 			}
 		}
 
-		//else if isbeam()
-			//create beam events
-			//add to beam buffer
+		else if(isBeam(detChannel, NUM_BEAMS, BEAM) >= 0)
+		{
+			entryChannel = isBeam(detChannel, NUM_BEAMS, BEAM);
+			newBeam = BeamEvent(detChannel, timeDet, energyDep, energyTail);
+			BeamBuffer[entryChannel].push(newBeam);
+		}
+
+		else
+		{
+			cout << detChannel << " found in the data, and ";
+			cout << "channel not recognized, stopping the processing and check your input file" << endl;
+			exit(3);
+		}
+
+		/*
+		 ____                         _
+		|  _ \                       | |
+		| |_) | ___  __ _ _ __ ___   | |     ___   ___  _ __
+		|  _ < / _ \/ _` | '_ ` _ \  | |    / _ \ / _ \| '_ \
+		| |_) |  __/ (_| | | | | | | | |___| (_) | (_) | |_) |
+		|____/ \___|\__,_|_| |_| |_| |______\___/ \___/| .__/
+																									| |
+																									|_|
+		*/
+		// cout << microStructure.size() << endl;
+
+		// loop through the beams (usually only one)
+		for(int beamIndex = 0; beamIndex < NUM_BEAMS; beamIndex++)
+		{
+
+			// if there is information stored in the beam queue, proceed to analyze
+			if(!BeamBuffer[beamIndex].empty())
+			{
+				curBeam = BeamBuffer[beamIndex].front();
+				curBeamTime = curBeam.getTime();
+
+				// micropulse structure is empty, assume new beam is part of a macro
+				if(microStructure.size() == 0)
+				{
+					microStructure.push(curBeam);
+					BeamBuffer[beamIndex].pop();
+				}
+
+				// a macro already exists, compare current beam to the existing one
+				else
+				{
+					firstMicro = microStructure.front().getTime();
+					lastMicro = microStructure.back().getTime();
+					timeDiffMacro = 0;
+					timeDiffMicro = 0;
+
+					while(!BeamBuffer[beamIndex].empty())
+					{
+						timeDiffMacro =  curBeamTime - firstMicro;
+
+						if(timeDiffMacro < MACRO_SEP) // within macro pulse
+						{
+							timeDiffMicro = curBeamTime - lastMicro;
+							h_microTimeDiff->Fill(timeDiffMicro);
+							microStructure.push(curBeam);
+						}
+
+						else // next macropulse, now analyze the present microstructure
+						{
+
+							h_macroTimeDiff->Fill(timeDiffMacro);
+
+							timeHead = microStructure.front().getTime(); // this is the last micro in the macropulse
+
+							h_macroPop->Fill(microStructure.size()); // population of macropulse
+
+							// if(microStructure.size() > MICRO_NUM)
+							// {
+							// 	microStructureCoinc = microStructure;
+							// }
+							microIndex = 0;
+							while(!microStructure.empty())
+							{
+								qBeam = microStructure.front();
+								qBeam.microIndex = microIndex; microIndex++;
+
+								microTime = qBeam.getTime() - timeHead;
+								h_microTime->Fill(microTime);
+
+								ValidBeamBuffer.push(qBeam);
+								microStructure.pop();
+
+							}
+
+							microStructure.push(curBeam);
+						}
+
+						BeamBuffer[beamIndex].pop();
+						// cout << "B" << endl;
+					}
+				}
+
+			}
+
+		}
+
 
 		//  _____    _
 		// |_   _| _(_)__ _ __ _ ___ _ _
@@ -278,7 +421,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		//  |_||_| |_\__, \__, \___|_|
 		// 					 |___/|___/
 
-		// if trigger is not split, check if you can store in a fission
+		// if trigger is not split, check if you can store in a fission.
+		// This is the standard operational mode
 		if(!TRIGGER_SPLIT)
 		{
 			// check whether all trigs queues are populated
@@ -312,15 +456,16 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					 															TriggerBuffer[recentIndex].front().getEnergy(),
 																				TriggerBuffer[recentIndex].front().getDetector(),
 																				TriggerBuffer[recentIndex].front().getPsp());
-					FissionBuffer.push(newFission);
+
+
+					// we have found the first fission event, check whether this can be put in coincidence with beam
+
+					ValidTriggerBuffer.push(newFission);
 
 					TriggerBuffer[recentIndex].pop();
-
-					// cout << "tM: " << TriggerBuffer[recentIndex].front().getTime() << endl;
-
-
-					// cout << FissionBuffer.front().getTriggerTime();
 				}
+
+				// cout << "T" << endl;
 			}
 		}
 
@@ -361,7 +506,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					// coincidence can be formed
 					else if(abs(compTrigTime - refTrigTime) < MAX_TRIGGER_DRIFT)
 					{
-						h_Dt->Fill(compTrigTime - refTrigTime);
+						// h_Dt->Fill(compTrigTime - refTrigTime);
 						trigReady = true; // does this work, or does it cancel 2/3
 					}
 
@@ -381,7 +526,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				 															TriggerBuffer[refTrig].front().getEnergy(),
 																			TriggerBuffer[refTrig].front().getDetector(),
 																			TriggerBuffer[refTrig].front().getPsp());
-				FissionBuffer.push(newFission);
+				ValidTriggerBuffer.push(newFission);
 				TriggerBuffer[refTrig].pop();
 			}
 
@@ -393,6 +538,84 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		}
 
+//  ___ _           ___                  __   __    _ _    _      _   _
+// | __(_)_________| _ ) ___ __ _ _ __   \ \ / /_ _| (_)__| |__ _| |_(_)___ _ _
+// | _|| (_-<_-<___| _ \/ -_) _` | '  \   \ V / _` | | / _` / _` |  _| / _ \ ' \
+// |_| |_/__/__/   |___/\___\__,_|_|_|_|   \_/\__,_|_|_\__,_\__,_|\__|_\___/_||_|
+
+
+		// At the end of the trigger loop we have found a valid, chronological fission event
+
+		// if no beam are present, just set fission events to loop events
+		if(NUM_BEAMS == 0)
+		{
+			FissionBuffer = ValidTriggerBuffer;
+		}
+
+		// if beams are present, compare the earliest events
+		else
+		{
+			// cout << ValidBeamBuffer.size() << " " << ValidTriggerBuffer.size() << endl;
+
+			while(!ValidBeamBuffer.empty() & !ValidTriggerBuffer.empty())
+			{
+				// cout << ValidBeamBuffer.size() << " " << ValidTriggerBuffer.size() << endl;
+
+				// get the front of the queue
+				curFis = ValidTriggerBuffer.front();
+				curBeam = ValidBeamBuffer.front();;
+
+				// get the times
+				curFisTime = curFis.triggerTime;
+				curBeamTime = curBeam.getTime();
+
+				deltaFissBeam = curBeamTime - curFisTime;
+
+				if(deltaFissBeam >= COINC_WINDOW)
+				{
+						// the fission stored in memory does not belong to a beam event
+						ValidTriggerBuffer.pop();
+				}
+
+				else if(deltaFissBeam <= -1*COINC_WINDOW)
+				{
+						// the beam store in memory did not trigger a fission reaction
+						ValidBeamBuffer.pop();
+				}
+
+				else if(abs(deltaFissBeam) < COINC_WINDOW)
+				{
+						// the fission reaction is associated with the current beam and a new
+						// accepted fission is created
+
+						goodFis = CoincidenceEvent(curFis.triggerTime,
+						 													 curFis.triggerEnergy,
+																			 curFis.triggerChannel,
+																			 curFis.triggerPSP);
+
+						goodFis.beamTime = deltaFissBeam;
+						goodFis.beamEnergy = curBeam.getEnergy();
+						goodFis.beamPSP = curBeam.getPsp();
+						goodFis.beamChannel = curBeam.getDetector();
+						goodFis.beamMicroIndex = curBeam.getMicroIndex();
+
+						FissionBuffer.push(goodFis);
+						ValidTriggerBuffer.pop(); // discard only the fission, there could be several fiss for same beam.
+				}
+
+				else
+				{
+					cout << "Computation failed on " << deltaFissBeam << endl;
+					exit(4);
+				}
+
+				// cout << "FB" << endl;
+			}
+		}
+
+
+
+
 
 
 		//  ___ _       _
@@ -401,6 +624,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		// |_| |_/__/__/_\___/_||_|
 		//
 
+		// before we can fill the detectors, we need to make sure that there are
+		// enough events to start populating the fissions
 		bool readyDet = true;
 		// look at the detection events
 		for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
@@ -412,10 +637,16 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			}
 		}
 
+		// cout << FissionBuffer.size() << endl;
+
+		// if the detector buffers are ready, proceed to go through the fission and check
+		// whether there are particle-trigger coincidences
 		while(!FissionBuffer.empty() & readyDet)
 		{
 
-			//cout << "Fissions in buffer: " << FissionBuffer.size() << endl;
+			// cout << "F" << endl;
+
+
 
 			totMult = 0;
 
@@ -436,6 +667,13 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			fissionTime = qFission.getTriggerTime();
 			fissionEnergy = qFission.getEnergy();
 			fissionPSP = qFission.getTriggerPSP();
+
+
+			beamTime = qFission.getBeamTime();
+			beamChan = qFission.getBeamChan();
+			beamEnergy = qFission.getBeamEnergy();
+			beamPSP = qFission.getBeamPSP();
+			beamIndex = qFission.getBeamIndex();
 
 			// look at the detection events
 			for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
@@ -458,35 +696,18 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 				// if the next event is empty, we don't know for sure if it was in coincidence, back to the drawing board
 
-				// if(detIndex == 22)
-				// {
-				// 	continue;
-				// }
-
 				if(DetectorBuffer[detIndex].empty())
 				{
 					readyDet = false;
 					//cout << detIndex << endl;
 				}
 
-
-
 			}
 
-			// if(FissionBuffer.size() > 1e6)
-			// {
-			// 	for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
-			// 	{
-			// 		cout << DetectorBuffer[detIndex].size() << " ";
-			// 	}
-			// 	cout << "\n";
-			// }
-
-			// cout << "\n";
+			// now we have made sure that all the detectors contributed an event if they had one
 
 			if(readyDet)
 			{
-				// cout << "hello " << endl;
 
 				for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
 				{
@@ -516,6 +737,12 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				tPSP = fissionPSP;
 				tChan = fissionChan;
 
+				bErg = beamEnergy;
+				bPSP = beamPSP;
+				bChan = beamChan;
+				bIndex = beamIndex;
+				bTime = beamTime;
+
 				// fill the tree branches
 				coincTree->Fill();
 				fisTracker++;
@@ -527,10 +754,22 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				{
 					cout << fisTracker << " fissions in " << tTime/1e9 << "seconds " << endl;
 				}
+
 			}
 
 		 }
+
 		}
+
+		if(NUM_BEAMS > 0)
+		{
+			h_microTimeDiff->Write();
+			h_macroTimeDiff->Write();
+			h_microTime->Write();
+			h_macroPop->Write();
+		}
+
+
 
 	 //   _____             _               _____        _
 	 //  / ____|           (_)             |  __ \      | |
@@ -546,7 +785,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	cout << "Saving the tree to file. " << endl;
 
 	coincTree->Write();
-	h_Dt->Write();
+	// h_Dt->Write();
 
 	return 1;
 }

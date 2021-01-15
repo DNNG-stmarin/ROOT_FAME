@@ -10,6 +10,8 @@ int isDetector(int detectorNumber, int NUM_DETS, int* DETECTORS);
 
 int isTrigger(int detectorNumber, int NUM_TRIGGERS, int* FISSION_TRIGGERS);
 
+int isBeam(int detectorNumber, int NUM_BEAMS, int* BEAM);
+
 int isExcluded(int detectorNumber, int NUM_EXCLUDED, int* EXCLUDE_DETECTORS);
 
 #endif

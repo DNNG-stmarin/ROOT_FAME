@@ -24,6 +24,20 @@ int isDetector(int detectorNumber, int NUM_DETS, int* DETECTORS)
 }
 
 
+int isBeam(int detectorNumber, int NUM_BEAMS, int* BEAM)
+{
+	int beamIndex = -1;
+	for(int index = 0; index < NUM_BEAMS; index++)
+	{
+		if(detectorNumber == BEAM[index])
+		{
+			beamIndex = index;
+			break;
+		}
+	}
+	return beamIndex;
+}
+
 int isTrigger(int detectorNumber, int NUM_TRIGGERS, int* FISSION_TRIGGERS)
 {
 	int chamberIndex = -1;

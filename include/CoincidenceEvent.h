@@ -18,16 +18,15 @@ class CoincidenceEvent {
 private:
 
 public:
-	// ISABEL
-	// beamTime;
-	// beamEnergy;
-	// beamChannel;
-	// beamMicroIndex;
+	double beamTime;
+	double beamEnergy;
+	int beamChannel;
+	double beamPSP;
+	int beamMicroIndex;
 
 	// attributes of the coincidence class
 	int totalMultiplicity;
 
-	// ISABEL
 	// add the channel of the target
 	int triggerChannel;
 	double triggerEnergy;
@@ -43,6 +42,15 @@ public:
 
 	CoincidenceEvent()
 	{
+
+		// initialize beam properties
+		beamTime = 0;
+		beamEnergy = 0;
+		beamChannel = 0;
+		beamPSP = 0;
+		beamMicroIndex = 0;
+
+		// initialize trigger properties
 		totalMultiplicity = 0;
 		triggerTime = 0;
 		triggerEnergy = 0;
@@ -50,19 +58,21 @@ public:
 		triggerPSP = 0;
 	}
 
-	// CoincidenceEvent(double triggerTimeIn, double triggerEnergyIn)
-	// {
-	// 	totalMultiplicity = 0;
-	// 	triggerTime = triggerTimeIn;
-	// 	triggerEnergy = triggerEnergyIn;
-	// }
-
 	CoincidenceEvent(double triggerTimein, double triggerEnergyin, int triggerChannelin, double triggerPSPin) {
 		totalMultiplicity = 0;
 		triggerTime = triggerTimein;
 		triggerEnergy = triggerEnergyin;
 		triggerChannel = triggerChannelin;
 		triggerPSP = triggerPSPin;
+	}
+
+	void AddBeam(double beamTimein, double beamEnergyin, double beamChannelin, double beamPSPin, int beamMicroIndexin)
+	{
+		beamTime = beamTimein;
+		beamEnergy = beamEnergyin;
+		beamChannel = beamChannelin;
+		beamPSP = beamPSPin;
+		beamMicroIndex = beamMicroIndexin;
 	}
 
 	// default destructor
@@ -89,6 +99,31 @@ public:
 	double getTriggerPSP()
 	{
 		return triggerPSP;
+	}
+
+	double getBeamTime()
+	{
+		return beamTime;
+	}
+
+	double getBeamEnergy()
+	{
+		return beamEnergy;
+	}
+
+	double getBeamPSP()
+	{
+		return beamPSP;
+	}
+
+	int getBeamChan()
+	{
+		return beamChannel;
+	}
+
+	int getBeamIndex()
+	{
+		return beamMicroIndex;
 	}
 
 };

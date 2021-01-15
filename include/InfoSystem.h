@@ -80,6 +80,10 @@ public:
   int TOF_ERG;
   int STEP_SIZE;
 
+  double MICRO_SEP;
+  double MACRO_SEP;
+  int MICRO_NUM;
+
   InfoSystem()
   {
     detectorPath = "";
@@ -129,6 +133,10 @@ public:
     PSD_ERG = 0;
     TOF_ERG = 0;
     STEP_SIZE = 0;
+
+    MICRO_SEP = 2000;
+    MACRO_SEP = 2e6;
+    MICRO_NUM = 330;
   }
 
   void ReadInput(TString inputFile) {
@@ -312,6 +320,21 @@ public:
       else if(tag == "<STEP_SIZE>:") {
         file >> value;
         STEP_SIZE = stoi(value);
+      }
+
+      else if(tag == "<MICRO_SEP>:") {
+        file >> value;
+        MICRO_SEP = stoi(value);
+      }
+
+      else if(tag == "<MACRO_SEP>:") {
+        file >> value;
+        MACRO_SEP = stoi(value);
+      }
+
+      else if(tag == "<MICRO_NUM>:") {
+        file >> value;
+        MICRO_NUM = stoi(value);
       }
     }
 

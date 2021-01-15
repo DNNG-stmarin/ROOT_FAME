@@ -18,6 +18,9 @@ class BeamEvent : public GeneralEvent
 private:
 
 public:
+
+	int microIndex = 0;
+
 	BeamEvent()
 				: GeneralEvent()
 				{
@@ -27,6 +30,11 @@ public:
 				: GeneralEvent(detNumber, timestamp, energy, energyShort)
 				{
 				}
+
+	int getMicroIndex()
+	{
+		return microIndex;
+	}
 };
 
 #endif

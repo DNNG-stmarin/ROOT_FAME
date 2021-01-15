@@ -127,24 +127,24 @@ int FissionExperimentClass::CreateDetectionAnalysis(TFile* writeFile)
 	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
 	detectorData = new DetectorSystemClass(coincTreeChain, detFile, info);
 
-	cout << "Creating the functions to analyze the data. " << endl;
-	detectorData->InitializePSDFunctions();
-
-	cout << "Creating the histograms to store the data. " << endl;
-	detectorData->InitializeDetectorHistograms();
-
-	cout << "Entering detector analysis mode" << endl;
-	detectorData->DetectionAnalysis();
-
-	// System analysis needs to be fixed before running it
-	// cout << "Entering system analysis mode" << endl;
-	// detectorData->SystemAnalysis();
-
-	cout << "Entering fission analysis mode" << endl;
-	if(DEBUG==1)
-		detectorData->FissionAnalysisLoop();
-	else
-		detectorData->FissionAnalysis();
+	// cout << "Creating the functions to analyze the data. " << endl;
+	// detectorData->InitializePSDFunctions();
+	//
+	// cout << "Creating the histograms to store the data. " << endl;
+	// detectorData->InitializeDetectorHistograms();
+	//
+	// cout << "Entering detector analysis mode" << endl;
+	// detectorData->DetectionAnalysis();
+	//
+	// // System analysis needs to be fixed before running it
+	// // cout << "Entering system analysis mode" << endl;
+	// // detectorData->SystemAnalysis();
+	//
+	// cout << "Entering fission analysis mode" << endl;
+	// if(DEBUG==1)
+	// 	detectorData->FissionAnalysisLoop();
+	// else
+	// 	detectorData->FissionAnalysis();
 
 	return 1;
 }
