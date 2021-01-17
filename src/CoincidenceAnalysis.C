@@ -277,7 +277,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		if(ientry == 0)
 		{
 			cout << "Loading file number " << fileInd++ << endl;
-			timeDel += timeDet;
+			timeDel = timeDet;
 			// cout << timeDel << endl;
 		}
 
