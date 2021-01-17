@@ -206,7 +206,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		double deltaT;
 
 		// keep track of the fission index
-		int fisTracker = 0;
+		long int fisTracker = 0;
 
 
 
@@ -569,21 +569,21 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				curFisTime = curFis.triggerTime;
 				curBeamTime = curBeam.getTime();
 
-				deltaFissBeam = curBeamTime - curFisTime;
+				deltaFissBeam = curFisTime - curBeamTime;
 
-				if(deltaFissBeam >= COINC_WINDOW)
-				{
-						// the fission stored in memory does not belong to a beam event
-						ValidTriggerBuffer.pop();
-				}
-
-				else if(deltaFissBeam <= -1*COINC_WINDOW)
+				if(deltaFissBeam >= BEAM_WINDOW)
 				{
 						// the beam store in memory did not trigger a fission reaction
 						ValidBeamBuffer.pop();
 				}
 
-				else if(abs(deltaFissBeam) < COINC_WINDOW)
+				else if(deltaFissBeam <= -1*BEAM_WINDOW)
+				{
+					// the fission stored in memory does not belong to a beam event
+					ValidTriggerBuffer.pop();
+				}
+
+				else if(abs(deltaFissBeam) < BEAM_WINDOW)
 				{
 						// the fission reaction is associated with the current beam and a new
 						// accepted fission is created
@@ -752,7 +752,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				// update user on status of processing
 				if(fisTracker%1000000 == 0)
 				{
-					cout << fisTracker << " fissions in " << tTime/1e9 << "seconds " << endl;
+					cout << fisTracker << " fissions in " << tTime/1e9 << " seconds " << endl;
 				}
 
 			}

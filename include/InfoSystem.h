@@ -52,6 +52,7 @@ public:
   int REUSE_DATA;
 
   double COINC_WINDOW;
+  double BEAM_WINDOW;
   double DETECTOR_THRESHOLD;
 
   double TRIGGER_THRESHOLD;
@@ -105,7 +106,10 @@ public:
     NUM_FILES = 0;
     DATA_TYPE = 0;
     REUSE_DATA = 0;
+
     COINC_WINDOW = 200;
+    BEAM_WINDOW = 200;
+
     DETECTOR_THRESHOLD = 0.1;
     TRIGGER_THRESHOLD = 0.1;
     TRIGGER_CLIP = 100.0;
@@ -223,10 +227,17 @@ public:
           EXCLUDE_DETECTORS[i] = stoi(value);
         }
       }
+
       else if(tag == "<COINC_WINDOW>:") {
         file >> value;
         COINC_WINDOW = stod(value);
       }
+
+      else if(tag == "<BEAM_WINDOW>:") {
+        file >> value;
+        BEAM_WINDOW = stod(value);
+      }
+
       else if(tag == "<DETECTOR_THRESHOLD>:") {
         file >> value;
         DETECTOR_THRESHOLD = stod(value);

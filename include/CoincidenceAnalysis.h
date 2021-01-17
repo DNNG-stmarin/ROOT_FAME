@@ -64,6 +64,7 @@ public :
    bool TRIGGER_SPLIT = 0;
    double MAX_TRIGGER_DRIFT = 0;
    double COINC_WINDOW = 0;
+   double BEAM_WINDOW = 0;
 
    int* FISSION_TRIGGERS;
    int* DETECTORS;
@@ -117,6 +118,7 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, Info
 
     MAX_TRIGGER_DRIFT = info->MAX_TRIGGER_DRIFT;
     COINC_WINDOW = info->COINC_WINDOW;
+    BEAM_WINDOW = info->BEAM_WINDOW;
 
     NUM_TRIGGERS = info->NUM_TRIGGERS;
     NUM_DETS = info->NUM_DETS;
@@ -128,7 +130,6 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, Info
     MICRO_SEP = info->MICRO_SEP;
     MACRO_SEP = info->MACRO_SEP;
     MICRO_NUM = info->MICRO_NUM;
-    cout << MICRO_NUM << endl;
 
    // set the output stream
    expFile = expFileWrite;
