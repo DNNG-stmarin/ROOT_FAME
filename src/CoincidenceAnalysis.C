@@ -57,7 +57,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	    |_|_|  \___|\___| |_____/ \___|\___|_|\__,_|_|  \__,_|\__|_|\___/|_| |_|
   */
 
-	cout << "Initializing coincidence TTree " << endl;
+	cout << "Initializing coincidence TTrees " << endl;
 
 	expFile->cd();
 
@@ -71,6 +71,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	double tDep = 0;
 	int tChan = 0;
 	double tPSP = 0;
+	double tTail = 0;
 
 	// fission beam
 	double bTime = 0;
@@ -78,12 +79,14 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	int bChan = 0;
 	int bIndex = 0;
 	double bPSP = 0;
+	double bTail = 0;
 
 	// particles
 	double totToF[MAX_MULTIPLICITY] = {0};
 	double totPSP[MAX_MULTIPLICITY] = {0};
 	double totDep[MAX_MULTIPLICITY] = {0};
 	int totChan[MAX_MULTIPLICITY] = {0};
+	int totTail[MAX_MULTIPLICITY] = {0};
 
 	// trigger variables
 	coincTree->Branch("tMult", &tMult, "tMult/I");
@@ -91,19 +94,25 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	coincTree->Branch("tDep", &tDep, "fissionErg/D");
 	coincTree->Branch("tChan", &tChan, "fissionChan/I");
 	coincTree->Branch("tPSP", &tPSP, "fissionPSP/D");
+	coincTree->Branch("tTail", &tTail, "fissionTail/D");
 
 	// beam variables
-	coincTree->Branch("bTime", &bTime, "beamTime/D");
-	coincTree->Branch("bErg", &bErg, "beamEnergy/D");
-	coincTree->Branch("bChan", &bChan, "beamChan/I");
-	coincTree->Branch("bIndex", &bIndex, "beamIndex/I");
-	coincTree->Branch("bPSP", &bPSP, "beamPSP/D");
+	if(NUM_BEAMS > 0)
+	{
+		coincTree->Branch("bTime", &bTime, "beamTime/D");
+		coincTree->Branch("bErg", &bErg, "beamEnergy/D");
+		coincTree->Branch("bChan", &bChan, "beamChan/I");
+		coincTree->Branch("bIndex", &bIndex, "beamIndex/I");
+		coincTree->Branch("bPSP", &bPSP, "beamPSP/D");
+		coincTree->Branch("bTail", &bTail, "beamTail/D");
+	}
 
 	// list variables
 	coincTree->Branch("totToF", totToF, "totToF[tMult]/D");
 	coincTree->Branch("totPSP", totPSP, "totPSP[tMult]/D");
 	coincTree->Branch("totDep", totDep, "totDep[tMult]/D");
 	coincTree->Branch("totChan", totChan, "totChan[tMult]/I");
+	coincTree->Branch("totTail", totTail, "totTail[tMult]/D");
 
 
 	/*
@@ -134,7 +143,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		// initialize the new particle
 		TriggerEvent qTrigger = TriggerEvent();
 		BeamEvent qBeam = BeamEvent();
-		CoincidenceEvent newFission = CoincidenceEvent(0, 0, 0, 0);
+		CoincidenceEvent newFission = CoincidenceEvent(0, 0, 0, 0, 0);
 
 		// start at the beginning of the array and also keep track of the the number of coincidence events found.
 		ULong64_t numFissEvents = 0;
@@ -164,8 +173,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		double deltaFissBeam;
 		double curFisTime, curBeamTime;
-
-
 		/*
 			______ _         _               _
 		 |  ____(_)       (_)             | |
@@ -179,16 +186,17 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		cout << "Initializing fission queue. " << endl;
 
 		// now loop thrugh fission events to find valid fission events
-		CoincidenceEvent qFission = CoincidenceEvent(0, 0, 0, 0);
+		CoincidenceEvent qFission = CoincidenceEvent(0, 0, 0, 0, 0);
 
 		// trigger variables
 		double fissionTime = 0;
 		double fissionEnergy = 0;
 		int fissionChan = 0;
 		double fissionPSP = 0;
+		double fissionTail = 0;
 
 		// same but for beam variables
-		double beamPSP, beamTime, beamEnergy;
+		double beamPSP, beamTime, beamEnergy, beamTail;
 		int beamChan, beamIndex;
 
 		// dynamical variables
@@ -468,7 +476,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					newFission = CoincidenceEvent(TriggerBuffer[recentIndex].front().getTime(),
 					 															TriggerBuffer[recentIndex].front().getEnergy(),
 																				TriggerBuffer[recentIndex].front().getDetector(),
-																				TriggerBuffer[recentIndex].front().getPsp());
+																				TriggerBuffer[recentIndex].front().getPsp(),
+																		   	TriggerBuffer[recentIndex].front().getTail());
 
 
 					// we have found the first fission event, check whether this can be put in coincidence with beam
@@ -538,7 +547,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				newFission = CoincidenceEvent(TriggerBuffer[refTrig].front().getTime(),
 				 															TriggerBuffer[refTrig].front().getEnergy(),
 																			TriggerBuffer[refTrig].front().getDetector(),
-																			TriggerBuffer[refTrig].front().getPsp());
+																			TriggerBuffer[refTrig].front().getPsp(),
+																		  TriggerBuffer[refTrig].front().getTail());
 				ValidTriggerBuffer.push(newFission);
 				TriggerBuffer[refTrig].pop();
 			}
@@ -604,7 +614,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						goodFis = CoincidenceEvent(curFis.triggerTime,
 						 													 curFis.triggerEnergy,
 																			 curFis.triggerChannel,
-																			 curFis.triggerPSP);
+																			 curFis.triggerPSP,
+																			 curFis.triggerTail);
 
 						goodFis.beamTime = deltaFissBeam;
 						goodFis.beamEnergy = curBeam.getEnergy();
@@ -680,6 +691,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			fissionTime = qFission.getTriggerTime();
 			fissionEnergy = qFission.getEnergy();
 			fissionPSP = qFission.getTriggerPSP();
+			fissionTail = qFission.getTriggerTail();
 
 
 			beamTime = qFission.getBeamTime();
@@ -687,6 +699,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			beamEnergy = qFission.getBeamEnergy();
 			beamPSP = qFission.getBeamPSP();
 			beamIndex = qFission.getBeamIndex();
+			beamTail = qFission.getBeamTail();
 
 			// look at the detection events
 			for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
@@ -734,7 +747,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						totToF[totMult] = deltaT;
 						totPSP[totMult] = qParticle.getPsp();
 						totDep[totMult] = qParticle.getEnergy();
-						// totTail[totMult] = qParticle.getTail();
+						totTail[totMult] = qParticle.getTail();
 						totChan[totMult] = qParticle.getDetector();
 						totMult++;
 					}
@@ -749,12 +762,17 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				tDep = fissionEnergy;
 				tPSP = fissionPSP;
 				tChan = fissionChan;
+				tTail = fissionTail;
 
-				bErg = beamEnergy;
-				bPSP = beamPSP;
-				bChan = beamChan;
-				bIndex = beamIndex;
-				bTime = beamTime;
+				if(NUM_BEAMS >0)
+				{
+					bErg = beamEnergy;
+					bPSP = beamPSP;
+					bChan = beamChan;
+					bIndex = beamIndex;
+					bTime = beamTime;
+					bTail = beamTail;
+				}
 
 				// fill the tree branches
 				coincTree->Fill();

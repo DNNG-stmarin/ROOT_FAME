@@ -23,6 +23,7 @@ public:
 	int beamChannel;
 	double beamPSP;
 	int beamMicroIndex;
+	double beamTail;
 
 	// attributes of the coincidence class
 	int totalMultiplicity;
@@ -33,6 +34,7 @@ public:
 	double triggerTime;
 	bool isValidFission;
 	double triggerPSP;
+	double triggerTail;
 
 	ParticleEvent particles[MAX_MULTIPLICITY];
 	ParticleEvent neutrons[MAX_MULTIPLICITY];
@@ -49,6 +51,7 @@ public:
 		beamChannel = 0;
 		beamPSP = 0;
 		beamMicroIndex = 0;
+		beamTail = 0;
 
 		// initialize trigger properties
 		totalMultiplicity = 0;
@@ -56,14 +59,16 @@ public:
 		triggerEnergy = 0;
 		triggerChannel = 0;
 		triggerPSP = 0;
+		triggerTail = 0;
 	}
 
-	CoincidenceEvent(double triggerTimein, double triggerEnergyin, int triggerChannelin, double triggerPSPin) {
+	CoincidenceEvent(double triggerTimein, double triggerEnergyin, int triggerChannelin, double triggerPSPin, double triggerTailin) {
 		totalMultiplicity = 0;
 		triggerTime = triggerTimein;
 		triggerEnergy = triggerEnergyin;
 		triggerChannel = triggerChannelin;
 		triggerPSP = triggerPSPin;
+		triggerTail = triggerTailin;
 	}
 
 	void AddBeam(double beamTimein, double beamEnergyin, double beamChannelin, double beamPSPin, int beamMicroIndexin)
@@ -101,6 +106,11 @@ public:
 		return triggerPSP;
 	}
 
+	double getTriggerTail()
+	{
+		return triggerTail;
+	}
+
 	double getBeamTime()
 	{
 		return beamTime;
@@ -124,6 +134,11 @@ public:
 	int getBeamIndex()
 	{
 		return beamMicroIndex;
+	}
+
+	double getBeamTail()
+	{
+		return beamTail;
 	}
 
 };
