@@ -340,12 +340,12 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			BeamBuffer[entryChannel].push(newBeam);
 		}
 
-		else
-		{
-			cout << detChannel << " found in the data, and ";
-			cout << "channel not recognized, stopping the processing and check your input file" << endl;
-			exit(3);
-		}
+		// else
+		// {
+		// 	cout << detChannel << " found in the data, and ";
+		// 	cout << "channel not recognized, stopping the processing and check your input file" << endl;
+		// 	exit(3);
+		// }
 
 
 		/*
