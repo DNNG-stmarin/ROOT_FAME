@@ -333,7 +333,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			{
 				// cout << newTrigger.getEnergy() << endl;
 				TriggerBuffer[entryChannel].push(newTrigger);
-				cout << TriggerBuffer[entryChannel].size() << endl;
+				// cout << TriggerBuffer[entryChannel].size() << endl;
 			}
 		}
 
@@ -489,7 +489,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					ValidTriggerBuffer.push(newFission);
 
 					TriggerBuffer[recentIndex].pop();
-					cout << "popped, now " << recentIndex << ": " << TriggerBuffer[recentIndex].size() << endl;
+					// cout << "popped, now " << recentIndex << ": " << TriggerBuffer[recentIndex].size() << endl;
 				}
 
 				// cout << "T" << endl;
@@ -766,7 +766,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 				// get rid of analyzed fission event
 				FissionBuffer.pop();
-				cout << "pop" <<  FissionBuffer.size() << endl;
+				// cout << "pop" <<  FissionBuffer.size() << endl;
 
 				// now fill the histogram of particle-particle coincidences
 				tMult = totMult;
@@ -793,7 +793,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				// cout << tTime << " " << tMult << " " << tDep << " " << tPSP << " " << tChan << endl;
 
 				// update user on status of processing
-				if(fisTracker%1000000 == 0)
+				if(fisTracker%10000 == 0)
 				{
 					cout << fisTracker << " fissions in " << tTime/1e9 << " seconds " << endl;
 				}
