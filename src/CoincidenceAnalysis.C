@@ -572,7 +572,13 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		// if no beam are present, just set fission events to loop events
 		if(NUM_BEAMS == 0)
 		{
-			FissionBuffer = ValidTriggerBuffer;
+			// depopulate the valid trigger and populate the fission trigger
+			while(ValidTriggerBuffer.size() > 0)
+			{
+				curFis = ValidTriggerBuffer.front();
+				FissionBuffer.push(curFis);
+				ValidTriggerBuffer.pop();
+			}
 		}
 
 		// if beams are present, compare the earliest events
