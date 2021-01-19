@@ -7,7 +7,7 @@ Purpose: Store the constants used in the processing
 #define ProcessingConstants_h_
 
 // calibration of detectors for energy
-const double CHAN_VUS = (1.0/1000.0)*(1.0/1024.0); // from digitizer channel to Vus
+const double CHAN_VUS = (1.0/1000.0)*(4.0/1024.0); // from digitizer channel to Vus
 const double CSCOMPTEDGE = 0.477;
 const double MASS_NEUTRONS = 939.6; // MeV/c^2
 const double LIGHT_C = 30; // cm/ns
