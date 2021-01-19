@@ -264,6 +264,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	double timeDel = 0;
 	int fileInd = 0;
 
+	cout << TRIGGER_THRESHOLD << " " << TRIGGER_CLIP << endl;
+
 	// loop through the raw data
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
 	{
@@ -327,9 +329,11 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			newTrigger = TriggerEvent(detChannel, timeDet, energyDep, energyTail);
 
 			// energy discrimination of fission
-			if((newTrigger.getEnergy() < TRIGGER_THRESHOLD) || (newTrigger.getEnergy() > TRIGGER_CLIP) || (newTrigger.getPsp() > TRIGGER_MIN_PSP) || (newTrigger.getPsp() < TRIGGER_MAX_PSP) )
+			if((newTrigger.getEnergy() > TRIGGER_THRESHOLD) & (newTrigger.getEnergy() < TRIGGER_CLIP) & (newTrigger.getPsp() > TRIGGER_MIN_PSP) & (newTrigger.getPsp() < TRIGGER_MAX_PSP) )
 			{
+				// cout << newTrigger.getEnergy() << endl;
 				TriggerBuffer[entryChannel].push(newTrigger);
+				cout << TriggerBuffer[entryChannel].size() << endl;
 			}
 		}
 
@@ -485,6 +489,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					ValidTriggerBuffer.push(newFission);
 
 					TriggerBuffer[recentIndex].pop();
+					cout << "popped, now " << recentIndex << ": " << TriggerBuffer[recentIndex].size() << endl;
 				}
 
 				// cout << "T" << endl;
@@ -573,6 +578,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		if(NUM_BEAMS == 0)
 		{
 			FissionBuffer = ValidTriggerBuffer;
+			cout << "Setting buffer for fission: " << FissionBuffer.size() << endl;
 		}
 
 		// if beams are present, compare the earliest events
@@ -755,6 +761,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 				// get rid of analyzed fission event
 				FissionBuffer.pop();
+				cout << "pop" <<  FissionBuffer.size() << endl;
 
 				// now fill the histogram of particle-particle coincidences
 				tMult = totMult;
