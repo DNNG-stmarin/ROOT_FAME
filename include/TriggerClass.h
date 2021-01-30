@@ -31,6 +31,17 @@ public:
   double energyResolution;
   double timeResolution;
 
+  double beamDelay = 0; // keeps track of the delay of the fission triggers with respect to the beam
+  double backgroundActivity = 0; // activity before beam strikes
+
+
+  double calibration; // store the energy calibration for each detector (was called energyCalibration)
+
+  double efficiency; // efficiency of this detector
+
+  double X, Y, Z; // position of the center of the detector
+  double distance; // distance of detector from source
+
 };
 
 #endif

@@ -23,7 +23,7 @@ void DetectorSystemClass::FissionAnalysis()
 
   // detection time
   double timeDet;
-  int numDet;
+  int numDet, numTrig;
   double engDet;
 
   double neutVelocity;
@@ -41,9 +41,19 @@ void DetectorSystemClass::FissionAnalysis()
     if (ientry < 0) break;
     nb = tree->GetEntry(jentry);   nbytes += nb;
 
+    numTrig = isTrigger(tChan);
+
     // allocating the fission info
     f_fisTime = tTime;
-    f_fisErg = tDep;
+    f_fisDep = tDep;
+    f_fisChan = tChan;
+    f_fisPSP = tPSP;
+
+    f_beamDep = bErg;
+    f_beamTime = bTime - triggers[numTrig].beamDelay;
+    f_beamPSP = bPSP;
+    f_beamChan = bChan;
+    f_beamIndex = bIndex;
 
     // reset the neutron and photon multiplicities
     nMult = 0;
@@ -58,7 +68,7 @@ void DetectorSystemClass::FissionAnalysis()
       numDet = isDetector(totChan[j]);
 
       // detection time corrected for delay
-      timeDet = totToF[j] -  detectors[numDet].timeDelay;
+      timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
 
       engDet = totDep[j]/detectors[numDet].calibration;
 
@@ -210,7 +220,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
     // detection time
     double timeDet;
-    int numDet;
+    int numDet, numTrig;
     int engDet;
 
     for (Long64_t jentry = 0; jentry < nentries; jentry++)
@@ -222,7 +232,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
        // allocating the fission info
        f_fisTime = tTime;
-       f_fisErg = tDep;
+       f_fisDep = tDep;
 
        // reset the neutron and photon multiplicities
        nMult = 0;
@@ -230,13 +240,15 @@ void DetectorSystemClass::FissionAnalysisLoop()
        nBackMult = 0;
        pBackMult = 0;
 
+       numTrig = isTrigger(tChan);
+
        for(int j = 0; j < tMult; j++)
        {
          // find the number of the detector
         numDet = isDetector(totChan[j]);
 
         // detection time corrected for delay
-        timeDet = totToF[j] -  detectors[numDet].timeDelay;
+        timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
 
         engDet = totDep[j]/detectors[numDet].calibration;
 

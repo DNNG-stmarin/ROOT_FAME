@@ -9,6 +9,8 @@ Date: Ann Arbor, May 14th 2020
 #include "DetectorSystemClass.h"
 #include "ProcessingConstants.h"
 
+using namespace std;
+
 void DetectorSystemClass::InitializeDetectorHistograms()
 {
     // important axes to have
@@ -56,7 +58,9 @@ void DetectorSystemClass::InitializeDetectorHistograms()
     TString delayTimeT = "del";
     tofNhists = new TH1F* [NUM_DETS];
     tofPhists = new TH1F* [NUM_DETS];
-    tofDelPhists = new TH1F* [NUM_DETS];
+
+    // delay histogram
+    tofDelPhists = new TH1F** [NUM_DETS];
 
     //corrected ToF
     TString delp = "DelP";
@@ -89,7 +93,14 @@ void DetectorSystemClass::InitializeDetectorHistograms()
       // time of flight histograms
   		tofNHistNameT = tofName + neutronName +  numDet;
   		tofPHistNameT = tofName + photonName + numDet;
-  		tofDelPhists[i] = new TH1F(tofPHistNameT + delayTimeT, tofPHistNameT + delayTimeT, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+
+      tofDelPhists[i] = new TH1F* [NUM_TRIGGERS];
+      for(int tr = 0; tr < NUM_TRIGGERS; tr++)
+      {
+        TString trigString = (TString)to_string(tr);
+        tofDelPhists[i][tr] = new TH1F(tofPHistNameT + delayTimeT + trigString, tofPHistNameT + delayTimeT + trigString, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
+      }
+
       tofDelPhistsCorr[i] = new TH1F(tofName+delp+corr+numDet, tofName+delp+corr+numDet, 2*(int)COINC_WINDOW, -COINC_WINDOW, +COINC_WINDOW);
 
       // split by particles
@@ -283,5 +294,26 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
   cout << "Reflection histograms have been created" << endl;
 
+
+  /*
+   ___                   _  _ _    _
+  | _ ) ___ __ _ _ __   | || (_)__| |_ ___  __ _ _ _ __ _ _ __  ___
+  | _ \/ -_) _` | '  \  | __ | (_-<  _/ _ \/ _` | '_/ _` | '  \(_-<
+  |___/\___\__,_|_|_|_| |_||_|_/__/\__\___/\__, |_| \__,_|_|_|_/__/
+                                          |___/
+  */
+  TString nameBeamHist;
+  TString bHistStart = "b_";
+  beamTimeHist = new TH1D* [NUM_TRIGGERS]; // initialize rows
+
+  for(int trigNum = 0; trigNum < NUM_TRIGGERS; trigNum++)
+  {
+    nameBeamHist = bHistStart + to_string(trigNum);
+    beamTimeHist[trigNum] = new TH1D(nameBeamHist, nameBeamHist, 4000, -2000, 2000);
+  }
+
+  cout << "Beam histograms have been created" << endl;
+
   cout << "All histograms have been initialized" << endl;
+
 }

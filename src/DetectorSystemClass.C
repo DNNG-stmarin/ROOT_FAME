@@ -14,6 +14,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 {
 	DETECTOR_THRESHOLD = info->DETECTOR_THRESHOLD;
 	COINC_WINDOW = info->COINC_WINDOW;
+	BEAM_WINDOW = info->BEAM_WINDOW;
 	MIN_TIME_P = info->MIN_TIME_P;
 	MAX_TIME_P = info->MAX_TIME_P;
 	MIN_TIME_N = info->MIN_TIME_N;
@@ -32,7 +33,8 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	NUM_TRIGGERS = info->NUM_TRIGGERS;
 	NUM_DETS = info->NUM_DETS;
 	NUM_EXCLUDED = info->NUM_EXCLUDED;
-	//NUM_BEAMS = info->NUM_BEAMS;
+	NUM_BEAMS = info->NUM_BEAMS;
+
 	FISSION_TRIGGERS = info->FISSION_TRIGGERS;
 	DETECTORS = info->DETECTORS;
 	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
@@ -42,6 +44,12 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	triggers = new TriggerClass[NUM_TRIGGERS];
 	detectors = new DetectorClass[NUM_DETS];
 	cout << "Detectors and triggers have been created" << endl;
+
+	for(int det = 0; det < NUM_DETS; det ++)
+	{
+		detectors[det].timeDelay = new double[NUM_TRIGGERS];
+		detectors[det].timeResolution = new double[NUM_TRIGGERS];
+	}
 
 	string line;
 	string x, y, z;
@@ -82,11 +90,13 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdFigCoinc = detFile->mkdir("CoincFigs");
 	cdBicorr = detFile->mkdir("Bicorr");
 	cdRef = detFile->mkdir("Reflections");
+	cdBeam = detFile->mkdir("Beam");
 
 	// create the folder for psd slices
 	cdPsdSlices = cdPsd->mkdir("PSD_slices");
 	cdPsdIndividual = cdPsd->mkdir("PSD_individual");
 	cdPsdErg = cdPsd->mkdir("PSDErg_discrimination");
+
 	cdTofSlices = cdToF->mkdir("TOF_slices");
 	cdTofIndividual = cdToF->mkdir("TOF_individual");
 	cdTOFPSD = cdPsd->mkdir("TOF_PSD");
@@ -145,13 +155,25 @@ void DetectorSystemClass::Init(TChain* treeIn)
 		 tree->SetMakeClass(1);
 
 		 tree->SetBranchAddress("tMult", &tMult, &b_tMult);
-		 tree->SetBranchAddress("tTime", &tTime, &b_fissionTime);
-		 tree->SetBranchAddress("tDep", &tDep, &b_fissionErg);
+
+		 tree->SetBranchAddress("tTime", &tTime, &b_tTime);
+		 tree->SetBranchAddress("tDep", &tDep, &b_tDep);
+		 tree->SetBranchAddress("tPSP", &tPSP, &b_tPSP);
+		 tree->SetBranchAddress("tChan", &tChan, &b_tChan);
+
+		 tree->SetBranchAddress("bTime", &bTime, &b_bTime);
+		 tree->SetBranchAddress("bErg", &bErg, &b_bErg);
+		 tree->SetBranchAddress("bPSP", &bPSP, &b_bPSP);
+		 tree->SetBranchAddress("bChan", &bChan, &b_bChan);
+		 tree->SetBranchAddress("bIndex", &bIndex, &b_bIndex);
+
 		 tree->SetBranchAddress("totToF", totToF, &b_totToF);
 		 tree->SetBranchAddress("totPSP", totPSP, &b_totPSP);
 		 tree->SetBranchAddress("totDep", totDep, &b_totDep);
-		 // tree->SetBranchAddress("totTail", totTail, &b_totTail);
 		 tree->SetBranchAddress("totChan", totChan, &b_totChan);
+		 // tree->SetBranchAddress("totTail", totTail, &b_totTail);
+
+
 		 Notify();
 
 		 cout << "Tree being read in correctly " << tree << endl;;
@@ -161,15 +183,27 @@ void DetectorSystemClass::Init(TChain* treeIn)
 
 void DetectorSystemClass::InitFiss()
 {
-	 // initialize the fission tree
+	 // fission variables
 	 fissionTree->Branch("fisTime", &f_fisTime, "fisTime/D");
-	 fissionTree->Branch("fisErg", &f_fisErg, "fisErg/D");
+	 fissionTree->Branch("fisDep", &f_fisDep, "fisDep/D");
+	 fissionTree->Branch("fisChan", &f_fisChan, "fisChan/I");
+	 fissionTree->Branch("fisPSP", &f_fisPSP, "fisPSP/D");
+
+	 // beam variables
+	 fissionTree->Branch("beamTime", &f_beamTime, "beamTime/D");
+	 fissionTree->Branch("beamEnergy", &f_beamEnergy, "beamEnergy/D");
+	 fissionTree->Branch("beamDep", &f_beamDep, "beamDep/D");
+	 fissionTree->Branch("beamPSP", &f_beamPSP, "beamPSP/D");
+	 fissionTree->Branch("beamChan", &f_beamChan, "beamChan/I");
+	 fissionTree->Branch("beamIndex", &f_beamIndex, "beamIndex/I");
+
+	 // multiplicity variables
 	 fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");
 	 fissionTree->Branch("gammaMult", &f_gammaMult, "gammaMult/I");
 	 fissionTree->Branch("neutronBackMult", &f_neutronBackMult, "neutronBackMult/I");
 	 fissionTree->Branch("gammaBackMult", &f_gammaBackMult, "gammaBackMult/I");
 
-	 // pass the array without dereferencing.
+	 // neutron attribues
 	 fissionTree->Branch("neutronDetTimes", neutronDetTimes, "neutronDetTimes[neutronMult]/D");
 	 fissionTree->Branch("neutronLightOut", neutronLightOut, "neutronLightOut[neutronMult]/D");
 	 fissionTree->Branch("neutronPSD", neutronPSD, "neutronPSD[neutronMult]/D");
@@ -178,6 +212,8 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("neutronVx", neutronVx, "neutronVx[neutronMult]/D");
 	 fissionTree->Branch("neutronVy", neutronVy, "neutronVy[neutronMult]/D");
 	 fissionTree->Branch("neutronVz", neutronVz, "neutronVz[neutronMult]/D");
+
+	 // photon attributes
 	 fissionTree->Branch("photonDetTimes", photonDetTimes, "photonDetTimes[gammaMult]/D");
 	 fissionTree->Branch("photonLightOut", photonLightOut, "photonLightOut[gammaMult]/D");
 	 fissionTree->Branch("photonPSD", photonPSD, "photonPSD[gammaMult]/D");
@@ -186,6 +222,7 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("photonVy", photonVy, "photonVy[gammaMult]/D");
 	 fissionTree->Branch("photonVz", photonVz, "photonVz[gammaMult]/D");
 
+	 // background neutron attributes
 	 fissionTree->Branch("backNeutronDetTimes", backNeutronDetTimes, "backNeutronDetTimes[neutronBackMult]/D");
 	 fissionTree->Branch("backNeutronLightOut", backNeutronLightOut, "backNeutronLightOut[neutronBackMult]/D");
 	 fissionTree->Branch("backNeutronPSD", backNeutronPSD, "backNeutronPSD[neutronBackMult]/D");
