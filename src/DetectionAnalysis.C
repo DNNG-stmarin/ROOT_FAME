@@ -484,6 +484,8 @@ int DetectorSystemClass::DetectionAnalysis()
 					continue;
 				}
 
+				cout << "in slice " << energySlice << " there are " << psdErgSlice->Integral() << " events" << endl;
+
 				optimized = psdErgSlice->Fit(psdcombined, "SQ");
 
 				//set optimized parameters to photon and neutron fit
@@ -557,6 +559,8 @@ int DetectorSystemClass::DetectionAnalysis()
 				line->Draw("SAME");
 
 				canvasSlice->Write();
+
+				cout << "  n: " <<  tempPSD << endl;
 
 			}
 
