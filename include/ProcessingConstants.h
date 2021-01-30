@@ -31,7 +31,7 @@ const double MIN_LO_HIST = 0;
 const double MAX_LO_HIST = 10;
 const int NUM_LO_HIST = 1000;
 
-const int MIN_ENTRIES = 150;
+const int MIN_ENTRIES = 50;
 
 
 
