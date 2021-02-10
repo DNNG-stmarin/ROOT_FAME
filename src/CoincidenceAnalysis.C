@@ -116,6 +116,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	coincTree->Branch("totChan", totChan, "totChan[tMult]/I");
 	coincTree->Branch("totTail", totTail, "totTail[tMult]/D");
 
+	coincTree->SetMaxTreeSize(1000000LL);
+
 
 	/*
 		   _____      _            _     _                       _

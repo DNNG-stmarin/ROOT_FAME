@@ -161,11 +161,14 @@ void DetectorSystemClass::Init(TChain* treeIn)
 		 tree->SetBranchAddress("tPSP", &tPSP, &b_tPSP);
 		 tree->SetBranchAddress("tChan", &tChan, &b_tChan);
 
-		 tree->SetBranchAddress("bTime", &bTime, &b_bTime);
-		 tree->SetBranchAddress("bErg", &bErg, &b_bErg);
-		 tree->SetBranchAddress("bPSP", &bPSP, &b_bPSP);
-		 tree->SetBranchAddress("bChan", &bChan, &b_bChan);
-		 tree->SetBranchAddress("bIndex", &bIndex, &b_bIndex);
+		 if(NUM_BEAMS)
+		 {
+			 tree->SetBranchAddress("bTime", &bTime, &b_bTime);
+			 tree->SetBranchAddress("bErg", &bErg, &b_bErg);
+			 tree->SetBranchAddress("bPSP", &bPSP, &b_bPSP);
+			 tree->SetBranchAddress("bChan", &bChan, &b_bChan);
+			 tree->SetBranchAddress("bIndex", &bIndex, &b_bIndex);
+		 }
 
 		 tree->SetBranchAddress("totToF", totToF, &b_totToF);
 		 tree->SetBranchAddress("totPSP", totPSP, &b_totPSP);
@@ -190,12 +193,15 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("fisPSP", &f_fisPSP, "fisPSP/D");
 
 	 // beam variables
-	 fissionTree->Branch("beamTime", &f_beamTime, "beamTime/D");
-	 fissionTree->Branch("beamEnergy", &f_beamEnergy, "beamEnergy/D");
-	 fissionTree->Branch("beamDep", &f_beamDep, "beamDep/D");
-	 fissionTree->Branch("beamPSP", &f_beamPSP, "beamPSP/D");
-	 fissionTree->Branch("beamChan", &f_beamChan, "beamChan/I");
-	 fissionTree->Branch("beamIndex", &f_beamIndex, "beamIndex/I");
+	 if(NUM_BEAMS > 0)
+	 {
+		 fissionTree->Branch("beamTime", &f_beamTime, "beamTime/D");
+		 fissionTree->Branch("beamEnergy", &f_beamEnergy, "beamEnergy/D");
+		 fissionTree->Branch("beamDep", &f_beamDep, "beamDep/D");
+		 fissionTree->Branch("beamPSP", &f_beamPSP, "beamPSP/D");
+		 fissionTree->Branch("beamChan", &f_beamChan, "beamChan/I");
+		 fissionTree->Branch("beamIndex", &f_beamIndex, "beamIndex/I");
+	 }
 
 	 // multiplicity variables
 	 fissionTree->Branch("neutronMult", &f_neutronMult, "neutronMult/I");
@@ -238,6 +244,8 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("backPhotonVx", backPhotonVx, "backPhotonVx[gammaBackMult]/D");
 	 fissionTree->Branch("backPhotonVy", backPhotonVy, "backPhotonVy[gammaBackMult]/D");
 	 fissionTree->Branch("backPhotonVz", backPhotonVz, "backPhotonVz[gammaBackMult]/D");
+
+	 fissionTree->SetMaxTreeSize(1000000LL);
 
    cout << "Fission tree has been created." << endl;
 }
