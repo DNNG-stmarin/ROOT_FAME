@@ -13,7 +13,7 @@ using namespace std;
 int main(int argc, char** argv)
 {
 
-  cout << "\nWelcome to ROOT FAME" << endl;
+  cout << "\n Welcome to ROOT FAME" << endl;
 
   TString fileName;
   TString inputFileName;

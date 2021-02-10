@@ -43,6 +43,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	TH1D* h_microTime = new TH1D("microTime", "Time in Micro; Time (ns); Counts", 10000, 0, 1e6);
 	TH1I* h_macroPop = new TH1I("macroPop", "Population in Macro; Number of Micropulses; Counts", 500, 0, 500);
 
+	TH1I* h_alphaCounts = new TH1I("alphaCounts", "Population in Macro; Number of Micropulses; Counts", 500, 0, 500);
+
 
 	queue<BeamEvent> microStructure;
 
@@ -266,7 +268,9 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	double timeDel = 0;
 	int fileInd = 0;
 
-	cout << TRIGGER_THRESHOLD << " " << TRIGGER_CLIP << endl;
+	cout << "Beam delay set to: " << BEAM_DELAY << endl;
+
+	// cout << TRIGGER_THRESHOLD << " " << TRIGGER_CLIP << endl;
 
 	// loop through the raw data
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
@@ -320,7 +324,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		if(isDetector(detChannel, NUM_DETS, DETECTORS) >= 0)
 		{
 			entryChannel = isDetector(detChannel, NUM_DETS, DETECTORS);
-			newParticle = ParticleEvent(detChannel, timeDet, energyDep, energyTail);
+			newParticle = ParticleEvent(detChannel, timeDet - BEAM_DELAY, energyDep, energyTail);
 			DetectorBuffer[entryChannel].push(newParticle);
 		}
 
@@ -328,7 +332,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		else if(isTrigger(detChannel, NUM_TRIGGERS, FISSION_TRIGGERS) >= 0)
 		{
 			entryChannel = isTrigger(detChannel, NUM_TRIGGERS, FISSION_TRIGGERS);
-			newTrigger = TriggerEvent(detChannel, timeDet, energyDep, energyTail);
+			newTrigger = TriggerEvent(detChannel, timeDet - BEAM_DELAY, energyDep, energyTail);
 
 			// energy discrimination of fission
 			if((newTrigger.getEnergy() > TRIGGER_THRESHOLD) & (newTrigger.getEnergy() < TRIGGER_CLIP) & (newTrigger.getPsp() > TRIGGER_MIN_PSP) & (newTrigger.getPsp() < TRIGGER_MAX_PSP) )
@@ -344,6 +348,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			entryChannel = isBeam(detChannel, NUM_BEAMS, BEAM);
 			newBeam = BeamEvent(detChannel, timeDet, energyDep, energyTail);
 			BeamBuffer[entryChannel].push(newBeam);
+			// cout << newBeam.getEnergy() << endl;
 		}
 
 		// else
@@ -606,6 +611,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				curBeamTime = curBeam.getTime();
 
 				deltaFissBeam = curFisTime - curBeamTime;
+
+				// cout << deltaFissBeam << endl;
 
 				if(deltaFissBeam >= BEAM_WINDOW)
 				{

@@ -116,9 +116,11 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 
 	gROOT->cd();
 
-	cout << "Reading coincidence tree from " << nameCoincTree << endl;
+	cout << "Reading coincidence tree from " << treeFileT + "/" + nameCoincTree << endl;
 
 	coincTreeChain->Add(treeFileT + "/" + nameCoincTree);
+
+	// cout << coincTreeChain->GetEntries() << endl;
 
 	return 1;
 }

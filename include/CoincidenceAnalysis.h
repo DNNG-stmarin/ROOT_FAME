@@ -74,6 +74,8 @@ public :
    double MACRO_SEP;
    int MICRO_NUM;
 
+   double BEAM_DELAY;
+
    //  _                          ____  _     _           _
    // | |                        / __ \| |   (_)         | |
    // | |     ___   ___  _ __   | |  | | |__  _  ___  ___| |_ ___
@@ -130,6 +132,8 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, Info
     MICRO_SEP = info->MICRO_SEP;
     MACRO_SEP = info->MACRO_SEP;
     MICRO_NUM = info->MICRO_NUM;
+
+    BEAM_DELAY = info->BEAM_DELAY;
 
    // set the output stream
    expFile = expFileWrite;

@@ -85,6 +85,8 @@ public:
   double MACRO_SEP;
   int MICRO_NUM;
 
+  double BEAM_DELAY;
+
   InfoSystem()
   {
     detectorPath = "";
@@ -141,6 +143,8 @@ public:
     MICRO_SEP = 2000;
     MACRO_SEP = 2e6;
     MICRO_NUM = 330;
+
+    BEAM_DELAY = 950;
   }
 
   void ReadInput(TString inputFile) {
@@ -346,6 +350,11 @@ public:
       else if(tag == "<MICRO_NUM>:") {
         file >> value;
         MICRO_NUM = stoi(value);
+      }
+
+      else if(tag == "<BEAM_DELAY>:") {
+        file >> value;
+        BEAM_DELAY = stoi(value);
       }
     }
 
