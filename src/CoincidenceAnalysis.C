@@ -834,7 +834,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	// cd back into the main file
 	cout << "Saving the tree to file. " << endl;
 
-	coincTree->Write();
+	expFile = coincTree->GetCurrentFile();
+	expFile->Write();
 	// h_Dt->Write();
 
 	return 1;
