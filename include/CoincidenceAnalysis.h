@@ -97,6 +97,10 @@ public :
 	queue<CoincidenceEvent> FissionBuffer;
 
 
+  // keep track of file numbers to be read in later
+  int numCoincFiles;
+
+
    CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, InfoSystem* info = 0);
    virtual ~CoincidenceAnalysis();
    virtual Int_t    GetEntry(Long64_t entry);

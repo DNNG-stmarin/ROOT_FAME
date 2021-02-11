@@ -41,6 +41,11 @@ void DetectorSystemClass::FissionAnalysis()
     if (ientry < 0) break;
     nb = tree->GetEntry(jentry);   nbytes += nb;
 
+    // if(jentry % 10000)
+    // {
+    //   cout << jentry << " fissions processed." << endl;
+    // }
+
     numTrig = isTrigger(tChan);
 
     // allocating the fission info

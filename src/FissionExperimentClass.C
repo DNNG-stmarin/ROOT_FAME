@@ -16,6 +16,7 @@ Purpose: Methods of the Fission Experiment Class
 #include <TFitResult.h>
 #include <THStack.h>
 #include <TFolder.h>
+#include <TSystem.h>
 
 #include <iostream>
 #include <stdlib.h>
@@ -45,11 +46,12 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
 	if(REUSE_DATA == 0) {
-		expFile = new TFile(treeFileT, "RECREATE");
+		expFile = new TFile(treeFileT + rootEnding, "RECREATE");
 	}
 	else {
-		expFile = new TFile(treeFileT, "READ");
+		expFile = new TFile(treeFileT + rootEnding, "READ");
 	}
+	
 	detFile = new TFile(detFileT, "RECREATE");
 
   // create the chain with all the entries to analyze for the raw coincidence mode
@@ -112,16 +114,21 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 		inputData->CreateCoincidenceTree(numEntries);
 	}
 
-	expFile->Close();
-
 	gROOT->cd();
 
-	cout << "Reading coincidence tree from " << treeFileT + "/" + nameCoincTree << endl;
+	cout << "Reading coincidence tree from " << treeFileT + rootEnding + "/" + nameCoincTree << endl;
 
-	coincTreeChain->Add(treeFileT + "/" + nameCoincTree);
+	coincTreeChain->Add(treeFileT + rootEnding + "/" + nameCoincTree);
+	bool fileFound = true;
+	int fileNum = 1;
 
-	// cout << coincTreeChain->GetEntries() << endl;
-
+	while(gSystem->AccessPathName(treeFileT + "_" + to_string(fileNum) + rootEnding) == false)
+	{
+		coincTreeChain->Add(treeFileT + "_" + to_string(fileNum) + rootEnding + "/" + nameCoincTree);
+		cout << "And file " << treeFileT + "_" + to_string(fileNum) + rootEnding + "/" + nameCoincTree << endl;
+		fileNum++;
+	}
+	cout << "Completed reading from " << fileNum << endl;
 	return 1;
 }
 

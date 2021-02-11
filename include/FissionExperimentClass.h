@@ -50,7 +50,8 @@ private:
 	TString nameFissionTree = "FissionTree"; // fission post-cleaning tree
 
 	// names of files to write
-	TString treeFileT = "CoincidenceTrees.root";
+	TString treeFileT = "CoincidenceTrees";
+	TString rootEnding = ".root";
 	TString detFileT = "Detectors.root";
 	TString sysFileT = "Fission.root";
 

@@ -64,7 +64,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	expFile->cd();
 
 	coincTree = new TTree("CoincidenceTree", "Tree of Experimental Coincidences");
-
+	coincTree->SetFileNumber(0);
 
 	// declatre the variables to store the fission branches
 	// fission trigger
@@ -116,7 +116,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	coincTree->Branch("totChan", totChan, "totChan[tMult]/I");
 	coincTree->Branch("totTail", totTail, "totTail[tMult]/D");
 
-	coincTree->SetMaxTreeSize(100000LL);
+	coincTree->SetMaxTreeSize(100000000LL);
 
 
 	/*
@@ -292,8 +292,10 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		//correct for time delay
 		if(ientry == 0)
 		{
+			// coincTree->SetFileNumber(fileInd);
 			cout << "Loading file number " << fileInd++ << endl;
 			timeDel = timeDet;
+
 			// cout << timeDel << endl;
 		}
 
@@ -838,9 +840,17 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	cout << "In total: " << fisTracker << " fissions formed. " << endl;
 
-	// coincTree->Write();
 	expFile = coincTree->GetCurrentFile();
 	expFile->Write();
+
+	numCoincFiles = coincTree->GetFileNumber();
+
+	cout << "Tree has been written " << endl;
+
+	expFile->Close();
+
+
+	// coincTree->Write();
 	//expFile->Close();
 	//h_Dt->Write();
 
