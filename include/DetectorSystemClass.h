@@ -343,7 +343,7 @@ ___             _   _
 	//virtual void     TriggerAnalysis();
 	virtual int      DetectionAnalysis();
 	virtual void     SystemAnalysis();
-	virtual void 		 FissionAnalysis();
+	virtual void     FissionAnalysis();
 	virtual void     FissionAnalysisLoop();
 
 	// mapping functions

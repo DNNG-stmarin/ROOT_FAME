@@ -73,7 +73,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	Long64_t nbytes = 0, nb = 0;
 
 	// loop through and compute delays and properties
-	for (Long64_t jentry=0; jentry<nentries;jentry++)
+	for (Long64_t jentry=55200000; jentry<nentries;jentry++)
 	{
 	 // load tree
 	 Long64_t ientry = LoadTree(jentry);
@@ -83,11 +83,26 @@ int DetectorSystemClass::DetectionAnalysis()
 	 // store the channel of the fission trigger
 	 channelTrig = isTrigger(tChan);
 
+	 if(jentry % 100000 == 0)
+	 {
+	 	cout << jentry << " entries processed." << endl;
+	 }
+
+	 // broken event has been found, skip it.
+	 if(tMult >= NUM_DETS)
+	 {
+		 cout << "Encountered a corrupt event at history: " << jentry << endl;
+		 continue;
+	 }
+
+
+	 // beam parameters are used here
 	 if(NUM_BEAMS > 0)
 	 {
 		 beamTimeHist[channelTrig]->Fill(bTime);
 	 }
 
+	 //
 	 for(int part = 0; part < tMult; part++)
 	 {
 		 // store the channel number
@@ -899,6 +914,11 @@ int DetectorSystemClass::DetectionAnalysis()
 	 Long64_t ientry = LoadTree(jentry);
 	 if (ientry < 0) break;
 	 nb = tree->GetEntry(jentry);   nbytes += nb;
+
+	 if(tMult >= NUM_DETS)
+	 {
+		 continue;
+	 }
 
 	 // store the channel of the fission trigger
 	 channelTrig = isTrigger(tChan);

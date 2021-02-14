@@ -51,7 +51,7 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	else {
 		expFile = new TFile(treeFileT + rootEnding, "READ");
 	}
-	
+
 	detFile = new TFile(detFileT, "RECREATE");
 
   // create the chain with all the entries to analyze for the raw coincidence mode
@@ -112,6 +112,8 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 
 		CoincidenceAnalysis* inputData = new CoincidenceAnalysis(expFileWrite, rawTreeChain, info); //replace digType w info->DATA_TYPE
 		inputData->CreateCoincidenceTree(numEntries);
+
+		
 	}
 
 	gROOT->cd();

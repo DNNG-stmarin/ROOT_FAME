@@ -847,7 +847,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	cout << "Tree has been written " << endl;
 
-	expFile->Close();
+	// expFile->Close();
 
 
 	// coincTree->Write();
