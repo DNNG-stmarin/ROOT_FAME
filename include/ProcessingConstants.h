@@ -18,8 +18,8 @@ const short NEUTRON = 1;
 const short PHOTON = 2;
 
 // multiplicity max to store
-const int MAX_MULTIPLICITY = 50;
-const int MAX_EVENTS = 50;
+const int MAX_MULTIPLICITY = 100;
+const int MAX_EVENTS = 100;
 
 // specifications of PSD bins
 const double MIN_PSD_HIST = 0;
