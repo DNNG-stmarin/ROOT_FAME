@@ -73,7 +73,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	Long64_t nbytes = 0, nb = 0;
 
 	// loop through and compute delays and properties
-	for (Long64_t jentry=55200000; jentry<nentries;jentry++)
+	for (Long64_t jentry=0; jentry<nentries;jentry++)
 	{
 	 // load tree
 	 Long64_t ientry = LoadTree(jentry);
@@ -83,7 +83,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	 // store the channel of the fission trigger
 	 channelTrig = isTrigger(tChan);
 
-	 if(jentry % 100000 == 0)
+	 if(jentry % 1000000 == 0)
 	 {
 	 	cout << jentry << " entries processed." << endl;
 	 }

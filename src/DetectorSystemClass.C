@@ -245,7 +245,7 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("backPhotonVy", backPhotonVy, "backPhotonVy[gammaBackMult]/D");
 	 fissionTree->Branch("backPhotonVz", backPhotonVz, "backPhotonVz[gammaBackMult]/D");
 
-	 fissionTree->SetMaxTreeSize(100000000LL);
+	 fissionTree->SetMaxTreeSize(1000000000LL);
 	 // fissionTree->SetFileNumber(-1);
 
    cout << "Fission tree has been created." << endl;
