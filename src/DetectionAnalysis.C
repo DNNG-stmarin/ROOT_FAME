@@ -73,7 +73,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	Long64_t nbytes = 0, nb = 0;
 
 	// loop through and compute delays and properties
-	for (Long64_t jentry=55200000; jentry<nentries;jentry++)
+	for (Long64_t jentry=0; jentry<nentries;jentry++)
 	{
 	 // load tree
 	 Long64_t ientry = LoadTree(jentry);
