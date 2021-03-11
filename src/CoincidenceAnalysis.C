@@ -294,8 +294,15 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		{
 			// coincTree->SetFileNumber(fileInd);
 			cout << "Loading file number " << fileInd++ << endl;
-			timeDel = timeDet;
 
+      if(DATA_TYPE == 0)
+      {
+        timeDel = 0;
+      }
+      else if(DATA_TYPE == 1)
+      {
+        timeDel = timeDet;
+      }
 			// cout << timeDel << endl;
 		}
 
