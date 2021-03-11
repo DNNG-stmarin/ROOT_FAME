@@ -41,7 +41,7 @@ void DetectorSystemClass::FissionAnalysis()
     if (ientry < 0) break;
     nb = tree->GetEntry(jentry);   nbytes += nb;
 
-    if(jentry % 100000 == 0)
+    if(jentry % 1000000 == 0)
     {
       cout << jentry << " fissions processed." << endl;
     }
@@ -198,7 +198,10 @@ void DetectorSystemClass::FissionAnalysis()
 
     fissionTree->Fill();
   }
-  fissionTree->Write();
+
+  fissionFile = fissionTree->GetCurrentFile();
+  fissionFile->Write();
+  fissionFile->Close();
 }
 
 
@@ -336,5 +339,6 @@ void DetectorSystemClass::FissionAnalysisLoop()
     multHist->Write();
     deltapsd += step;
   }
+
   myfile.close();
 }

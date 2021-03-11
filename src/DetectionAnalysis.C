@@ -88,7 +88,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	 // store the channel of the fission trigger
 	 channelTrig = isTrigger(tChan);
 
-	 if(jentry % 100000 == 0)
+	 if(jentry % 1000000 == 0)
 	 {
 	 	cout << jentry << " entries processed." << endl;
 	 }
