@@ -39,6 +39,7 @@ public :
    int           tMult;
    double        tTime;
    double        tDep;
+   double        tPsp;
    double        totToF[MAX_MULTIPLICITY];   //[tMult]
    double        totPSP[MAX_MULTIPLICITY];   //[tMult]
    double        totDep[MAX_MULTIPLICITY];   //[tMult]
@@ -47,6 +48,7 @@ public :
 
    // List of branches
    TBranch        *b_tMult;   //!
+   TBranch        *b_tPsp;   //!
    TBranch        *b_fissionTime;   //!
    TBranch        *b_fissionErg;   //!
    TBranch        *b_totToF;   //!

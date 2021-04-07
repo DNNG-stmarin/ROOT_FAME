@@ -52,7 +52,7 @@ void DetectorSystemClass::SystemAnalysis()
     nb = tree->GetEntry(jentry);   nbytes += nb;
 
 
-    double psdDisc = 0.17;
+    double psdDisc = 0.17; // change this to the point specific
 
     // fill coincidence histograms
     for(int j = 0; j < tMult; j++)

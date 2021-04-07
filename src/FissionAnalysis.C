@@ -6,7 +6,7 @@ Date: May 14th, Ann Arbor
 */
 
 #include "DetectorSystemClass.h"
-#include "mappingFunctions.h"
+// #include "mappingFunctions.h"
 #include <fstream>
 
 void DetectorSystemClass::FissionAnalysis()
@@ -14,6 +14,7 @@ void DetectorSystemClass::FissionAnalysis()
   fissionFile->cd();
 
   Long64_t nentries = tree->GetEntriesFast();
+  // nentries = 10000000;
   Long64_t nbytes = 0, nb = 0;
 
   // neutron and photon multiplicities
@@ -22,10 +23,16 @@ void DetectorSystemClass::FissionAnalysis()
 
   // detection time
   double timeDet;
-  int numDet;
+  int numDet, numTrig;
   double engDet;
 
   double neutVelocity;
+
+  // cout << "NUM_DET: " << NUM_DETS << endl;
+  // for(int d =0; d < NUM_DETS; d++)
+  // {
+  //     cout << DETECTORS[d] << endl;
+  // }
 
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
   {
@@ -34,9 +41,30 @@ void DetectorSystemClass::FissionAnalysis()
     if (ientry < 0) break;
     nb = tree->GetEntry(jentry);   nbytes += nb;
 
+    if(jentry % 1000000 == 0)
+    {
+      cout << jentry << " fissions processed." << endl;
+    }
+
+
+	  if(tMult >= NUM_DETS)
+	  {
+		 continue;
+	  }
+
+    numTrig = isTrigger(tChan);
+
     // allocating the fission info
     f_fisTime = tTime;
-    f_fisErg = tDep;
+    f_fisDep = tDep;
+    f_fisChan = tChan;
+    f_fisPSP = tPSP;
+
+    f_beamDep = bErg;
+    f_beamTime = bTime - triggers[numTrig].beamDelay;
+    f_beamPSP = bPSP;
+    f_beamChan = bChan;
+    f_beamIndex = bIndex;
 
     // reset the neutron and photon multiplicities
     nMult = 0;
@@ -46,18 +74,19 @@ void DetectorSystemClass::FissionAnalysis()
 
     for(int j = 0; j < tMult; j++)
     {
+
       // find the number of the detector
       numDet = isDetector(totChan[j]);
 
       // detection time corrected for delay
-      timeDet = totToF[j] -  detectors[numDet].timeDelay;
+      timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
 
       engDet = totDep[j]/detectors[numDet].calibration;
 
-      //if numdet is broken,, continue
+      //if numdet is broken, continue and skip this detector
       bool quit = 0;
-      for(int k=0; k<NUM_BROKEN; k++) {
-        if(numDet == BROKEN_DETECTORS[k]) {
+      for(int k=0; k< NUM_EXCLUDED; k++) {
+        if(numDet == EXCLUDE_DETECTORS[k]) {
           quit = 1;
         }
       }
@@ -72,7 +101,7 @@ void DetectorSystemClass::FissionAnalysis()
       }
 
       if(
-        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet))
+        (totPSP[j] > detectors[numDet].discPSD->Eval(engDet))
         &
         (timeDet > MIN_TIME_N)
         &
@@ -96,7 +125,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for gammas
       else if(
-        (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet))  //^^ -0.03 +0.03
+        (totPSP[j] < detectors[numDet].discPSD->Eval(engDet))  //^^ -0.03 +0.03
         &
         (timeDet > MIN_TIME_P)
         &
@@ -117,7 +146,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for background neutrons
       else if(
-        (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet))
+        (totPSP[j] > detectors[numDet].discPSD->Eval(engDet))
         &
         (timeDet > MIN_TIME_N - BACKGROUND_SHIFT)
         &
@@ -140,7 +169,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for background photons
       else if(
-        (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet))
+        (totPSP[j] < detectors[numDet].discPSD->Eval(engDet))
         &
         (timeDet > MIN_TIME_P - BACKGROUND_SHIFT)
         &
@@ -169,7 +198,10 @@ void DetectorSystemClass::FissionAnalysis()
 
     fissionTree->Fill();
   }
-  fissionTree->Write();
+
+  fissionFile = fissionTree->GetCurrentFile();
+  fissionFile->Write();
+  fissionFile->Close();
 }
 
 
@@ -202,7 +234,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
     // detection time
     double timeDet;
-    int numDet;
+    int numDet, numTrig;
     int engDet;
 
     for (Long64_t jentry = 0; jentry < nentries; jentry++)
@@ -214,7 +246,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
        // allocating the fission info
        f_fisTime = tTime;
-       f_fisErg = tDep;
+       f_fisDep = tDep;
 
        // reset the neutron and photon multiplicities
        nMult = 0;
@@ -222,20 +254,22 @@ void DetectorSystemClass::FissionAnalysisLoop()
        nBackMult = 0;
        pBackMult = 0;
 
+       numTrig = isTrigger(tChan);
+
        for(int j = 0; j < tMult; j++)
        {
          // find the number of the detector
         numDet = isDetector(totChan[j]);
 
         // detection time corrected for delay
-        timeDet = totToF[j] -  detectors[numDet].timeDelay;
+        timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
 
         engDet = totDep[j]/detectors[numDet].calibration;
 
 
         // cuts for neutrons
         if(
-          (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)  //+deltapsd
+          (totPSP[j] > detectors[numDet].discPSD->Eval(engDet) + deltapsd)  //+deltapsd
           &
           (timeDet > MIN_TIME_N)
           &
@@ -249,7 +283,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         // cuts for gammas
         else if(
-          (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)  //^^ -0.03 +0.03
+          (totPSP[j] < detectors[numDet].discPSD->Eval(engDet) + deltapsd)  //^^ -0.03 +0.03
           &
           (timeDet > MIN_TIME_P)
           &
@@ -263,7 +297,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         // cuts for background neutrons
         else if(
-          (totPSP[j] > detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)
+          (totPSP[j] > detectors[numDet].discPSD->Eval(engDet) + deltapsd)
           &
           (timeDet > BACKGROUND_SHIFT + MIN_TIME_N)
           &
@@ -277,7 +311,7 @@ void DetectorSystemClass::FissionAnalysisLoop()
 
         // cuts for background photons
         else if(
-          (totPSP[j] < detectors[numDet].discPSDPoint->Eval(engDet) + deltapsd)
+          (totPSP[j] < detectors[numDet].discPSD->Eval(engDet) + deltapsd)
           &
           (timeDet> BACKGROUND_SHIFT + MIN_TIME_P)
           &
@@ -305,5 +339,6 @@ void DetectorSystemClass::FissionAnalysisLoop()
     multHist->Write();
     deltapsd += step;
   }
+
   myfile.close();
 }

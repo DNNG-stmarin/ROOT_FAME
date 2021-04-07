@@ -53,6 +53,7 @@ public:
 	//InfoSystem info;
 	double DETECTOR_THRESHOLD;
 	double COINC_WINDOW;
+	double BEAM_WINDOW;
 	double MIN_TIME_P;
 	double MAX_TIME_P;
 	double MIN_TIME_N;
@@ -60,6 +61,9 @@ public:
 	double DELTA_BACK_SIG;
 	double BACKGROUND_SHIFT;
 	int DEBUG;
+	int PSD_ERG;
+	int TOF_ERG;
+	int STEP_SIZE;
 
 	// inputs given by the fission experiment class file, made up of the data collected and where to write
 	TChain* tree;
@@ -88,6 +92,7 @@ public:
 	TDirectory * cdTOFPSD;
 	TDirectory * cdTofErg;
 	TDirectory * cdTOFCorr;
+	TDirectory * cdBeam;
 
 	// current tree in chain
 	Int_t   fCurrent;
@@ -105,14 +110,16 @@ public:
 	*/
 
 	// characterize the detector system
-	int NUM_CHAMBERS;
+	int NUM_TRIGGERS;
 	int NUM_DETS;
-	int NUM_BROKEN;
+	int NUM_EXCLUDED;
+	int NUM_BEAMS;
 
 	// list of channels for triggers and detectors
-	int* FISSION_CHAMBERS;
+	int* FISSION_TRIGGERS;
 	int* DETECTORS;
-	int* BROKEN_DETECTORS;
+	int* EXCLUDE_DETECTORS;
+	//int* BEAM;
 
 	// arrays of detectors to modify
 	TriggerClass* triggers;
@@ -142,13 +149,13 @@ _  _ _    _
 	TH2F** tofPsdHists;
 	TH2F** tofErgHists;
 
-	// tof histograms
-	TH1F** tofDelPhists;
-	TH1F** tofNhists;
-	TH1F** tofPhists;
+	// tof histograms (with delay)
+	TH1F*** tofDelPhists;
 
 	//corrected tof histograms
 	TH1F** tofDelPhistsCorr;
+	TH1F** tofNhists;
+	TH1F** tofPhists;
 	TH2F** tofPsdHistsCorr;
 	TH2F** tofErgHistsCorr;
 
@@ -173,6 +180,8 @@ _  _ _    _
 
 	TH2F*** reflections; // reflections histogram
 
+	TH1D** beamTimeHist; // beam-fission timing to find delay
+
 /*
 	 _____
 	|_   _| _ ___ ___
@@ -184,28 +193,56 @@ _  _ _    _
 	// set up the reader for the coincidence tree
 	// Declaration of leaf types
 	int           tMult;
+
 	double        tTime;
 	double        tDep;
+	int 				  tChan;
+	double				tPSP;
+
+	double 				bTime;
+	double				bErg;
+	double 				bPSP;
+	int 					bChan;
+	int 					bIndex;
 
 	double        totToF[MAX_MULTIPLICITY];   //[tMult]
 	double        totPSP[MAX_MULTIPLICITY];   //[tMult]
 	double        totDep[MAX_MULTIPLICITY];   //[tMult]
-	double        totTail[MAX_MULTIPLICITY];   //[tMult]
 	int           totChan[MAX_MULTIPLICITY];   //[tMult]
+	// double        totTail[MAX_MULTIPLICITY];   //[tMult]
 
 	// List of branches
 	TBranch        *b_tMult;   //!
-	TBranch        *b_fissionTime;   //!
-	TBranch        *b_fissionErg;   //!
+
+	TBranch        *b_tTime;   //!
+	TBranch        *b_tDep;   //!
+	TBranch        *b_tPSP;   //!
+	TBranch        *b_tChan;   //!
+
+	TBranch        *b_bTime;   //!
+	TBranch        *b_bErg;   //!
+	TBranch        *b_bPSP;   //!
+	TBranch        *b_bChan;   //!
+	TBranch        *b_bIndex;   //!
+
 	TBranch        *b_totToF;   //!
 	TBranch        *b_totPSP;   //!
 	TBranch        *b_totDep;   //!
-	TBranch        *b_totTail;   //!
 	TBranch        *b_totChan;   //!
 
 
 	double    f_fisTime;
-	double    f_fisErg;
+	double    f_fisDep;
+	int 			f_fisChan;
+	double 		f_fisPSP;
+
+	double 		f_beamTime;
+	double    f_beamEnergy;
+	double		f_beamDep;
+	double 		f_beamPSP;
+	int 	  	f_beamChan;
+	int				f_beamIndex;
+
 	int       f_neutronMult;
 	int       f_gammaMult;
 	int       f_neutronBackMult;
@@ -255,12 +292,12 @@ _  _ _    _
 	*/
 
 	//bounds
-	double minPSD_fit = 0.00;
-	double divPSD_fit = 0.16;
-	double maxPSD_fit = 0.40;
+	double MINPSD_FIT; //= 0.00;
+	double DIVPSD_FIT; //= 0.16;
+	double MAXPSD_FIT; //= 0.60;
 
-	double minErg_fit = 0.05; // MeVee
-	double maxErg_fit = 4.00; // MeVee
+	double MINERG_FIT; //= 0.05; // MeVee
+	double MAXERG_FIT; //= 4.00; // MeVee
 
 
 	// initialize the fitting functions
@@ -306,12 +343,12 @@ ___             _   _
 	//virtual void     TriggerAnalysis();
 	virtual int      DetectionAnalysis();
 	virtual void     SystemAnalysis();
-	virtual void 		 FissionAnalysis();
+	virtual void     FissionAnalysis();
 	virtual void     FissionAnalysisLoop();
 
 	// mapping functions
 	int isDetector(int detectorNumber);
-	int isChamber(int detectorNumber);
+	int isTrigger(int detectorNumber);
 
 };
 #endif

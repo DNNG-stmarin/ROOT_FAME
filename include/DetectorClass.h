@@ -32,19 +32,20 @@ public:
 
 	double energyThreshold; // threshold in keVee
 
-	double timeDelay; // store the time delay with respect to the trigger
+	double* timeDelay; // store the time delay with respect to the trigger(s)
+	double* timeResolution; // store the time resolution from the fitted gamma peak
+
 
 	double energyResolution; // store the energy resolution of this detector
-	double timeResolution; // store the time resolution from the fitted gamma peak
 
 	TF1* discPSD; // psd discrimination line
 
-	double discTOFPoint; //tof discrimination
-	TF1* discPSDPoint; //psd discrimination
+	// double discTOFPoint; //tof discrimination
+	//TF1* discPSDPoint; //psd discrimination //have just one s
 
 	double calibration; // store the energy calibration for each detector (was called energyCalibration)
 
-	double efficiency; // efficiency of this detector to
+	double efficiency; // efficiency of this detector
 
 	double X, Y, Z; // position of the center of the detector
 	double distance; // distance of detector from source

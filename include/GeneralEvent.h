@@ -14,6 +14,7 @@ Date:  May 12th, 2020, Ann Arbor.
 //#include "InfoSystem.h"
 #include "InfoSystem.h"
 #include "ParticleEvent.h"
+#include "ProcessingConstants.h"
 
 
 class GeneralEvent

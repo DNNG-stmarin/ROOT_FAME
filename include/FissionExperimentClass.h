@@ -41,11 +41,17 @@ private:
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";
 
+	TString compassName = "Data_F";
+	TString midasName = "midas_data";
+
+	TString inputTreeName;
+
 	TString nameCoincTree = "CoincidenceTree"; // coincidence pre-clean tree
 	TString nameFissionTree = "FissionTree"; // fission post-cleaning tree
 
 	// names of files to write
-	TString treeFileT = "CoincidenceTrees.root";
+	TString treeFileT = "CoincidenceTrees";
+	TString rootEnding = ".root";
 	TString detFileT = "Detectors.root";
 	TString sysFileT = "Fission.root";
 
@@ -73,6 +79,7 @@ public:
 	InfoSystem* info;
 
 	// chain of raw tree files
+	TChain* rawTreeChain = 0;
 	TChain* coincTreeChain = 0;
 
 /*

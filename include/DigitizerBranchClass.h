@@ -102,7 +102,7 @@ public:
 	// output functions
 	double getEnergy()
 	{
-		double detErg = ((double)total);
+		double detErg = ((double)tail);
 		return detErg;
 	}
 
