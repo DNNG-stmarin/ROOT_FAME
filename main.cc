@@ -43,7 +43,7 @@ int main(int argc, char** argv)
   cout << "\n";
 
   cout << "Performing detector analysis" << endl;
-  experiment.CreateDetectionAnalysis(experiment.detFile);
+  experiment.CreateDetectionAnalysis();
   cout << "Finished DetectionAnalysis\n" << endl;
 
   cout << "Saving the results" << endl;

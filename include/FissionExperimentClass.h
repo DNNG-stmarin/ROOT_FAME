@@ -96,7 +96,7 @@ public:
 
 	// operations
 	int CreateCoincidenceTree(TString filename, TFile* expFile, int numEntries = - 1);
-	int CreateDetectionAnalysis(TFile* writeFile);
+	int CreateDetectionAnalysis();
 
 	void saveAll();
 
