@@ -11,6 +11,10 @@ Date: May 14th, Ann Arbor
 
 void DetectorSystemClass::FissionAnalysis()
 {
+  fissionFile = new TFile(nameFission + ".root", "RECREATE");
+  fissionTree = new TTree(nameFission, nameFission);
+  InitFiss();
+
   fissionFile->cd();
 
   Long64_t nentries = tree->GetEntriesFast();

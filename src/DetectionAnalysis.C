@@ -80,10 +80,10 @@ int DetectorSystemClass::DetectionAnalysis()
 	 if (ientry < 0) break;
 	 nb = tree->GetEntry(jentry);   nbytes += nb;
 
-	 if(jentry%1000000 == 0)
-	 {
-	 	cout << jentry << " fissions analyzed." << endl;
-	 }
+	 // if(jentry%1000000 == 0)
+	 // {
+	 // 	cout << jentry << " fissions analyzed." << endl;
+	 // }
 
 	 // store the channel of the fission trigger
 	 channelTrig = isTrigger(tChan);
