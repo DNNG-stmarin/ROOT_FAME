@@ -54,6 +54,7 @@ public:
   double COINC_WINDOW;
   double BEAM_WINDOW;
   double DETECTOR_THRESHOLD;
+  double BEAM_DISTANCE;
 
   double TRIGGER_THRESHOLD;
   double TRIGGER_CLIP;
@@ -111,6 +112,7 @@ public:
 
     COINC_WINDOW = 200;
     BEAM_WINDOW = 200;
+    BEAM_DISTANCE = 2150;
 
     DETECTOR_THRESHOLD = 0.1;
     TRIGGER_THRESHOLD = 0.1;
@@ -240,6 +242,11 @@ public:
       else if(tag == "<BEAM_WINDOW>:") {
         file >> value;
         BEAM_WINDOW = stod(value);
+      }
+
+      else if(tag == "<BEAM_DISTANCE>:") {
+        file >> value;
+        BEAM_DISTANCE = stoi(value);
       }
 
       else if(tag == "<DETECTOR_THRESHOLD>:") {

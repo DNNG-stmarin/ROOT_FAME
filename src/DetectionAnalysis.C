@@ -161,7 +161,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		triggers[trig].backgroundActivity = baselineAverage;
 
-		cout << "baseline count for trigfer" << trig <<" is " << triggers[trig].backgroundActivity << "counts/ns." << endl;
+		cout << "baseline count for trigger" << trig <<" is " << triggers[trig].backgroundActivity << "counts/ns." << endl;
 
 
 		currentCount -= baselineAverage;

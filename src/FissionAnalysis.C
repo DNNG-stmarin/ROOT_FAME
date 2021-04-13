@@ -14,7 +14,7 @@ void DetectorSystemClass::FissionAnalysis()
   fissionFile->cd();
 
   Long64_t nentries = tree->GetEntriesFast();
-  // nentries = 10000000;
+  // nentries = 1000000;
   Long64_t nbytes = 0, nb = 0;
 
   // neutron and photon multiplicities
@@ -61,7 +61,12 @@ void DetectorSystemClass::FissionAnalysis()
     f_fisPSP = tPSP;
 
     f_beamDep = bErg;
-    f_beamTime = bTime - triggers[numTrig].beamDelay;
+    f_beamTime = bTime - triggers[numTrig].beamDelay
+      + BEAM_DISTANCE / LIGHT_C;
+    f_beamEnergy = MASS_NEUTRONS *
+      (1 / pow(1 - pow(BEAM_DISTANCE / f_beamTime / LIGHT_C, 2.), 0.5) - 1);
+    // f_beamEnergy = 0.5 * MASS_NEUTRONS / pow(LIGHT_C, 2)
+    //   * pow(BEAM_DISTANCE / f_beamTime, 2);
     f_beamPSP = bPSP;
     f_beamChan = bChan;
     f_beamIndex = bIndex;

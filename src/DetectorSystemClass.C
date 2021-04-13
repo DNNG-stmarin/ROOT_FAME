@@ -15,6 +15,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	DETECTOR_THRESHOLD = info->DETECTOR_THRESHOLD;
 	COINC_WINDOW = info->COINC_WINDOW;
 	BEAM_WINDOW = info->BEAM_WINDOW;
+  BEAM_DISTANCE = info->BEAM_DISTANCE;
 	MIN_TIME_P = info->MIN_TIME_P;
 	MAX_TIME_P = info->MAX_TIME_P;
 	MIN_TIME_N = info->MIN_TIME_N;

@@ -54,6 +54,7 @@ public:
 	double DETECTOR_THRESHOLD;
 	double COINC_WINDOW;
 	double BEAM_WINDOW;
+  double BEAM_DISTANCE;
 	double MIN_TIME_P;
 	double MAX_TIME_P;
 	double MIN_TIME_N;
