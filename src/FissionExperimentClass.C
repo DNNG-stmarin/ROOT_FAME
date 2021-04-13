@@ -132,7 +132,7 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 	return 1;
 }
 
-int FissionExperimentClass::CreateDetectionAnalysis(TFile* writeFile)
+int FissionExperimentClass::CreateDetectionAnalysis()
 {
 
 	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;

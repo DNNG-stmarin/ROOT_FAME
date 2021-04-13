@@ -103,11 +103,6 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdTOFPSD = cdPsd->mkdir("TOF_PSD");
 	cdTofErg = cdToF->mkdir("TOFErg_discrimination");
 	cdTOFCorr = cdToF->mkdir("TOF_Corrected");
-
-	fissionFile = new TFile(nameFission + ".root", "RECREATE");
-	fissionTree = new TTree(nameFission, nameFission);
-
-	InitFiss();
 }
 
 DetectorSystemClass::~DetectorSystemClass()

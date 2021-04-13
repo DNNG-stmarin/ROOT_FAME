@@ -264,7 +264,6 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
         allCoinc[det1][det2]->Add(ggMult[det1][det2]);
         allCoinc[det1][det2]->SetDrawOption("nostack");
-
      }
   }
 

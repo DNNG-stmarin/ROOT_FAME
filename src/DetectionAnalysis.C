@@ -80,10 +80,10 @@ int DetectorSystemClass::DetectionAnalysis()
 	 if (ientry < 0) break;
 	 nb = tree->GetEntry(jentry);   nbytes += nb;
 
-	 if(jentry%1000000 == 0)
-	 {
-	 	cout << jentry << " fissions analyzed." << endl;
-	 }
+	 // if(jentry%1000000 == 0)
+	 // {
+	 // 	cout << jentry << " fissions analyzed." << endl;
+	 // }
 
 	 // store the channel of the fission trigger
 	 channelTrig = isTrigger(tChan);
@@ -694,7 +694,8 @@ int DetectorSystemClass::DetectionAnalysis()
 					discLines[det]->SetLineWidth(3);
 
 					// fit the psd discriminations
-					psdDisc_opt = discLines[det]->Fit(psdDisc, "SQ", "",  MINERG_FIT, MAXERG_FIT); //wont let me use variables
+					cout << "fitting the slices with energy dependent parameters" << endl;
+					psdDisc_opt = discLines[det]->Fit(psdDisc, "SQ", "",  MINERG_FIT, MAXERG_FIT);
 
 				  detectors[det].discPSD = (TF1*)psdDisc->Clone();
 

@@ -28,8 +28,8 @@ const int NUM_PSD_HIST = 100;
 
 // specifications of LO bins
 const double MIN_LO_HIST = 0;
-const double MAX_LO_HIST = 10;
-const int NUM_LO_HIST = 1000;
+const double MAX_LO_HIST = 4;
+const int NUM_LO_HIST = 400;
 
 const int MIN_ENTRIES = 50;
 
