@@ -64,16 +64,23 @@ void DetectorSystemClass::FissionAnalysis()
     f_fisChan = tChan;
     f_fisPSP = tPSP;
 
-    f_beamDep = bErg;
-    f_beamTime = bTime - triggers[numTrig].beamDelay
-      + BEAM_DISTANCE / LIGHT_C;
-    f_beamEnergy = MASS_NEUTRONS *
-      (1 / pow(1 - pow(BEAM_DISTANCE / f_beamTime / LIGHT_C, 2.), 0.5) - 1);
-    // f_beamEnergy = 0.5 * MASS_NEUTRONS / pow(LIGHT_C, 2)
-    //   * pow(BEAM_DISTANCE / f_beamTime, 2);
-    f_beamPSP = bPSP;
-    f_beamChan = bChan;
-    f_beamIndex = bIndex;
+
+    // Define offset based on targetCoord.txt
+    if (NUM_BEAMS > 0)
+    {
+      double distance = BEAM_DISTANCE + triggers[numTrig].offset; // Include offset for plate location
+      f_beamTime = bTime - triggers[numTrig].beamDelay
+        + distance / LIGHT_C;
+      f_beamEnergy = MASS_NEUTRONS *
+        (1 / pow(1 - pow(distance / f_beamTime / LIGHT_C, 2.), 0.5) - 1);
+      // f_beamEnergy = 0.5 * MASS_NEUTRONS / pow(LIGHT_C, 2)
+      //   * pow(BEAM_DISTANCE / f_beamTime, 2); Too classical for Ionel
+
+      f_beamDep = bErg;
+      f_beamPSP = bPSP;
+      f_beamChan = bChan;
+      f_beamIndex = bIndex;
+    }
 
     // reset the neutron and photon multiplicities
     nMult = 0;
@@ -86,6 +93,11 @@ void DetectorSystemClass::FissionAnalysis()
 
       // find the number of the detector
       numDet = isDetector(totChan[j]);
+
+      // Calculate distance to detector
+      double adjZ = detectors[numDet].Z - triggers[numTrig].offset;
+      detectors[numDet].distance = pow(pow(detectors[numDet].X, 2.)
+        + pow(detectors[numDet].Y, 2.) + pow(adjZ, 2.), 0.5);
 
       // detection time corrected for delay
       timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
@@ -128,7 +140,7 @@ void DetectorSystemClass::FissionAnalysis()
         neutronDet[nMult] = numDet;
         neutronVx[nMult] = detectors[numDet].X/detectors[numDet].distance*neutVelocity;
         neutronVy[nMult] = detectors[numDet].Y/detectors[numDet].distance*neutVelocity;
-        neutronVz[nMult] = detectors[numDet].Z/detectors[numDet].distance*neutVelocity;
+        neutronVz[nMult] = adjZ /detectors[numDet].distance*neutVelocity;
         nMult++;
       }
 
@@ -149,7 +161,7 @@ void DetectorSystemClass::FissionAnalysis()
         photonDet[pMult] = numDet;
         photonVx[pMult] = detectors[numDet].X/detectors[numDet].distance*LIGHT_C;
         photonVy[pMult] = detectors[numDet].Y/detectors[numDet].distance*LIGHT_C;
-        photonVz[pMult] = detectors[numDet].Z/detectors[numDet].distance*LIGHT_C;
+        photonVz[pMult] = (detectors[numDet].Z - triggers[numTrig].offset) /detectors[numDet].distance*LIGHT_C;
         pMult++;
       }
 
