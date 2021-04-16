@@ -68,7 +68,7 @@ void DetectorSystemClass::FissionAnalysis()
     // Define offset based on targetCoord.txt
     if (NUM_BEAMS > 0)
     {
-      double distance = BEAM_DISTANCE + triggers[numTrig].offset; // Include offset for plate location
+      double distance = BEAM_DISTANCE + triggers[numTrig].Z; // Include offset for trigger location along beam path
       f_beamTime = bTime - triggers[numTrig].beamDelay
         + distance / LIGHT_C;
       f_beamEnergy = MASS_NEUTRONS *
@@ -95,9 +95,11 @@ void DetectorSystemClass::FissionAnalysis()
       numDet = isDetector(totChan[j]);
 
       // Calculate distance to detector
-      double adjZ = detectors[numDet].Z - triggers[numTrig].offset;
-      detectors[numDet].distance = pow(pow(detectors[numDet].X, 2.)
-        + pow(detectors[numDet].Y, 2.) + pow(adjZ, 2.), 0.5);
+      double adjX = detectors[numDet].X - triggers[numTrig].X;
+      double adjY = detectors[numDet].Y - triggers[numTrig].Y;
+      double adjZ = detectors[numDet].Z - triggers[numTrig].Z;
+      detectors[numDet].distance = sqrt(pow(adjX, 2.)
+        + pow(adjY, 2.) + pow(adjZ, 2.));
 
       // detection time corrected for delay
       timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
@@ -138,9 +140,9 @@ void DetectorSystemClass::FissionAnalysis()
         //cout << numDet << " " << detectors[numDet].distance << endl;
         neutronToFErg[nMult] = (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2);
         neutronDet[nMult] = numDet;
-        neutronVx[nMult] = detectors[numDet].X/detectors[numDet].distance*neutVelocity;
-        neutronVy[nMult] = detectors[numDet].Y/detectors[numDet].distance*neutVelocity;
-        neutronVz[nMult] = adjZ /detectors[numDet].distance*neutVelocity;
+        neutronVx[nMult] = adjX / detectors[numDet].distance*neutVelocity;
+        neutronVy[nMult] = adjY / detectors[numDet].distance*neutVelocity;
+        neutronVz[nMult] = adjZ / detectors[numDet].distance*neutVelocity;
         nMult++;
       }
 
@@ -159,9 +161,9 @@ void DetectorSystemClass::FissionAnalysis()
         photonLightOut[pMult] = engDet;
         photonPSD[pMult] = totPSP[j];
         photonDet[pMult] = numDet;
-        photonVx[pMult] = detectors[numDet].X/detectors[numDet].distance*LIGHT_C;
-        photonVy[pMult] = detectors[numDet].Y/detectors[numDet].distance*LIGHT_C;
-        photonVz[pMult] = (detectors[numDet].Z - triggers[numTrig].offset) /detectors[numDet].distance*LIGHT_C;
+        photonVx[pMult] = adjX / detectors[numDet].distance*LIGHT_C;
+        photonVy[pMult] = adjY / detectors[numDet].distance*LIGHT_C;
+        photonVz[pMult] = adjZ / detectors[numDet].distance*LIGHT_C;
         pMult++;
       }
 

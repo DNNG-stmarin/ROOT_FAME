@@ -80,16 +80,20 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		// cout << i << endl;
     if(!inTrig.is_open())
     {
-      triggers[i].offset = 0;
+      triggers[i].X = 0;
+      triggers[i].Y = 0;
+      triggers[i].Z = 0;
     }
     else
     {
   		getline(inTrig, trigLine);
   		istringstream iss(trigLine);
-  		iss >> z;
-      triggers[i].offset = stod(z) * 100;
+  		iss >> x >> y >> z;
+      triggers[i].X = stod(x) * 100;
+      triggers[i].Y = stod(y) * 100;
+      triggers[i].Z = stod(z) * 100;
       cout << info->triggerPath << endl;
-      cout << i << " " << z << " " << triggers[i].offset << endl;
+      cout << i << " " << triggers[i].X << " " << triggers[i].Y << " " << triggers[i].Z << endl;
     }
 	}
   inTrig.close();
