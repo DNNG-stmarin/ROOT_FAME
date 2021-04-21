@@ -215,6 +215,7 @@ void DetectorSystemClass::InitFiss()
 	 // fission variables
 	 fissionTree->Branch("fisTime", &f_fisTime, "fisTime/D");
 	 fissionTree->Branch("fisDep", &f_fisDep, "fisDep/D");
+	 fissionTree->Branch("fisType", &f_fisType, "fisType/I");
 	 fissionTree->Branch("fisChan", &f_fisChan, "fisChan/I");
 	 fissionTree->Branch("fisPSP", &f_fisPSP, "fisPSP/D");
 

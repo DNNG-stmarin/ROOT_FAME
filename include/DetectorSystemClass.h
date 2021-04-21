@@ -234,6 +234,7 @@ _  _ _    _
 
 	double    f_fisTime;
 	double    f_fisDep;
+	int 			f_fisType;
 	int 			f_fisChan;
 	double 		f_fisPSP;
 

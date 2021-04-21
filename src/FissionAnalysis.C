@@ -58,13 +58,6 @@ void DetectorSystemClass::FissionAnalysis()
 
     numTrig = isTrigger(tChan);
 
-    // allocating the fission info
-    f_fisTime = tTime;
-    f_fisDep = tDep;
-    f_fisChan = tChan;
-    f_fisPSP = tPSP;
-
-
     // Define offset based on targetCoord.txt
     if (NUM_BEAMS > 0)
     {
@@ -80,6 +73,27 @@ void DetectorSystemClass::FissionAnalysis()
       f_beamPSP = bPSP;
       f_beamChan = bChan;
       f_beamIndex = bIndex;
+    }
+
+    // allocating the fission info
+    f_fisTime = tTime;
+    f_fisDep = tDep;
+    f_fisChan = tChan;
+    f_fisPSP = tPSP;
+
+    // Assign fission trigger type based on beamTime
+    // Times are hard-coded for now since I anticipate needing more complex logic later
+    if (f_beamTime < 70)
+    {
+      f_fisType = ALPHA;
+    }
+    else if (f_beamTime < 140 && f_beamTime > 60)
+    {
+      f_fisType = PHOTON;
+    }
+    else
+    {
+      f_fisType = NEUTRON;
     }
 
     // reset the neutron and photon multiplicities

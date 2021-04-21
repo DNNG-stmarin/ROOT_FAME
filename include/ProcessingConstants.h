@@ -16,6 +16,7 @@ const double LIGHT_C = 29.979; // cm/ns
 const short NO_PARTICLE = 0;
 const short NEUTRON = 1;
 const short PHOTON = 2;
+const short ALPHA = 4;
 
 // multiplicity max to store
 const int MAX_MULTIPLICITY = 100;
