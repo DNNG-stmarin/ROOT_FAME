@@ -39,8 +39,8 @@ public:
 
   double efficiency; // efficiency of this detector
 
-  double X, Y, Z; // position of the center of the detector
-  double distance; // distance of detector from source
+  double X, Y, Z; // position of the center of the trigger
+  // double offset; // distance of detector from source
 
 };
 

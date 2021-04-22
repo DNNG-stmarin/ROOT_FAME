@@ -17,11 +17,12 @@ Personal comments by user can go in here
 # specify the data type being analyzed (either MIDAS/COMPASS (1/0))
 # specify whether to reuse already processed data (either NO/YES (0/1))
 <DATA_TYPE>: 1
-<REUSE_DATA>: 0
+<REUSE_DATA>: 1
 
 # specify where to find the information on the system
 <DETECTOR_PATH>: expChiNu/cartesian.txt
 <CALIBRATION_PATH>: expChiNu/intCalibrationCs.txt
+<TRIGGER_PATH>: expChiNu/plateZ.txt
 
 # number of beam channels
 <NUM_BEAMS>: 1

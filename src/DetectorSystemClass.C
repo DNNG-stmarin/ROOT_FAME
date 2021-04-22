@@ -57,14 +57,15 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		detectors[det].timeResolution = new double[NUM_TRIGGERS];
 	}
 
+  // Setting detector distances
 	string line;
 	string x, y, z;
-	ifstream in (info->detectorPath);
+	ifstream inDet (info->detectorPath);
 	for(int i=0; i<NUM_DETS; i++)
 	{
 		// cout << "reading detector coordinates from file" << endl;
 		// cout << i << endl;
-		getline(in, line);
+		getline(inDet, line);
 		istringstream iss(line);
 		iss >> x >> y >> z;
 		detectors[i].X = stod(x)*100;
@@ -72,6 +73,35 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		detectors[i].Z = stod(z)*100;
 		detectors[i].distance = sqrt(pow(stod(x),2)+pow(stod(y),2)+pow(stod(z),2))*100;
 	}
+  inDet.close();
+
+  // Setting trigger offsets
+  string trigLine;
+	ifstream inTrig (info->triggerPath);
+
+	for(int i=0; i<NUM_TRIGGERS; i++)
+	{
+		// cout << "reading detector coordinates from file" << endl;
+		// cout << i << endl;
+    if(!inTrig.is_open())
+    {
+      triggers[i].X = 0;
+      triggers[i].Y = 0;
+      triggers[i].Z = 0;
+    }
+    else
+    {
+  		getline(inTrig, trigLine);
+  		istringstream iss(trigLine);
+  		iss >> x >> y >> z;
+      triggers[i].X = stod(x) * 100;
+      triggers[i].Y = stod(y) * 100;
+      triggers[i].Z = stod(z) * 100;
+      cout << info->triggerPath << endl;
+      cout << i << " " << triggers[i].X << " " << triggers[i].Y << " " << triggers[i].Z << endl;
+    }
+	}
+  inTrig.close();
 
 	//calibration for only chinu system
 	detCalibration = new TGraph(*(info->calibrationDet));
@@ -190,6 +220,7 @@ void DetectorSystemClass::InitFiss()
 	 // fission variables
 	 fissionTree->Branch("fisTime", &f_fisTime, "fisTime/D");
 	 fissionTree->Branch("fisDep", &f_fisDep, "fisDep/D");
+	 fissionTree->Branch("fisType", &f_fisType, "fisType/I");
 	 fissionTree->Branch("fisChan", &f_fisChan, "fisChan/I");
 	 fissionTree->Branch("fisPSP", &f_fisPSP, "fisPSP/D");
 

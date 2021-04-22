@@ -43,6 +43,7 @@ public:
   TGraph *calibrationDet;
   TString calibrationPath;
   TString detectorPath;
+  TString triggerPath;
   TString nameOfExp;
 
   //input file
@@ -91,6 +92,7 @@ public:
   InfoSystem()
   {
     detectorPath = "";
+    triggerPath = "";
     calibrationPath = "";
     nameOfExp = "";
 
@@ -184,6 +186,10 @@ public:
       else if(tag == "<DETECTOR_PATH>:") {
         file >> value;
         detectorPath = TString(value);
+      }
+      else if(tag == "<TRIGGER_PATH>:") {
+        file >> value;
+        triggerPath = TString(value);
       }
       else if(tag == "<CALIBRATION_PATH>:") {
         file >> value;
