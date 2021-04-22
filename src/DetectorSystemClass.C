@@ -46,6 +46,11 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	detectors = new DetectorClass[NUM_DETS];
 	cout << "Detectors and triggers have been created" << endl;
 
+  cout << "Background shift set to " << BACKGROUND_SHIFT << " ns." << endl;
+	cout << "Collecting background between: " << MIN_TIME_N - BACKGROUND_SHIFT;
+	cout << "ns and " << MAX_TIME_N - BACKGROUND_SHIFT << " ns." << endl;
+
+	// initializing all delays and resolutions
 	for(int det = 0; det < NUM_DETS; det ++)
 	{
 		detectors[det].timeDelay = new double[NUM_TRIGGERS];

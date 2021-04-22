@@ -167,7 +167,7 @@ void DetectorSystemClass::FissionAnalysis()
         backNeutronDetTimes[nBackMult] = timeDet;
         backNeutronLightOut[nBackMult] = engDet;
         backNeutronPSD[nBackMult] = totPSP[j];
-        neutVelocity = detectors[numDet].distance/(timeDet+BACKGROUND_SHIFT);
+        neutVelocity = (1.0/LIGHT_C)*detectors[numDet].distance/(timeDet + BACKGROUND_SHIFT);
         backNeutronToFErg[nBackMult] = (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2);
         backNeutronDet[nBackMult] = numDet;
         backNeutronVx[nBackMult] = detectors[numDet].X/detectors[numDet].distance*neutVelocity;
