@@ -20,9 +20,9 @@ const int MAX_MULT = 20;
 
 class readFiss {
 public :
-    
-/*  
-  _____                _      _    _                       
+
+/*
+  _____                _      _    _
  |_   _| _ ___ ___    /_\  __| |__| |_ _ ___ ______ ___ ___
    | || '_/ -_) -_)  / _ \/ _` / _` | '_/ -_|_-<_-</ -_|_-<
    |_||_| \___\___| /_/ \_\__,_\__,_|_| \___/__/__/\___/__/
@@ -34,32 +34,75 @@ public :
    Int_t           fCurrent; //!current Tree number in a TChain
 
    TFile*           analysisFile;
-   
+   TDirectory*      cd_basics;
+   TDirectory*      cd_individual;
+   TDirectory*      cd_simComparison;
+   TDirectory*      cd_FAME;
+
+
+  /*
+   ___                       _
+  | _ \_ _ ___  __ ___ _____(_)_ _  __ _
+  |  _/ '_/ _ \/ _/ -_|_-<_-< | ' \/ _` |
+  |_| |_| \___/\__\___/__/__/_|_||_\__, |
+                                   |___/
+  */
+  //
+  // double MAX_TIME_N;
+  // double THRESHOLD;
+
    /*
-  _  _ _    _                               
+  _  _ _    _
  | || (_)__| |_ ___  __ _ _ _ __ _ _ __  ___
  | __ | (_-<  _/ _ \/ _` | '_/ _` | '  \(_-<
  |_||_|_/__/\__\___/\__, |_| \__,_|_|_|_/__/
                     |___/                    */
-   TH1D* neutronLightOutputSim; 
-   TH1D* neutronLightOutputExp; 
+   // n LO
+   TH1D* neutronLightOutputSim;
+   TH1D* neutronLightOutputExp;
+   TH1D* neutronLightOutputBack;
+   // p LO
    TH1D* photonLightOutputSim;
    TH1D* photonLightOutputExp;
+   TH1D* photonLightOutputBack;
+
+   // n ToF
    TH1D* neutronTofSim;
    TH1D* neutronTofExp;
+   TH1D* neutronTofBack;
+
+   // p ToF
    TH1D* photonTofSim;
    TH1D* photonTofExp;
+   TH1D* photonTofBack;
+
+   // n Erg
    TH1D* neutronEnergySim;
    TH1D* neutronEnergyExp;
-
-   TH1D* neutronLightOutputBack;
-   TH1D* photonLightOutputBack; 
-   TH1D* neutronTofBack;
-   TH1D* photonTofBack;
    TH1D* neutronEnergyBack;
 
+   // n Mult
+   TH1I* neutronMultExp;
+   TH1I* neutronMultSim;
+   TH1I* neutronMultBack;
+
+   // p Mult
+   TH1I* photonMultExp;
+   TH1I* photonMultSim;
+   TH1I* photonMultBack;
+
+   // n PSD
+   TH1D* neutronPSDExp;
+   TH1D* neutronPSDSim;
+   TH1D* neutronPSDBack;
+
+   // p PSD
+   TH1D* photonPSDExp;
+   TH1D* photonPSDSim;
+   TH1D* photonPSDBack;
+
 /*
-              _____              ___                  _           
+              _____              ___                  _
   _____ ___ _|_   _| _ ___ ___  | _ )_ _ __ _ _ _  __| |_  ___ ___
  / -_) \ / '_ \| || '_/ -_) -_) | _ \ '_/ _` | ' \/ _| ' \/ -_|_-<
  \___/_\_\ .__/|_||_| \___\___| |___/_| \__,_|_||_\__|_||_\___/__/
@@ -144,14 +187,14 @@ public :
    TBranch        *b_backPhotonVy;   //!
    TBranch        *b_backPhotonVz;   //!
    /*
-     _     _____              ___                  _           
+     _     _____              ___                  _
   __(_)_ _|_   _| _ ___ ___  | _ )_ _ __ _ _ _  __| |_  ___ ___
  (_-< | '  \| || '_/ -_) -_) | _ \ '_/ _` | ' \/ _| ' \/ -_|_-<
  /__/_|_|_|_|_||_| \___\___| |___/_| \__,_|_||_\__|_||_\___/__/ */
  // Declaration of leaf types
    Double_t        neutronHeight[MAX_MULT];   //[neutronMult] not defined
    Double_t        photonHeight[MAX_MULT];   //[gammaMult]
-   Int_t           neutronFlag[MAX_MULT];   //[neutronMult] not defined 
+   Int_t           neutronFlag[MAX_MULT];   //[neutronMult] not defined
    Int_t           photonFlag[MAX_MULT];   //[gammaMult]   not defined
 
    Int_t           neutronChannel[MAX_MULT];   //[neutronMult], different name neutronDet
@@ -160,7 +203,7 @@ public :
    Int_t           photonChannel[MAX_MULT];   //[gammaMult]
    Double_t        photonEnergy[MAX_MULT];   //[gammaMult]
    Double_t        photonIntegral[MAX_MULT];   //[gammaMult]
-   
+
 
 
    // List of branches ADD EXP OR SIM AT THE END
@@ -186,21 +229,27 @@ public :
  |  \/  |___| |_| |_  ___  __| |___
  | |\/| / -_)  _| ' \/ _ \/ _` (_-<
  |_|  |_\___|\__|_||_\___/\__,_/__/*/
-   readFiss(TString nameExp);
-   readFiss(TString nameExp, TString nameSim);
+   readFiss(TString writeFile, TString nameExp);
+   readFiss(TString writeFile, TString nameExp, TString nameSim);
+
+
    virtual ~readFiss();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetExpEntry(Long64_t entry);
    virtual Int_t    GetSimEntry(Long64_t entry);
    virtual Long64_t LoadExpTree(Long64_t entry);
    virtual Long64_t LoadSimTree(Long64_t entry);
+
    virtual void     InitExp(TTree *tree);
    virtual void     InitSim(TTree *tree);
-   virtual void     LoopExp();
-   virtual void     LoopSim();
+
    virtual Bool_t   Notify();
    virtual void     ShowExp(Long64_t entry = -1);
    virtual void     ShowSim(Long64_t entry = -1);
+
+   // loop through data
+   virtual void     LoopExp(double THRESHOLD, double MAX_TIME_N);
+   virtual void     LoopSim(double THRESHOLD, double MAX_TIME_N);
 
    // initialization functions
    virtual void     InitializeHistograms();
@@ -209,12 +258,15 @@ public :
    virtual void     PlotTof();
    virtual void     PlotLightOut();
    virtual void     PlotErg();
+   virtual void     PlotPSD();
+   virtual void     PlotMult();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();
    virtual void     CompareLightOut();
    virtual void     CompareErg();
+   virtual void     ComparePSD();
+   virtual void     CompareMult();
 };
 
 #endif
-

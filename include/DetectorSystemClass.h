@@ -52,6 +52,7 @@ public:
 
 	//InfoSystem info;
 	double DETECTOR_THRESHOLD;
+	double DETECTOR_CLIP;
 	double COINC_WINDOW;
 	double BEAM_WINDOW;
   double BEAM_DISTANCE;
@@ -78,11 +79,12 @@ public:
 	TDirectory *cdPsd;
 	TDirectory *cdToF;
 	TDirectory *cdKin;
-	TDirectory *cdMult;
-	TDirectory *cdCoinc;
-	TDirectory *cdFigCoinc;
-	TDirectory *cdBicorr;
-	TDirectory *cdRef;
+	TDirectory * cdBeam;
+	// TDirectory *cdMult;
+	// TDirectory *cdCoinc;
+	// TDirectory *cdFigCoinc;
+	// TDirectory *cdBicorr;
+	// TDirectory *cdRef;
 
 	// subdirectory for slices
 	TDirectory * cdPsdSlices;
@@ -93,7 +95,7 @@ public:
 	TDirectory * cdTOFPSD;
 	TDirectory * cdTofErg;
 	TDirectory * cdTOFCorr;
-	TDirectory * cdBeam;
+
 
 	// current tree in chain
 	Int_t   fCurrent;
@@ -344,7 +346,7 @@ ___             _   _
 	// functions to perfom the detection analysis
 	//virtual void     TriggerAnalysis();
 	virtual int      DetectionAnalysis();
-	virtual void     SystemAnalysis();
+	// virtual void     SystemAnalysis();
 	virtual void     FissionAnalysis();
 	virtual void     FissionAnalysisLoop();
 

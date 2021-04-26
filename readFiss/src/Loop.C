@@ -4,13 +4,27 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void readFiss::LoopExp()
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+using namespace std;
+
+
+void readFiss::LoopExp(double THRESHOLD, double MAX_TIME_N)
 {
+
+   cout << "Now looping through experiment. " << endl;
+
+   cout << "Using: threshold = " << THRESHOLD << " MeVee, " << " Tmax = " << MAX_TIME_N << " ns." << endl;
+
 
    if (expTree == 0) return;
 
    Long64_t nentries = expTree->GetEntriesFast();
-  
+
+
+   int nMult, gMult, nMultBack, gMultBack;
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadExpTree(jentry);
@@ -18,56 +32,76 @@ void readFiss::LoopExp()
       nb = expTree->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
 
+      nMult = 0;
+      gMult = 0;
+      nMultBack = 0;
+      gMultBack = 0;
+
       // loop through neutrons
       for (int i = 0; i < neutronMult; i++)
-      {     
-        if (neutronLightOut[i] > 0.1) {
+      {
+        if ((neutronLightOut[i] > THRESHOLD) && (neutronDetTimes[i] < MAX_TIME_N) )
+        {
+            nMult++;
             neutronLightOutputExp->Fill(neutronLightOut[i]);
             neutronTofExp->Fill(neutronDetTimes[i]);
             neutronEnergyExp->Fill(neutronToFErg[i]);
+            neutronPSDExp->Fill(neutronPSD[i]);
         }
       }
+      neutronMultExp->Fill(nMult);
 
       // loop through gamma rays
       for (int i = 0; i < gammaMult; i++)
-      { 
-        if (photonLightOut[i] > 0.1) 
+      {
+        if (photonLightOut[i] > THRESHOLD)
         {
+          gMult++;
           photonLightOutputExp->Fill(photonLightOut[i]);
           photonTofExp->Fill(photonDetTimes[i]);
+          photonPSDExp->Fill(photonPSD[i]);
         }
       }
+      photonMultExp->Fill(gMult);
 
       // loop through back neutrons
       for (int i = 0; i < neutronBackMult; i++)
-      {     
-        if (backNeutronLightOut[i] > 0.1) {
+      {
+        if (backNeutronLightOut[i] > THRESHOLD)
+        {
+            nMultBack++;
             neutronLightOutputBack->Fill(backNeutronLightOut[i]);
             neutronTofBack->Fill(backNeutronDetTimes[i]);
             neutronEnergyBack->Fill(backNeutronToFErg[i]);
         }
       }
+      neutronMultBack->Fill(nMultBack);
 
       // loop through back photons
       for (int i = 0; i < gammaBackMult; i++)
-      { 
-        if (backPhotonLightOut[i] > 0.1) 
+      {
+        if (backPhotonLightOut[i] > THRESHOLD)
         {
+          gMultBack++;
           photonLightOutputBack->Fill(backPhotonLightOut[i]);
           photonTofBack->Fill(backPhotonDetTimes[i]);
         }
       }
+      photonMultBack->Fill(gMultBack);
+
    }
 }
 
 
-void readFiss::LoopSim()
+void readFiss::LoopSim(double THRESHOLD, double MAX_TIME_N)
 {
+    cout << "Now looping through simulation. " << endl;
 
     if (expTree == 0) return;
     //CHANGE BACK TO SIM TREE
     Long64_t nentries = expTree->GetEntriesFast();
 
+    int nMult, gMult, nMultBack, gMultBack;
     Long64_t nbytes = 0, nb = 0;
     for (Long64_t jentry = 0; jentry < nentries; jentry++) {
         Long64_t ientry = LoadSimTree(jentry);
@@ -75,27 +109,36 @@ void readFiss::LoopSim()
         nb = simTree->GetEntry(jentry);   nbytes += nb;
         // if (Cut(ientry) < 0) continue;
 
+        nMult = 0;
+        gMult = 0;
+        nMultBack = 0;
+        gMultBack = 0;
+
+
         // loop through neutrons
         for (int i = 0; i < neutronMult; i++)
         {
-          if (neutronIntegral[i] > 0.1) {
+          if (neutronIntegral[i] > THRESHOLD && neutronDetTimes[i] < MAX_TIME_N)
+          {
+              nMult++;
               neutronLightOutputSim->Fill(neutronIntegral[i]);
               neutronTofSim->Fill(neutronDetTimes[i]);
               neutronEnergySim->Fill(neutronEnergy[i]);
           }
         }
+        neutronMultSim->Fill(nMult);
 
         // loop through gamma rays
         for (int i = 0; i < gammaMult; i++)
         {
-          if (photonIntegral[i] > 0.1) {
+          if (photonIntegral[i] > THRESHOLD)
+          {
+              gMult++;
               photonLightOutputSim->Fill(photonIntegral[i]);
               photonTofSim->Fill(photonDetTimes[i]);
           }
         }
-                
-                
-            
-        
+        photonMultSim->Fill(gMult);
+
     }
 }

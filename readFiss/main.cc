@@ -24,37 +24,67 @@ int main(int argc, char** argv)
 
   TString expFile;
   TString simFile;
+  TString writeFile;
+
+  readFiss* f;
+
+  bool simMode;
 
   if(argc == 1) {
     cout << "Name of input tree not provided! \n ";
     cout << "provide the following inputs: " << endl;
-    cout << "(1) name of expFile" << endl;
-    cout << "(2, optional) name of simFile" << endl;
-    
+    cout << "(1) name of writeFile" << endl;
+    cout << "(2) name of expFile" << endl;
+    cout << "(3, optional) name of simFile" << endl;
+
     return 1;
   }
-  if(argc == 2)
+  else if(argc == 3)
   {
-    expFile = TString(argv[1]);
+    writeFile = TString(argv[1]);
+    expFile = TString(argv[2]);
+    f = new readFiss(writeFile, expFile);
+    simMode = false;
   }
-  if(argc == 3)
+  else if(argc == 4)
   {
-    expFile = TString(argv[1]);
-    simFile = TString(argv[2]);
+    writeFile = TString(argv[1]);
+    expFile = TString(argv[2]);
+    simFile = TString(argv[3]);
+    f = new readFiss(writeFile, expFile, simFile);
+    simMode = true;
   }
-  else if(argc > 3)
+  else
   {
-    cout << "Too many inputs provided" << endl;
+    cout << "not enough (or too many) arguments provided" << endl;
     return 2;
   }
 
+
+
   // TBrowser* browser = new TBrowser();
 
-  readFiss* f = new readFiss(expFile);
-  f->LoopExp();
+  f->LoopExp(0.03, 45.0);
+  if(simMode)
+  {
+    f->LoopSim(0.03, 45.0);
+  }
+
   f->PlotLightOut();
   f->PlotTof();
   f->PlotErg();
+  f->PlotMult();
+  f->PlotPSD();
+
+  if(simMode)
+  {
+    f->CompareLightOut();
+    f->CompareTof();
+    f->CompareErg();
+    f->CompareMult();
+    f->ComparePSD();
+  }
+
 
   // delete f;
 

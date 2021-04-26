@@ -1,8 +1,15 @@
 #include "readFiss.h"
 #include <TLegend.h>
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+
+using namespace std;
+
 // Constructor
-readFiss::readFiss(TString nameExp)
+readFiss::readFiss(TString writeFile, TString nameExp)
 {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.
@@ -18,13 +25,17 @@ readFiss::readFiss(TString nameExp)
     // set the simulated Tree = 0
     simTree = 0;
 
-    InitializeHistograms(); 
+    InitializeHistograms();
 
-    analysisFile = new TFile("fameAnalysis.root", "RECREATE");
+    analysisFile = new TFile(writeFile, "RECREATE");
+
+    cd_basics = analysisFile->mkdir("Basic");
+    cd_individual = analysisFile->mkdir("Individual");
+    cd_FAME = analysisFile->mkdir("FAME");
 }
 
 // Constructor
-readFiss::readFiss(TString nameExp, TString nameSim)
+readFiss::readFiss(TString writeFile, TString nameExp, TString nameSim)
 {
     TTree* tree;
     TFile* f;
@@ -33,6 +44,7 @@ readFiss::readFiss(TString nameExp, TString nameSim)
     // used to generate this class and read the Tree.
 
     // experiment
+    cout << "Initializing experiment tree from " << nameExp << endl;
     f = (TFile*)gROOT->GetListOfFiles()->FindObject(nameExp);
     if (!f || !f->IsOpen()) {
         f = new TFile(nameExp);
@@ -41,6 +53,7 @@ readFiss::readFiss(TString nameExp, TString nameSim)
     InitExp(tree);
 
     // simulations
+    cout << "Initializing simulation tree from " << nameExp << endl;
     f = (TFile*)gROOT->GetListOfFiles()->FindObject(nameSim);
     if (!f || !f->IsOpen()) {
         f = new TFile(nameSim);
@@ -48,9 +61,14 @@ readFiss::readFiss(TString nameExp, TString nameSim)
     f->GetObject("fissionTree", tree);
     InitSim(tree);
 
-    InitializeHistograms(); 
+    InitializeHistograms();
 
-    analysisFile = new TFile("fameAnalysis.root", "RECREATE");
+    analysisFile = new TFile(writeFile, "RECREATE");
+
+    cd_basics = analysisFile->mkdir("Basic");
+    cd_individual = analysisFile->mkdir("Individual");
+    cd_simComparison = analysisFile->mkdir("SimComparison");
+    cd_FAME = analysisFile->mkdir("FAME");
 
 }
 
@@ -77,7 +95,7 @@ Int_t readFiss::GetSimEntry(Long64_t entry)
     return simTree->GetEntry(entry);
 }
 //Load root Trees
-Long64_t readFiss::LoadExpTree(Long64_t entry) 
+Long64_t readFiss::LoadExpTree(Long64_t entry)
 {
     // Set the environment to read one entry
     if (!expTree) return -5;
@@ -89,7 +107,7 @@ Long64_t readFiss::LoadExpTree(Long64_t entry)
     }
     return centry;
 }
-Long64_t readFiss::LoadSimTree(Long64_t entry) 
+Long64_t readFiss::LoadSimTree(Long64_t entry)
 {
     // Set the environment to read one entry
     if (!simTree) return -5;
@@ -113,7 +131,7 @@ void readFiss::InitExp(TTree* tree)
     // (once per file to be processed).
 
     // Set branch addresses and branch pointers
-    
+
     //INITIALIZE EXPERIMENT TREE
     if (!tree) return;
     expTree = tree;
