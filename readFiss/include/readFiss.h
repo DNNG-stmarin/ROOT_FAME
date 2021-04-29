@@ -12,7 +12,9 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TH1.h>
+#include <TH2.h>
 #include <TString.h>
+#include <TMatrixD.h>
 // Header file for the classes stored in the TTree if any.
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
@@ -47,9 +49,14 @@ public :
   |_| |_| \___/\__\___/__/__/_|_||_\__, |
                                    |___/
   */
-  //
-  // double MAX_TIME_N;
-  // double THRESHOLD;
+  // objects specific to this run of the analysi
+  int BN;
+  int BP;
+  double MAX_TIME_N;
+  double THRESHOLD;
+
+  double MIN_N_ERG, MAX_N_ERG;
+  double MIN_P_ERG, MAX_P_ERG;
 
    /*
   _  _ _    _
@@ -57,6 +64,11 @@ public :
  | __ | (_-<  _/ _ \/ _` | '_/ _` | '  \(_-<
  |_||_|_/__/\__\___/\__, |_| \__,_|_|_|_/__/
                     |___/                    */
+
+   // matrix variables
+   TH2D* arrayCorr;
+   TH2D* arraySpec;
+
    // n LO
    TH1D* neutronLightOutputSim;
    TH1D* neutronLightOutputExp;
@@ -101,6 +113,22 @@ public :
    TH1D* photonPSDSim;
    TH1D* photonPSDBack;
 
+   // n det
+   TH1D* neutronSinglesExp;
+   TH1D* neutronSinglesSim;
+   TH1D* neutronSinglesBack;
+
+   // p det
+   TH1D* photonSinglesExp;
+   TH1D* photonSinglesSim;
+   TH1D* photonSinglesBack;
+
+   // correlated histograms
+   TH2I* neutronGammaMult;
+
+   TH2D* neutronDoublesMat;
+   TH2D* neutronSinglesMat;
+   TH1D* neutronAngleCorr;
 /*
               _____              ___                  _
   _____ ___ _|_   _| _ ___ ___  | _ )_ _ __ _ _ _  __| |_  ___ ___
@@ -229,11 +257,18 @@ public :
  |  \/  |___| |_| |_  ___  __| |___
  | |\/| / -_)  _| ' \/ _ \/ _` (_-<
  |_|  |_\___|\__|_||_\___/\__,_/__/*/
+
+  // constructors
    readFiss(TString writeFile, TString nameExp);
    readFiss(TString writeFile, TString nameExp, TString nameSim);
-
-
    virtual ~readFiss();
+
+   // create a menu
+
+   // set thresholds and time limit
+   virtual void SetRunThresholds(double threshold, double max_time_n);
+   virtual void SetEnergyLimits(double min_n_erg, double max_n_erg, double min_p_erg, double max_p_erg);
+
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetExpEntry(Long64_t entry);
    virtual Int_t    GetSimEntry(Long64_t entry);
@@ -248,11 +283,22 @@ public :
    virtual void     ShowSim(Long64_t entry = -1);
 
    // loop through data
-   virtual void     LoopExp(double THRESHOLD, double MAX_TIME_N);
-   virtual void     LoopSim(double THRESHOLD, double MAX_TIME_N);
+   virtual void     LoopExp();
+   virtual void     LoopSim();
+
+   // perform FAME analysis
+   virtual void     SetBNBP(int BN, int BP); // set the number of bins for the covariance analysis
+   virtual void     CovEM(); // number of energy bins in neutron and photon energies
+   virtual void     WriteCovEM();
+   virtual void     analyseCovEM(); // number of
+
 
    // initialization functions
    virtual void     InitializeHistograms();
+
+   // callable functions
+   virtual void     PlotAll();
+   virtual void     CompareAll();
 
    // plot the experiment branches
    virtual void     PlotTof();
@@ -260,6 +306,7 @@ public :
    virtual void     PlotErg();
    virtual void     PlotPSD();
    virtual void     PlotMult();
+   virtual void     PlotSingles();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();
@@ -267,6 +314,7 @@ public :
    virtual void     CompareErg();
    virtual void     ComparePSD();
    virtual void     CompareMult();
+   virtual void     CompareSingles();
 };
 
 #endif

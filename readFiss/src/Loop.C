@@ -11,13 +11,10 @@
 using namespace std;
 
 
-void readFiss::LoopExp(double THRESHOLD, double MAX_TIME_N)
+void readFiss::LoopExp()
 {
 
    cout << "Now looping through experiment. " << endl;
-
-   cout << "Using: threshold = " << THRESHOLD << " MeVee, " << " Tmax = " << MAX_TIME_N << " ns." << endl;
-
 
    if (expTree == 0) return;
 
@@ -47,6 +44,7 @@ void readFiss::LoopExp(double THRESHOLD, double MAX_TIME_N)
             neutronTofExp->Fill(neutronDetTimes[i]);
             neutronEnergyExp->Fill(neutronToFErg[i]);
             neutronPSDExp->Fill(neutronPSD[i]);
+            neutronSinglesExp->Fill(neutronDet[i]);
         }
       }
       neutronMultExp->Fill(nMult);
@@ -60,6 +58,7 @@ void readFiss::LoopExp(double THRESHOLD, double MAX_TIME_N)
           photonLightOutputExp->Fill(photonLightOut[i]);
           photonTofExp->Fill(photonDetTimes[i]);
           photonPSDExp->Fill(photonPSD[i]);
+          photonSinglesExp->Fill(photonDet[i]);
         }
       }
       photonMultExp->Fill(gMult);
@@ -73,6 +72,8 @@ void readFiss::LoopExp(double THRESHOLD, double MAX_TIME_N)
             neutronLightOutputBack->Fill(backNeutronLightOut[i]);
             neutronTofBack->Fill(backNeutronDetTimes[i]);
             neutronEnergyBack->Fill(backNeutronToFErg[i]);
+            neutronPSDBack->Fill(backNeutronPSD[i]);
+            neutronSinglesBack->Fill(backNeutronDet[i]);
         }
       }
       neutronMultBack->Fill(nMultBack);
@@ -85,6 +86,8 @@ void readFiss::LoopExp(double THRESHOLD, double MAX_TIME_N)
           gMultBack++;
           photonLightOutputBack->Fill(backPhotonLightOut[i]);
           photonTofBack->Fill(backPhotonDetTimes[i]);
+          photonPSDBack->Fill(photonPSD[i]);
+          photonSinglesBack->Fill(backPhotonDet[i]);
         }
       }
       photonMultBack->Fill(gMultBack);
@@ -93,7 +96,7 @@ void readFiss::LoopExp(double THRESHOLD, double MAX_TIME_N)
 }
 
 
-void readFiss::LoopSim(double THRESHOLD, double MAX_TIME_N)
+void readFiss::LoopSim()
 {
     cout << "Now looping through simulation. " << endl;
 
@@ -124,6 +127,7 @@ void readFiss::LoopSim(double THRESHOLD, double MAX_TIME_N)
               neutronLightOutputSim->Fill(neutronIntegral[i]);
               neutronTofSim->Fill(neutronDetTimes[i]);
               neutronEnergySim->Fill(neutronEnergy[i]);
+              neutronSinglesSim->Fill(neutronChannel[i]);
           }
         }
         neutronMultSim->Fill(nMult);
@@ -136,6 +140,7 @@ void readFiss::LoopSim(double THRESHOLD, double MAX_TIME_N)
               gMult++;
               photonLightOutputSim->Fill(photonIntegral[i]);
               photonTofSim->Fill(photonDetTimes[i]);
+              photonSinglesSim->Fill(photonChannel[i]);
           }
         }
         photonMultSim->Fill(gMult);

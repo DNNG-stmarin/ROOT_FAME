@@ -15,6 +15,8 @@ readFiss::readFiss(TString writeFile, TString nameExp)
     // used to generate this class and read the Tree.
     TTree* tree;
 
+    cout << "Initializing experiment tree from " << nameExp << endl;
+
     TFile* f = (TFile*)gROOT->GetListOfFiles()->FindObject(nameExp);
     if (!f || !f->IsOpen()) {
         f = new TFile(nameExp);
@@ -189,7 +191,7 @@ void readFiss::InitSim(TTree* tree)
 
     simTree->SetBranchAddress("neutronMult", &neutronMult, &b_neutronMultSim);//already defined no need to change
     simTree->SetBranchAddress("gammaMult", &gammaMult, &b_gammaMultSim);
-    simTree->SetBranchAddress("neutronChannel", neutronDet, &b_neutronChannelSim);
+    simTree->SetBranchAddress("neutronChannel", neutronChannel, &b_neutronChannelSim);
     simTree->SetBranchAddress("neutronDetTimes", neutronDetTimes, &b_neutronDetTimesSim);
     simTree->SetBranchAddress("neutronEnergy", neutronEnergy, &b_neutronEnergySim);
     simTree->SetBranchAddress("neutronIntegral", neutronIntegral, &b_neutronIntegralSim);

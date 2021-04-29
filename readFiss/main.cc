@@ -20,6 +20,8 @@ using namespace std;
 int main(int argc, char** argv)
 {
 
+  gErrorIgnoreLevel = kWarning;
+
   cout << "\n Welcome to READ_FAME \n" << endl;
 
   TString expFile;
@@ -63,26 +65,27 @@ int main(int argc, char** argv)
 
 
   // TBrowser* browser = new TBrowser();
+  f->SetBNBP(10,50);
+  f->SetRunThresholds(0.20, 70.0);
+  f->SetEnergyLimits(0,10.0,0,4.0);
 
-  f->LoopExp(0.03, 45.0);
+  // loop through
+  f->LoopExp();
   if(simMode)
   {
-    f->LoopSim(0.03, 45.0);
+    f->LoopSim();
   }
 
-  f->PlotLightOut();
-  f->PlotTof();
-  f->PlotErg();
-  f->PlotMult();
-  f->PlotPSD();
+  // // covEM plot
+  // f->CovEM();
+  // f->WriteCovEM();
+
+  // plotting sections
+  f->PlotAll();
 
   if(simMode)
   {
-    f->CompareLightOut();
-    f->CompareTof();
-    f->CompareErg();
-    f->CompareMult();
-    f->ComparePSD();
+    f->CompareAll();
   }
 
 

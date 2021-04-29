@@ -22,6 +22,18 @@ void readFiss::InitializeHistograms()
   const int minMult = 0;
   const int maxMult = 10;
 
+  const int numDets = 40;
+
+  const int numCosBins = 100;
+
+
+  /*
+   _   _                         _      _          _
+  | | | |_ _  __ ___ _ _ _ _ ___| |__ _| |_ ___ __| |
+  | |_| | ' \/ _/ _ \ '_| '_/ -_) / _` |  _/ -_) _` |
+   \___/|_||_\__\___/_| |_| \___|_\__,_|\__\___\__,_|
+
+   */
 
 
   neutronLightOutputExp = new TH1D("neutronLightOutputExp", "Light Output Experiment;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
@@ -33,6 +45,8 @@ void readFiss::InitializeHistograms()
   photonMultExp = new TH1I("photonMultExp", "Photon Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
   neutronPSDExp = new TH1D("neutronPSDExp", "Neutron PSP; PSP (tail/total); counts",  numPSDBins, minPSP, maxPSP);
   photonPSDExp = new TH1D("photonPSDExp", "Photon PSP; PSP (tail/total); counts", numPSDBins, minPSP, maxPSP);
+  neutronSinglesExp = new TH1D("neutronSinglesExp", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets);
+  photonSinglesExp = new TH1D("photonSinglesExp", "Photon Singles; Detector1; Detector2; counts", numDets, 0, numDets);
 
   neutronLightOutputBack = new TH1D("neutronLightOutputBack", "Light Output Background;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
   photonLightOutputBack = new TH1D("photonLightOutputBack", "Light Output Background;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
@@ -43,6 +57,8 @@ void readFiss::InitializeHistograms()
   photonMultBack = new TH1I("photonMultBack", "Photon Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
   neutronPSDBack = new TH1D("neutronPSDBack", "Neutron PSP; PSP (tail/total); counts",  numPSDBins, minPSP, maxPSP);
   photonPSDBack = new TH1D("photonPSDBack", "Photon PSP; PSP (tail/total); counts", numPSDBins, minPSP, maxPSP);
+  neutronSinglesBack = new TH1D("neutronSinglesBack", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets);
+  photonSinglesBack = new TH1D("photonSinglesBack", "Photon Singles; Detector1; Detector2; counts", numDets, 0, numDets);
 
 
 
@@ -57,6 +73,23 @@ void readFiss::InitializeHistograms()
     photonMultSim = new TH1I("photonMultSim", "Photon Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
     neutronPSDSim = new TH1D("neutronPSDSim", "Neutron PSP; PSP (tail/total); counts",  numPSDBins, minPSP, maxPSP);
     photonPSDSim = new TH1D("photonPSDSim", "Photon PSP; PSP (tail/total); counts", numPSDBins, minPSP, maxPSP);
+    neutronSinglesSim = new TH1D("neutronSinglesSim", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets);
+    photonSinglesSim = new TH1D("photonSinglesSim", "Photon Singles; Detector1; Detector2; counts", numDets, 0, numDets);
   }
+
+/*
+  ___                 _      _          _
+ / __|___ _ _ _ _ ___| |__ _| |_ ___ __| |
+| (__/ _ \ '_| '_/ -_) / _` |  _/ -_) _` |
+ \___\___/_| |_| \___|_\__,_|\__\___\__,_|
+
+ */
+  // correlated multiplicity
+  neutronGammaMult = new TH2I("neutronGammaMultExp", "Neutron-Gamma Multiplicity;Neutron Multiplicity; Gamma Multiplicity; Counts",maxMult, minMult, maxMult, maxMult, minMult, maxMult);
+
+// angular coorrelations
+  neutronDoublesMat = new TH2D("neutronDoublesExp", "Neutron Doubles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
+  neutronSinglesMat = new TH2D("neutronSinglesMatExp", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
+  neutronAngleCorr = new TH1D("neutronAngleCorr", "Neutron Angular Correlations; Cos T; counts", numCosBins, -1, 1);
 
 }

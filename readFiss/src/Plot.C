@@ -16,6 +16,26 @@
 */
 using namespace std;
 
+void readFiss::PlotAll()
+{
+  PlotLightOut();
+  PlotTof();
+  PlotErg();
+  PlotMult();
+  PlotPSD();
+  PlotSingles();
+}
+
+void readFiss::CompareAll()
+{
+  CompareLightOut();
+  CompareTof();
+  CompareErg();
+  CompareMult();
+  ComparePSD();
+  CompareSingles();
+}
+
 void readFiss::PlotLightOut()
 {
     analysisFile->cd();
@@ -198,6 +218,43 @@ void readFiss::PlotPSD()
     c_PSD->SaveAs("ParticleDiscrimination.eps");
 }
 
+void readFiss::PlotSingles()
+{
+    analysisFile->cd();
+    cd_basics->cd();
+    cout << "Plotting Singles." << endl;
+
+    //create a canvas
+    TCanvas* c_Sin = new TCanvas("cSin", "Singles Rates", 800,400);
+    // cLO->Divide(1,2);
+
+    c_Sin->cd();
+
+    photonSinglesExp->SetLineColor(kRed);
+    photonSinglesExp->Draw();
+
+    photonSinglesSim->SetLineColor(kRed);
+    photonSinglesSim->SetLineStyle(kDashed);
+    photonSinglesSim->Draw("SAME");
+
+    neutronSinglesBack->SetLineColor(kBlue);
+    neutronSinglesBack->Draw("SAME");
+
+    neutronSinglesBack->SetLineColor(kBlue);
+    neutronSinglesBack->SetLineStyle(kDashed);
+    neutronSinglesBack->Draw("SAME");
+
+    TLegend *legend = new TLegend(0.7, 0.8, 0.48, 0.9);
+    legend->AddEntry("neutronSinglesExp", "Experimental Neutron");
+    legend->AddEntry("photonSinglesExp", "Experimental Photon");
+    legend->AddEntry("neutronSinglesBack", "Background Neutron");
+    legend->AddEntry("photonSinglesBack", "Background Photon");
+    legend->Draw("SAME");
+
+    c_Sin->Write();
+    c_Sin->SaveAs("Singles.eps");
+}
+
 /*
    ___                          _                ___ _         _____
   / __|___ _ __  _ __  __ _ _ _(_)___ ___ _ _   / __(_)_ __   / / __|_ ___ __
@@ -220,15 +277,17 @@ void readFiss::CompareLightOut()
     // cLO->Divide(1,2);
     c_LOs->cd();
 
-    //create a canvas
-    neutronLightOutputExp->SetLineColor(kBlue);
-    neutronLightOutputExp->Draw();
+
 
     photonLightOutputExp->SetLineColor(kRed);
-    photonLightOutputExp->Draw("SAME");
+    photonLightOutputExp->Draw();
+
+    //create a canvas
+    neutronLightOutputExp->SetLineColor(kBlue);
+    neutronLightOutputExp->Draw("SAME");
 
     neutronLightOutputSim->SetLineColor(kBlue);
-    neutronLightOutputExp->SetLineStyle(kDashed);
+    neutronLightOutputSim->SetLineStyle(kDashed);
     neutronLightOutputSim->Draw("SAME");
 
     photonLightOutputSim->SetLineColor(kRed);
@@ -327,7 +386,7 @@ void readFiss::CompareMult()
     cout << "Comparing Multiplicity." << endl;
 
     //create a canvas
-    TCanvas* c_Mults = new TCanvas("cMult", "Multiplicity", 800,400);
+    TCanvas* c_Mults = new TCanvas("cMults", "Multiplicity", 800,400);
     // cLO->Divide(1,2);
 
     c_Mults->cd();
@@ -361,11 +420,11 @@ void readFiss::CompareMult()
 void readFiss::ComparePSD()
 {
     analysisFile->cd();
-    cd_basics->cd();
+    cd_simComparison->cd();
     cout << "Comparing Discrimination." << endl;
 
     //create a canvas
-    TCanvas* c_PSDs = new TCanvas("cPSD", "Particle Dicrimination", 800,400);
+    TCanvas* c_PSDs = new TCanvas("cPSDs", "Particle Dicrimination", 800,400);
     // cLO->Divide(1,2);
 
     c_PSDs->cd();
@@ -387,10 +446,47 @@ void readFiss::ComparePSD()
     TLegend *legend = new TLegend(0.7, 0.8, 0.48, 0.9);
     legend->AddEntry("neutronPSDExp", "Experimental Neutron");
     legend->AddEntry("photonPSDExp", "Experimental Photon");
-    legend->AddEntry("neutronPSDBack", "Background Neutron");
-    legend->AddEntry("photonPSDBack", "Background Photon");
+    legend->AddEntry("neutronPSDSim", "Simulated Neutron");
+    legend->AddEntry("photonPSDSim", "Simulated Photon");
     legend->Draw("SAME");
 
     c_PSDs->Write();
     c_PSDs->SaveAs("ParticleDiscriminationSim.eps");
+}
+
+void readFiss::CompareSingles()
+{
+    analysisFile->cd();
+    cd_simComparison->cd();
+    cout << "Comparing Singles." << endl;
+
+    //create a canvas
+    TCanvas* c_Sins = new TCanvas("cSins", "Singles Rates", 800,400);
+    // cLO->Divide(1,2);
+
+    c_Sins->cd();
+
+    photonSinglesExp->SetLineColor(kRed);
+    photonSinglesExp->Draw();
+
+    photonSinglesSim->SetLineColor(kRed);
+    photonSinglesSim->SetLineStyle(kDashed);
+    photonSinglesSim->Draw("SAME");
+
+    neutronSinglesExp->SetLineColor(kBlue);
+    neutronSinglesExp->Draw("SAME");
+
+    neutronSinglesSim->SetLineColor(kBlue);
+    neutronSinglesSim->SetLineStyle(kDashed);
+    neutronSinglesSim->Draw("SAME");
+
+    TLegend *legend = new TLegend(0.7, 0.8, 0.48, 0.9);
+    legend->AddEntry("neutronSinglesExp", "Experimental Neutron");
+    legend->AddEntry("photonSinglesExp", "Experimental Photon");
+    legend->AddEntry("neutronSinglesSim", "Simulated Neutron");
+    legend->AddEntry("photonSinglesSim", "Simulated Photon");
+    legend->Draw("SAME");
+
+    c_Sins->Write();
+    c_Sins->SaveAs("SinglesSim.eps");
 }
