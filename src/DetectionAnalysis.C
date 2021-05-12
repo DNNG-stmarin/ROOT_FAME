@@ -633,6 +633,8 @@ int DetectorSystemClass::DetectionAnalysis()
 
 				// cout << det << "." << energySlice << " psd: " << meanP << " " << meanN << " -> " << tempPSD << endl;
 
+
+
 				if(tempPSD < meanP || tempPSD > meanN || tempPSD >= 1)
 				{
 					// cout << "     throw" << endl;
@@ -648,6 +650,16 @@ int DetectorSystemClass::DetectionAnalysis()
 				// find the points for the graph
 				energySliceInd[numGoodSlicespsd] = tempErgPSD; //xvalue
 				discLinePoint[numGoodSlicespsd] = tempPSD; //yvalue
+
+/*///////	//saves the discrimination, mu, sigma values so that they can be correctly plotted onto the 2Dhist plot
+        //saves the energy and discrimination line values to the correct location
+        neutronMuExp[numGoodSlicespsd] = optimized->Parameter(4);    //fitCenterNeutron;
+        neutronSigmaExp[numGoodSlicespsd] = optimized->Parameter(5); //fitWidthNeutron;
+        photonMuExp[numGoodSlicespsd] = optimized->Parameter(1);     //fitCenterPhoton;
+        photonSigmaExp[numGoodSlicespsd] = optimized->Parameter(2);  //fitWidthPhoton;
+
+*//////////
+
 
 				TString canSliceName = "psd" + to_string(det) +  "Proj" + to_string(numGoodSlicespsd);
 
@@ -699,13 +711,56 @@ int DetectorSystemClass::DetectionAnalysis()
 
 				  detectors[det].discPSD = (TF1*)psdDisc->Clone();
 
+/*////////	// define the photon and neutron mu and sigma objects
+					cout << "fitting the mu and sigma paprameters" << endl;
+			    TGraph* g_neutronMu = new TGraph(numGoodSLicespsd+1, discrimLineErg, neutronMuExp);
+			    g_neutronMu->SetName("g_neutronMu");
+			    g_neutronMu->SetLineColor(kBlue);
+			    g_neutronMu->SetLineWidth(5);
+
+			    //
+			    TGraph* g_neutronSigma = new TGraph(numGoodSlicespsd+1, discrimLineErg, neutronSigmaExp);
+			    g_neutronSigma->SetName("g_neutronSigma");
+			    //g_neutronSigma->SetLineColor(kRed);
+
+			    //
+			    TGraph* g_photonMu = new TGraph(numGoodSLicespsd+1, discrimLineErg, photonMuExp);
+			    g_photonMu->SetName("g_photonMu");
+			    g_photonMu->SetLineColor(kGreen);
+			    g_photonMu->SetLineWidth(5);
+
+
+	//////	// fit the photon mean
+			    TFitResultPtr pMuFitResults = 0;
+			    pMuFitResults = g_photonMu->Fit(psdDisc, "S Q N B");
+
+			    // fit the neutron mean
+			    TFitResultPtr nMuFitResults = 0;
+			    nMuFitResults = g_neutronMu->Fit(psdDisc, "S Q N B");
+
+			    // fit the photon sigma
+			    TFitResultPtr pSiFitResults = 0;
+			    pSiFitResults = g_photonSigma->Fit(psdDisc, "S Q N B");
+
+			    // fit the neutron sigma
+			    TFitResultPtr nSiFitResults = 0;
+			    nSiFitResults = g_neutronSigma->Fit(psdDisc, "S Q N B");
+*///////// // end the fits
+
 					// draw the line on top of the histogram
 					canvasDiscErg->cd();
 					psdErgHists[det]->Draw();
 					discLines[det]->Draw("SAME");
 					detectors[det].discPSD->Draw("SAME");
+	/*//////  //plot the neutron and photon mean lines
+					g_photonMu->Draw("SAME");
+					g_neutronMu->Draw("SAME");
 					cdPsdErg->cd();
 					canvasDiscErg->Write();
+*/
+
+
+
 			}
 
 		}
