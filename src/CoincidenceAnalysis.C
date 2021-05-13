@@ -43,7 +43,17 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	TH1D* h_microTime = new TH1D("microTime", "Time in Micro; Time (ns); Counts", 10000, 0, 1e6);
 	TH1I* h_macroPop = new TH1I("macroPop", "Population in Macro; Number of Micropulses; Counts", 500, 0, 500);
 
-	TH1I* h_alphaCounts = new TH1I("alphaCounts", "Population in Macro; Number of Micropulses; Counts", 500, 0, 500);
+  TH1D* h_alphaSpec = new TH1D("alphaSpec", "Alpha spectrum; Pulse Integral (V us); Counts", 500, 0, 0.05);
+  TH1D* h_alphaTime = new TH1D("alphaTime", "Alpha time; t; Counts", 200000, -20000000, 0);
+
+  TH2D* h2_alphaTimeSpec = new TH2D("alphaTimeSpec", "Alpha spec vs. time; t (ns); Pulse Integral (V us)", 100, -120000, -20000, 500, 0, 0.05);
+  TH2D* h2_alphaChanSpec = new TH2D("alphaChanSpec", "Alpha spec vs. chan; Channel; Pulse Integral (V us)", 40, 0, 40, 500, 0, 0.05);
+  TH2D* h2_alphaTimeChan = new TH2D("alphaTimeChan", "Alpha chan vs. time; t (ns); Channel", 1000, -10000000, 0, 40, 0, 40);
+
+
+  TH1D* h_triggerTime = new TH1D("triggerTime", "Trigger Time; t (ns); Counts", 1e5, 0 + .5e6, 20e6 + .5e6);
+  TH1D* h_beamTime = new TH1D("beamTime", "Beam Time; t (ns); Counts", 1e5, 0 + .5e6, 20e6 + .5e6);
+  TH2D* h2_triggerTimeChan = new TH2D("triggerTimeChan", "Trigger chan vs. time; t (ns); Channel", 1e5, 0 + .5e6, 40e6 + .5e6, 4, 5, 9);
 
 
 	queue<BeamEvent> microStructure;
@@ -350,6 +360,9 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				TriggerBuffer[entryChannel].push(newTrigger);
 				// cout << TriggerBuffer[entryChannel].size() << endl;
 			}
+
+      h_triggerTime->Fill(timeDet - BEAM_DELAY); // Why is this a generic beam delay and not the calculated delay?
+      h2_triggerTimeChan->Fill(timeDet - BEAM_DELAY, detChannel);
 		}
 
 		else if(isBeam(detChannel, NUM_BEAMS, BEAM) >= 0)
@@ -357,6 +370,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			entryChannel = isBeam(detChannel, NUM_BEAMS, BEAM);
 			newBeam = BeamEvent(detChannel, timeDet, energyDep, energyTail);
 			BeamBuffer[entryChannel].push(newBeam);
+
+      h_beamTime->Fill(timeDet);
 			// cout << newBeam.getEnergy() << endl;
 		}
 
@@ -378,7 +393,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 																									| |
 																									|_|
 		*/
-		// cout << microStructure.size() << endl;
+		// cout << "microStructure size: " << microStructure.size() << endl;
 
 		// loop through the beams (usually only one)
 		for(int beamIndex = 0; beamIndex < NUM_BEAMS; beamIndex++)
@@ -632,28 +647,38 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				else if(deltaFissBeam <= -1*BEAM_WINDOW)
 				{
 					// the fission stored in memory does not belong to a beam event
+          h_alphaSpec->Fill(curFis.triggerEnergy);
+          h_alphaTime->Fill(deltaFissBeam);
+          h2_alphaTimeSpec->Fill(deltaFissBeam, curFis.triggerEnergy);
+          h2_alphaTimeChan->Fill(deltaFissBeam, curFis.triggerChannel);
+
+          if (deltaFissBeam < -50000 && deltaFissBeam > -150000) // Replace hard-coded values
+          {
+            h2_alphaChanSpec->Fill(curFis.triggerChannel, curFis.triggerEnergy);
+          }
+
 					ValidTriggerBuffer.pop();
 				}
 
 				else if(abs(deltaFissBeam) < BEAM_WINDOW)
 				{
-						// the fission reaction is associated with the current beam and a new
-						// accepted fission is created
+					// the fission reaction is associated with the current beam and a new
+					// accepted fission is created
 
-						goodFis = CoincidenceEvent(curFis.triggerTime,
-						 													 curFis.triggerEnergy,
-																			 curFis.triggerChannel,
-																			 curFis.triggerPSP,
-																			 curFis.triggerTail);
+					goodFis = CoincidenceEvent(curFis.triggerTime,
+					 													 curFis.triggerEnergy,
+																		 curFis.triggerChannel,
+																		 curFis.triggerPSP,
+																		 curFis.triggerTail);
 
-						goodFis.beamTime = deltaFissBeam;
-						goodFis.beamEnergy = curBeam.getEnergy();
-						goodFis.beamPSP = curBeam.getPsp();
-						goodFis.beamChannel = curBeam.getDetector();
-						goodFis.beamMicroIndex = curBeam.getMicroIndex();
+					goodFis.beamTime = deltaFissBeam;
+					goodFis.beamEnergy = curBeam.getEnergy();
+					goodFis.beamPSP = curBeam.getPsp();
+					goodFis.beamChannel = curBeam.getDetector();
+					goodFis.beamMicroIndex = curBeam.getMicroIndex();
 
-						FissionBuffer.push(goodFis);
-						ValidTriggerBuffer.pop(); // discard only the fission, there could be several fiss for same beam.
+					FissionBuffer.push(goodFis);
+					ValidTriggerBuffer.pop(); // discard only the fission, there could be several fiss for same beam.
 				}
 
 				else
@@ -824,10 +849,23 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		if(NUM_BEAMS > 0)
 		{
+      beamFile->cd();
 			h_microTimeDiff->Write();
 			h_macroTimeDiff->Write();
 			h_microTime->Write();
 			h_macroPop->Write();
+      h_alphaSpec->Write();
+      h_alphaTime->Write();
+
+      h2_alphaTimeSpec->Write();
+      h2_alphaChanSpec->Write();
+      h2_alphaTimeChan->Write();
+
+      h_triggerTime->Write();
+      h_beamTime->Write();
+      h2_triggerTimeChan->Write();
+
+      expFile->cd();
 		}
 
 

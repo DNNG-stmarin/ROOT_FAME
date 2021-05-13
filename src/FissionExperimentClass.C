@@ -53,6 +53,7 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	}
 
 	detFile = new TFile(detFileT, "RECREATE");
+  beamFile = new TFile(beamFileT, "RECREATE");
 
   // create the chain with all the entries to analyze for the raw coincidence mode
 	rawTreeChain = new TChain();

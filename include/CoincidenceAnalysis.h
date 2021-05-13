@@ -37,10 +37,11 @@ public :
    Int_t           fCurrent; //!current Tree number in a TChain
 
    //create TTree object to contain the output coincidence tree
-   TTree* coincTree;;
+   TTree* coincTree;
 
    // output file
    TFile* expFile = 0;
+   TFile* beamFile = 0;
    // TDirectory* fileTreeDir = 0;
 
    // declare the digitizer classes
