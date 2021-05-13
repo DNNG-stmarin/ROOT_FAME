@@ -111,7 +111,7 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 			 delete fileRaw;
 		}
 
-		CoincidenceAnalysis* inputData = new CoincidenceAnalysis(expFileWrite, rawTreeChain, info); //replace digType w info->DATA_TYPE
+		CoincidenceAnalysis* inputData = new CoincidenceAnalysis(expFileWrite, rawTreeChain, beamFile, info); //replace digType w info->DATA_TYPE
 		inputData->CreateCoincidenceTree(numEntries);
 	}
 
