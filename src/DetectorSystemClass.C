@@ -13,6 +13,7 @@ Date: May 24th, 2020
 DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoSystem* info)
 {
 	DETECTOR_THRESHOLD = info->DETECTOR_THRESHOLD;
+	DETECTOR_CLIP = info->DETECTOR_CLIP;
 	COINC_WINDOW = info->COINC_WINDOW;
 	BEAM_WINDOW = info->BEAM_WINDOW;
   BEAM_DISTANCE = info->BEAM_DISTANCE;
@@ -46,6 +47,11 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	detectors = new DetectorClass[NUM_DETS];
 	cout << "Detectors and triggers have been created" << endl;
 
+  cout << "Background shift set to " << BACKGROUND_SHIFT << " ns." << endl;
+	cout << "Collecting background between: " << MIN_TIME_N - BACKGROUND_SHIFT;
+	cout << "ns and " << MAX_TIME_N - BACKGROUND_SHIFT << " ns." << endl;
+
+	// initializing all delays and resolutions
 	for(int det = 0; det < NUM_DETS; det ++)
 	{
 		detectors[det].timeDelay = new double[NUM_TRIGGERS];
@@ -116,11 +122,11 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdPsd = detFile->mkdir("PSD");
 	cdToF = detFile->mkdir("TOF");
 	cdKin = detFile->mkdir("Kinematics");
-	cdMult =  detFile->mkdir("Multiplicity");
-	cdCoinc =  detFile->mkdir("Coincidences");
-	cdFigCoinc = detFile->mkdir("CoincFigs");
-	cdBicorr = detFile->mkdir("Bicorr");
-	cdRef = detFile->mkdir("Reflections");
+	// cdMult =  detFile->mkdir("Multiplicity");
+	// cdCoinc =  detFile->mkdir("Coincidences");
+	// cdFigCoinc = detFile->mkdir("CoincFigs");
+	// cdBicorr = detFile->mkdir("Bicorr");
+	// cdRef = detFile->mkdir("Reflections");
 	cdBeam = detFile->mkdir("Beam");
 
 	// create the folder for psd slices

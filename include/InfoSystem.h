@@ -55,6 +55,7 @@ public:
   double COINC_WINDOW;
   double BEAM_WINDOW;
   double DETECTOR_THRESHOLD;
+  double DETECTOR_CLIP;
   double BEAM_DISTANCE;
 
   double TRIGGER_THRESHOLD;
@@ -73,6 +74,7 @@ public:
   double MINPSD_FIT;
   double DIVPSD_FIT;
   double MAXPSD_FIT;
+  
   double MINERG_FIT;
   double MAXERG_FIT;
 
@@ -117,6 +119,7 @@ public:
     BEAM_DISTANCE = 2150;
 
     DETECTOR_THRESHOLD = 0.1;
+    DETECTOR_CLIP = 10;
     TRIGGER_THRESHOLD = 0.1;
     TRIGGER_CLIP = 100.0;
     TRIGGER_MIN_PSP = 0.0;
@@ -258,6 +261,10 @@ public:
       else if(tag == "<DETECTOR_THRESHOLD>:") {
         file >> value;
         DETECTOR_THRESHOLD = stod(value);
+      }
+      else if(tag == "<DETECTOR_CLIP>:") {
+        file >> value;
+        DETECTOR_CLIP = stod(value);
       }
       else if(tag == "<TRIGGER_THRESHOLD>:") {
         file >> value;
