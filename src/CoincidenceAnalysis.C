@@ -894,6 +894,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	// expFile->Close();
 
+  delete beamFile;
+
 
 	// coincTree->Write();
 	//expFile->Close();
