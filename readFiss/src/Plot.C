@@ -24,6 +24,10 @@ void readFiss::PlotAll()
   PlotMult();
   PlotPSD();
   PlotSingles();
+
+  // JONATHAN
+  PlotMultCor();
+  PlotMultLO();
 }
 
 void readFiss::CompareAll()
@@ -233,9 +237,14 @@ void readFiss::PlotSingles()
     photonSinglesExp->SetLineColor(kRed);
     photonSinglesExp->Draw();
 
-    photonSinglesSim->SetLineColor(kRed);
-    photonSinglesSim->SetLineStyle(kDashed);
-    photonSinglesSim->Draw("SAME");
+    // JONATHAN - I'm pretty sure this should only be attempted if sim data
+    // is given, so I'm putting this one in an if statement. It causes a
+    // crash otherwise.
+    if(simTree){
+      photonSinglesSim->SetLineColor(kRed);
+      photonSinglesSim->SetLineStyle(kDashed);
+      photonSinglesSim->Draw("SAME");
+    }
 
     neutronSinglesBack->SetLineColor(kBlue);
     neutronSinglesBack->Draw("SAME");
@@ -253,6 +262,44 @@ void readFiss::PlotSingles()
 
     c_Sin->Write();
     c_Sin->SaveAs("Singles.eps");
+}
+
+// IMPLEMENTED BY JONATHAN FOR PRACTICE
+void readFiss::PlotMultCor()
+{
+  analysisFile->cd();
+  cd_jonathan->cd();
+  cout << "JONATHAN - Plotting correlated multiplicity." << endl;
+
+  //make canvas
+  TCanvas* c_MultCor = new TCanvas("cMultCor", "Neutron-Gamma Multiplicity",
+                                                                  800, 400);
+  c_MultCor->cd();
+
+  neutronGammaMult->SetLineColor(kRed);
+  neutronGammaMult->Draw("COLZ");
+
+  c_MultCor->Write();
+  c_MultCor->SaveAs("MultiplicityCorrelation.eps");
+}
+
+// IMPLEMENTED BY JONATHAN FOR PRACTICE
+void readFiss::PlotMultLO()
+{
+  analysisFile->cd();
+  cd_jonathan->cd();
+  cout << "JONATHAN - Plotting correlated mult/LO." << endl;
+
+  //make canvas
+  TCanvas* c_MultLO = new TCanvas("cMultLO", "Neutron Mult vs. Photon LO",
+                                                                800, 400);
+  c_MultLO->cd();
+
+  neutronMultPhotonLO->SetLineColor(kRed);
+  neutronMultPhotonLO->Draw("COLZ");
+
+  c_MultLO->Write();
+  c_MultLO->SaveAs("NeutronMultiplicityPhotonLO.eps");
 }
 
 /*

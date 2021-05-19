@@ -41,6 +41,9 @@ public :
    TDirectory*      cd_simComparison;
    TDirectory*      cd_FAME;
 
+   //JONATHAN DIRECTORY
+   TDirectory*       cd_jonathan;
+
 
   /*
    ___                       _
@@ -124,7 +127,9 @@ public :
    TH1D* photonSinglesBack;
 
    // correlated histograms
-   TH2I* neutronGammaMult;
+   TH2I* neutronGammaMult; // IMPLEMENTED BY JONATHAN FOR PRACTICE
+      // ADDED AND IMPLEMENTED BY JONATHAN FOR PRACTICE
+   TH2D* neutronMultPhotonLO;
 
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
@@ -307,6 +312,10 @@ public :
    virtual void     PlotPSD();
    virtual void     PlotMult();
    virtual void     PlotSingles();
+
+   //JONATHAN PLOTS
+   virtual void     PlotMultCor();
+   virtual void     PlotMultLO();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();
