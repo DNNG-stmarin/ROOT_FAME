@@ -56,7 +56,7 @@ readFiss::readFiss(TString writeFile, TString nameExp, TString nameSim)
     InitExp(tree);
 
     // simulations
-    cout << "Initializing simulation tree from " << nameExp << endl;
+    cout << "Initializing simulation tree from " << nameSim << endl; // JONATHAN - used to initialize from nameExp
     f = (TFile*)gROOT->GetListOfFiles()->FindObject(nameSim);
     if (!f || !f->IsOpen()) {
         f = new TFile(nameSim);
@@ -75,6 +75,15 @@ readFiss::readFiss(TString writeFile, TString nameExp, TString nameSim)
     cd_correlated = analysisFile->mkdir("Correlated");
 }
 
+// JONATHAN - beam constructor placeholder
+// fourth argument is only there to distinguish from other constructors
+readFiss::readFiss(TString writeFile, TString nameExp, TString nameBeam, int mode)
+{
+  cout << "BEAM CONSTRUCTOR NOT IMPLEMENTED. THE PROGRAM WILL CRASH LATER ON." <<
+          " INPUT ANYTHING IF YOU UNDERSTAND." << endl;
+  TString IUnderstandAndIAmImplementingTheConstructor;
+  cin >> IUnderstandAndIAmImplementingTheConstructor;
+}
 
 //Destructor
 readFiss::~readFiss()

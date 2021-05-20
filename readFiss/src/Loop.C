@@ -148,3 +148,12 @@ void readFiss::LoopSim()
 
     }
 }
+
+
+void readFiss::LoopBeam()
+{
+  cout << "LoopBeam NOT IMPLEMENTED. INPUT ANYTHING IF YOU UNDERSTAND." <<
+          " THE PROGRAM WILL CRASH." << endl;
+  TString IUnderstandAndIAmImplementingTheMethod;
+  cin >> IUnderstandAndIAmImplementingTheMethod;
+}

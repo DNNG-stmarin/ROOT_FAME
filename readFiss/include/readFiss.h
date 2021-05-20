@@ -262,6 +262,7 @@ public :
   // constructors
    readFiss(TString writeFile, TString nameExp);
    readFiss(TString writeFile, TString nameExp, TString nameSim);
+   readFiss(TString writeFile, TString nameExp, TString nameBeam, int mode); // JONATHAN - beam constructor
    virtual ~readFiss();
 
    // create a menu
@@ -286,6 +287,7 @@ public :
    // loop through data
    virtual void     LoopExp();
    virtual void     LoopSim();
+   virtual void     LoopBeam(); // JONATHAN - beam loop
 
    // perform FAME analysis
    virtual void     SetBNBP(int BN, int BP); // set the number of bins for the covariance analysis
