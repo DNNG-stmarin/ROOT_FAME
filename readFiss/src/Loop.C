@@ -58,14 +58,10 @@ void readFiss::LoopExp()
           photonTofExp->Fill(photonDetTimes[i]);
           photonPSDExp->Fill(photonPSD[i]);
           photonSinglesExp->Fill(photonDet[i]);
-
-          //JONATHAN
           neutronMultPhotonLO->Fill(nMult, photonLightOut[i]);
         }
       }
       photonMultExp->Fill(gMult);
-
-      //JONATHAN
       neutronGammaMult->Fill(nMult, gMult);
 
       // loop through back neutrons

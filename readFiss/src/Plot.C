@@ -24,8 +24,6 @@ void readFiss::PlotAll()
   PlotMult();
   PlotPSD();
   PlotSingles();
-
-  // JONATHAN
   PlotMultCor();
   PlotMultLO();
 }
@@ -237,17 +235,12 @@ void readFiss::PlotSingles()
     photonSinglesExp->SetLineColor(kRed);
     photonSinglesExp->Draw();
 
-    // JONATHAN - I'm pretty sure this should only be attempted if sim data
-    // is given, so I'm putting this one in an if statement. It causes a
-    // crash otherwise.
-    if(simTree){
-      photonSinglesSim->SetLineColor(kRed);
-      photonSinglesSim->SetLineStyle(kDashed);
-      photonSinglesSim->Draw("SAME");
-    }
+    photonSinglesBack->SetLineColor(kRed);
+    photonSinglesBack->SetLineStyle(kDashed);
+    photonSinglesBack->Draw("SAME");
 
-    neutronSinglesBack->SetLineColor(kBlue);
-    neutronSinglesBack->Draw("SAME");
+    neutronSinglesExp->SetLineColor(kBlue);
+    neutronSinglesExp->Draw("SAME");
 
     neutronSinglesBack->SetLineColor(kBlue);
     neutronSinglesBack->SetLineStyle(kDashed);
@@ -264,13 +257,11 @@ void readFiss::PlotSingles()
     c_Sin->SaveAs("Singles.eps");
 }
 
-// Merge these two?
-// IMPLEMENTED BY JONATHAN FOR PRACTICE
 void readFiss::PlotMultCor()
 {
   analysisFile->cd();
-  cd_basics->cd();
-  cout << "Plotting correlated multiplicity." << endl; //change?
+  cd_correlated->cd();
+  cout << "Plotting correlated multiplicity." << endl;
 
   //make canvas
   TCanvas* c_MultCor = new TCanvas("cMultCor", "Neutron-Gamma Multiplicity",
@@ -281,15 +272,14 @@ void readFiss::PlotMultCor()
   neutronGammaMult->Draw("COLZ");
 
   c_MultCor->Write();
-  c_MultCor->SaveAs("MultiplicityCorrelation.eps"); //save or not save?
+  c_MultCor->SaveAs("MultiplicityCorrelation.eps");
 }
 
-// IMPLEMENTED BY JONATHAN FOR PRACTICE
 void readFiss::PlotMultLO()
 {
   analysisFile->cd();
-  cd_basics->cd();
-  cout << "Plotting correlated mult/LO." << endl; //change?
+  cd_correlated->cd();
+  cout << "Plotting correlated mult/LO." << endl;
 
   //make canvas
   TCanvas* c_MultLO = new TCanvas("cMultLO", "Neutron Mult vs. Photon LO",
@@ -300,7 +290,7 @@ void readFiss::PlotMultLO()
   neutronMultPhotonLO->Draw("COLZ");
 
   c_MultLO->Write();
-  c_MultLO->SaveAs("NeutronMultiplicityPhotonLO.eps"); //save or not save?
+  c_MultLO->SaveAs("NeutronMultiplicityPhotonLO.eps");
 }
 
 /*
