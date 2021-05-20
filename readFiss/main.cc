@@ -52,24 +52,24 @@ int main(int argc, char** argv)
   }
   cout << "\n";
 
-  cout << "Input writeFile name" << endl;
+  cout << "Input writeFile path" << endl;
   cin >> writeFile;
   cout << "\n";
 
-  cout << "Input expFile name" << endl;
+  cout << "Input expFile path" << endl;
   cin >> expFile;
   cout << "\n";
 
   if(mode == 1)
   {
-    cout << "Input simFile name" << endl;
+    cout << "Input simFile path" << endl;
     cin >> simFile;
     f = new readFiss(writeFile, expFile, simFile);
   }
 
   else if(mode == 2)
   {
-    cout << "Input beamFile name" << endl;
+    cout << "Input beamFile path" << endl;
     cin >> beamFile;
     f = new readFiss(writeFile, expFile, beamFile, mode);
   }
