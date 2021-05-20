@@ -32,7 +32,6 @@ readFiss::readFiss(TString writeFile, TString nameExp)
     analysisFile = new TFile(writeFile, "RECREATE");
 
     cd_basics = analysisFile->mkdir("Basic");
-    cd_jonathan = analysisFile->mkdir("Jonathan"); // ADDED BY JONATHAN
     cd_individual = analysisFile->mkdir("Individual");
     cd_FAME = analysisFile->mkdir("FAME");
 }
@@ -69,7 +68,6 @@ readFiss::readFiss(TString writeFile, TString nameExp, TString nameSim)
     analysisFile = new TFile(writeFile, "RECREATE");
 
     cd_basics = analysisFile->mkdir("Basic");
-    cd_jonathan = analysisFile->mkdir("Jonathan"); // ADDED BY JONATHAN
     cd_individual = analysisFile->mkdir("Individual");
     cd_simComparison = analysisFile->mkdir("SimComparison");
     cd_FAME = analysisFile->mkdir("FAME");

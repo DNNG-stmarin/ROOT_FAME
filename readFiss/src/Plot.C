@@ -264,12 +264,13 @@ void readFiss::PlotSingles()
     c_Sin->SaveAs("Singles.eps");
 }
 
+// Merge these two?
 // IMPLEMENTED BY JONATHAN FOR PRACTICE
 void readFiss::PlotMultCor()
 {
   analysisFile->cd();
-  cd_jonathan->cd();
-  cout << "JONATHAN - Plotting correlated multiplicity." << endl;
+  cd_basics->cd();
+  cout << "Plotting correlated multiplicity." << endl; //change?
 
   //make canvas
   TCanvas* c_MultCor = new TCanvas("cMultCor", "Neutron-Gamma Multiplicity",
@@ -280,15 +281,15 @@ void readFiss::PlotMultCor()
   neutronGammaMult->Draw("COLZ");
 
   c_MultCor->Write();
-  c_MultCor->SaveAs("MultiplicityCorrelation.eps");
+  c_MultCor->SaveAs("MultiplicityCorrelation.eps"); //save or not save?
 }
 
 // IMPLEMENTED BY JONATHAN FOR PRACTICE
 void readFiss::PlotMultLO()
 {
   analysisFile->cd();
-  cd_jonathan->cd();
-  cout << "JONATHAN - Plotting correlated mult/LO." << endl;
+  cd_basics->cd();
+  cout << "Plotting correlated mult/LO." << endl; //change?
 
   //make canvas
   TCanvas* c_MultLO = new TCanvas("cMultLO", "Neutron Mult vs. Photon LO",
@@ -299,7 +300,7 @@ void readFiss::PlotMultLO()
   neutronMultPhotonLO->Draw("COLZ");
 
   c_MultLO->Write();
-  c_MultLO->SaveAs("NeutronMultiplicityPhotonLO.eps");
+  c_MultLO->SaveAs("NeutronMultiplicityPhotonLO.eps"); //save or not save?
 }
 
 /*

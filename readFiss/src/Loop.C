@@ -19,7 +19,6 @@ void readFiss::LoopExp()
    if (expTree == 0) return;
 
    Long64_t nentries = expTree->GetEntriesFast();
-   //nentries = 1000; //JONATHAN TEMP MAX ENTRIES
 
    int nMult, gMult, nMultBack, gMultBack;
    Long64_t nbytes = 0, nb = 0;

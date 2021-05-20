@@ -41,9 +41,6 @@ public :
    TDirectory*      cd_simComparison;
    TDirectory*      cd_FAME;
 
-   //JONATHAN DIRECTORY
-   TDirectory*       cd_jonathan;
-
 
   /*
    ___                       _
