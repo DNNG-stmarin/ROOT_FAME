@@ -24,6 +24,8 @@ void readFiss::PlotAll()
   PlotMult();
   PlotPSD();
   PlotSingles();
+  PlotMultCor();
+  PlotMultLO();
 }
 
 void readFiss::CompareAll()
@@ -233,12 +235,12 @@ void readFiss::PlotSingles()
     photonSinglesExp->SetLineColor(kRed);
     photonSinglesExp->Draw();
 
-    photonSinglesSim->SetLineColor(kRed);
-    photonSinglesSim->SetLineStyle(kDashed);
-    photonSinglesSim->Draw("SAME");
+    photonSinglesBack->SetLineColor(kRed);
+    photonSinglesBack->SetLineStyle(kDashed);
+    photonSinglesBack->Draw("SAME");
 
-    neutronSinglesBack->SetLineColor(kBlue);
-    neutronSinglesBack->Draw("SAME");
+    neutronSinglesExp->SetLineColor(kBlue);
+    neutronSinglesExp->Draw("SAME");
 
     neutronSinglesBack->SetLineColor(kBlue);
     neutronSinglesBack->SetLineStyle(kDashed);
@@ -253,6 +255,42 @@ void readFiss::PlotSingles()
 
     c_Sin->Write();
     c_Sin->SaveAs("Singles.eps");
+}
+
+void readFiss::PlotMultCor()
+{
+  analysisFile->cd();
+  cd_correlated->cd();
+  cout << "Plotting correlated multiplicity." << endl;
+
+  //make canvas
+  TCanvas* c_MultCor = new TCanvas("cMultCor", "Neutron-Gamma Multiplicity",
+                                                                  800, 400);
+  c_MultCor->cd();
+
+  neutronGammaMult->SetLineColor(kRed);
+  neutronGammaMult->Draw("COLZ");
+
+  c_MultCor->Write();
+  c_MultCor->SaveAs("MultiplicityCorrelation.eps");
+}
+
+void readFiss::PlotMultLO()
+{
+  analysisFile->cd();
+  cd_correlated->cd();
+  cout << "Plotting correlated mult/LO." << endl;
+
+  //make canvas
+  TCanvas* c_MultLO = new TCanvas("cMultLO", "Neutron Mult vs. Photon LO",
+                                                                800, 400);
+  c_MultLO->cd();
+
+  neutronMultPhotonLO->SetLineColor(kRed);
+  neutronMultPhotonLO->Draw("COLZ");
+
+  c_MultLO->Write();
+  c_MultLO->SaveAs("NeutronMultiplicityPhotonLO.eps");
 }
 
 /*

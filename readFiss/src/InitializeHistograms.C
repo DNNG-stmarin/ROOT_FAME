@@ -87,6 +87,8 @@ void readFiss::InitializeHistograms()
   // correlated multiplicity
   neutronGammaMult = new TH2I("neutronGammaMultExp", "Neutron-Gamma Multiplicity;Neutron Multiplicity; Gamma Multiplicity; Counts",maxMult, minMult, maxMult, maxMult, minMult, maxMult);
 
+// neutron mult vs photon light output
+  neutronMultPhotonLO = new TH2D("neutronMultPhotonLO", "Neutron Multiplicity vs. Photon Light Output; Neutron Multiplicity; Photon Light Output; Counts", maxMult, minMult, maxMult, numLObins, minLO, maxLO);
 // angular coorrelations
   neutronDoublesMat = new TH2D("neutronDoublesExp", "Neutron Doubles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
   neutronSinglesMat = new TH2D("neutronSinglesMatExp", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);

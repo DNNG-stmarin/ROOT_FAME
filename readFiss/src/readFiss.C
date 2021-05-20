@@ -34,6 +34,7 @@ readFiss::readFiss(TString writeFile, TString nameExp)
     cd_basics = analysisFile->mkdir("Basic");
     cd_individual = analysisFile->mkdir("Individual");
     cd_FAME = analysisFile->mkdir("FAME");
+    cd_correlated = analysisFile->mkdir("Correlated");
 }
 
 // Constructor
@@ -71,7 +72,7 @@ readFiss::readFiss(TString writeFile, TString nameExp, TString nameSim)
     cd_individual = analysisFile->mkdir("Individual");
     cd_simComparison = analysisFile->mkdir("SimComparison");
     cd_FAME = analysisFile->mkdir("FAME");
-
+    cd_correlated = analysisFile->mkdir("Correlated");
 }
 
 

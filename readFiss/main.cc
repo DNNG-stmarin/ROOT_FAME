@@ -1,4 +1,4 @@
-// Programmer: Stefano Marin
+// Programmer: Stefano Marin, Jonathan Giha
 // Purpose: Reading the fission events generated frmo ROOT_FAME
 // Date: April 2021
 

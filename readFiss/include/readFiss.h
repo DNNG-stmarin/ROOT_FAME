@@ -40,6 +40,7 @@ public :
    TDirectory*      cd_individual;
    TDirectory*      cd_simComparison;
    TDirectory*      cd_FAME;
+   TDirectory*      cd_correlated;
 
 
   /*
@@ -125,7 +126,7 @@ public :
 
    // correlated histograms
    TH2I* neutronGammaMult;
-
+   TH2D* neutronMultPhotonLO;
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
@@ -307,6 +308,8 @@ public :
    virtual void     PlotPSD();
    virtual void     PlotMult();
    virtual void     PlotSingles();
+   virtual void     PlotMultCor();
+   virtual void     PlotMultLO();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();

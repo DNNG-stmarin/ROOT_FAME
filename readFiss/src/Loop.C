@@ -20,7 +20,6 @@ void readFiss::LoopExp()
 
    Long64_t nentries = expTree->GetEntriesFast();
 
-
    int nMult, gMult, nMultBack, gMultBack;
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
@@ -59,9 +58,11 @@ void readFiss::LoopExp()
           photonTofExp->Fill(photonDetTimes[i]);
           photonPSDExp->Fill(photonPSD[i]);
           photonSinglesExp->Fill(photonDet[i]);
+          neutronMultPhotonLO->Fill(nMult, photonLightOut[i]);
         }
       }
       photonMultExp->Fill(gMult);
+      neutronGammaMult->Fill(nMult, gMult);
 
       // loop through back neutrons
       for (int i = 0; i < neutronBackMult; i++)
