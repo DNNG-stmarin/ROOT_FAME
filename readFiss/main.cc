@@ -43,6 +43,7 @@ int main(int argc, char** argv)
           "1: Experimental and simulation data \n " <<
           "2: Experimental and beam data" << endl;
   cin >> mode;
+  cout << "Using mode " << mode << endl;
 
   while(!(mode == 0 || mode == 1 || mode == 2))
   {
@@ -116,28 +117,11 @@ int main(int argc, char** argv)
 
   // TBrowser* browser = new TBrowser();
   // JONATHAN - BNBP, threshold/max time, min/max energies, CovEM menu
-  int bn_in;
-  int bp_in;
-  cout << "Input BN and BP. Sample input: \n10 50" << endl;
-  cin >> bn_in >> bp_in;
-  f->SetBNBP(bn_in,bp_in);
-  cout << "\n";
-
   double threshold_in;
   double maxtime_in;
   cout << "Input threshold [MeVee] and max time [ns]. Sample input: \n0.20 70.0" << endl;
   cin >> threshold_in >> maxtime_in;
   f->SetRunThresholds(threshold_in, maxtime_in);
-  cout << "\n";
-
-  double min_n_in;
-  double max_n_in;
-  double min_p_in;
-  double max_p_in;
-  cout << "Input min/max energy limits for neutrons and photons. Sample input:" <<
-          "\n0 10.0 0 4.0" << endl;
-  cin >> min_n_in >> max_n_in >> min_p_in >> max_p_in;
-  f->SetEnergyLimits(min_n_in,max_n_in,min_p_in,max_p_in);
   cout << "\n";
 
   bool CovEM_in;
@@ -147,6 +131,25 @@ int main(int argc, char** argv)
   else cout << "U";
   cout << "sing CovEM" << endl;
   cout << "\n";
+
+  if(CovEM_in){
+    double min_n_in;
+    double max_n_in;
+    double min_p_in;
+    double max_p_in;
+    cout << "Input min/max energy limits for neutrons and photons. Sample input:" <<
+            "\n0 10.0 0 4.0" << endl;
+    cin >> min_n_in >> max_n_in >> min_p_in >> max_p_in;
+    f->SetEnergyLimits(min_n_in,max_n_in,min_p_in,max_p_in);
+    cout << "\n";
+
+    int bn_in;
+    int bp_in;
+    cout << "Input BN and BP. Sample input: \n10 50" << endl;
+    cin >> bn_in >> bp_in;
+    f->SetBNBP(bn_in,bp_in);
+    cout << "\n";
+  }
 
   // loop through
   f->LoopExp();
