@@ -15,6 +15,9 @@
 #include <TH2.h>
 #include <TString.h>
 #include <TMatrixD.h>
+
+#include <iostream>
+#include <fstream>
 // Header file for the classes stored in the TTree if any.
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
@@ -29,18 +32,24 @@ public :
    | || '_/ -_) -_)  / _ \/ _` / _` | '_/ -_|_-<_-</ -_|_-<
    |_||_| \___\___| /_/ \_\__,_\__,_|_| \___/__/__/\___/__/
                                                            */
-   TTree          *expTree;   //!pointer to the analyzed TTree or TChain
-   TTree          *simTree;
-   TString         nameExp; // String name of where to find experiment
-   TString         nameSim;
-   Int_t           fCurrent; //!current Tree number in a TChain
+   TTree            *expTree;   //!pointer to the analyzed TTree or TChain
+   TTree            *simTree;
+   TTree            *beamTree;
+   TString          nameExp; // String name of where to find experiment
+   TString          nameSim;
+   TString          nameBeam;
+   TFile            *expFile;
+   TFile            *simFile;
+   TFile            *beamFile;
+   TFile            *writeFile;
+   Int_t            fCurrent; //!current Tree number in a TChain
 
-   TFile*           analysisFile;
    TDirectory*      cd_basics;
    TDirectory*      cd_individual;
    TDirectory*      cd_simComparison;
    TDirectory*      cd_FAME;
    TDirectory*      cd_correlated;
+   TDirectory*      cd_beam;
 
 
   /*
@@ -50,14 +59,17 @@ public :
   |_| |_| \___/\__\___/__/__/_|_||_\__, |
                                    |___/
   */
-  // objects specific to this run of the analysi
-  int BN;
-  int BP;
+  // objects specific to this run of the analysis
+  int mode;                     // what mode this run is using
+  bool CovEM_in;                // whether or not this run uses CovEM
+
+  int BN;                       // CovEM setting
+  int BP;                       // CovEM setting
   double MAX_TIME_N;
   double THRESHOLD;
 
-  double MIN_N_ERG, MAX_N_ERG;
-  double MIN_P_ERG, MAX_P_ERG;
+  double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
+  double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
 
    /*
   _  _ _    _
@@ -260,12 +272,15 @@ public :
  |_|  |_\___|\__|_||_\___/\__,_/__/*/
 
   // constructors
+   readFiss(int &argc, char** &argv);
    readFiss(TString writeFile, TString nameExp);
    readFiss(TString writeFile, TString nameExp, TString nameSim);
    readFiss(TString writeFile, TString nameExp, TString nameBeam, int mode); // JONATHAN - beam constructor
    virtual ~readFiss();
 
    // create a menu
+   virtual void GetInfo(std::istream &inputStream);
+   virtual void BadInputMessage();
 
    // set thresholds and time limit
    virtual void SetRunThresholds(double threshold, double max_time_n);

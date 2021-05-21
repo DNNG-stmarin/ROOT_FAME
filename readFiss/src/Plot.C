@@ -43,7 +43,7 @@ void readFiss::CompareAll()
 // JONATHAN - do SetStats(0) on all plots but neutron gamma multiplicity correlated
 void readFiss::PlotLightOut()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
     cout << "Plotting Light Output." << endl;
 
@@ -85,7 +85,7 @@ void readFiss::PlotLightOut()
 void readFiss::PlotTof()
 {
 
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
     cout << "Plotting Time of Flight." << endl;
 
@@ -129,7 +129,7 @@ void readFiss::PlotTof()
 void readFiss::PlotErg()
 {
 
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
     cout << "Plotting Neutron Energy." << endl;
 
@@ -159,7 +159,7 @@ void readFiss::PlotErg()
 
 void readFiss::PlotMult()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
 
     cout << "Plotting Multiplicities." << endl;
@@ -201,7 +201,7 @@ void readFiss::PlotMult()
 
 void readFiss::PlotPSD()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
 
     cout << "Plotting Particle Discrimination." << endl;
@@ -243,7 +243,7 @@ void readFiss::PlotPSD()
 
 void readFiss::PlotSingles()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
     cout << "Plotting Singles." << endl;
 
@@ -284,7 +284,7 @@ void readFiss::PlotSingles()
 
 void readFiss::PlotMultCor()
 {
-  analysisFile->cd();
+  writeFile->cd();
   cd_correlated->cd();
   cout << "Plotting correlated multiplicity." << endl;
 
@@ -311,7 +311,7 @@ void readFiss::PlotMultCor()
 
 void readFiss::PlotMultLO()
 {
-  analysisFile->cd();
+  writeFile->cd();
   cd_correlated->cd();
   cout << "Plotting correlated mult/LO." << endl;
 
@@ -340,7 +340,7 @@ void readFiss::PlotMultLO()
 void readFiss::CompareLightOut()
 {
 
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
 
     cout << "Comparing Light Output." << endl;
@@ -383,7 +383,7 @@ void readFiss::CompareLightOut()
 void readFiss::CompareTof()
 {
 
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
 
     cout << "Comparing Time of Flight." << endl;
@@ -426,7 +426,7 @@ void readFiss::CompareTof()
 
 void readFiss::CompareErg()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
 
     cout << "Comparing Energy." << endl;
@@ -454,7 +454,7 @@ void readFiss::CompareErg()
 
 void readFiss::CompareMult()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
     cout << "Comparing Multiplicity." << endl;
 
@@ -492,7 +492,7 @@ void readFiss::CompareMult()
 
 void readFiss::ComparePSD()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
     cout << "Comparing Discrimination." << endl;
 
@@ -529,7 +529,7 @@ void readFiss::ComparePSD()
 
 void readFiss::CompareSingles()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
     cout << "Comparing Singles." << endl;
 
