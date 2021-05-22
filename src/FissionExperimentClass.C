@@ -46,9 +46,11 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
 	if(REUSE_DATA == 0) {
+        cout << "creating new coincidences." << endl;
 		expFile = new TFile(treeFileT + rootEnding, "RECREATE");
 	}
 	else {
+        cout << "reading old coincidences." << endl;
 		expFile = new TFile(treeFileT + rootEnding, "READ");
 	}
 
