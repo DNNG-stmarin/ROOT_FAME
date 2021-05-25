@@ -5,7 +5,6 @@
 // NOTE: Beam functionality is not at all implemented!
 // I've left some placeholders, but not for everything.
 
-// Changes/concerns will have a comment containing "JONATHAN" nearby.
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
@@ -31,7 +30,6 @@ int main(int argc, char** argv)
   readFiss* f = new readFiss(argc, argv);
   // TBrowser* browser = new TBrowser();
 
-  // delete f;
-  cout << "Before return" << endl;
+  delete f;
   return 0;
 }

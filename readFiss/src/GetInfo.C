@@ -60,7 +60,7 @@ readFiss::readFiss(int &argc, char** &argv)
 
   // plotting sections
   PlotAll();
-  if(mode == 1) // JONATHAN - again, simMode -> mode
+  if(mode == 1)
   {
     CompareAll();
   }
@@ -69,6 +69,7 @@ readFiss::readFiss(int &argc, char** &argv)
     cout << "BEAM PLOT FUNCTIONALITY NOT IMPLEMENTED." << endl;
     // JONATHAN - placeholder
   }
+  writeFile->Close();
 }
 
 // tell user how to use input
@@ -164,7 +165,7 @@ void readFiss::GetInfo(istream &inputStream)
     cd_simComparison = writeFile->mkdir("SimComparison");
     cout << "Input simFile path" << endl;
     inputStream >> nameSim;
-    cout << "Initializing simulation tree from " << nameSim << endl; // JONATHAN - used to be from nameExp
+    cout << "Initializing simulation tree from " << nameSim << endl;
     simFile = (TFile*)gROOT->GetListOfFiles()->FindObject(nameSim);
     if (!simFile || !simFile->IsOpen())
     {

@@ -299,7 +299,7 @@ public :
    // loop through data
    virtual void     LoopExp();
    virtual void     LoopSim();
-   virtual void     LoopBeam(); // JONATHAN - beam loop
+   virtual void     LoopBeam();
 
    // perform FAME analysis
    virtual void     SetBNBP(int BN, int BP); // set the number of bins for the covariance analysis

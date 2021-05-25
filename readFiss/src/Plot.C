@@ -2,7 +2,6 @@
 #include <TLegend.h>
 #include <TCanvas.h>
 #include <TRatioPlot.h>
-// JONATHAN - new includes
 #include <TPaveStats.h>
 #include <TText.h>
 
@@ -40,7 +39,7 @@ void readFiss::CompareAll()
   ComparePSD();
   CompareSingles();
 }
-// JONATHAN - do SetStats(0) on all plots but neutron gamma multiplicity correlated
+
 void readFiss::PlotLightOut()
 {
     writeFile->cd();
