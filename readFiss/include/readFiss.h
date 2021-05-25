@@ -41,9 +41,9 @@ public :
    TFile            *expFile;
    TFile            *simFile;
    TFile            *beamFile;
-   TFile            *writeFile;
    Int_t            fCurrent; //!current Tree number in a TChain
 
+   TFile            *writeFile;
    TDirectory*      cd_basics;
    TDirectory*      cd_individual;
    TDirectory*      cd_simComparison;
