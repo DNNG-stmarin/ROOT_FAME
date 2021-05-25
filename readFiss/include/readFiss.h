@@ -51,6 +51,9 @@ public :
    TDirectory*      cd_correlated;
    TDirectory*      cd_beam;
 
+   int NUM_TRIGGERS = 10; // number of trigger channels
+   int* TRIGGERS;
+
 
   /*
    ___                       _
@@ -147,13 +150,24 @@ public :
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
 
-   // beam histograms
-   TH1D** h_fisDep;
-   TH2D** h_fisDepErg;
-   TH1D** h_beamTime;
-   TH1D** h_alphaTime;
+   // alphaFile histograms
+   TH1D** h_alphaDep;
    TH1D* h_macroPop;
 
+   // beam histograms
+   TH1D** h_fisDep;
+   TH2D** h2_fisDepErg;
+   TH1D** h_beamTime;
+
+   TH2D** h2_neutronMultDep;
+   TH2D** h2_gammaMultDep;
+   TH2D** h2_backGammaMultDep;
+   TH2D** h2_backGammaMultDep;
+
+   TH2D** h2_neutronMultErg;
+   TH2D** h2_gammaMultErg;
+   TH2D** h2_backGammaMultErg;
+   TH2D** h2_backGammaMultErg;
 
 /*
               _____              ___                  _
