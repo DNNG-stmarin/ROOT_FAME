@@ -118,13 +118,13 @@ void readFiss::GetInfo(istream &inputStream)
           "1: Experimental and simulation data \n " <<
           "2: Experimental and beam data" << endl;
   inputStream >> mode;
-  cout << "Using mode " << mode << endl;
+  cout << " Using mode " << mode << endl;
 
   while(!(mode == 0 || mode == 1 || mode == 2))
   {
     cout << "Invalid mode. Please input 0, 1, or 2." << endl;
     inputStream >> mode;
-    cout << "Using mode " << mode << endl;
+    cout << " Using mode " << mode << endl;
   }
   cout << "\n";
 
@@ -133,7 +133,7 @@ void readFiss::GetInfo(istream &inputStream)
   // get writeFile from user
   cout << "Input writeFile path" << endl;
   inputStream >> writeName;
-  cout << "Using writeFile " << writeName << endl;
+  cout << " Using writeFile " << writeName << endl;
   cout << "\n";
 
   // get writeFile ready
@@ -189,9 +189,9 @@ void readFiss::GetInfo(istream &inputStream)
 
 
   // get threshold and max time from user
-  cout << "Input threshold [MeVee] and max time [ns]. Sample input: \n0.20 70.0" << endl;
+  cout << "Input threshold [MeVee] and max time [ns]. Sample input: \n 0.20 70.0" << endl;
   inputStream >> THRESHOLD >> MAX_TIME_N;
-  cout << "Using: threshold = " << THRESHOLD << " MeVee, " << " Tmax = " << MAX_TIME_N << " ns." << endl;
+  cout << " Using: threshold = " << THRESHOLD << " MeVee, " << " Tmax = " << MAX_TIME_N << " ns." << endl;
   cout << "\n";
 
 
@@ -199,23 +199,46 @@ void readFiss::GetInfo(istream &inputStream)
   // ask user if they want to use CovEM
   cout << "Input 1 for CovEM, input 0 for no CovEM" << endl;
   inputStream >> CovEM_in;
-  if(CovEM_in) cout << "Using CovEM" << endl;
-  else cout << "Not using CovEM" << endl;
+  if(CovEM_in) cout << " Using CovEM" << endl;
+  else cout << " Not using CovEM" << endl;
   cout << "\n\n";
 
   // get CovEM options from user if they want to use CovEM
   if(CovEM_in)
   {
     cout << "Input min/max energy limits for neutrons and photons. Sample input:" <<
-            "\n0 10.0 0 4.0" << endl;
+            "\n 0 10.0 0 4.0" << endl;
     inputStream >> MIN_N_ERG >> MAX_N_ERG >> MIN_P_ERG >> MAX_P_ERG;
-    cout << "Using neutron energy range " << MIN_N_ERG << " to " << MAX_N_ERG <<
+    cout << " Using neutron energy range " << MIN_N_ERG << " to " << MAX_N_ERG <<
             " and photon energy range " << MIN_P_ERG << " to " << MAX_P_ERG << endl;
     cout << "\n";
 
-    cout << "Input BN and BP. Sample input: \n10 50" << endl;
+    cout << "Input BN and BP. Sample input: \n 10 50" << endl;
     inputStream >> BN >> BP;
-    cout << "Using BN = " << BN << " and BP = " << BP << ". \n";
+    cout << " Using BN = " << BN << " and BP = " << BP << ". \n";
     cout << "\n";
+  }
+
+  // get number of triggers and trigger numbers from user
+  if(mode == 2)
+  {
+    cout << "Input number of channels. Sample input: \n 10 \n";
+    cin >> NUM_TRIGGERS;
+    cout << " Using " << NUM_TRIGGERS << " triggers. \n\n";
+
+    TRIGGERS = new int[NUM_TRIGGERS];
+
+    cout << "Input trigger numbers. Sample input: \n" <<
+    " \n4 \n5 \n6 \n21 \n22 \n23 \n24 \n31 \n32 \n38 \n";
+    for(int i = 0; i < NUM_TRIGGERS; ++i)
+    {
+      cin >> TRIGGERS[i];
+    }
+    cout << " Using trigger numbers ";
+    for(int i = 0; i < NUM_TRIGGERS; ++i)
+    {
+      cout << TRIGGERS[i] << " ";
+    }
+    cout << "\n\n";
   }
 }
