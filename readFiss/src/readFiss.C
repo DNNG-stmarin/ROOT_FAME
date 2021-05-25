@@ -15,107 +15,16 @@
 
 using namespace std;
 
-// Constructor
-readFiss::readFiss(TString writeFile, TString nameExp)
-{
-    // if parameter tree is not specified (or zero), connect the file
-    // used to generate this class and read the Tree.
-    // experiment
-    TChain* chainExp;
-
-    TString fileExp = nameExp +  rootEnding;
-
-    chainExp->Add(nameExp + rootEnding + "/" + nameExpTree);
-    bool fileFound = true;
-    int fileNum = 1;
-
-    while(gSystem->AccessPathName(nameExp + "_" + to_string(fileNum) + rootEnding) == false)
-    {
-      chainExp->Add(nameExp + "_" + to_string(fileNum) + rootEnding + "/" + nameExpTree);
-      cout << "And file " << nameExp + "_" + to_string(fileNum) + rootEnding + "/" + nameExpTree << endl;
-      fileNum++;
-    }
-    cout << "Completed reading from " << fileNum << endl;
-    cout << chainExp->GetEntries() << endl;
-    InitExp(chainExp);
-
-    // set the simulated Tree = 0
-    simTree = 0;
-
-    InitializeHistograms();
-
-    analysisFile = new TFile(writeFile, "RECREATE");
-
-    cd_basics = analysisFile->mkdir("Basic");
-    cd_individual = analysisFile->mkdir("Individual");
-    cd_FAME = analysisFile->mkdir("FAME");
-}
-
-// Constructor
-readFiss::readFiss(TString writeFile, TString nameExp, TString nameSim)
-{
-    TChain* chainExp = new TChain();
-    TChain* chainSim = new TChain();
-    TFile* f;
-
-    // if parameter tree is not specified (or zero), connect the file
-    // used to generate this class and read the Tree.
-
-    // experiment
-    chainExp->Add(nameExp + rootEnding + "/" + nameExpTree);
-  	// bool fileFound = true;
-  	int fileNum = 1;
-
-  	while(gSystem->AccessPathName(nameExp + "_" + to_string(fileNum) + rootEnding) == false)
-  	{
-  		chainExp->Add(nameExp + "_" + to_string(fileNum) + rootEnding + "/" + nameExpTree);
-  		cout << "And file " << nameExp + "_" + to_string(fileNum) + rootEnding + "/" + nameExpTree << endl;
-  		fileNum++;
-  	}
-  	cout << "Completed reading from " << fileNum << endl;
-    // expEntries = chainExp->GetEntries();
-    InitExp(chainExp);
-
-
-    // simulation
-    chainSim->Add(nameSim + rootEnding + "/" + nameSimTree);
-    // cout << nameSim + rootEnding + "/" + nameSimTree << endl;
-    // cout << chainSim->GetEntries() << endl;
-    // bool fileFound = true;
-    fileNum = 1;
-
-    while(gSystem->AccessPathName(nameSim + "_" + to_string(fileNum) + rootEnding) == false)
-    {
-      chainSim->Add(nameSim + "_" + to_string(fileNum) + rootEnding + "/" + nameSimTree);
-      cout << "And file " << nameSim + "_" + to_string(fileNum) + rootEnding + "/" + nameSimTree << endl;
-      fileNum++;
-    }
-    cout << "Completed reading from " << fileNum << endl;
-    // simEntries = chainSim->GetEntries();
-    InitSim(chainSim);
-
-    cout << "initializing histograms" << endl;
-
-
-    InitializeHistograms();
-
-    analysisFile = new TFile(writeFile, "RECREATE");
-
-    cd_basics = analysisFile->mkdir("Basic");
-    cd_individual = analysisFile->mkdir("Individual");
-    cd_simComparison = analysisFile->mkdir("SimComparison");
-    cd_FAME = analysisFile->mkdir("FAME");
-
-}
-
-
 //Destructor
 readFiss::~readFiss()
 {
     if (!expTree) return;
-    delete expTree->GetCurrentFile();
-    delete simTree->GetCurrentFile();
-    delete analysisFile;
+    delete expFile;
+    if(mode == 1)
+    {
+      delete simFile;
+    }
+    delete writeFile;
 }
 //Get entry at integer <entry>
 Int_t readFiss::GetExpEntry(Long64_t entry)

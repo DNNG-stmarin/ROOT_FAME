@@ -1,6 +1,9 @@
-// Programmer: Stefano Marin
+// Programmer: Stefano Marin, Jonathan Giha
 // Purpose: Reading the fission events generated frmo ROOT_FAME
 // Date: April 2021
+
+// NOTE: Beam functionality is not at all implemented!
+// I've left some placeholders, but not for everything.
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -24,76 +27,9 @@ int main(int argc, char** argv)
 
   cout << "\n Welcome to READ_FAME \n" << endl;
 
-  TString expFile;
-  TString simFile;
-  TString writeFile;
-
-  readFiss* f;
-
-  bool simMode;
-
-  if(argc == 1) {
-    cout << "Name of input tree not provided! \n ";
-    cout << "provide the following inputs: " << endl;
-    cout << "(1) name of writeFile" << endl;
-    cout << "(2) name of expFile" << endl;
-    cout << "(3, optional) name of simFile" << endl;
-
-    return 1;
-  }
-  else if(argc == 3)
-  {
-    writeFile = TString(argv[1]);
-    expFile = TString(argv[2]);
-    f = new readFiss(writeFile, expFile);
-    simMode = false;
-  }
-  else if(argc == 4)
-  {
-    writeFile = TString(argv[1]);
-    expFile = TString(argv[2]);
-    simFile = TString(argv[3]);
-    f = new readFiss(writeFile, expFile, simFile);
-    simMode = true;
-  }
-  else
-  {
-    cout << "not enough (or too many) arguments provided" << endl;
-    return 2;
-  }
-
-
-
+  readFiss* f = new readFiss(argc, argv);
   // TBrowser* browser = new TBrowser();
-  f->SetBNBP(10,50);
-  // f->SetRunThresholds(0.20, 70.0); // for pu242
-  f->SetRunThresholds(0.10, 35.0);
 
-  f->SetEnergyLimits(0, 10.0, 0, 4.0);
-
-  // loop through
-  f->LoopExp();
-  if(simMode)
-  {
-    f->LoopSim();
-  }
-
-  // covEM plot
-  f->CovEM();
-  f->WriteCovEM();
-
-  // plotting sections
-  f->PlotAll();
-
-  if(simMode)
-  {
-    f->CompareAll();
-  }
-
-
-  // delete f;
-
-  cout << "Finished running READ_FAME! \n";
-
+  delete f;
   return 0;
 }

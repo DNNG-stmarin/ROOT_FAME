@@ -21,7 +21,6 @@ void readFiss::LoopExp()
    expEntries = expTree->GetEntries();
    cout << "Analyzing " << expEntries << " experimental events \n";
 
-
    int nMult, gMult, nMultBack, gMultBack;
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<expEntries;jentry++) {
@@ -60,9 +59,11 @@ void readFiss::LoopExp()
           photonTofExp->Fill(photonDetTimes[i]);
           photonPSDExp->Fill(photonPSD[i]);
           photonSinglesExp->Fill(photonDet[i]);
+          neutronMultPhotonLO->Fill(nMult, photonLightOut[i]);
         }
       }
       photonMultExp->Fill(gMult);
+      neutronGammaMult->Fill(nMult, gMult);
 
       // loop through back neutrons
       for (int i = 0; i < neutronBackMult; i++)
@@ -201,4 +202,13 @@ void readFiss::LoopSim()
         photonMultSim->Fill(gMult);
 
     }
+}
+
+
+void readFiss::LoopBeam()
+{
+  cout << "LoopBeam NOT IMPLEMENTED. INPUT ANYTHING IF YOU UNDERSTAND." <<
+          " THE PROGRAM WILL CRASH." << endl;
+  TString IUnderstandAndIAmImplementingTheMethod;
+  cin >> IUnderstandAndIAmImplementingTheMethod;
 }

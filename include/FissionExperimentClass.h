@@ -54,6 +54,7 @@ private:
 	TString rootEnding = ".root";
 	TString detFileT = "Detectors.root";
 	TString sysFileT = "Fission.root";
+  TString beamFileT = "BeamInfo.root";
 
 public:
 
@@ -70,6 +71,7 @@ public:
 	// file to write all results
 	TFile* expFile = 0;
 	TFile* detFile = 0;
+	TFile* beamFile = 0;
 
 	// pointer attributes
 	CoincidenceAnalysis* inputData;

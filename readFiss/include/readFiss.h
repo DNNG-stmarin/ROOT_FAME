@@ -15,6 +15,9 @@
 #include <TH2.h>
 #include <TString.h>
 #include <TMatrixD.h>
+
+#include <iostream>
+#include <fstream>
 // Header file for the classes stored in the TTree if any.
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
@@ -29,21 +32,24 @@ public :
    | || '_/ -_) -_)  / _ \/ _` / _` | '_/ -_|_-<_-</ -_|_-<
    |_||_| \___\___| /_/ \_\__,_\__,_|_| \___/__/__/\___/__/
                                                            */
-   TChain          *expTree;   //!pointer to the analyzed TTree or TChain
-   TChain          *simTree;
+   TTree*           expTree;   //!pointer to the analyzed TTree or TChain
+   TTree*           simTree;
+   TTree*           beamTree;
+   TString          nameExp; // String name of where to find experiment
+   TString          nameSim;
+   TString          nameBeam;
+   TFile*           expFile;
+   TFile*           simFile;
+   TFile*           beamFile;
+   Int_t            fCurrent; //!current Tree number in a TChain
 
-   TString         nameExp; // String name of where to find experiment
-   TString         nameSim;
-   Int_t           fCurrent; //!current Tree number in a TChain
-
-   Long64_t        expEntries;
-   Long64_t        simEntries;
-
-   TFile*           analysisFile;
+   TFile*           writeFile;
    TDirectory*      cd_basics;
    TDirectory*      cd_individual;
    TDirectory*      cd_simComparison;
    TDirectory*      cd_FAME;
+   TDirectory*      cd_correlated;
+   TDirectory*      cd_beam;
 
 
   /*
@@ -53,14 +59,17 @@ public :
   |_| |_| \___/\__\___/__/__/_|_||_\__, |
                                    |___/
   */
-  // objects specific to this run of the analysi
-  int BN;
-  int BP;
+  // objects specific to this run of the analysis
+  int mode;                     // what mode this run is using
+  bool CovEM_in;                // whether or not this run uses CovEM
+
+  int BN;                       // CovEM setting
+  int BP;                       // CovEM setting
   double MAX_TIME_N;
   double THRESHOLD;
 
-  double MIN_N_ERG, MAX_N_ERG;
-  double MIN_P_ERG, MAX_P_ERG;
+  double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
+  double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
 
   TString rootEnding = ".root";
   TString nameExpTree = "Fiss";
@@ -133,7 +142,7 @@ public :
 
    // correlated histograms
    TH2I* neutronGammaMult;
-
+   TH2D* neutronMultPhotonLO;
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
@@ -276,11 +285,12 @@ public :
  |_|  |_\___|\__|_||_\___/\__,_/__/*/
 
   // constructors
-   readFiss(TString writeFile, TString nameExp);
-   readFiss(TString writeFile, TString nameExp, TString nameSim);
+   readFiss(int &argc, char** &argv);
    virtual ~readFiss();
 
    // create a menu
+   virtual void GetInfo(std::istream &inputStream);
+   virtual void BadInputMessage();
 
    // set thresholds and time limit
    virtual void SetRunThresholds(double threshold, double max_time_n);
@@ -302,6 +312,7 @@ public :
    // loop through data
    virtual void     LoopExp();
    virtual void     LoopSim();
+   virtual void     LoopBeam();
 
    // perform FAME analysis
    virtual void     SetBNBP(int BN, int BP); // set the number of bins for the covariance analysis
@@ -324,6 +335,8 @@ public :
    virtual void     PlotPSD();
    virtual void     PlotMult();
    virtual void     PlotSingles();
+   virtual void     PlotMultCor();
+   virtual void     PlotMultLO();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();
