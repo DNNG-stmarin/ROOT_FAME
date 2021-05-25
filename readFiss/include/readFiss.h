@@ -273,9 +273,6 @@ public :
 
   // constructors
    readFiss(int &argc, char** &argv);
-   readFiss(TString writeFile, TString nameExp);
-   readFiss(TString writeFile, TString nameExp, TString nameSim);
-   readFiss(TString writeFile, TString nameExp, TString nameBeam, int mode); // JONATHAN - beam constructor
    virtual ~readFiss();
 
    // create a menu

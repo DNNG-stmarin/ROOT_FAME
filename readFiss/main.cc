@@ -29,11 +29,9 @@ int main(int argc, char** argv)
   cout << "\n Welcome to READ_FAME \n" << endl;
 
   readFiss* f = new readFiss(argc, argv);
-  cout << "After end of constructor" << endl;
   // TBrowser* browser = new TBrowser();
 
   // delete f;
   cout << "Before return" << endl;
   return 0;
-  cout << "End of main" << endl;
 }
