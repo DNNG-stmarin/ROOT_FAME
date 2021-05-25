@@ -1,9 +1,16 @@
 #include "readFiss.h"
 #include <TLegend.h>
+#include <TROOT.h>
+#include <TChain.h>
+#include <TFitResult.h>
+#include <THStack.h>
+#include <TFolder.h>
+#include <TSystem.h>
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 
 
 using namespace std;
@@ -13,16 +20,24 @@ readFiss::readFiss(TString writeFile, TString nameExp)
 {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.
-    TTree* tree;
+    // experiment
+    TChain* chainExp;
 
-    cout << "Initializing experiment tree from " << nameExp << endl;
+    TString fileExp = nameExp +  rootEnding;
 
-    TFile* f = (TFile*)gROOT->GetListOfFiles()->FindObject(nameExp);
-    if (!f || !f->IsOpen()) {
-        f = new TFile(nameExp);
+    chainExp->Add(nameExp + rootEnding + "/" + nameExpTree);
+    bool fileFound = true;
+    int fileNum = 1;
+
+    while(gSystem->AccessPathName(nameExp + "_" + to_string(fileNum) + rootEnding) == false)
+    {
+      chainExp->Add(nameExp + "_" + to_string(fileNum) + rootEnding + "/" + nameExpTree);
+      cout << "And file " << nameExp + "_" + to_string(fileNum) + rootEnding + "/" + nameExpTree << endl;
+      fileNum++;
     }
-    f->GetObject("Fiss", tree);
-    InitExp(tree);
+    cout << "Completed reading from " << fileNum << endl;
+    cout << chainExp->GetEntries() << endl;
+    InitExp(chainExp);
 
     // set the simulated Tree = 0
     simTree = 0;
@@ -39,29 +54,48 @@ readFiss::readFiss(TString writeFile, TString nameExp)
 // Constructor
 readFiss::readFiss(TString writeFile, TString nameExp, TString nameSim)
 {
-    TTree* tree;
+    TChain* chainExp = new TChain();
+    TChain* chainSim = new TChain();
     TFile* f;
 
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.
 
     // experiment
-    cout << "Initializing experiment tree from " << nameExp << endl;
-    f = (TFile*)gROOT->GetListOfFiles()->FindObject(nameExp);
-    if (!f || !f->IsOpen()) {
-        f = new TFile(nameExp);
-    }
-    f->GetObject("Fiss", tree);
-    InitExp(tree);
+    chainExp->Add(nameExp + rootEnding + "/" + nameExpTree);
+  	// bool fileFound = true;
+  	int fileNum = 1;
 
-    // simulations
-    cout << "Initializing simulation tree from " << nameExp << endl;
-    f = (TFile*)gROOT->GetListOfFiles()->FindObject(nameSim);
-    if (!f || !f->IsOpen()) {
-        f = new TFile(nameSim);
+  	while(gSystem->AccessPathName(nameExp + "_" + to_string(fileNum) + rootEnding) == false)
+  	{
+  		chainExp->Add(nameExp + "_" + to_string(fileNum) + rootEnding + "/" + nameExpTree);
+  		cout << "And file " << nameExp + "_" + to_string(fileNum) + rootEnding + "/" + nameExpTree << endl;
+  		fileNum++;
+  	}
+  	cout << "Completed reading from " << fileNum << endl;
+    // expEntries = chainExp->GetEntries();
+    InitExp(chainExp);
+
+
+    // simulation
+    chainSim->Add(nameSim + rootEnding + "/" + nameSimTree);
+    // cout << nameSim + rootEnding + "/" + nameSimTree << endl;
+    // cout << chainSim->GetEntries() << endl;
+    // bool fileFound = true;
+    fileNum = 1;
+
+    while(gSystem->AccessPathName(nameSim + "_" + to_string(fileNum) + rootEnding) == false)
+    {
+      chainSim->Add(nameSim + "_" + to_string(fileNum) + rootEnding + "/" + nameSimTree);
+      cout << "And file " << nameSim + "_" + to_string(fileNum) + rootEnding + "/" + nameSimTree << endl;
+      fileNum++;
     }
-    f->GetObject("fissionTree", tree);
-    InitSim(tree);
+    cout << "Completed reading from " << fileNum << endl;
+    // simEntries = chainSim->GetEntries();
+    InitSim(chainSim);
+
+    cout << "initializing histograms" << endl;
+
 
     InitializeHistograms();
 
@@ -122,17 +156,8 @@ Long64_t readFiss::LoadSimTree(Long64_t entry)
     return centry;
 }
 
-void readFiss::InitExp(TTree* tree)
+void readFiss::InitExp(TChain* tree)
 {
-    // The Init() function is called when the selector needs to initialize
-    // a new tree or chain. Typically here the branch addresses and branch
-    // pointers of the tree will be set.
-    // It is normally not necessary to make changes to the generated
-    // code, but the routine can be extended by the user if needed.
-    // Init() will be called many times when running on PROOF
-    // (once per file to be processed).
-
-    // Set branch addresses and branch pointers
 
     //INITIALIZE EXPERIMENT TREE
     if (!tree) return;
@@ -181,7 +206,7 @@ void readFiss::InitExp(TTree* tree)
     Notify();
 }
 
-void readFiss::InitSim(TTree* tree)
+void readFiss::InitSim(TChain* tree)
 {
     //INTITIALZE SIM TREE
     if (!tree) return;

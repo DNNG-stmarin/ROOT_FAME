@@ -3,7 +3,7 @@
 void readFiss::InitializeHistograms()
 {
 
-  const int numTofBins = 120;
+  const int numTofBins = 240;
 	const double minTof = -20;
 	const double maxTof = 100;
 
@@ -91,5 +91,14 @@ void readFiss::InitializeHistograms()
   neutronDoublesMat = new TH2D("neutronDoublesExp", "Neutron Doubles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
   neutronSinglesMat = new TH2D("neutronSinglesMatExp", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
   neutronAngleCorr = new TH1D("neutronAngleCorr", "Neutron Angular Correlations; Cos T; counts", numCosBins, -1, 1);
+
+
+
+  //
+  if(beamMode)
+  {
+  }
+
+
 
 }

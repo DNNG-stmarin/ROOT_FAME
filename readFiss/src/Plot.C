@@ -28,6 +28,8 @@ void readFiss::PlotAll()
 
 void readFiss::CompareAll()
 {
+  cout << "Beginning comparison with simulation. Exp/Sim = " << ((double)expEntries)/((double)simEntries) << ". " << endl;
+
   CompareLightOut();
   CompareTof();
   CompareErg();
@@ -70,7 +72,7 @@ void readFiss::PlotLightOut()
     legend->Draw("SAME");
 
     c_LO->Write();
-    c_LO->SaveAs("LightOutput.eps");
+    c_LO->SaveAs("fig/LightOutput.eps");
 }
 
 void readFiss::PlotTof()
@@ -110,7 +112,7 @@ void readFiss::PlotTof()
     legend->Draw("SAME");
 
     c_ToF->Write();
-    c_ToF->SaveAs("TimeOfFlight.eps");
+    c_ToF->SaveAs("fig/TimeOfFlight.eps");
 }
 
 void readFiss::PlotErg()
@@ -139,7 +141,7 @@ void readFiss::PlotErg()
     legend->Draw("SAME");
 
     c_Erg->Write();
-    c_Erg->SaveAs("NeutronErg.eps");
+    c_Erg->SaveAs("fig/NeutronErg.eps");
 }
 
 void readFiss::PlotMult()
@@ -177,7 +179,7 @@ void readFiss::PlotMult()
     legend->Draw("SAME");
 
     c_Mult->Write();
-    c_Mult->SaveAs("Multiplicity.eps");
+    c_Mult->SaveAs("fig/Multiplicity.eps");
 }
 
 void readFiss::PlotPSD()
@@ -215,7 +217,7 @@ void readFiss::PlotPSD()
     legend->Draw("SAME");
 
     c_PSD->Write();
-    c_PSD->SaveAs("ParticleDiscrimination.eps");
+    c_PSD->SaveAs("fig/ParticleDiscrimination.eps");
 }
 
 void readFiss::PlotSingles()
@@ -252,7 +254,7 @@ void readFiss::PlotSingles()
     legend->Draw("SAME");
 
     c_Sin->Write();
-    c_Sin->SaveAs("Singles.eps");
+    c_Sin->SaveAs("fig/Singles.eps");
 }
 
 /*
@@ -272,26 +274,29 @@ void readFiss::CompareLightOut()
 
     cout << "Comparing Light Output." << endl;
 
+
+    photonLightOutputExp->SetLineColor(kRed);
+
+    neutronLightOutputExp->SetLineColor(kBlue);
+
+    neutronLightOutputSim->Scale((double)expEntries/(double)simEntries);
+    neutronLightOutputSim->SetLineColor(kBlue);
+    neutronLightOutputSim->SetLineStyle(kDashed);
+
+    photonLightOutputSim->Scale((double)expEntries/(double)simEntries);
+    photonLightOutputSim->SetLineColor(kRed);
+    photonLightOutputSim->SetLineStyle(kDashed);
+
+
+
     //create a canvas
     TCanvas* c_LOs = new TCanvas("cLOs", "Light Output", 800,400);
     // cLO->Divide(1,2);
     c_LOs->cd();
 
-
-
-    photonLightOutputExp->SetLineColor(kRed);
     photonLightOutputExp->Draw();
-
-    //create a canvas
-    neutronLightOutputExp->SetLineColor(kBlue);
     neutronLightOutputExp->Draw("SAME");
-
-    neutronLightOutputSim->SetLineColor(kBlue);
-    neutronLightOutputSim->SetLineStyle(kDashed);
     neutronLightOutputSim->Draw("SAME");
-
-    photonLightOutputSim->SetLineColor(kRed);
-    photonLightOutputSim->SetLineStyle(kDashed);
     photonLightOutputSim->Draw("SAME");
 
     TLegend *legend = new TLegend(0.7, 0.8, 0.48, 0.9);
@@ -302,8 +307,46 @@ void readFiss::CompareLightOut()
     legend->Draw("SAME");
 
     c_LOs->Write();
-    c_LOs->SaveAs("LightOutputSim.eps");
+    c_LOs->SaveAs("fig/LightOutputSim.eps");
 
+
+    //
+    // //neutrons only
+    // TCanvas* c_LOns = new TCanvas("cLOns", "Light Output Neutrons", 800,400);
+    // // cLO->Divide(1,2);
+    // c_LOns->cd();
+    //
+    // neutronLightOutputExp->Draw();
+    // neutronLightOutputSim->Draw("SAME");
+    //
+    // TLegend *legendN = new TLegend(0.7, 0.8, 0.48, 0.9);
+    // legendN->AddEntry("neutronLightOutputExp", "Experimental Neutron");
+    // legendN->AddEntry("neutronLightOutputSim", "Simulated Neutron");
+    // legendN->Draw("SAME");
+    //
+    // TRatioPlot *ratN = new TRatioPlot(neutronLightOutputSim, neutronLightOutputExp);
+    // ratN->Draw("SAME");
+    //
+    // c_LOns->Write();
+    //
+    //
+    // //photons only
+    // TCanvas* c_LOps = new TCanvas("cLOps", "Light Output Photons", 800,400);
+    // // cLO->Divide(1,2);
+    // c_LOps->cd();
+    //
+    // photonLightOutputExp->Draw();
+    // photonLightOutputSim->Draw("SAME");
+    //
+    // TLegend *legendP = new TLegend(0.7, 0.8, 0.48, 0.9);
+    // legendP->AddEntry("photonLightOutputExp", "Experimental Photon");
+    // legendP->AddEntry("photonLightOutputSim", "Simulated Photon");
+    // legendP->Draw("SAME");
+    //
+    // TRatioPlot *ratP = new TRatioPlot(photonLightOutputSim, photonLightOutputExp);
+    // ratP->Draw("SAME");
+    //
+    // c_LOps->Write();
 
 }
 
@@ -329,10 +372,12 @@ void readFiss::CompareTof()
     photonTofExp->SetLineColor(kRed);
     photonTofExp->Draw("SAME");
 
+    neutronTofSim->Scale((double)expEntries/(double)simEntries);
     neutronTofSim->SetLineStyle(kDashed);
     neutronTofSim->SetLineColor(kBlue);
     neutronTofSim->Draw("SAME");
 
+    photonTofSim->Scale((double)expEntries/(double)simEntries);
     photonTofSim->SetLineStyle(kDashed);
     photonTofSim->SetLineColor(kRed);
     photonTofSim->Draw("SAME");
@@ -348,7 +393,7 @@ void readFiss::CompareTof()
     legend->Draw("SAME");
 
     c_ToFs->Write();
-    c_ToFs->SaveAs("TimeOfFlightSim.eps");
+    c_ToFs->SaveAs("fig/TimeOfFlightSim.eps");
 }
 
 void readFiss::CompareErg()
@@ -366,6 +411,7 @@ void readFiss::CompareErg()
     neutronEnergyExp->SetLineColor(kBlue);
     neutronEnergyExp->Draw();
 
+    neutronEnergySim->Scale((double)expEntries/(double)simEntries);
     neutronEnergySim->SetLineColor(kBlue);
     neutronEnergySim->SetLineStyle(kDashed);
     neutronEnergySim->Draw("SAME");
@@ -376,7 +422,7 @@ void readFiss::CompareErg()
     legend->Draw("SAME");
 
     c_Ergs->Write();
-    c_Ergs->SaveAs("NeutronErgSim.eps");
+    c_Ergs->SaveAs("fig/NeutronErgSim.eps");
 }
 
 void readFiss::CompareMult()
@@ -394,6 +440,7 @@ void readFiss::CompareMult()
     photonMultExp->SetLineColor(kRed);
     photonMultExp->Draw();
 
+    photonMultSim->Scale((double)expEntries/(double)simEntries);
     photonMultSim->SetLineColor(kRed);
     photonMultSim->SetLineStyle(kDashed);
     photonMultSim->Draw("SAME");
@@ -401,6 +448,7 @@ void readFiss::CompareMult()
     neutronMultExp->SetLineColor(kBlue);
     neutronMultExp->Draw("SAME");
 
+    neutronMultSim->Scale((double)expEntries/(double)simEntries);
     neutronMultSim->SetLineColor(kBlue);
     neutronMultSim->SetLineStyle(kDashed);
     neutronMultSim->Draw("SAME");
@@ -413,7 +461,7 @@ void readFiss::CompareMult()
     legend->Draw("SAME");
 
     c_Mults->Write();
-    c_Mults->SaveAs("MultiplicitySim.eps");
+    c_Mults->SaveAs("fig/MultiplicitySim.eps");
 }
 
 
@@ -432,6 +480,7 @@ void readFiss::ComparePSD()
     photonPSDExp->SetLineColor(kRed);
     photonPSDExp->Draw();
 
+    photonPSDSim->Scale((double)expEntries/(double)simEntries);
     photonPSDSim->SetLineColor(kRed);
     photonPSDSim->SetLineStyle(kDashed);
     photonPSDSim->Draw("SAME");
@@ -439,6 +488,7 @@ void readFiss::ComparePSD()
     neutronPSDExp->SetLineColor(kBlue);
     neutronPSDExp->Draw("SAME");
 
+    neutronPSDSim->Scale((double)expEntries/(double)simEntries);
     neutronPSDSim->SetLineColor(kBlue);
     neutronPSDSim->SetLineStyle(kDashed);
     neutronPSDSim->Draw("SAME");
@@ -451,7 +501,7 @@ void readFiss::ComparePSD()
     legend->Draw("SAME");
 
     c_PSDs->Write();
-    c_PSDs->SaveAs("ParticleDiscriminationSim.eps");
+    c_PSDs->SaveAs("fig/ParticleDiscriminationSim.eps");
 }
 
 void readFiss::CompareSingles()
@@ -469,6 +519,7 @@ void readFiss::CompareSingles()
     photonSinglesExp->SetLineColor(kRed);
     photonSinglesExp->Draw();
 
+    photonSinglesSim->Scale((double)expEntries/(double)simEntries);
     photonSinglesSim->SetLineColor(kRed);
     photonSinglesSim->SetLineStyle(kDashed);
     photonSinglesSim->Draw("SAME");
@@ -476,6 +527,7 @@ void readFiss::CompareSingles()
     neutronSinglesExp->SetLineColor(kBlue);
     neutronSinglesExp->Draw("SAME");
 
+    neutronSinglesSim->Scale((double)expEntries/(double)simEntries);
     neutronSinglesSim->SetLineColor(kBlue);
     neutronSinglesSim->SetLineStyle(kDashed);
     neutronSinglesSim->Draw("SAME");
@@ -488,5 +540,5 @@ void readFiss::CompareSingles()
     legend->Draw("SAME");
 
     c_Sins->Write();
-    c_Sins->SaveAs("SinglesSim.eps");
+    c_Sins->SaveAs("fig/SinglesSim.eps");
 }

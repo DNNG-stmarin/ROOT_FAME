@@ -66,8 +66,10 @@ int main(int argc, char** argv)
 
   // TBrowser* browser = new TBrowser();
   f->SetBNBP(10,50);
-  f->SetRunThresholds(0.20, 70.0);
-  f->SetEnergyLimits(0,10.0,0,4.0);
+  // f->SetRunThresholds(0.20, 70.0); // for pu242
+  f->SetRunThresholds(0.10, 35.0);
+
+  f->SetEnergyLimits(0, 10.0, 0, 4.0);
 
   // loop through
   f->LoopExp();
@@ -76,9 +78,9 @@ int main(int argc, char** argv)
     f->LoopSim();
   }
 
-  // // covEM plot
-  // f->CovEM();
-  // f->WriteCovEM();
+  // covEM plot
+  f->CovEM();
+  f->WriteCovEM();
 
   // plotting sections
   f->PlotAll();
@@ -90,6 +92,8 @@ int main(int argc, char** argv)
 
 
   // delete f;
+
+  cout << "Finished running READ_FAME! \n";
 
   return 0;
 }

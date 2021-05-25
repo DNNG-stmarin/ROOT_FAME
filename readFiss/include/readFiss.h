@@ -29,11 +29,15 @@ public :
    | || '_/ -_) -_)  / _ \/ _` / _` | '_/ -_|_-<_-</ -_|_-<
    |_||_| \___\___| /_/ \_\__,_\__,_|_| \___/__/__/\___/__/
                                                            */
-   TTree          *expTree;   //!pointer to the analyzed TTree or TChain
-   TTree          *simTree;
+   TChain          *expTree;   //!pointer to the analyzed TTree or TChain
+   TChain          *simTree;
+
    TString         nameExp; // String name of where to find experiment
    TString         nameSim;
    Int_t           fCurrent; //!current Tree number in a TChain
+
+   Long64_t        expEntries;
+   Long64_t        simEntries;
 
    TFile*           analysisFile;
    TDirectory*      cd_basics;
@@ -58,7 +62,11 @@ public :
   double MIN_N_ERG, MAX_N_ERG;
   double MIN_P_ERG, MAX_P_ERG;
 
-   /*
+  TString rootEnding = ".root";
+  TString nameExpTree = "Fiss";
+  TString nameSimTree = "fissionTree";
+
+ /*
   _  _ _    _
  | || (_)__| |_ ___  __ _ _ _ __ _ _ __  ___
  | __ | (_-<  _/ _ \/ _` | '_/ _` | '  \(_-<
@@ -129,6 +137,15 @@ public :
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
+
+   // beam histograms
+   TH1D** h_fisDep;
+   TH2D** h_fisDepErg;
+   TH1D** h_beamTime;
+   TH1D** h_alphaTime;
+   TH1D* h_macroPop;
+
+
 /*
               _____              ___                  _
   _____ ___ _|_   _| _ ___ ___  | _ )_ _ __ _ _ _  __| |_  ___ ___
@@ -275,8 +292,8 @@ public :
    virtual Long64_t LoadExpTree(Long64_t entry);
    virtual Long64_t LoadSimTree(Long64_t entry);
 
-   virtual void     InitExp(TTree *tree);
-   virtual void     InitSim(TTree *tree);
+   virtual void     InitExp(TChain *tree);
+   virtual void     InitSim(TChain *tree);
 
    virtual Bool_t   Notify();
    virtual void     ShowExp(Long64_t entry = -1);
