@@ -25,6 +25,7 @@ readFiss::~readFiss()
       delete simFile;
     }
     delete writeFile;
+    delete[] TRIGGERS;
 }
 //Get entry at integer <entry>
 Int_t readFiss::GetExpEntry(Long64_t entry)
