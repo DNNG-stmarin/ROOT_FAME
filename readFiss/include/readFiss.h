@@ -32,18 +32,18 @@ public :
    | || '_/ -_) -_)  / _ \/ _` / _` | '_/ -_|_-<_-</ -_|_-<
    |_||_| \___\___| /_/ \_\__,_\__,_|_| \___/__/__/\___/__/
                                                            */
-   TTree            *expTree;   //!pointer to the analyzed TTree or TChain
-   TTree            *simTree;
-   TTree            *beamTree;
+   TTree*           expTree;   //!pointer to the analyzed TTree or TChain
+   TTree*           simTree;
+   TTree*           beamTree;
    TString          nameExp; // String name of where to find experiment
    TString          nameSim;
    TString          nameBeam;
-   TFile            *expFile;
-   TFile            *simFile;
-   TFile            *beamFile;
+   TFile*           expFile;
+   TFile*           simFile;
+   TFile*           beamFile;
    Int_t            fCurrent; //!current Tree number in a TChain
 
-   TFile            *writeFile;
+   TFile*           writeFile;
    TDirectory*      cd_basics;
    TDirectory*      cd_individual;
    TDirectory*      cd_simComparison;
