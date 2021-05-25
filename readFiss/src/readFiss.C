@@ -8,81 +8,16 @@
 
 using namespace std;
 
-// Constructor
-readFiss::readFiss(TString writeFile, TString nameExp)
-{
-    // if parameter tree is not specified (or zero), connect the file
-    // used to generate this class and read the Tree.
-    TTree* tree;
-
-    cout << "Initializing experiment tree from " << nameExp << endl;
-
-    TFile* f = (TFile*)gROOT->GetListOfFiles()->FindObject(nameExp);
-    if (!f || !f->IsOpen()) {
-        f = new TFile(nameExp);
-    }
-    f->GetObject("Fiss", tree);
-    InitExp(tree);
-
-    // set the simulated Tree = 0
-    simTree = 0;
-
-    InitializeHistograms();
-
-    analysisFile = new TFile(writeFile, "RECREATE");
-
-    cd_basics = analysisFile->mkdir("Basic");
-    cd_individual = analysisFile->mkdir("Individual");
-    cd_FAME = analysisFile->mkdir("FAME");
-    cd_correlated = analysisFile->mkdir("Correlated");
-}
-
-// Constructor
-readFiss::readFiss(TString writeFile, TString nameExp, TString nameSim)
-{
-    TTree* tree;
-    TFile* f;
-
-    // if parameter tree is not specified (or zero), connect the file
-    // used to generate this class and read the Tree.
-
-    // experiment
-    cout << "Initializing experiment tree from " << nameExp << endl;
-    f = (TFile*)gROOT->GetListOfFiles()->FindObject(nameExp);
-    if (!f || !f->IsOpen()) {
-        f = new TFile(nameExp);
-    }
-    f->GetObject("Fiss", tree);
-    InitExp(tree);
-
-    // simulations
-    cout << "Initializing simulation tree from " << nameExp << endl;
-    f = (TFile*)gROOT->GetListOfFiles()->FindObject(nameSim);
-    if (!f || !f->IsOpen()) {
-        f = new TFile(nameSim);
-    }
-    f->GetObject("fissionTree", tree);
-    InitSim(tree);
-
-    InitializeHistograms();
-
-    analysisFile = new TFile(writeFile, "RECREATE");
-
-    cd_basics = analysisFile->mkdir("Basic");
-    cd_individual = analysisFile->mkdir("Individual");
-    cd_simComparison = analysisFile->mkdir("SimComparison");
-    cd_FAME = analysisFile->mkdir("FAME");
-    cd_correlated = analysisFile->mkdir("Correlated");
-}
-
-
 //Destructor
 readFiss::~readFiss()
 {
     if (!expTree) return;
-    delete expTree->GetCurrentFile();
-    delete simTree->GetCurrentFile();
-    delete analysisFile;
+    delete expFile;
+    if(mode == 1)
+    {
+      delete simFile;
+    }
+    delete writeFile;
 }
 //Get entry at integer <entry>
 Int_t readFiss::GetExpEntry(Long64_t entry)

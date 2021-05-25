@@ -2,6 +2,8 @@
 #include <TLegend.h>
 #include <TCanvas.h>
 #include <TRatioPlot.h>
+#include <TPaveStats.h>
+#include <TText.h>
 
 #include <iostream>
 #include <fstream>
@@ -40,7 +42,7 @@ void readFiss::CompareAll()
 
 void readFiss::PlotLightOut()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
     cout << "Plotting Light Output." << endl;
 
@@ -51,17 +53,21 @@ void readFiss::PlotLightOut()
     c_LO->cd();
 
     photonLightOutputExp->SetLineColor(kRed);
+    photonLightOutputExp->SetStats(0);
     photonLightOutputExp->Draw();
 
     photonLightOutputBack->SetLineColor(kRed);
     photonLightOutputBack->SetLineStyle(kDashed);
+    photonLightOutputBack->SetStats(0);
     photonLightOutputBack->Draw("SAME");
 
     neutronLightOutputExp->SetLineColor(kBlue);
+    neutronLightOutputExp->SetStats(0);
     neutronLightOutputExp->Draw("SAME");
 
     neutronLightOutputBack->SetLineColor(kBlue);
     neutronLightOutputBack->SetLineStyle(kDashed);
+    neutronLightOutputBack->SetStats(0);
     neutronLightOutputBack->Draw("SAME");
 
     TLegend *legend = new TLegend(0.7, 0.8, 0.48, 0.9);
@@ -78,7 +84,7 @@ void readFiss::PlotLightOut()
 void readFiss::PlotTof()
 {
 
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
     cout << "Plotting Time of Flight." << endl;
 
@@ -89,17 +95,21 @@ void readFiss::PlotTof()
     c_ToF->cd();
 
     photonTofExp->SetLineColor(kRed);
+    photonTofExp->SetStats(0);
     photonTofExp->Draw();
 
     photonTofBack->SetLineColor(kRed);
     photonTofBack->SetLineStyle(kDashed);
+    photonTofBack->SetStats(0);
     photonTofBack->Draw("SAME");
 
     neutronTofExp->SetLineColor(kBlue);
+    neutronTofExp->SetStats(0);
     neutronTofExp->Draw("SAME");
 
     neutronTofBack->SetLineColor(kBlue);
     neutronTofBack->SetLineStyle(kDashed);
+    neutronTofBack->SetStats(0);
     neutronTofBack->Draw("SAME");
 
 
@@ -118,7 +128,7 @@ void readFiss::PlotTof()
 void readFiss::PlotErg()
 {
 
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
     cout << "Plotting Neutron Energy." << endl;
 
@@ -128,10 +138,12 @@ void readFiss::PlotErg()
 
     c_Erg->cd();
     neutronEnergyExp->SetLineColor(kBlue);
+    neutronEnergyExp->SetStats(0);
     neutronEnergyExp->Draw();
 
     neutronEnergyBack->SetLineColor(kBlue);
     neutronEnergyBack->SetLineStyle(kDashed);
+    neutronEnergyBack->SetStats(0);
     neutronEnergyBack->Draw("SAME");
 
 
@@ -146,7 +158,7 @@ void readFiss::PlotErg()
 
 void readFiss::PlotMult()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
 
     cout << "Plotting Multiplicities." << endl;
@@ -158,17 +170,21 @@ void readFiss::PlotMult()
     c_Mult->cd();
 
     photonMultExp->SetLineColor(kRed);
+    photonMultExp->SetStats(0);
     photonMultExp->Draw();
 
     photonMultBack->SetLineColor(kRed);
     photonMultBack->SetLineStyle(kDashed);
+    photonMultBack->SetStats(0);
     photonMultBack->Draw("SAME");
 
     neutronMultExp->SetLineColor(kBlue);
+    neutronMultExp->SetStats(0);
     neutronMultExp->Draw("SAME");
 
     neutronMultBack->SetLineColor(kBlue);
     neutronMultBack->SetLineStyle(kDashed);
+    neutronMultBack->SetStats(0);
     neutronMultBack->Draw("SAME");
 
     TLegend *legend = new TLegend(0.7, 0.8, 0.48, 0.9);
@@ -184,7 +200,7 @@ void readFiss::PlotMult()
 
 void readFiss::PlotPSD()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
 
     cout << "Plotting Particle Discrimination." << endl;
@@ -196,17 +212,21 @@ void readFiss::PlotPSD()
     c_PSD->cd();
 
     photonPSDExp->SetLineColor(kRed);
+    photonPSDExp->SetStats(0);
     photonPSDExp->Draw();
 
     photonPSDBack->SetLineColor(kRed);
     photonPSDBack->SetLineStyle(kDashed);
+    photonPSDBack->SetStats(0);
     photonPSDBack->Draw("SAME");
 
     neutronPSDExp->SetLineColor(kBlue);
+    neutronPSDExp->SetStats(0);
     neutronPSDExp->Draw("SAME");
 
     neutronPSDBack->SetLineColor(kBlue);
     neutronPSDBack->SetLineStyle(kDashed);
+    neutronPSDBack->SetStats(0);
     neutronPSDBack->Draw("SAME");
 
     TLegend *legend = new TLegend(0.7, 0.8, 0.48, 0.9);
@@ -222,7 +242,7 @@ void readFiss::PlotPSD()
 
 void readFiss::PlotSingles()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_basics->cd();
     cout << "Plotting Singles." << endl;
 
@@ -233,17 +253,21 @@ void readFiss::PlotSingles()
     c_Sin->cd();
 
     photonSinglesExp->SetLineColor(kRed);
+    photonSinglesExp->SetStats(0);
     photonSinglesExp->Draw();
 
     photonSinglesBack->SetLineColor(kRed);
     photonSinglesBack->SetLineStyle(kDashed);
+    photonSinglesBack->SetStats(0);
     photonSinglesBack->Draw("SAME");
 
     neutronSinglesExp->SetLineColor(kBlue);
+    neutronSinglesExp->SetStats(0);
     neutronSinglesExp->Draw("SAME");
 
     neutronSinglesBack->SetLineColor(kBlue);
     neutronSinglesBack->SetLineStyle(kDashed);
+    neutronSinglesBack->SetStats(0);
     neutronSinglesBack->Draw("SAME");
 
     TLegend *legend = new TLegend(0.7, 0.8, 0.48, 0.9);
@@ -259,7 +283,7 @@ void readFiss::PlotSingles()
 
 void readFiss::PlotMultCor()
 {
-  analysisFile->cd();
+  writeFile->cd();
   cd_correlated->cd();
   cout << "Plotting correlated multiplicity." << endl;
 
@@ -271,13 +295,22 @@ void readFiss::PlotMultCor()
   neutronGammaMult->SetLineColor(kRed);
   neutronGammaMult->Draw("COLZ");
 
+  // JONATHAN - change stat box DOESNT WORK YET
+  /*c_MultCor->Update();
+  TPaveStats *statsBox = (TPaveStats*)c_MultCor->GetPrimitive("stats");
+  TList* statsList = statsBox->GetListOfLines();
+  TText* tconst = statsBox->GetLineWith("Mean x");
+  tconst->Print();
+  cout << tconst->GetTitle() << endl;
+  //cout << *(const_cast<char*>(reinterpret_cast<const char*>(tconst->GetWcsTitle()))) << endl;*/
+
   c_MultCor->Write();
   c_MultCor->SaveAs("MultiplicityCorrelation.eps");
 }
 
 void readFiss::PlotMultLO()
 {
-  analysisFile->cd();
+  writeFile->cd();
   cd_correlated->cd();
   cout << "Plotting correlated mult/LO." << endl;
 
@@ -287,6 +320,7 @@ void readFiss::PlotMultLO()
   c_MultLO->cd();
 
   neutronMultPhotonLO->SetLineColor(kRed);
+  neutronMultPhotonLO->SetStats(0);
   neutronMultPhotonLO->Draw("COLZ");
 
   c_MultLO->Write();
@@ -305,7 +339,7 @@ void readFiss::PlotMultLO()
 void readFiss::CompareLightOut()
 {
 
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
 
     cout << "Comparing Light Output." << endl;
@@ -348,7 +382,7 @@ void readFiss::CompareLightOut()
 void readFiss::CompareTof()
 {
 
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
 
     cout << "Comparing Time of Flight." << endl;
@@ -391,7 +425,7 @@ void readFiss::CompareTof()
 
 void readFiss::CompareErg()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
 
     cout << "Comparing Energy." << endl;
@@ -419,7 +453,7 @@ void readFiss::CompareErg()
 
 void readFiss::CompareMult()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
     cout << "Comparing Multiplicity." << endl;
 
@@ -457,7 +491,7 @@ void readFiss::CompareMult()
 
 void readFiss::ComparePSD()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
     cout << "Comparing Discrimination." << endl;
 
@@ -494,7 +528,7 @@ void readFiss::ComparePSD()
 
 void readFiss::CompareSingles()
 {
-    analysisFile->cd();
+    writeFile->cd();
     cd_simComparison->cd();
     cout << "Comparing Singles." << endl;
 

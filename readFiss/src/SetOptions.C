@@ -38,4 +38,8 @@ void readFiss::SetEnergyLimits(double min_n_erg, double max_n_erg, double min_p_
 
   MIN_P_ERG = min_p_erg;
   MAX_P_ERG = max_p_erg;
+
+  // JONATHAN - add cout
+  cout << "Using neutron energy range " << min_n_erg << " to " << max_n_erg <<
+          " and photon energy range " << min_p_erg << " to " << max_p_erg << endl;
 }

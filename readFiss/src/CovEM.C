@@ -145,7 +145,7 @@ void readFiss::CovEM()
 // write the content of the matrices
 void readFiss::WriteCovEM()
 {
-  analysisFile->cd();
+  writeFile->cd();
   cd_FAME->cd();
 
   // save the matrices to the root file
