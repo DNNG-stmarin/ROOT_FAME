@@ -72,7 +72,7 @@ void readFiss::LoopExp()
         {
             nMultBack++;
             neutronLightOutputBack->Fill(backNeutronLightOut[i]);
-            neutronTofBack->Fill(backNeutronDetTimes[i]);
+            neutronTofBack->Fill(backNeutronDetTimes[i] + BACKGROUND_DELAY);
             neutronEnergyBack->Fill(backNeutronToFErg[i]);
             neutronPSDBack->Fill(backNeutronPSD[i]);
             neutronSinglesBack->Fill(backNeutronDet[i]);
@@ -87,7 +87,7 @@ void readFiss::LoopExp()
         {
           gMultBack++;
           photonLightOutputBack->Fill(backPhotonLightOut[i]);
-          photonTofBack->Fill(backPhotonDetTimes[i]);
+          photonTofBack->Fill(backPhotonDetTimes[i] + BACKGROUND_DELAY);
           photonPSDBack->Fill(photonPSD[i]);
           photonSinglesBack->Fill(backPhotonDet[i]);
         }
@@ -167,7 +167,12 @@ void readFiss::LoopBeam()
         if (ientry < 0) break;
         nb = expTree->GetEntry(jentry);   nbytes += nb;
         // if (Cut(ientry) < 0) continue;
-        indexChannel = 0; // this should be a function of fisChan
+        indexChannel = isTrigger(fisChan); // this should be a function of fisChan
+        if(indexChannel < 0)
+        {
+          cout << "Trigger number " << indexChannel << " not recognozed." << endl;
+          exit(10);
+        }
 
         nMult = 0;
         gMult = 0;

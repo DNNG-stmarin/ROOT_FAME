@@ -80,7 +80,7 @@ void readFiss::PlotLightOut()
     legend->Draw("SAME");
 
     c_LO->Write();
-    c_LO->SaveAs("fig/LightOutput.eps");
+    //c_LO->SaveAs("fig/LightOutput.eps");
 }
 
 void readFiss::PlotTof()
@@ -124,7 +124,7 @@ void readFiss::PlotTof()
     legend->Draw("SAME");
 
     c_ToF->Write();
-    c_ToF->SaveAs("fig/TimeOfFlight.eps");
+    //c_ToF->SaveAs("fig/TimeOfFlight.eps");
 }
 
 void readFiss::PlotErg()
@@ -155,7 +155,7 @@ void readFiss::PlotErg()
     legend->Draw("SAME");
 
     c_Erg->Write();
-    c_Erg->SaveAs("fig/NeutronErg.eps");
+    //c_Erg->SaveAs("fig/NeutronErg.eps");
 }
 
 void readFiss::PlotMult()
@@ -197,7 +197,7 @@ void readFiss::PlotMult()
     legend->Draw("SAME");
 
     c_Mult->Write();
-    c_Mult->SaveAs("fig/Multiplicity.eps");
+    //c_Mult->SaveAs("fig/Multiplicity.eps");
 }
 
 void readFiss::PlotPSD()
@@ -239,7 +239,7 @@ void readFiss::PlotPSD()
     legend->Draw("SAME");
 
     c_PSD->Write();
-    c_PSD->SaveAs("fig/ParticleDiscrimination.eps");
+    //c_PSD->SaveAs("fig/ParticleDiscrimination.eps");
 }
 
 void readFiss::PlotSingles()
@@ -280,7 +280,7 @@ void readFiss::PlotSingles()
     legend->Draw("SAME");
 
     c_Sin->Write();
-    c_Sin->SaveAs("fig/Singles.eps");
+    //c_Sin->SaveAs("fig/Singles.eps");
 }
 
 void readFiss::PlotMultCor()
@@ -307,7 +307,7 @@ void readFiss::PlotMultCor()
   //cout << *(const_cast<char*>(reinterpret_cast<const char*>(tconst->GetWcsTitle()))) << endl;*/
 
   c_MultCor->Write();
-  c_MultCor->SaveAs("MultiplicityCorrelation.eps");
+  //c_MultCor->SaveAs("MultiplicityCorrelation.eps");
 }
 
 void readFiss::PlotMultLO()
@@ -326,7 +326,7 @@ void readFiss::PlotMultLO()
   neutronMultPhotonLO->Draw("COLZ");
 
   c_MultLO->Write();
-  c_MultLO->SaveAs("NeutronMultiplicityPhotonLO.eps");
+  //c_MultLO->SaveAs("NeutronMultiplicityPhotonLO.eps");
 }
 
 /*
@@ -379,7 +379,7 @@ void readFiss::CompareLightOut()
     legend->Draw("SAME");
 
     c_LOs->Write();
-    c_LOs->SaveAs("fig/LightOutputSim.eps");
+    //c_LOs->SaveAs("fig/LightOutputSim.eps");
 
 
     //
@@ -465,7 +465,7 @@ void readFiss::CompareTof()
     legend->Draw("SAME");
 
     c_ToFs->Write();
-    c_ToFs->SaveAs("fig/TimeOfFlightSim.eps");
+    //c_ToFs->SaveAs("fig/TimeOfFlightSim.eps");
 }
 
 void readFiss::CompareErg()
@@ -494,7 +494,7 @@ void readFiss::CompareErg()
     legend->Draw("SAME");
 
     c_Ergs->Write();
-    c_Ergs->SaveAs("fig/NeutronErgSim.eps");
+    // c_Ergs->SaveAs("fig/NeutronErgSim.eps");
 }
 
 void readFiss::CompareMult()
@@ -533,7 +533,7 @@ void readFiss::CompareMult()
     legend->Draw("SAME");
 
     c_Mults->Write();
-    c_Mults->SaveAs("fig/MultiplicitySim.eps");
+    //c_Mults->SaveAs("fig/MultiplicitySim.eps");
 }
 
 
@@ -573,7 +573,7 @@ void readFiss::ComparePSD()
     legend->Draw("SAME");
 
     c_PSDs->Write();
-    c_PSDs->SaveAs("fig/ParticleDiscriminationSim.eps");
+    //c_PSDs->SaveAs("fig/ParticleDiscriminationSim.eps");
 }
 
 void readFiss::CompareSingles()
@@ -612,5 +612,5 @@ void readFiss::CompareSingles()
     legend->Draw("SAME");
 
     c_Sins->Write();
-    c_Sins->SaveAs("fig/SinglesSim.eps");
+    //c_Sins->SaveAs("fig/SinglesSim.eps");
 }

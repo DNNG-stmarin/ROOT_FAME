@@ -38,9 +38,14 @@ public :
    TString          nameExp; // String name of where to find experiment
    TString          nameSim;
    TString          nameBeam;
+
    TFile*           expFile;
    TFile*           simFile;
    TFile*           beamFile;
+
+   int              numExpFiles;
+   int              numSimFiles;
+
    Int_t            fCurrent; //!current Tree number in a TChain
 
    TFile*           writeFile;
@@ -70,6 +75,7 @@ public :
   int BP;                       // CovEM setting
   double MAX_TIME_N;
   double THRESHOLD;
+  double BACKGROUND_DELAY;
 
   double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
   double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
@@ -82,6 +88,8 @@ public :
   // non-user information
   long int expEntries;
   long int simEntries;
+
+
 
 
 
@@ -362,6 +370,7 @@ public :
 
    // initialization functions
    virtual void     InitializeHistograms();
+   virtual int      isTrigger(int triggerNumber);
 
    // callable functions
    virtual void     PlotAll();
