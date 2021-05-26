@@ -62,8 +62,7 @@ void DetectorSystemClass::FissionAnalysis()
     if (NUM_BEAMS > 0)
     {
       double distance = BEAM_DISTANCE + triggers[numTrig].Z; // Include offset for trigger location along beam path
-      f_beamTime = bTime - triggers[numTrig].beamDelay
-        + distance / LIGHT_C;
+      f_beamTime = bTime - triggers[numTrig].beamDelay + distance / LIGHT_C;
       f_beamEnergy = MASS_NEUTRONS *
         (1 / pow(1 - pow(distance / f_beamTime / LIGHT_C, 2.), 0.5) - 1);
       // f_beamEnergy = 0.5 * MASS_NEUTRONS / pow(LIGHT_C, 2)

@@ -14,7 +14,7 @@ void readFiss::BeamDepAnalysis()
   cout << "Integrating fission over " << intWindowFiss << " (ns)" << endl;
 
   // loop through the ppac plates
-  double scalAlpha, scalFiss;
+  double scaleAlpha, scaleFiss;
   for (int r = 0; r < NUM_TRIGGERS; r++)
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
@@ -30,10 +30,10 @@ void readFiss::BeamDepAnalysis()
     cout << "declared profiles" << endl;
 
     // find the scaling factors
-		scalFiss = h_macroPop->GetMean() * intWindowFiss; // times the size in ns of the integration window
-		scalAlpha = 1*intWindowAlpha;
-		h_fisDep[r]->Scale(1/scalFiss);		//Changing counts into count rate in the fission chamber
-		h_alphaDep[r]->Scale(1/scalAlpha);		//Changing counts into count rate for alpha background
+		scaleFiss = h_macroPop->GetMean() * intWindowFiss; // times the size in ns of the integration window
+		scaleAlpha = intWindowAlpha;
+		h_fisDep[r]->Scale(1 / scaleFiss);		//Changing counts into count rate in the fission chamber
+		h_alphaDep[r]->Scale(1 / scaleAlpha);		//Changing counts into count rate for alpha background
 
 
 	 //Subtract alphas from fisDep
