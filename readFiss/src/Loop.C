@@ -162,7 +162,8 @@ void readFiss::LoopBeam()
 
     int nMult, gMult, nMultBack, gMultBack, indexChannel;
     Long64_t nbytes = 0, nb = 0;
-    for (Long64_t jentry = 0; jentry < expEntries; jentry++) {
+    for (Long64_t jentry = 0; jentry < expEntries; jentry++)
+    {
         Long64_t ientry = LoadExpTree(jentry);
         if (ientry < 0) break;
         nb = expTree->GetEntry(jentry);   nbytes += nb;
@@ -177,8 +178,17 @@ void readFiss::LoopBeam()
 
         // skip if the energy of the beam is outside the range
         // nathan remove
-        if(beamEnergy < MIN_ERG_BEAM && beamEnergy > MAX_ERG_BEAM )
+
+        if(beamEnergy > MIN_ERG_BEAM && beamEnergy < MAX_ERG_BEAM )
         {
+          h_fisDep[indexChannel]->Fill(fisDep);
+          h_beamTime[indexChannel]->Fill(beamTime);
+          h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
+
+        }
+        else
+        {
+          // cout << "energy not recognized: " << beamEnergy << endl;
           continue;
         }
 
@@ -186,11 +196,6 @@ void readFiss::LoopBeam()
         gMult = 0;
         nMultBack = 0;
         gMultBack = 0;
-
-        h_fisDep[indexChannel]->Fill(fisDep);
-        h_beamTime[indexChannel]->Fill(beamTime);
-        h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
-
 
         // loop through neutrons
         for (int i = 0; i < neutronMult; i++)
