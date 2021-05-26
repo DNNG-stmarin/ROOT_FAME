@@ -176,6 +176,7 @@ void readFiss::LoopBeam()
         }
 
         // skip if the energy of the beam is outside the range
+        // nathan remove
         if(beamEnergy < MIN_ERG_BEAM && beamEnergy > MAX_ERG_BEAM )
         {
           continue;

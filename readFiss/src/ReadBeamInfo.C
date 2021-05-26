@@ -11,7 +11,7 @@ void readFiss::ReadBeamInfo()
 
   // extract the histrograms from the file
   TH2D* alphaSpecAll = (TH2D*)beamFile->Get("alphaChanSpec");
-	h_macroPop = (TH1I*)beamFile->Get("macroPop");
+	TH1I* h_macroPopFile = (TH1I*)beamFile->Get("macroPop");
 
   // loop through the PPAC channels
   for (int r = 0; r < 10; r++)
@@ -21,6 +21,9 @@ void readFiss::ReadBeamInfo()
     h_alphaDep[r] = alphaSpecAll->ProjectionY((TString)"h_alphaDep_" + (TString)to_string(r), TRIGGER_CHANNEL+1, TRIGGER_CHANNEL + 1);
     // h_alphaDep[r]->Write();
   }
+  h_macroPop = (TH1I*)h_macroPopFile->Clone();
+  cout << "Read in MacroStructure population, nentries = " << h_macroPop->GetEntries() << endl;
   //h_macroPop->Write();
   beamFile->Close();
+
 }

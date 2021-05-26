@@ -2,6 +2,7 @@
 using namespace std;
 void readFiss::InitializeFunctions()
 {
+  cout << "initializing functions" << endl;
   f_alpha = new TF1* [NUM_TRIGGERS];
   f_expo = new TF1* [NUM_TRIGGERS];
   f_fisProducts = new TF1* [NUM_TRIGGERS];

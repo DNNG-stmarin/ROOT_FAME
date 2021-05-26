@@ -14,7 +14,9 @@ void readFiss::BeamDepAnalysis()
   cout << "Integrating fission over " << intWindowFiss << " (ns)" << endl;
 
   // loop through the ppac plates
-  double scalAlpha, scalFiss;
+
+  // h_fisDepSelect = // integrate the whole distributioon betwenn
+  double scaleAlpha, scaleFiss;
   for (int r = 0; r < NUM_TRIGGERS; r++)
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
@@ -30,22 +32,14 @@ void readFiss::BeamDepAnalysis()
     cout << "declared profiles" << endl;
 
     // find the scaling factors
-		scalFiss = h_macroPop->GetMean() * intWindowFiss; // times the size in ns of the integration window
-    cout << "a";
-    scalAlpha = 1*intWindowAlpha;
-    cout << "a";
-		h_fisDep[r]->Scale(1/scalFiss);		//Changing counts into count rate in the fission chamber
-    cout << "a";
-		h_alphaDep[r]->Scale(1/scalAlpha);		//Changing counts into count rate for alpha background
-    cout << "a" << endl;
-
-    cout << "block 2" << endl;
+		scaleFiss = h_macroPop->GetMean() * intWindowFiss; // times the size in ns of the integration window
+    scaleAlpha = 1*intWindowAlpha;
+		h_fisDep[r]->Scale(1.0/scaleFiss);		//Changing counts into count rate in the fission chamber
+		h_alphaDep[r]->Scale(1.0/scaleAlpha);		//Changing counts into count rate for alpha background
 
 	 //Subtract alphas from fisDep
     h_fisSubtract[r] = (TH1D*)h_fisDep[r]->Clone("h_fisSubtract");						//Clone fission chamber histogram for future isolation of fission products
-    cout << "b";
-		h_fisSubtract[r]->Add(h_alphaDep[r], -1);													//cloned fisDep histogram
-    cout << "b" << endl;
+		h_fisSubtract[r]->Add(h_alphaDep[r], -1);													        //cloned fisDep histogram
 
     cout << "subtracted histograms" << endl;
 
@@ -61,6 +55,8 @@ void readFiss::BeamDepAnalysis()
    f_gauss[r]->SetParameters(f_fisProducts[r]->GetParameter(0),
                              f_fisProducts[r]->GetParameter(1),
                              f_fisProducts[r]->GetParameter(2));
+
+   cout << "performing fits" << endl;
 
 
    //  f_alphaBackground->SetRange(h_alphaSpec->GetBinCenter(maxCountBin),BIN_ERG_MAX);	//Set alpha fit range to start at middle of peak of data
@@ -89,19 +85,24 @@ void readFiss::BeamDepAnalysis()
 		double minDepBin = 200;									 	//Max Energy Threshold
 		double maxDepBin = -1;											//Final bin in histogram
 
+    // cout << h_fisSubtract[0]->GetBinCenter(30) << endl;
 
 		//cout << "Bin #; Energy Threshold; Ratio" << endl;
     double minDepErg, numFis, numTot;
-		for (int i = 1; i < minDepBin; i++){						//for loop to get all threshold ratios until max threshold bin
+    // cout << "start" << endl;
+		for (int i = 1; i < minDepBin; i++)
+    {						//for loop to get all threshold ratios until max threshold bin
 			minDepErg = h_fisSubtract[r]->GetBinCenter(i);		//Get threshold value
-			numFis = h_fisSubtract[r]->Integral(i,maxDepBin);	//Get area under fission products curve from threshold
-			numTot = h_fisDep[r]->Integral(i,maxDepBin);		//Get area under total histogram from threshold
+			numFis = h_fisSubtract[r]->Integral(i, maxDepBin);	//Get area under fission products curve from threshold
+			numTot = h_fisDep[r]->Integral(i, maxDepBin);		//Get area under total histogram from threshold
 			g_fisRatioThreshold[r]->SetPoint(i, minDepErg, numFis/numTot);		//Put data points into graph
 			//cout << i << " " << minDepErg << " " << numFis/numTot << endl;
 		}
+
     g_fisRatioThreshold[r]->SetName("fissRatioThreshold_" + s_TRIG_NUM);
 		g_fisRatioThreshold[r]->SetTitle("Ratio of Fissions to Alphas due to Energy Threshold; Energy Threshold (V us); Fraction of Fissions");
 
+    cout << "finished threshold" << endl;
 
 		//Energy Segments (between two energies)
 		int binSeg = 10;									//Energy segment width (10 = width of 0.001; 20 = 0.002)
@@ -115,11 +116,13 @@ void readFiss::BeamDepAnalysis()
     g_fisRatioSelect[r]->SetName("fissRatioSelect_" + s_TRIG_NUM);
     g_fisRatioSelect[r]->SetTitle("Ratio of Fissions to Alphas due to Energy Selection; Energy Selection (V us); Fraction of Fissions");
 
+    cout << "finished selection" << endl;
 
 		// create ratio of multiplicity to fission
 		double binWidth = maxDep/numfisDepBins;
     double nMult, gMult, nbMult, gbMult, ergPt;
-    TGraph *pg_neutronMult, *pg_gammaMult;
+    TGraph *pg_neutronMult = new TGraph(minDepBin);
+    TGraph *pg_gammaMult = new TGraph(minDepBin);
 		for (int k = 0; k <= minDepBin; k++){
 
 			nMult = p_neutronMultDep[r]->GetBinContent(k);
@@ -142,6 +145,8 @@ void readFiss::BeamDepAnalysis()
 
     g_gammaMultRatioDep[r]->SetName("g_gammaMultRatioDep" + s_TRIG_NUM);
     g_gammaMultRatioDep[r]->SetTitle("Fission Gamma Multiplicity; Energy Selection (V us); Average Multiplicity");
+
+    cout << "taking ratios" << endl;
 
   }
 
