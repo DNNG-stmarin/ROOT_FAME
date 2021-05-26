@@ -3,7 +3,6 @@
 
 using namespace std;
 
-
 // readFiss main constructor constructor
 readFiss::readFiss(int &argc, char** &argv)
 {
@@ -65,7 +64,7 @@ readFiss::readFiss(int &argc, char** &argv)
   }
   if(mode == 2)
   {
-    cout << "BEAM PLOT FUNCTIONALITY NOT IMPLEMENTED." << endl;
+    PlotDepSubtraction();
     // JONATHAN - placeholder
   }
   writeFile->Close();
@@ -258,7 +257,7 @@ void readFiss::GetInfo(istream &inputStream)
   if(mode == 2)
   {
     cout << "Input number of channels. Sample input: \n 10 \n";
-    cin >> NUM_TRIGGERS;
+    inputStream >> NUM_TRIGGERS;
     cout << " Using " << NUM_TRIGGERS << " triggers. \n\n";
 
     TRIGGERS = new int[NUM_TRIGGERS];
@@ -267,7 +266,7 @@ void readFiss::GetInfo(istream &inputStream)
     " \n4 \n5 \n6 \n21 \n22 \n23 \n24 \n31 \n32 \n38 \n";
     for(int i = 0; i < NUM_TRIGGERS; ++i)
     {
-      cin >> TRIGGERS[i];
+      inputStream >> TRIGGERS[i];
     }
     cout << " Using trigger numbers ";
     for(int i = 0; i < NUM_TRIGGERS; ++i)
@@ -277,7 +276,7 @@ void readFiss::GetInfo(istream &inputStream)
     cout << "\n\n";
 
     cout << "Input the minimum and maximum beam energies (MeV)";
-    cin >> MIN_ERG_BEAM >> MAX_ERG_BEAM;
+    inputStream >> MIN_ERG_BEAM >> MAX_ERG_BEAM;
     cout << " Using beam range between " << MIN_ERG_BEAM << " and " << MAX_ERG_BEAM << " MeV" << endl;
 
 

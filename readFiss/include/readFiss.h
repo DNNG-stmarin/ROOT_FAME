@@ -197,8 +197,8 @@ public :
 
 */
 
-  TProfile** p_neutronMultDep;				                 //Profile neutronMult vs fisDep
-  TProfile** p_gammaMultDep;				                   //Profile gammaMult vs fisDep
+  TProfile** p_neutronMultDep;				                   //Profile neutronMult vs fisDep
+  TProfile** p_gammaMultDep;				                     //Profile gammaMult vs fisDep
   TProfile** p_backNeutronMultDep;                       //Profile backNeutronMult vs fisDep
 	TProfile** p_backGammaMultDep;                         //Profile backGammaMult vs fisDep
 
@@ -440,6 +440,10 @@ public :
    virtual void     PlotSingles();
    virtual void     PlotMultCor();
    virtual void     PlotMultLO();
+
+   // plot the beam parameters
+   virtual void     PlotDepSubtraction();
+   virtual void     PlotRatioMult();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();

@@ -19,13 +19,7 @@ void readFiss::BeamDepAnalysis()
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
-    // JAMES & NATHAN, let's do the plotting in a different function, see comments below
-    // c1 = new TCanvas("AlphaSubtraction_Channel_"+s_TRIGGER_CHANNEL, "Fission Alpha Ratios", 1200, 800);
-		// c2 = new TCanvas("MultiplicityRatio_Channel_"+s_TRIGGER_CHANNEL, "Neutron/Gamma Multiplicity Comparision to Fission Alpha Ratios", 600, 800);
-		// c1->Divide(2,2);
-		// c2->Divide(1,2);
-		// c1->cd(1);
-		// c2->cd(1);
+    cout << r << endl;
 
     // compute the profiles
     p_neutronMultDep[r] = h2_neutronMultDep[r]->ProfileX("p_neutronMult" + s_TRIG_NUM);
@@ -33,11 +27,7 @@ void readFiss::BeamDepAnalysis()
     p_backNeutronMultDep[r] = h2_backNeutronMultDep[r]->ProfileX("p_backNeutronMult" + s_TRIG_NUM);
 		p_backGammaMultDep[r] = h2_backGammaMultDep[r]->ProfileX("p_backGammaMult" + s_TRIG_NUM);
 
-    p_neutronMultDep[r]->Write();
-    p_gammaMultDep[r]->Write();
-    p_backNeutronMultDep[r]->Write();
-    p_backGammaMultDep[r]->Write();
-
+    cout << "declared profiles" << endl;
 
     // find the scaling factors
 		scalFiss = h_macroPop->GetMean() * intWindowFiss; // times the size in ns of the integration window
@@ -50,10 +40,12 @@ void readFiss::BeamDepAnalysis()
     h_fisSubtract[r] = (TH1D*)h_fisDep[r]->Clone("h_fisSubtract");						//Clone fission chamber histogram for future isolation of fission products
 		h_fisSubtract[r]->Add(h_alphaDep[r], -1);													//cloned fisDep histogram
 
-  // fit the alpha background
+    cout << "subtracted histograms" << endl;
+
+  // fit the alpha background This could be its own function
     double MaxBinCount = h_alphaDep[r]->GetMaximumBin();									//Use GetMaximumBin to find candidate for peak (most events/counts)
 
-    // JAMES & NATHAN: make an array of functions and FitResultsPtr in readFiss.h, declare them in a new file initializeFunctions.h, and save the fits for each
+   // JAMES & NATHAN: make an array of functions and FitResultsPtr in readFiss.h, declare them in a new file initializeFunctions.h, and save the fits for each
    //  f_alphaBackground->SetRange(h_alphaSpec->GetBinCenter(MaxBinCount),BIN_ERG_MAX);	//Set alpha fit range to start at middle of peak of data
    //  fitAlphas = h_alphaSpec->Fit("f_alphaBackground","RS");				//Initialize fit of alphaBackground in specified range (after peak) to ptr allowing for extraction of the variables of the fit
    //  expoConst = fitAlphas->Value(0);												//Get constant of exponential fit
@@ -76,53 +68,12 @@ void readFiss::BeamDepAnalysis()
 		// f_expoBackground->SetParameter(1,expoSlope);		//Set exponential slope of created exponential to that of the exponential fit of alphas
 		// f_expoBackground->SetLineColor(kRed);
 
-    // JAMES & NATHAN: add new functions in Plot.C to plot the results here
-   //
-	 // //Draw both fits on general fisDep hisgram
-		// c1->cd(1);													//First canvas assignment
-		// h_fisDep->Draw();											//General plot of fisDep
-		// h_fisSubtract->Draw("SAME");
-		// h_fisSubtract->SetLineColor(kBlack);
-		// f_gausProducts->Draw("SAME");								//Gaussian fis of fissions
-		// f_expoBackground->Draw("SAME");								//Exponential fit of alphas
-		// gPad->SetLogy(1);
-		// TLegend *leg = new TLegend(0.9,0.6,0.5,0.75);
-		// leg->AddEntry("h_fisDep","fisDep","l");
-		// leg->AddEntry("f_gausProducts","Fission Products","l");
-		// leg->AddEntry("f_expoBackground","Alpha Background","l");
-		// leg->Draw();
-   //
-	 // //Draw Vertical Line at intersection
-		// //TLine *intersection = new TLine(0.00623,0,0.00623,100000);	//Define intersections line of gaussian (fissions) and exponential (alphas)
-		// //intersection->Draw("SAME");
-   //
-	 // //Draw other canvas entries
-		// c1->cd(2);												//Second canvas assignment
-		// h_fisSubtract->Draw("HIST");							//Isolated fissions plot
-		// f_gausProducts->Draw("SAME");							//Fissions fit
-		// //h_fisSubtract->SetMinimum(-100);						//Set plot minimum to count for binning issues at low energies
-		// h_fisSubtract->SetTitle("Fissions without 'Alphas';Pulse Integral (V us); Count Rate");	//Title
-   //
-		// c1->cd(3);							//Third canvas assignment
-		// h_alphaSpec->Draw("HIST");			//Isolated alpha background plot
-		// f_expoBackground->Draw("SAME");		//Alpha background fit
-		// gPad->SetLogy(3);					//Log scale y-axis
-		// h_alphaSpec->SetTitle("Alpha spec vs. chan; Pulse Integral (V us); Count Rate");
-   //
-		// c1->cd(4);																			//Fourth canvas assignment
-		// ch->Draw("beamTime >> h_beamTime",fisChanCut);										//Draw general beamTime
-		// TLine *beamRangeFis1 = new TLine(FIS_RANGE_LOW,0,FIS_RANGE_LOW,10000);				//Define line indicating lower limit of fissions interval
-		// TLine *beamRangeFis2 = new TLine(FIS_RANGE_HIGH,0,FIS_RANGE_HIGH,10000);			//Define line indicating upper limit of fissions interval
-		// beamRangeFis1->Draw("SAME");														//Draw lower limit fissions line
-		// beamRangeFis2->Draw("SAME");														//Draw upper limit fissions line
-		// beamRangeFis1->SetLineColor(kGreen);
-		// beamRangeFis2->SetLineColor(kGreen);
 
 	//Calculate ratio of fisions to alphas
 		//Energy Threshold (threshold and above)
     // JAMES & NATHAN: maybe put this in the Constants.h
 
-		double minDepBin = 150;										//Max Energy Threshold
+		double minDepBin = 200;									 	//Max Energy Threshold
 		double maxDepBin = -1;											//Final bin in histogram
 
     // JAMES & NATHAN: make an array of TGraphs for the fisDep dependent ratio
