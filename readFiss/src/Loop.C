@@ -158,7 +158,7 @@ void readFiss::LoopBeam()
     if (expTree == 0) return;
     //CHANGE BACK TO SIM TREE
     expEntries = expTree->GetEntries();
-    cout << "Analyzing " << expEntries << " simulated events \n ";
+    cout << "Analyzing (again)" << expEntries << " experimental events \n ";
 
     int nMult, gMult, nMultBack, gMultBack, indexChannel;
     Long64_t nbytes = 0, nb = 0;
@@ -168,10 +168,17 @@ void readFiss::LoopBeam()
         nb = expTree->GetEntry(jentry);   nbytes += nb;
         // if (Cut(ientry) < 0) continue;
         indexChannel = isTrigger(fisChan); // this should be a function of fisChan
+
         if(indexChannel < 0)
         {
-          cout << "Trigger number " << indexChannel << " not recognozed." << endl;
+          cout << "Trigger number " << fisChan << " not recognized." << endl;
           exit(10);
+        }
+
+        // skip if the energy of the beam is outside the range
+        if(beamEnergy < MIN_ERG_BEAM && beamEnergy > MAX_ERG_BEAM )
+        {
+          continue;
         }
 
         nMult = 0;

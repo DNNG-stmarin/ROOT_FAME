@@ -46,6 +46,8 @@ readFiss::readFiss(int &argc, char** &argv)
   if(mode == 2) // JONATHAN - beam placeholder
   {
     LoopBeam(); // JONATHAN - not implemented
+    ReadBeamInfo();
+    BeamDepAnalysis();
   }
 
   // run CovEM if user wanted to
@@ -204,6 +206,7 @@ void readFiss::GetInfo(istream &inputStream)
     cd_beam = writeFile->mkdir("Beam");
     cout << "Input beamFile path" << endl;
     inputStream >> nameBeam;
+    cout << "Reading beam information from " << nameBeam << endl;
     // TODO - BEAM FUNCTIONALITY
   }
 
@@ -226,6 +229,7 @@ void readFiss::GetInfo(istream &inputStream)
   // ask user for background delay
   cout << "background delay to visualize background (ns), put 0 if unsure" << endl;
   inputStream >> BACKGROUND_DELAY;
+  cout << "\n";
 
   // ask user if they want to use CovEM
   cout << "Input 1 for CovEM, input 0 for no CovEM" << endl;
@@ -271,5 +275,11 @@ void readFiss::GetInfo(istream &inputStream)
       cout << TRIGGERS[i] << " ";
     }
     cout << "\n\n";
+
+    cout << "Input the minimum and maximum beam energies (MeV)";
+    cin >> MIN_ERG_BEAM >> MAX_ERG_BEAM;
+    cout << " Using beam range between " << MIN_ERG_BEAM << " and " << MAX_ERG_BEAM << " MeV" << endl;
+
+
   }
 }

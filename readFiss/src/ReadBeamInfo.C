@@ -1,14 +1,26 @@
-
+#include "readFiss.h"
 using namespace std;
 
-readFiss::ReadBeamInfo()
+// read the information contained in the beam file
+void readFiss::ReadBeamInfo()
 {
-  // extract the histrograms from the file
-  alphaSpecAll = (TH2D*)beamFile->Get("alphaChanSpec");
-	macroPop = (TH1I*)beamFile->Get("macroPop");
+  cout << "Extracting information from file" << endl;
 
+  beamFile = new TFile(nameBeam, "READ");
   cd_beam->cd();
-  alphaSpecAll->Write();
-  macroPop->Write();
 
+  // extract the histrograms from the file
+  TH2D* alphaSpecAll = (TH2D*)beamFile->Get("alphaChanSpec");
+	h_macroPop = (TH1I*)beamFile->Get("macroPop");
+
+  // loop through the PPAC channels
+  for (int r = 0; r < 10; r++)
+	{
+		int TRIGGER_CHANNEL = TRIGGERS[r];
+    // cout << TRIGGER_CHANNEL << endl;
+    h_alphaDep[r] = alphaSpecAll->ProjectionY((TString)"h_alphaDep_" + (TString)to_string(r), TRIGGER_CHANNEL+1, TRIGGER_CHANNEL + 1);
+    // h_alphaDep[r]->Write();
+  }
+  //h_macroPop->Write();
+  beamFile->Close();
 }
