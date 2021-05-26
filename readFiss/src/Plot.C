@@ -49,7 +49,7 @@ void readFiss::PlotLightOut()
     cout << "Plotting Light Output." << endl;
 
     //create a canvas
-    TCanvas* c_LO = new TCanvas("cLO", "Light Output", 800,400);
+    TCanvas* c_LO = new TCanvas("cLO", "Light Output", 800, 400);
     // cLO->Divide(1,2);
 
     c_LO->cd();
@@ -91,7 +91,7 @@ void readFiss::PlotTof()
     cout << "Plotting Time of Flight." << endl;
 
     //create a canvas
-    TCanvas* c_ToF = new TCanvas("cToF", "Time of Flight", 800,400);
+    TCanvas* c_ToF = new TCanvas("cToF", "Time of Flight", 800, 400);
     // cLO->Divide(1,2);
 
     c_ToF->cd();
@@ -135,7 +135,7 @@ void readFiss::PlotErg()
     cout << "Plotting Neutron Energy." << endl;
 
     //create a canvas
-    TCanvas* c_Erg = new TCanvas("cErg", "ToF Energy", 800,400);
+    TCanvas* c_Erg = new TCanvas("cErg", "ToF Energy", 800, 400);
     // cLO->Divide(1,2);
 
     c_Erg->cd();
@@ -166,7 +166,7 @@ void readFiss::PlotMult()
     cout << "Plotting Multiplicities." << endl;
 
     //create a canvas
-    TCanvas* c_Mult = new TCanvas("cMult", "Multiplicity", 800,400);
+    TCanvas* c_Mult = new TCanvas("cMult", "Multiplicity", 800, 400);
     // cLO->Divide(1,2);
 
     c_Mult->cd();
@@ -208,7 +208,7 @@ void readFiss::PlotPSD()
     cout << "Plotting Particle Discrimination." << endl;
 
     //create a canvas
-    TCanvas* c_PSD = new TCanvas("cPSD", "Particle Dicrimination", 800,400);
+    TCanvas* c_PSD = new TCanvas("cPSD", "Particle Dicrimination", 800, 400);
     // cLO->Divide(1,2);
 
     c_PSD->cd();
@@ -249,7 +249,7 @@ void readFiss::PlotSingles()
     cout << "Plotting Singles." << endl;
 
     //create a canvas
-    TCanvas* c_Sin = new TCanvas("cSin", "Singles Rates", 800,400);
+    TCanvas* c_Sin = new TCanvas("cSin", "Singles Rates", 800, 400);
     // cLO->Divide(1,2);
 
     c_Sin->cd();
@@ -362,7 +362,7 @@ void readFiss::CompareLightOut()
 
 
     //create a canvas
-    TCanvas* c_LOs = new TCanvas("cLOs", "Light Output", 800,400);
+    TCanvas* c_LOs = new TCanvas("cLOs", "Light Output", 800, 400);
     // cLO->Divide(1,2);
     c_LOs->cd();
 
@@ -433,7 +433,7 @@ void readFiss::CompareTof()
     //create a canvas
 
      //create a canvas
-    TCanvas* c_ToFs = new TCanvas("cToFs", "Time of Flight", 800,400);
+    TCanvas* c_ToFs = new TCanvas("cToFs", "Time of Flight", 800, 400);
     // cLO->Divide(1,2);
     c_ToFs->cd();
 
@@ -476,7 +476,7 @@ void readFiss::CompareErg()
     cout << "Comparing Energy." << endl;
 
     //create a canvas
-    TCanvas* c_Ergs = new TCanvas("cErgs", "Energy", 800,400);
+    TCanvas* c_Ergs = new TCanvas("cErgs", "Energy", 800, 400);
     // cLO->Divide(1,2);
     c_Ergs->cd();
 
@@ -504,7 +504,7 @@ void readFiss::CompareMult()
     cout << "Comparing Multiplicity." << endl;
 
     //create a canvas
-    TCanvas* c_Mults = new TCanvas("cMults", "Multiplicity", 800,400);
+    TCanvas* c_Mults = new TCanvas("cMults", "Multiplicity", 800, 400);
     // cLO->Divide(1,2);
 
     c_Mults->cd();
@@ -544,7 +544,7 @@ void readFiss::ComparePSD()
     cout << "Comparing Discrimination." << endl;
 
     //create a canvas
-    TCanvas* c_PSDs = new TCanvas("cPSDs", "Particle Dicrimination", 800,400);
+    TCanvas* c_PSDs = new TCanvas("cPSDs", "Particle Dicrimination", 800, 400);
     // cLO->Divide(1,2);
 
     c_PSDs->cd();
@@ -583,7 +583,7 @@ void readFiss::CompareSingles()
     cout << "Comparing Singles." << endl;
 
     //create a canvas
-    TCanvas* c_Sins = new TCanvas("cSins", "Singles Rates", 800,400);
+    TCanvas* c_Sins = new TCanvas("cSins", "Singles Rates", 800, 400);
     // cLO->Divide(1,2);
 
     c_Sins->cd();

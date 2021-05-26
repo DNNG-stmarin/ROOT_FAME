@@ -41,42 +41,19 @@ void readFiss::BeamDepAnalysis()
 
     cout << "subtracted histograms" << endl;
 
-  // fit the alpha background This could be its own function
-    double maxCountBin = h_alphaDep[r]->GetMaximumBin();									//Use GetMaximumBin to find candidate for peak (most events/counts)
-   // JAMES & NATHAN: make an array of functions and FitResultsPtr in readFiss.h, declare them in a new file initializeFunctions.h, and save the fits for each
-    f_alpha[r]->SetRange(h_alphaDep[r]->GetBinCenter(maxCountBin), DEP_MAX);
-    h_alphaDep[r]->Fit((TString)"f_alpha" + (TString)to_string(r));
+    // Fit alpha background and subtracted fissions
+    h_alphaDep[r]->Fit((TString)"f_alpha" + (TString)to_string(r),
+                       "", "", h_alphaDep[r]->GetBinCenter(h_alphaDep[r]->GetMaximumBin()), DEP_MAX);
     f_expo[r]->SetParameters(f_alpha[r]->GetParameter(0), f_alpha[r]->GetParameter(1));
 
     h_fisSubtract[r]->Fit((TString)"f_fisProducts" + (TString)to_string(r));
     f_gauss[r]->SetParameters(f_fisProducts[r]->GetParameter(0),
                               f_fisProducts[r]->GetParameter(1),
                               f_fisProducts[r]->GetParameter(2));
+    f_gauss[r]->SetLineColor(kGreen);
 
     cout << "performing fits" << endl;
 
-
-   //  f_alphaBackground->SetRange(h_alphaSpec->GetBinCenter(maxCountBin),BIN_ERG_MAX);	//Set alpha fit range to start at middle of peak of data
-   //  fitAlphas = h_alphaSpec->Fit("f_alphaBackground","RS");				//Initialize fit of alphaBackground in specified range (after peak) to ptr allowing for extraction of the variables of the fit
-   //  expoConst = fitAlphas->Value(0);												//Get constant of exponential fit
-   //  expoSlope = fitAlphas->Value(1);												//Get slope of exponential fit
-   //
-   //
-	 // //Fit fission products
-		// fitFis = h_fisSubtract->Fit("f_fisProducts","RS");					//Initialize fit of fissions to ptr for value extraction later
-		// gausAmp = fitFis->Value(0);													//Get amplitude of fit gaussian
-		// gausMean = fitFis->Value(1);													//Get mean of fit gaussian
-		// gausSTD = fitFis->Value(2);													//Get standard deviation of fit gaussian
-   //
-	 // //put fission product fit into gaussian and alphaBackground fit into exponential
-		// f_gausProducts->SetParameter(0,gausAmp);			//Set amplitude of created gaussian to that of the gaussian fit of fissions
-		// f_gausProducts->SetParameter(1,gausMean);			//Set mean of created gaussian to that of the gaussian fit of fissions
-		// f_gausProducts->SetParameter(2,gausSTD);			//Set standard deviation of created gaussian to that of the gaussian fit of fissions
-		// f_gausProducts->SetLineColor(kGreen);
-   //
-		// f_expoBackground->SetParameter(0,expoConst);		//Set exponential constant of created exponential to that of the exponential fit of alphas
-		// f_expoBackground->SetParameter(1,expoSlope);		//Set exponential slope of created exponential to that of the exponential fit of alphas
-		// f_expoBackground->SetLineColor(kRed);
 
 
 		double minDepBin = 200;									 	//Max Energy Threshold
