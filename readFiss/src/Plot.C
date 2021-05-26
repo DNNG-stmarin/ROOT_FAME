@@ -454,7 +454,6 @@ void readFiss::CompareLightOut()
     legend->Draw("SAME");
 
     c_LOs->Write();
-=======
     //c_LOs->SaveAs("fig/LightOutputSim.eps");
 
 

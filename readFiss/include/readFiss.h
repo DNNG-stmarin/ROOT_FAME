@@ -164,7 +164,6 @@ public :
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
-=======
 
    // alphaFile histograms
    TH1D** h_alphaDep;
@@ -197,7 +196,6 @@ public :
    Float_t x_tickSize;
    Float_t y_tickSize;
 
->>>>>>> Stashed changes
 /*
               _____              ___                  _
   _____ ___ _|_   _| _ ___ ___  | _ )_ _ __ _ _ _  __| |_  ___ ___

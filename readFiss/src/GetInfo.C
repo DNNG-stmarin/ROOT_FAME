@@ -249,7 +249,6 @@ void readFiss::GetInfo(istream &inputStream)
     cout << " Using BN = " << BN << " and BP = " << BP << ". \n";
     cout << "\n";
   }
-=======
 
   // get number of triggers and trigger numbers from user
   if(mode == 2)
@@ -285,5 +284,4 @@ void readFiss::GetInfo(istream &inputStream)
 
   x_tickSize = 0.05;
   y_tickSize = 0.03;
->>>>>>> Stashed changes
 }
