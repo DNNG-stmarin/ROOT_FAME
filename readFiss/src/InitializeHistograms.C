@@ -34,9 +34,9 @@ void readFiss::InitializeHistograms()
   const double minBeamErg = 0;
   const double maxBeamErg = 20;
 
-  const int numfisBeamTimeBins= 1800;
+  const int numfisBeamTimeBins= 2000;
   const double minBeamTime = -200;
-  const double maxBeamTime = 1600;
+  const double maxBeamTime = 1800;
 
   /*
    _   _                         _      _          _
