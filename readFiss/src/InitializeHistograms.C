@@ -162,7 +162,18 @@ void readFiss::InitializeHistograms()
     g_fisRatioSelect = new TGraph* [NUM_TRIGGERS];
 
     g_neutronMultRatioDep = new TGraph* [NUM_TRIGGERS];
-    g_neutronMultRatioDep = new TGraph* [NUM_TRIGGERS];
+    g_gammaMultRatioDep = new TGraph* [NUM_TRIGGERS];
+
+    for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
+    {
+      g_fisRatioThreshold[indexChannel] = new TGraph(numfisDepBins);
+      g_fisRatioSelect[indexChannel] = new TGraph(numfisDepBins);
+
+      g_neutronMultRatioDep[indexChannel] = new TGraph(numfisDepBins);
+      g_gammaMultRatioDep[indexChannel] = new TGraph(numfisDepBins);
+    }
+
+
 
   }
 

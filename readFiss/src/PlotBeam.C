@@ -10,6 +10,7 @@ using namespace std;
 void readFiss::PlotDepSubtraction()
 {
   cd_beam->cd();
+  cout << "Plotting subtracted spectra " << endl;
   TCanvas** c_Alpha = new TCanvas* [NUM_TRIGGERS];
 
   for (int r = 0; r < NUM_TRIGGERS; r++)

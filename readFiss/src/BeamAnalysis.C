@@ -88,24 +88,17 @@ void readFiss::BeamDepAnalysis()
     // cout << h_fisSubtract[0]->GetBinCenter(30) << endl;
 
 		//cout << "Bin #; Energy Threshold; Ratio" << endl;
-    double minDepErg = 0;
-    double numFis = 0;
-    double numTot = 0;
+    double minDepErg, numFis, numTot;
     // cout << "start" << endl;
 		for (int i = 1; i < minDepBin; i++)
     {						//for loop to get all threshold ratios until max threshold bin
 			minDepErg = h_fisSubtract[r]->GetBinCenter(i);		//Get threshold value
-      cout << "1" ;
 			numFis = h_fisSubtract[r]->Integral(i, maxDepBin);	//Get area under fission products curve from threshold
-      cout << "2" ;
 			numTot = h_fisDep[r]->Integral(i, maxDepBin);		//Get area under total histogram from threshold
-      cout << "3" ;
 			g_fisRatioThreshold[r]->SetPoint(i, minDepErg, numFis/numTot);		//Put data points into graph
-      cout << "4" ;
 			//cout << i << " " << minDepErg << " " << numFis/numTot << endl;
 		}
 
-    cout << "a" << endl;
     g_fisRatioThreshold[r]->SetName("fissRatioThreshold_" + s_TRIG_NUM);
 		g_fisRatioThreshold[r]->SetTitle("Ratio of Fissions to Alphas due to Energy Threshold; Energy Threshold (V us); Fraction of Fissions");
 
@@ -128,7 +121,8 @@ void readFiss::BeamDepAnalysis()
 		// create ratio of multiplicity to fission
 		double binWidth = 0.001;
     double nMult, gMult, nbMult, gbMult, ergPt;
-    TGraph *pg_neutronMult, *pg_gammaMult;
+    TGraph *pg_neutronMult = new TGraph(minDepBin);
+    TGraph *pg_gammaMult = new TGraph(minDepBin);
 		for (int k = 0; k <= minDepBin; k++){
 
 			nMult = p_neutronMultDep[r]->GetBinContent(k);
