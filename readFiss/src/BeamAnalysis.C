@@ -13,8 +13,6 @@ void readFiss::BeamDepAnalysis()
   intWindowFiss = maxTimeFiss - minTimeFiss;
   cout << "Integrating fission over " << intWindowFiss << " (ns)" << endl;
 
-  cout << "Integrating alphas over " << intWindowAlpha << " (ns)" << endl;
-
   // loop through the ppac plates
 
   // h_fisDepSelect = // integrate the whole distributioon betwenn
@@ -24,9 +22,6 @@ void readFiss::BeamDepAnalysis()
     TString s_TRIG_NUM = (TString)to_string(r);
 
     cout << r << endl;
-
-    h_alphaDep[r]->Write();
-    h_fisDep[r]->Write();
 
     // compute the profiles
     p_neutronMultDep[r] = h2_neutronMultDep[r]->ProfileX("p_neutronMult" + s_TRIG_NUM);
@@ -38,13 +33,9 @@ void readFiss::BeamDepAnalysis()
 
     // find the scaling factors
 		scaleFiss = h_macroPop->GetMean() * intWindowFiss; // times the size in ns of the integration window
-    scaleAlpha = intWindowAlpha;
-    cout << scaleFiss << " " << scaleAlpha << endl;
-    cout << "before " << h_fisDep[r]->Integral(0,500) << " " << h_alphaDep[r]->Integral(0,500) << endl;
+    scaleAlpha = 1*intWindowAlpha;
 		h_fisDep[r]->Scale(1.0/scaleFiss);		//Changing counts into count rate in the fission chamber
 		h_alphaDep[r]->Scale(1.0/scaleAlpha);		//Changing counts into count rate for alpha background
-    cout <<  "after " << h_fisDep[r]->Integral(0,500) << " " << h_alphaDep[r]->Integral(0,500) << endl;
-
 
 	 //Subtract alphas from fisDep
     h_fisSubtract[r] = (TH1D*)h_fisDep[r]->Clone("h_fisSubtract");						//Clone fission chamber histogram for future isolation of fission products
@@ -53,18 +44,18 @@ void readFiss::BeamDepAnalysis()
     cout << "subtracted histograms" << endl;
 
   // fit the alpha background This could be its own function
-    f_alpha[r]->SetRange(h_alphaDep[r]->GetBinCenter(
-                         h_alphaDep[r]->GetMaximumBin()), DEP_MAX);
-    h_alphaDep[r]->Fit((TString)"f_alpha" + s_TRIG_NUM);
-    f_expo[r]->SetParameters(f_alpha[r]->GetParameter(0),
-                             f_alpha[r]->GetParameter(1));
+    double maxCountBin = h_alphaDep[r]->GetMaximumBin();									//Use GetMaximumBin to find candidate for peak (most events/counts)
+   // JAMES & NATHAN: make an array of functions and FitResultsPtr in readFiss.h, declare them in a new file initializeFunctions.h, and save the fits for each
+   f_alpha[r]->SetRange(h_alphaDep[r]->GetBinCenter(maxCountBin), DEP_MAX);
+   h_alphaDep[r]->Fit((TString)"f_alpha" + (TString)to_string(r));
+   f_expo[r]->SetParameters(f_alpha[r]->GetParameter(0), f_alpha[r]->GetParameter(1));
 
-    h_fisSubtract[r]->Fit((TString)"f_fisProducts" + s_TRIG_NUM);
-    f_gauss[r]->SetParameters(f_fisProducts[r]->GetParameter(0),
-                              f_fisProducts[r]->GetParameter(1),
-                              f_fisProducts[r]->GetParameter(2));
+   h_fisSubtract[r]->Fit((TString)"f_fisProducts" + (TString)to_string(r));
+   f_gauss[r]->SetParameters(f_fisProducts[r]->GetParameter(0),
+                             f_fisProducts[r]->GetParameter(1),
+                             f_fisProducts[r]->GetParameter(2));
 
-    cout << "performing fits" << endl;
+   cout << "performing fits" << endl;
 
 
    //  f_alphaBackground->SetRange(h_alphaSpec->GetBinCenter(maxCountBin),BIN_ERG_MAX);	//Set alpha fit range to start at middle of peak of data
@@ -127,11 +118,10 @@ void readFiss::BeamDepAnalysis()
     cout << "finished selection" << endl;
 
 		// create ratio of multiplicity to fission
-		double binWidth = maxDep/numfisDepBins;
+		double binWidth = 0.0001;
     double nMult, gMult, nbMult, gbMult, ergPt;
     TGraph *pg_neutronMult = new TGraph(minDepBin);
     TGraph *pg_gammaMult = new TGraph(minDepBin);
-
 		for (int k = 0; k <= minDepBin; k++){
 
 			nMult = p_neutronMultDep[r]->GetBinContent(k);
