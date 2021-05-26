@@ -16,7 +16,7 @@ void readFiss::BeamDepAnalysis()
   // loop through the ppac plates
 
   // h_fisDepSelect = // integrate the whole distributioon betwenn
-  double scaleAlpha, scaleFiss;
+  double scaleFiss;
   for (int r = 0; r < NUM_TRIGGERS; r++)
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
@@ -33,9 +33,7 @@ void readFiss::BeamDepAnalysis()
 
     // find the scaling factors
 		scaleFiss = h_macroPop->GetMean() * intWindowFiss; // times the size in ns of the integration window
-    scaleAlpha = 1*intWindowAlpha;
-		h_fisDep[r]->Scale(1.0/scaleFiss);		//Changing counts into count rate in the fission chamber
-		h_alphaDep[r]->Scale(1.0/scaleAlpha);		//Changing counts into count rate for alpha background
+		h_fisDep[r]->Scale(1.0 / scaleFiss);		//Changing counts into count rate in the fission chamber
 
 	 //Subtract alphas from fisDep
     h_fisSubtract[r] = (TH1D*)h_fisDep[r]->Clone("h_fisSubtract");						//Clone fission chamber histogram for future isolation of fission products
