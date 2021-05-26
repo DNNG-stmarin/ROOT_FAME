@@ -95,3 +95,20 @@ void readFiss::InitializeHistograms()
   neutronAngleCorr = new TH1D("neutronAngleCorr", "Neutron Angular Correlations; Cos T; counts", numCosBins, -1, 1);
 
 }
+
+int readFiss::isTrigger(int triggerNumber)
+{
+  int triggerIndex = -1;
+  for(int i = 0; i < NUM_TRIGGERS; ++i)
+  {
+    if(triggerNumber = TRIGGERS[i])
+    {
+      triggerIndex = i;
+    }
+  }
+  if(triggerIndex = -1)
+  {
+    cout << "Trigger not found." << endl;
+  }
+  return triggerIndex;
+}

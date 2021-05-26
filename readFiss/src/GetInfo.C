@@ -218,4 +218,42 @@ void readFiss::GetInfo(istream &inputStream)
     cout << "Using BN = " << BN << " and BP = " << BP << ". \n";
     cout << "\n";
   }
+<<<<<<< Updated upstream
+=======
+
+  // get number of triggers and trigger numbers from user
+  if(mode == 2)
+  {
+    cout << "Input number of channels. Sample input: \n 10 \n";
+    cin >> NUM_TRIGGERS;
+    cout << " Using " << NUM_TRIGGERS << " triggers. \n\n";
+
+    TRIGGERS = new int[NUM_TRIGGERS];
+
+    cout << "Input trigger numbers. Sample input: \n" <<
+    " \n4 \n5 \n6 \n21 \n22 \n23 \n24 \n31 \n32 \n38 \n";
+    for(int i = 0; i < NUM_TRIGGERS; ++i)
+    {
+      cin >> TRIGGERS[i];
+    }
+    cout << " Using trigger numbers ";
+    for(int i = 0; i < NUM_TRIGGERS; ++i)
+    {
+      cout << TRIGGERS[i] << " ";
+    }
+    cout << "\n\n";
+  }
+
+  // histogram visual parameters, get from user?
+  legend_x1 = 0.48;
+  legend_x2 = 0.8;
+  legend_y1 = 0.7;
+  legend_y2 = 0.9;
+
+  x_labelSize = 0.04;
+  y_labelSize = 0.04;
+
+  x_tickSize = 0.05;
+  y_tickSize = 0.03;
+>>>>>>> Stashed changes
 }

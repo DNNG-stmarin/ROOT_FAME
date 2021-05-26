@@ -142,6 +142,41 @@ public :
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
+<<<<<<< Updated upstream
+=======
+
+   // alphaFile histograms
+   TH1D** h_alphaDep;
+   TH1D* h_macroPop;
+
+   // beam histograms
+   TH1D** h_fisDep;
+   TH2D** h2_fisDepErg;
+   TH1D** h_beamTime;
+
+   TH2D** h2_neutronMultDep;
+   TH2D** h2_gammaMultDep;
+   TH2D** h2_backNeutronMultDep;
+   TH2D** h2_backGammaMultDep;
+
+   TH2D** h2_neutronMultErg;
+   TH2D** h2_gammaMultErg;
+   TH2D** h2_backNeutronMultErg;
+   TH2D** h2_backGammaMultErg;
+
+   // visual settings
+   Float_t legend_x1;
+   Float_t legend_x2;
+   Float_t legend_y1;
+   Float_t legend_y2;
+
+   Float_t x_labelSize;
+   Float_t y_labelSize;
+
+   Float_t x_tickSize;
+   Float_t y_tickSize;
+
+>>>>>>> Stashed changes
 /*
               _____              ___                  _
   _____ ___ _|_   _| _ ___ ___  | _ )_ _ __ _ _ _  __| |_  ___ ___
