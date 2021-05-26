@@ -14,7 +14,7 @@ void readFiss::BeamDepAnalysis()
   cout << "Integrating fission over " << intWindowFiss << " (ns)" << endl;
 
   // loop through the ppac plates
-  double scaleAlpha, scaleFiss;
+  double scalAlpha, scalFiss;
   for (int r = 0; r < NUM_TRIGGERS; r++)
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
@@ -30,15 +30,22 @@ void readFiss::BeamDepAnalysis()
     cout << "declared profiles" << endl;
 
     // find the scaling factors
-		scaleFiss = h_macroPop->GetMean() * intWindowFiss; // times the size in ns of the integration window
-		scaleAlpha = intWindowAlpha;
-		h_fisDep[r]->Scale(1 / scaleFiss);		//Changing counts into count rate in the fission chamber
-		h_alphaDep[r]->Scale(1 / scaleAlpha);		//Changing counts into count rate for alpha background
+		scalFiss = h_macroPop->GetMean() * intWindowFiss; // times the size in ns of the integration window
+    cout << "a";
+    scalAlpha = 1*intWindowAlpha;
+    cout << "a";
+		h_fisDep[r]->Scale(1/scalFiss);		//Changing counts into count rate in the fission chamber
+    cout << "a";
+		h_alphaDep[r]->Scale(1/scalAlpha);		//Changing counts into count rate for alpha background
+    cout << "a" << endl;
 
+    cout << "block 2" << endl;
 
 	 //Subtract alphas from fisDep
     h_fisSubtract[r] = (TH1D*)h_fisDep[r]->Clone("h_fisSubtract");						//Clone fission chamber histogram for future isolation of fission products
+    cout << "b";
 		h_fisSubtract[r]->Add(h_alphaDep[r], -1);													//cloned fisDep histogram
+    cout << "b" << endl;
 
     cout << "subtracted histograms" << endl;
 
@@ -97,7 +104,6 @@ void readFiss::BeamDepAnalysis()
 		}
     g_fisRatioSelect[r]->SetName("fissRatioSelect_" + s_TRIG_NUM);
     g_fisRatioSelect[r]->SetTitle("Ratio of Fissions to Alphas due to Energy Selection; Energy Selection (V us); Fraction of Fissions");
-
 
 
 		// create ratio of multiplicity to fission
