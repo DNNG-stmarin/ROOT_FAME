@@ -127,7 +127,7 @@ void readFiss::BeamDepAnalysis()
     cout << "finished selection" << endl;
 
 		// create ratio of multiplicity to fission
-		double binWidth = 0.001;
+		double binWidth = maxDep/numfisDepBins;
     double nMult, gMult, nbMult, gbMult, ergPt;
     TGraph *pg_neutronMult = new TGraph(minDepBin);
     TGraph *pg_gammaMult = new TGraph(minDepBin);
