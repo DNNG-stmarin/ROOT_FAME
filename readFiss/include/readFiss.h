@@ -17,6 +17,7 @@
 #include <TString.h>
 #include <TMatrixD.h>
 #include <TProfile.h>
+#include <TGraph.h>
 
 #include <iostream>
 #include <fstream>
@@ -201,6 +202,14 @@ public :
   TProfile** p_gammaMultDep;				                     //Profile gammaMult vs fisDep
   TProfile** p_backNeutronMultDep;                       //Profile backNeutronMult vs fisDep
 	TProfile** p_backGammaMultDep;                         //Profile backGammaMult vs fisDep
+
+  TGraph** g_fisRatioThreshold;                          // fis ratio for different dep threshold
+  TGraph** g_fisRatioSelect;                          // fis ratio for different dep threshold
+
+  TGraph** g_neutronMultRatioDep;
+  TGraph** g_gammaMultRatioDep;
+
+
 
 
 /*

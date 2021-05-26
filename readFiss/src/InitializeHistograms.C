@@ -156,6 +156,13 @@ void readFiss::InitializeHistograms()
     p_backNeutronMultDep = new TProfile* [NUM_TRIGGERS];
     p_backGammaMultDep = new TProfile* [NUM_TRIGGERS];
 
+
+    g_fisRatioThreshold = new TGraph* [NUM_TRIGGERS];
+    g_fisRatioSelect = new TGraph* [NUM_TRIGGERS];
+
+    g_neutronMultRatioDep = new TGraph* [NUM_TRIGGERS];
+    g_neutronMultRatioDep = new TGraph* [NUM_TRIGGERS];
+
   }
 
 
