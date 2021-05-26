@@ -46,16 +46,16 @@ void readFiss::BeamDepAnalysis()
   // fit the alpha background This could be its own function
     double maxCountBin = h_alphaDep[r]->GetMaximumBin();									//Use GetMaximumBin to find candidate for peak (most events/counts)
    // JAMES & NATHAN: make an array of functions and FitResultsPtr in readFiss.h, declare them in a new file initializeFunctions.h, and save the fits for each
-   f_alpha[r]->SetRange(h_alphaDep[r]->GetBinCenter(maxCountBin), DEP_MAX);
-   h_alphaDep[r]->Fit((TString)"f_alpha" + (TString)to_string(r));
-   f_expo[r]->SetParameters(f_alpha[r]->GetParameter(0), f_alpha[r]->GetParameter(1));
+    f_alpha[r]->SetRange(h_alphaDep[r]->GetBinCenter(maxCountBin), DEP_MAX);
+    h_alphaDep[r]->Fit((TString)"f_alpha" + (TString)to_string(r));
+    f_expo[r]->SetParameters(f_alpha[r]->GetParameter(0), f_alpha[r]->GetParameter(1));
 
-   h_fisSubtract[r]->Fit((TString)"f_fisProducts" + (TString)to_string(r));
-   f_gauss[r]->SetParameters(f_fisProducts[r]->GetParameter(0),
-                             f_fisProducts[r]->GetParameter(1),
-                             f_fisProducts[r]->GetParameter(2));
+    h_fisSubtract[r]->Fit((TString)"f_fisProducts" + (TString)to_string(r));
+    f_gauss[r]->SetParameters(f_fisProducts[r]->GetParameter(0),
+                              f_fisProducts[r]->GetParameter(1),
+                              f_fisProducts[r]->GetParameter(2));
 
-   cout << "performing fits" << endl;
+    cout << "performing fits" << endl;
 
 
    //  f_alphaBackground->SetRange(h_alphaSpec->GetBinCenter(maxCountBin),BIN_ERG_MAX);	//Set alpha fit range to start at middle of peak of data
