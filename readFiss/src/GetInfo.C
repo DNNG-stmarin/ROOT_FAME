@@ -37,7 +37,6 @@ readFiss::readFiss(int &argc, char** &argv)
 
   InitializeHistograms();
 
-
   // loop through
   LoopExp();
   if(mode == 1)
@@ -49,15 +48,13 @@ readFiss::readFiss(int &argc, char** &argv)
     LoopBeam(); // JONATHAN - not implemented
   }
 
-
   // run CovEM if user wanted to
   if(CovEM_in){
     // covEM plot
     CovEM();
     WriteCovEM();
   }
-
-
+  
   // plotting sections
   PlotAll();
   if(mode == 1)
@@ -148,16 +145,17 @@ void readFiss::GetInfo(istream &inputStream)
   inputStream >> nameExp;
 
   // initialize experiment tree
-  TTree* tree;
-
+  // TTree* tree;
+  TChain *expChain = new TChain("Fiss");
   cout << "Initializing experiment tree from " << nameExp << endl;
-  expFile = (TFile*)gROOT->GetListOfFiles()->FindObject(nameExp);
-  if (!expFile || !expFile->IsOpen())
-  {
-      expFile = new TFile(nameExp);
-  }
-  expFile->GetObject("Fiss", tree);
-  InitExp(tree);
+  // expFile = (TFile*)gROOT->GetListOfFiles()->FindObject(nameExp);
+  // if (!expFile || !expFile->IsOpen())
+  // {
+  //     expFile = new TFile(nameExp);
+  // }
+  // expFile->GetObject("Fiss", tree);
+  expChain->Add(nameExp);
+  InitExp(expChain);
 
   // if in simulation mode, get simFile from user and initialize simulation tree
   if(mode == 1)
@@ -165,14 +163,16 @@ void readFiss::GetInfo(istream &inputStream)
     cd_simComparison = writeFile->mkdir("SimComparison");
     cout << "Input simFile path" << endl;
     inputStream >> nameSim;
-    cout << "Initializing simulation tree from " << nameSim << endl;
-    simFile = (TFile*)gROOT->GetListOfFiles()->FindObject(nameSim);
-    if (!simFile || !simFile->IsOpen())
-    {
-        simFile = new TFile(nameSim);
-    }
-    simFile->GetObject("fissionTree", tree);
-    InitSim(tree);
+    TChain *simChain = new TChain("fissionTree");
+    // cout << "Initializing simulation tree from " << nameSim << endl;
+    // simFile = (TFile*)gROOT->GetListOfFiles()->FindObject(nameSim);
+    // if (!simFile || !simFile->IsOpen())
+    // {
+    //     simFile = new TFile(nameSim);
+    // }
+    // simFile->GetObject("fissionTree", tree);
+    simChain->Add(nameSim);
+    InitSim(simChain);
   }
 
   // if in beam mode, get beamFile from user and ???

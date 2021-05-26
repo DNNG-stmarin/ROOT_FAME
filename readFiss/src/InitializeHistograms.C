@@ -1,5 +1,5 @@
 #include "readFiss.h"
-
+using namespace std;
 void readFiss::InitializeHistograms()
 {
 
@@ -25,10 +25,6 @@ void readFiss::InitializeHistograms()
   const int numDets = 40;
 
   const int numCosBins = 100;
-
-  const int numfisDepBins = 500;
-  const double minLO = 0;
-  const double maxLO = 0.05;
 
   const int numfisDepBins = 500;
   const double minDep = 0;
@@ -138,9 +134,9 @@ void readFiss::InitializeHistograms()
     {
       // h_alphaDep[indexChannel] = new TH1D("h_alphaDep","Total PPAC events; Event energy (V us); counts", numfisDepBins, minDep, maxDep);
       // beam histograms
-      h_fisDep[indexChannel] = new TH1D*[NUM_TRIGGERS] = new TH1D((TString)"h_fisDep" + (TString)to_string(indexChannel), "Total Fission Spectrum; Event Energy (V us); counts",  numfisDepBins, minDep, maxDep);
-      h2_fisDepErg[indexChannel]  = TH2D*[NUM_TRIGGERS] = new TH2D((TString)"h2_fisDepErg" + (TString)to_string(indexChannel), "Total Fission Spectrum vs Ei; Event Energy (V us); Incident Neutron Energy (MeV); counts", numfisDepBins, minDep, maxDep, numfisBeamErgBins, minBeamErg, maxBeamErg);
-      h_beamTime[indexChannel]  = TH1D*[NUM_TRIGGERS] = new TH2D((TString)"h_beamTime" + (TString)to_string(indexChannel), "Fission rate in Beam Window; Time within micro beam Index (ns); counts",  numfisBeamTimeBins, minBeamTime, maxBeamTime);
+      h_fisDep[indexChannel]  = new TH1D((TString)"h_fisDep" + (TString)to_string(indexChannel), "Total Fission Spectrum; Event Energy (V us); counts",  numfisDepBins, minDep, maxDep);
+      h2_fisDepErg[indexChannel]  = new TH2D((TString)"h2_fisDepErg" + (TString)to_string(indexChannel), "Total Fission Spectrum vs Ei; Event Energy (V us); Incident Neutron Energy (MeV); counts", numfisDepBins, minDep, maxDep, numfisBeamErgBins, minBeamErg, maxBeamErg);
+      h_beamTime[indexChannel]  = new TH1D((TString)"h_beamTime" + (TString)to_string(indexChannel), "Fission rate in Beam Window; Time within micro beam Index (ns); counts",  numfisBeamTimeBins, minBeamTime, maxBeamTime);
 
       h2_neutronMultDep[indexChannel]  = new TH2D((TString)"h2_neutronMultDep" + (TString)to_string(indexChannel), "Energy Dependent Neutron Multiplicity; Event Energy (V us); Neutron Multiplicity; counts", numfisDepBins, minDep, maxDep, maxMult, minMult, maxMult);
       h2_gammaMultDep[indexChannel]  =  new TH2D((TString)"h2_gammaMultDep" + (TString)to_string(indexChannel), "Energy Dependent Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", numfisDepBins, minDep, maxDep, maxMult, minMult, maxMult);

@@ -27,6 +27,7 @@ readFiss::~readFiss()
     delete writeFile;
     delete[] TRIGGERS;
 }
+
 //Get entry at integer <entry>
 Int_t readFiss::GetExpEntry(Long64_t entry)
 {
@@ -113,7 +114,20 @@ void readFiss::InitExp(TChain* tree)
     expTree->SetBranchAddress("backPhotonVx", backPhotonVx, &b_backPhotonVx);
     expTree->SetBranchAddress("backPhotonVy", backPhotonVy, &b_backPhotonVy);
     expTree->SetBranchAddress("backPhotonVz", backPhotonVz, &b_backPhotonVz);
+
+
+    if(mode == 2)
+    {
+      expTree->SetBranchAddress("beamTime", &beamTime, &b_beamTime);
+      expTree->SetBranchAddress("beamEnergy", &beamEnergy, &b_beamEnergy);
+      expTree->SetBranchAddress("beamDep", &beamDep, &b_beamDep);
+      expTree->SetBranchAddress("beamPSP", &beamPSP, &b_beamPSP);
+      expTree->SetBranchAddress("beamChan", &beamChan, &b_beamChan);
+      expTree->SetBranchAddress("beamIndex", &beamIndex, &b_beamIndex);
+    }
     Notify();
+
+
 }
 
 void readFiss::InitSim(TChain* tree)
