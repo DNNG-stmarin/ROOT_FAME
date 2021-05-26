@@ -35,6 +35,7 @@ readFiss::readFiss(int &argc, char** &argv)
 
 
   InitializeHistograms();
+  InitializeFunctions();
 
   // loop through
   LoopExp();

@@ -2,6 +2,7 @@
 using namespace std;
 void readFiss::InitializeHistograms()
 {
+  cout << "initializing histograms" << endl;
 
   const int numTofBins = 240;
 	const double minTof = -20;
