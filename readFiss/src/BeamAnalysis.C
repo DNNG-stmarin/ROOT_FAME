@@ -25,14 +25,19 @@ void readFiss::BeamDepAnalysis()
 
     cout << r << endl;
 
-    h_alphaDep[r]->Write();
-    h_fisDep[r]->Write();
+    // h_alphaDep[r]->Write();
+    // h_fisDep[r]->Write();
 
     // compute the profiles
     p_neutronMultDep[r] = h2_neutronMultDep[r]->ProfileX("p_neutronMult" + s_TRIG_NUM);
 		p_gammaMultDep[r] = h2_gammaMultDep[r]->ProfileX("p_gammaMult"  + s_TRIG_NUM);
     p_backNeutronMultDep[r] = h2_backNeutronMultDep[r]->ProfileX("p_backNeutronMult" + s_TRIG_NUM);
 		p_backGammaMultDep[r] = h2_backGammaMultDep[r]->ProfileX("p_backGammaMult" + s_TRIG_NUM);
+
+    h2_neutronMultDep[r]->Write();
+    h2_gammaMultDep[r]->Write();
+    p_neutronMultDep[r]->Write();
+    p_gammaMultDep[r]->Write();
 
     cout << "declared profiles" << endl;
 
@@ -107,7 +112,7 @@ void readFiss::BeamDepAnalysis()
 			//cout << i << " " << minDepErg << " " << numFis/numTot << endl;
 		}
 
-    g_fisRatioThreshold[r]->SetName("fissRatioThreshold_" + s_TRIG_NUM);
+    g_fisRatioThreshold[r]->SetName("fissRatioThreshold" + s_TRIG_NUM);
 		g_fisRatioThreshold[r]->SetTitle("Ratio of Fissions to Alphas due to Energy Threshold; Energy Threshold (V us); Fraction of Fissions");
 
     cout << "finished threshold" << endl;
@@ -121,7 +126,7 @@ void readFiss::BeamDepAnalysis()
 			g_fisRatioSelect[r]->SetPoint(j, minDepErg, numFis/numTot);														//Set points on graph
 			//cout << minDepErgSeg << " " << numFisSeg << " " << numTotSeg << " " << numFisSeg/numTotSeg << endl;
 		}
-    g_fisRatioSelect[r]->SetName("fissRatioSelect_" + s_TRIG_NUM);
+    g_fisRatioSelect[r]->SetName("fissRatioSelect" + s_TRIG_NUM);
     g_fisRatioSelect[r]->SetTitle("Ratio of Fissions to Alphas due to Energy Selection; Energy Selection (V us); Fraction of Fissions");
 
     cout << "finished selection" << endl;
