@@ -237,10 +237,10 @@ public :
    TF1* f_TimeFromErg = new TF1("f_TimeFromErg", "[0] / [1] * ([2] + x) / sqrt(x * (2 * [2] + x))", 0, 20);
 
    // Fit Functions
-   TF1* f_alpha = new TF1("f_alpha", "expo", DEP_MIN, DEP_MAX);  // Define expo fit for alpha background to start at middle bin with most counts
-   TF1* f_expo = new TF1("f_expo", "expo");
-   TF1* f_fisProducts = new TF1("f_fisProducts", "gaus", 0.005, 0.03);  // Define gaus fit function for after binning errors in low values of fisDep
-   TF1* f_gauss = new TF1("f_gauss", "gaus");
+   TF1** f_alpha;// = new TF1("f_alpha", "expo", DEP_MIN, DEP_MAX);  // Define expo fit for alpha background to start at middle bin with most counts
+   TF1** f_expo;// = new TF1("f_expo", "expo");
+   TF1** f_fisProducts;// = new TF1("f_fisProducts", "gaus", FIS_MIN, FIS_MAX);  // Define gaus fit function for after binning errors in low values of fisDep
+   TF1** f_gauss;// = new TF1("f_gauss", "gaus");
 
 /*
               _____              ___                  _
@@ -434,6 +434,7 @@ public :
 
    // initialization functions
    virtual void     InitializeHistograms();
+   virtual void     InitializeFunctions();
    virtual int      isTrigger(int triggerNumber);
 
    // callable functions
