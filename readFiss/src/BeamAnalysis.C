@@ -55,7 +55,7 @@ void readFiss::BeamDepAnalysis()
    f_gauss[r]->SetParameters(f_fisProducts[r]->GetParameter(0),
                              f_fisProducts[r]->GetParameter(1),
                              f_fisProducts[r]->GetParameter(2));
-                             
+
    cout << "performing fits" << endl;
 
 
@@ -85,19 +85,31 @@ void readFiss::BeamDepAnalysis()
 		double minDepBin = 200;									 	//Max Energy Threshold
 		double maxDepBin = -1;											//Final bin in histogram
 
+    // cout << h_fisSubtract[0]->GetBinCenter(30) << endl;
 
 		//cout << "Bin #; Energy Threshold; Ratio" << endl;
-    double minDepErg, numFis, numTot;
-		for (int i = 1; i < minDepBin; i++){						//for loop to get all threshold ratios until max threshold bin
+    double minDepErg = 0;
+    double numFis = 0;
+    double numTot = 0;
+    // cout << "start" << endl;
+		for (int i = 1; i < minDepBin; i++)
+    {						//for loop to get all threshold ratios until max threshold bin
 			minDepErg = h_fisSubtract[r]->GetBinCenter(i);		//Get threshold value
-			numFis = h_fisSubtract[r]->Integral(i,maxDepBin);	//Get area under fission products curve from threshold
-			numTot = h_fisDep[r]->Integral(i,maxDepBin);		//Get area under total histogram from threshold
+      cout << "1" ;
+			numFis = h_fisSubtract[r]->Integral(i, maxDepBin);	//Get area under fission products curve from threshold
+      cout << "2" ;
+			numTot = h_fisDep[r]->Integral(i, maxDepBin);		//Get area under total histogram from threshold
+      cout << "3" ;
 			g_fisRatioThreshold[r]->SetPoint(i, minDepErg, numFis/numTot);		//Put data points into graph
+      cout << "4" ;
 			//cout << i << " " << minDepErg << " " << numFis/numTot << endl;
 		}
+
+    cout << "a" << endl;
     g_fisRatioThreshold[r]->SetName("fissRatioThreshold_" + s_TRIG_NUM);
 		g_fisRatioThreshold[r]->SetTitle("Ratio of Fissions to Alphas due to Energy Threshold; Energy Threshold (V us); Fraction of Fissions");
 
+    cout << "finished threshold" << endl;
 
 		//Energy Segments (between two energies)
 		int binSeg = 10;									//Energy segment width (10 = width of 0.001; 20 = 0.002)
@@ -111,6 +123,7 @@ void readFiss::BeamDepAnalysis()
     g_fisRatioSelect[r]->SetName("fissRatioSelect_" + s_TRIG_NUM);
     g_fisRatioSelect[r]->SetTitle("Ratio of Fissions to Alphas due to Energy Selection; Energy Selection (V us); Fraction of Fissions");
 
+    cout << "finished selection" << endl;
 
 		// create ratio of multiplicity to fission
 		double binWidth = 0.001;
