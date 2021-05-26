@@ -11,6 +11,7 @@ void readFiss::PlotDepSubtraction()
 {
   cd_beam->cd();
   cout << "Plotting subtracted spectra " << endl;
+
   TCanvas** c_Alpha = new TCanvas* [NUM_TRIGGERS];
 
   for (int r = 0; r < NUM_TRIGGERS; r++)
@@ -26,14 +27,14 @@ void readFiss::PlotDepSubtraction()
      h_fisDep[r]->Draw();											//General plot of fisDep
      h_fisSubtract[r]->Draw("SAME");
      h_fisSubtract[r]->SetLineColor(kBlack);
-     //f_gausProducts->Draw("SAME");								//Gaussian fis of fissions
-     //f_expoBackground->Draw("SAME");								//Exponential fit of alphas
+     f_gauss[r]->Draw("SAME");								//Gaussian fis of fissions
+     f_expo[r]->Draw("SAME");								//Exponential fit of alphas
 
-     TLegend *leg = new TLegend(0.9,0.6,0.5,0.75);
-     leg->AddEntry("h_fisDep","fisDep","l");
-     leg->AddEntry("f_gausProducts","Fission Products","l");
-     leg->AddEntry("f_expoBackground","Alpha Background","l");
-     leg->Draw();
+     // TLegend *leg = new TLegend(0.9,0.6,0.5,0.75);
+     // leg->AddEntry("h_fisDep","fisDep","l");
+     // leg->AddEntry("f_gausProducts","Fission Products","l");
+     // leg->AddEntry("f_expoBackground","Alpha Background","l");
+     // leg->Draw();
 
     //Draw Vertical Line at intersection
      //TLine *intersection = new TLine(0.00623,0,0.00623,100000);	//Define intersections line of gaussian (fissions) and exponential (alphas)
@@ -43,12 +44,12 @@ void readFiss::PlotDepSubtraction()
      c_Alpha[r]->cd(2);												//Second canvas assignment
      h_fisSubtract[r]->Draw("HIST");							//Isolated fissions plot
      h_fisSubtract[r]->SetTitle("Fissions without 'Alphas';Pulse Integral (V us); Count Rate");	//Title
-     //f_gausProducts[r]->Draw("SAME");							//Fissions fit
+     f_gauss[r]->Draw("SAME");							//Fissions fit
 
      c_Alpha[r]->cd(3);							//Third canvas assignment
      gPad->SetLogy(3);
      h_alphaDep[r]->Draw("HIST");			//Isolated alpha background plot
-     //f_expoBackground->Draw("SAME");		//Alpha background fit
+     f_expo[r]->Draw("SAME");		//Alpha background fit
      h_alphaDep[r]->SetTitle("Alpha spec vs. chan; Pulse Integral (V us); Count Rate");
 
      // c_Alpha->cd(4);																			//Fourth canvas assignment
