@@ -32,15 +32,20 @@ public :
    | || '_/ -_) -_)  / _ \/ _` / _` | '_/ -_|_-<_-</ -_|_-<
    |_||_| \___\___| /_/ \_\__,_\__,_|_| \___/__/__/\___/__/
                                                            */
-   TTree*           expTree;   //!pointer to the analyzed TTree or TChain
-   TTree*           simTree;
-   TTree*           beamTree;
+   TChain*           expTree;   //!pointer to the analyzed TTree or TChain
+   TChain*           simTree;
+   // TTree*           beamTree;
    TString          nameExp; // String name of where to find experiment
    TString          nameSim;
    TString          nameBeam;
+
    TFile*           expFile;
    TFile*           simFile;
    TFile*           beamFile;
+
+   int              numExpFiles;
+   int              numSimFiles;
+
    Int_t            fCurrent; //!current Tree number in a TChain
 
    TFile*           writeFile;
@@ -50,6 +55,9 @@ public :
    TDirectory*      cd_FAME;
    TDirectory*      cd_correlated;
    TDirectory*      cd_beam;
+
+   int NUM_TRIGGERS; // number of trigger channels
+   int* TRIGGERS;
 
 
   /*
@@ -67,11 +75,25 @@ public :
   int BP;                       // CovEM setting
   double MAX_TIME_N;
   double THRESHOLD;
+  double BACKGROUND_DELAY;
 
   double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
   double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
 
-   /*
+  TString rootEnding = ".root";
+  TString nameExpTree = "Fiss";
+  TString nameSimTree = "fissionTree";
+
+
+  // non-user information
+  long int expEntries;
+  long int simEntries;
+
+
+
+
+
+ /*
   _  _ _    _
  | || (_)__| |_ ___  __ _ _ _ __ _ _ __  ___
  | __ | (_-<  _/ _ \/ _` | '_/ _` | '  \(_-<
@@ -142,7 +164,6 @@ public :
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
-<<<<<<< Updated upstream
 =======
 
    // alphaFile histograms
@@ -223,6 +244,14 @@ public :
    Double_t        backPhotonVy[MAX_MULT];   //[gammaBackMult]
    Double_t        backPhotonVz[MAX_MULT];   //[gammaBackMult]
 
+   // beam specific branches
+   Double_t        beamTime;
+   Double_t        beamEnergy;
+   Double_t        beamDep;
+   Double_t        beamPSP;
+   Int_t           beamChan;
+   Int_t           beamIndex;
+
    // List of branches
    TBranch        *b_fisTime;   //!
    TBranch        *b_fisDep;   //!
@@ -262,6 +291,16 @@ public :
    TBranch        *b_backPhotonVx;   //!
    TBranch        *b_backPhotonVy;   //!
    TBranch        *b_backPhotonVz;   //!
+
+   // beam specific branches
+   TBranch        *b_beamTime;   //!
+   TBranch        *b_beamEnergy;   //!
+   TBranch        *b_beamDep;   //!
+   TBranch        *b_beamPSP;   //!
+   TBranch        *b_beamChan;   //!
+   TBranch        *b_beamIndex;   //!
+
+
    /*
      _     _____              ___                  _
   __(_)_ _|_   _| _ ___ ___  | _ )_ _ __ _ _ _  __| |_  ___ ___
@@ -324,8 +363,8 @@ public :
    virtual Long64_t LoadExpTree(Long64_t entry);
    virtual Long64_t LoadSimTree(Long64_t entry);
 
-   virtual void     InitExp(TTree *tree);
-   virtual void     InitSim(TTree *tree);
+   virtual void     InitExp(TChain *tree);
+   virtual void     InitSim(TChain *tree);
 
    virtual Bool_t   Notify();
    virtual void     ShowExp(Long64_t entry = -1);
@@ -345,6 +384,7 @@ public :
 
    // initialization functions
    virtual void     InitializeHistograms();
+   virtual int      isTrigger(int triggerNumber);
 
    // callable functions
    virtual void     PlotAll();

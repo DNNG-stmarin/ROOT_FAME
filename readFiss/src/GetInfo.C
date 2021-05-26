@@ -37,7 +37,6 @@ readFiss::readFiss(int &argc, char** &argv)
 
   InitializeHistograms();
 
-
   // loop through
   LoopExp();
   if(mode == 1)
@@ -49,14 +48,12 @@ readFiss::readFiss(int &argc, char** &argv)
     LoopBeam(); // JONATHAN - not implemented
   }
 
-
   // run CovEM if user wanted to
   if(CovEM_in){
     // covEM plot
     CovEM();
     WriteCovEM();
   }
-
 
   // plotting sections
   PlotAll();
@@ -118,13 +115,13 @@ void readFiss::GetInfo(istream &inputStream)
           "1: Experimental and simulation data \n " <<
           "2: Experimental and beam data" << endl;
   inputStream >> mode;
-  cout << "Using mode " << mode << endl;
+  cout << " Using mode " << mode << endl;
 
   while(!(mode == 0 || mode == 1 || mode == 2))
   {
     cout << "Invalid mode. Please input 0, 1, or 2." << endl;
     inputStream >> mode;
-    cout << "Using mode " << mode << endl;
+    cout << " Using mode " << mode << endl;
   }
   cout << "\n";
 
@@ -133,7 +130,7 @@ void readFiss::GetInfo(istream &inputStream)
   // get writeFile from user
   cout << "Input writeFile path" << endl;
   inputStream >> writeName;
-  cout << "Using writeFile " << writeName << endl;
+  cout << " Using writeFile " << writeName << endl;
   cout << "\n";
 
   // get writeFile ready
@@ -143,36 +140,62 @@ void readFiss::GetInfo(istream &inputStream)
   cd_FAME = writeFile->mkdir("FAME");
   cd_correlated = writeFile->mkdir("Correlated");
 
+
+
+/*
+ ___                _     ___ _ _
+|_ _|_ _  _ __ _  _| |_  | __(_) |___ ___
+| || ' \| '_ \ || |  _| | _|| | / -_|_-<
+|___|_||_| .__/\_,_|\__| |_| |_|_\___/__/
+        |_|
+*/
+
   // get expFile from user
-  cout << "Input expFile path" << endl;
+  cout << "Input expFile path (without .root extension)" << endl;
   inputStream >> nameExp;
 
-  // initialize experiment tree
-  TTree* tree;
+  cout << "Input number of exp files" << endl;
+  inputStream >> numExpFiles;
 
+  // initialize experiment tree
+  // TTree* tree;
+  TChain *expChain = new TChain("Fiss");
   cout << "Initializing experiment tree from " << nameExp << endl;
-  expFile = (TFile*)gROOT->GetListOfFiles()->FindObject(nameExp);
-  if (!expFile || !expFile->IsOpen())
+  TString nameExpAdd = (TString)nameExp + ".root";
+  expChain->Add(nameExpAdd);
+  for(int expInd = 1; expInd < numExpFiles; expInd++)
   {
-      expFile = new TFile(nameExp);
+    nameExpAdd = (TString)nameExp + "_" + (TString)to_string(expInd) + ".root";
+    expChain->Add(nameExpAdd);
   }
-  expFile->GetObject("Fiss", tree);
-  InitExp(tree);
+  InitExp(expChain);
 
   // if in simulation mode, get simFile from user and initialize simulation tree
   if(mode == 1)
   {
     cd_simComparison = writeFile->mkdir("SimComparison");
-    cout << "Input simFile path" << endl;
+    cout << "Input simFile path (without .root extension)" << endl;
     inputStream >> nameSim;
-    cout << "Initializing simulation tree from " << nameSim << endl;
-    simFile = (TFile*)gROOT->GetListOfFiles()->FindObject(nameSim);
-    if (!simFile || !simFile->IsOpen())
+
+    cout << "Input number of sim files" << endl;
+    inputStream >> numSimFiles;
+
+    TChain *simChain = new TChain("fissionTree");
+    // cout << "Initializing simulation tree from " << nameSim << endl;
+    // simFile = (TFile*)gROOT->GetListOfFiles()->FindObject(nameSim);
+    // if (!simFile || !simFile->IsOpen())
+    // {
+    //     simFile = new TFile(nameSim);
+    // }
+    // simFile->GetObject("fissionTree", tree);
+    TString nameSimAdd = (TString)nameSim + ".root";
+    simChain->Add(nameSimAdd);
+    for(int simInd = 1; simInd < numSimFiles; simInd++)
     {
-        simFile = new TFile(nameSim);
+      nameSimAdd = (TString)nameSim + "_" + (TString)to_string(simInd) + ".root";
+      simChain->Add(nameSimAdd);
     }
-    simFile->GetObject("fissionTree", tree);
-    InitSim(tree);
+    InitSim(simChain);
   }
 
   // if in beam mode, get beamFile from user and ???
@@ -187,38 +210,45 @@ void readFiss::GetInfo(istream &inputStream)
   cout << "\n";
 
 
-
+/*
+  _   _               ___                _
+ | | | |___ ___ _ _  |_ _|_ _  _ __ _  _| |_
+ | |_| (_-</ -_) '_|  | || ' \| '_ \ || |  _|
+  \___//__/\___|_|   |___|_||_| .__/\_,_|\__|
+                              |_|
+*/
   // get threshold and max time from user
-  cout << "Input threshold [MeVee] and max time [ns]. Sample input: \n0.20 70.0" << endl;
+  cout << "Input threshold [MeVee] and max time [ns]. Sample input: \n 0.20 70.0" << endl;
   inputStream >> THRESHOLD >> MAX_TIME_N;
-  cout << "Using: threshold = " << THRESHOLD << " MeVee, " << " Tmax = " << MAX_TIME_N << " ns." << endl;
+  cout << " Using: threshold = " << THRESHOLD << " MeVee, " << " Tmax = " << MAX_TIME_N << " ns." << endl;
   cout << "\n";
 
-
+  // ask user for background delay
+  cout << "background delay to visualize background (ns), put 0 if unsure" << endl;
+  inputStream >> BACKGROUND_DELAY;
 
   // ask user if they want to use CovEM
   cout << "Input 1 for CovEM, input 0 for no CovEM" << endl;
   inputStream >> CovEM_in;
-  if(CovEM_in) cout << "Using CovEM" << endl;
-  else cout << "Not using CovEM" << endl;
+  if(CovEM_in) cout << " Using CovEM" << endl;
+  else cout << " Not using CovEM" << endl;
   cout << "\n\n";
 
   // get CovEM options from user if they want to use CovEM
   if(CovEM_in)
   {
     cout << "Input min/max energy limits for neutrons and photons. Sample input:" <<
-            "\n0 10.0 0 4.0" << endl;
+            "\n 0 10.0 0 4.0" << endl;
     inputStream >> MIN_N_ERG >> MAX_N_ERG >> MIN_P_ERG >> MAX_P_ERG;
-    cout << "Using neutron energy range " << MIN_N_ERG << " to " << MAX_N_ERG <<
+    cout << " Using neutron energy range " << MIN_N_ERG << " to " << MAX_N_ERG <<
             " and photon energy range " << MIN_P_ERG << " to " << MAX_P_ERG << endl;
     cout << "\n";
 
-    cout << "Input BN and BP. Sample input: \n10 50" << endl;
+    cout << "Input BN and BP. Sample input: \n 10 50" << endl;
     inputStream >> BN >> BP;
-    cout << "Using BN = " << BN << " and BP = " << BP << ". \n";
+    cout << " Using BN = " << BN << " and BP = " << BP << ". \n";
     cout << "\n";
   }
-<<<<<<< Updated upstream
 =======
 
   // get number of triggers and trigger numbers from user

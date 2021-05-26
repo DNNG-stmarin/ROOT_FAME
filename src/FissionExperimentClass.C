@@ -46,13 +46,16 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
 	if(REUSE_DATA == 0) {
+        cout << "creating new coincidences." << endl;
 		expFile = new TFile(treeFileT + rootEnding, "RECREATE");
 	}
 	else {
+        cout << "reading old coincidences." << endl;
 		expFile = new TFile(treeFileT + rootEnding, "READ");
 	}
 
 	detFile = new TFile(detFileT, "RECREATE");
+  beamFile = new TFile(beamFileT, "RECREATE");
 
   // create the chain with all the entries to analyze for the raw coincidence mode
 	rawTreeChain = new TChain();
@@ -110,7 +113,7 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 			 delete fileRaw;
 		}
 
-		CoincidenceAnalysis* inputData = new CoincidenceAnalysis(expFileWrite, rawTreeChain, info); //replace digType w info->DATA_TYPE
+		CoincidenceAnalysis* inputData = new CoincidenceAnalysis(expFileWrite, rawTreeChain, beamFile, info); //replace digType w info->DATA_TYPE
 		inputData->CreateCoincidenceTree(numEntries);
 	}
 

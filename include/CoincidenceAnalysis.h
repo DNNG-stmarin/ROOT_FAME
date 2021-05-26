@@ -37,10 +37,11 @@ public :
    Int_t           fCurrent; //!current Tree number in a TChain
 
    //create TTree object to contain the output coincidence tree
-   TTree* coincTree;;
+   TTree* coincTree;
 
    // output file
    TFile* expFile = 0;
+   TFile* beamFile = 0;
    // TDirectory* fileTreeDir = 0;
 
    // declare the digitizer classes
@@ -101,7 +102,7 @@ public :
   int numCoincFiles;
 
 
-   CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, InfoSystem* info = 0);
+   CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFile* beamFileWrite, InfoSystem* info = 0);
    virtual ~CoincidenceAnalysis();
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
@@ -113,7 +114,7 @@ public :
 
 #ifdef CoincidenceAnalysis_cxx
 
-CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, InfoSystem* info)
+CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFile* beamFileWrite, InfoSystem* info)
 {
     DATA_TYPE = info->DATA_TYPE;
     TRIGGER_THRESHOLD = info->TRIGGER_THRESHOLD;
@@ -140,6 +141,7 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, Info
     BEAM_DELAY = info->BEAM_DELAY;
 
    // set the output stream
+   beamFile = beamFileWrite;
    expFile = expFileWrite;
 
    Init(tree);

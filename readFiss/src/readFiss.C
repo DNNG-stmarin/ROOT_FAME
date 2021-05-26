@@ -1,9 +1,16 @@
 #include "readFiss.h"
 #include <TLegend.h>
+#include <TROOT.h>
+#include <TChain.h>
+#include <TFitResult.h>
+#include <THStack.h>
+#include <TFolder.h>
+#include <TSystem.h>
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 
 
 using namespace std;
@@ -18,7 +25,9 @@ readFiss::~readFiss()
       delete simFile;
     }
     delete writeFile;
+    delete[] TRIGGERS;
 }
+
 //Get entry at integer <entry>
 Int_t readFiss::GetExpEntry(Long64_t entry)
 {
@@ -58,17 +67,8 @@ Long64_t readFiss::LoadSimTree(Long64_t entry)
     return centry;
 }
 
-void readFiss::InitExp(TTree* tree)
+void readFiss::InitExp(TChain* tree)
 {
-    // The Init() function is called when the selector needs to initialize
-    // a new tree or chain. Typically here the branch addresses and branch
-    // pointers of the tree will be set.
-    // It is normally not necessary to make changes to the generated
-    // code, but the routine can be extended by the user if needed.
-    // Init() will be called many times when running on PROOF
-    // (once per file to be processed).
-
-    // Set branch addresses and branch pointers
 
     //INITIALIZE EXPERIMENT TREE
     if (!tree) return;
@@ -114,10 +114,23 @@ void readFiss::InitExp(TTree* tree)
     expTree->SetBranchAddress("backPhotonVx", backPhotonVx, &b_backPhotonVx);
     expTree->SetBranchAddress("backPhotonVy", backPhotonVy, &b_backPhotonVy);
     expTree->SetBranchAddress("backPhotonVz", backPhotonVz, &b_backPhotonVz);
+
+
+    if(mode == 2)
+    {
+      expTree->SetBranchAddress("beamTime", &beamTime, &b_beamTime);
+      expTree->SetBranchAddress("beamEnergy", &beamEnergy, &b_beamEnergy);
+      expTree->SetBranchAddress("beamDep", &beamDep, &b_beamDep);
+      expTree->SetBranchAddress("beamPSP", &beamPSP, &b_beamPSP);
+      expTree->SetBranchAddress("beamChan", &beamChan, &b_beamChan);
+      expTree->SetBranchAddress("beamIndex", &beamIndex, &b_beamIndex);
+    }
     Notify();
+
+
 }
 
-void readFiss::InitSim(TTree* tree)
+void readFiss::InitSim(TChain* tree)
 {
     //INTITIALZE SIM TREE
     if (!tree) return;
