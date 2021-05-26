@@ -38,7 +38,7 @@ void readFiss::BeamDepAnalysis()
 
     // find the scaling factors
 		scaleFiss = h_macroPop->GetMean() * intWindowFiss; // times the size in ns of the integration window
-    scaleAlpha = 1*intWindowAlpha;
+    scaleAlpha = intWindowAlpha;
     cout << scaleFiss << " " << scaleAlpha << endl;
     cout << "before " << h_fisDep[r]->Integral(0,500) << " " << h_alphaDep[r]->Integral(0,500) << endl;
 		h_fisDep[r]->Scale(1.0/scaleFiss);		//Changing counts into count rate in the fission chamber
@@ -53,18 +53,18 @@ void readFiss::BeamDepAnalysis()
     cout << "subtracted histograms" << endl;
 
   // fit the alpha background This could be its own function
-    double maxCountBin = h_alphaDep[r]->GetMaximumBin();									//Use GetMaximumBin to find candidate for peak (most events/counts)
+    f_alpha[r]->SetRange(h_alphaDep[r]->GetBinCenter(
+                         h_alphaDep[r]->GetMaximumBin()), DEP_MAX);
+    h_alphaDep[r]->Fit((TString)"f_alpha" + s_TRIG_NUM);
+    f_expo[r]->SetParameters(f_alpha[r]->GetParameter(0),
+                             f_alpha[r]->GetParameter(1));
 
-   f_alpha[r]->SetRange(h_alphaDep[r]->GetBinCenter(maxCountBin), DEP_MAX);
-   h_alphaDep[r]->Fit((TString)"f_alpha" + (TString)to_string(r));
-   f_expo[r]->SetParameters(f_alpha[r]->GetParameter(0), f_alpha[r]->GetParameter(1));
+    h_fisSubtract[r]->Fit((TString)"f_fisProducts" + s_TRIG_NUM);
+    f_gauss[r]->SetParameters(f_fisProducts[r]->GetParameter(0),
+                              f_fisProducts[r]->GetParameter(1),
+                              f_fisProducts[r]->GetParameter(2));
 
-   h_fisSubtract[r]->Fit((TString)"f_fisProducts" + (TString)to_string(r));
-   f_gauss[r]->SetParameters(f_fisProducts[r]->GetParameter(0),
-                             f_fisProducts[r]->GetParameter(1),
-                             f_fisProducts[r]->GetParameter(2));
-
-   cout << "performing fits" << endl;
+    cout << "performing fits" << endl;
 
 
    //  f_alphaBackground->SetRange(h_alphaSpec->GetBinCenter(maxCountBin),BIN_ERG_MAX);	//Set alpha fit range to start at middle of peak of data
