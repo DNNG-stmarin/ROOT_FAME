@@ -127,11 +127,11 @@ void readFiss::PlotMultErg()
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
-    c_incMult[r] = new TCanvas("MultiplicityRatio_Channel_" + s_TRIG_NUM, "Neutron/Gamma Multiplicity Comparision to Fission Fractiom", 600, 800);
+    c_incMult[r] = new TCanvas("MultiplicityRatioErg_Channel_" + s_TRIG_NUM, "Neutron/Gamma Multiplicity Comparision to Fission Fractiom", 600, 800);
     c_incMult[r]->Divide(1,2);
 
     c_incMult[r]->cd(1);
-    g_fisRatioErg[r]->Draw();
+    g_fisRatioErg[r]->Draw("ALP");
     p_neutronMultErg[r]->Draw("SAME");
     p_gammaMultErg[r]->Draw("SAME");
     p_backNeutronMultErg[r]->Draw("SAME");
@@ -154,10 +154,17 @@ void readFiss::PlotMultErg()
     segLeg->Draw();												//Draw Legend
 
     c_incMult[r]->cd(2);
-    g_nMultErg[r]->Draw();
+    g_nMultErg[r]->Draw("ALP");
     g_gMultErg[r]->Draw("SAME");
     g_nMultBackErg[r]->Draw("SAME");
     g_gMultBackErg[r]->Draw("SAME");
+
+    g_nMultErg[r]->SetLineColor(kBlue);
+    g_gMultErg[r]->SetLineColor(kRed);
+    g_nMultBackErg[r]->SetLineColor(kBlue);
+    g_nMultBackErg[r]->SetLineStyle(kDashed);
+    g_gMultBackErg[r]->SetLineColor(kRed);
+    g_gMultBackErg[r]->SetLineStyle(kDashed);
 
     TLegend *ratLeg = new TLegend(0.4,0.7,0.15,0.88);			//Define Legend
     ratLeg->AddEntry("g_nMultErg" + s_TRIG_NUM, "Fission Neutrons","l");

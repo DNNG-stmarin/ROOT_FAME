@@ -152,7 +152,7 @@ void readFiss::BeamErgAnalysis()
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
-    cout << "Trigger " << r << " of " << NUM_TRIGGERS << endl;
+    cout << "Trigger " << r + 1 << " of " << NUM_TRIGGERS << endl;
 
     // Populate profiles
     p_neutronMultErg[r] = h2_neutronMultErg[r]->ProfileX("p_neutronMultErg" + s_TRIG_NUM);
@@ -170,15 +170,16 @@ void readFiss::BeamErgAnalysis()
       double timeBinHigh = f_TimeFromErg->Eval(ergBinHigh);
 
       TH1D* h_ergDep = h2_fisDepErg[r]->ProjectionX("h_ergDep", i + 1, i + 1);
-
-      // cout << h2_fisDepErg[r]->GetYaxis()->GetBinCenter(i + 1) << endl;
+      // cout << "Erg bins: " << meanErg << " " << h2_fisDepErg[r]->GetYaxis()->GetBinCenter(i + 1) << endl;
 
       h_ergDep->Scale(1 / (h_macroPop->GetMean() * (timeBinLow - timeBinHigh)), "n");
 
       TH1D *h_ergSubtract = (TH1D*)h_ergDep->Clone("h_ergSubtract");
       h_ergSubtract->Add(h_alphaDep[r], -1);  // Subtract alpha count rate
       // Take integrals
-      int thresholdDepBin = h_ergDep->GetBin(THRESHOLD_DEP);
+      int thresholdDepBin = h_ergDep->GetXaxis()->FindBin(THRESHOLD_DEP);
+      cout << "Threshold: " << THRESHOLD_DEP << endl;
+      cout << "Threshold bin: " << thresholdDepBin << endl;
 
       double numFis = h_ergSubtract->Integral(thresholdDepBin, -1);
       double numTot = h_ergDep->Integral(thresholdDepBin, -1);

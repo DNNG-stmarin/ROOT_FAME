@@ -68,6 +68,7 @@ readFiss::readFiss(int &argc, char** &argv)
   {
     PlotDepSubtraction();
     PlotRatioMult();
+    PlotMultErg();
     // JONATHAN - placeholder
   }
   writeFile->Close();
