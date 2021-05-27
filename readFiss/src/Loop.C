@@ -49,7 +49,7 @@ void readFiss::LoopExp()
       }
 
       bool validBeam = (mode == 2) &&
-                       (beamEnergy > MIN_ERG_BEAM && beamEnergy < MAX_ERG_BEAM);
+                       (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX);
       if(validBeam)
       {
         h_fisDep[indexChannel]->Fill(fisDep);
@@ -81,7 +81,10 @@ void readFiss::LoopExp()
       if(validBeam)
       {
         h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
-        h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
+        if (fisDep > THRESHOLD_DEP)
+        {
+          h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
+        }
       }
 
       // loop through gamma rays
@@ -102,7 +105,10 @@ void readFiss::LoopExp()
       if(validBeam)
       {
         h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
-        h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
+        if (fisDep > THRESHOLD_DEP)
+        {
+          h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
+        }
       }
 
       // loop through back neutrons
@@ -122,7 +128,10 @@ void readFiss::LoopExp()
       if(validBeam)
       {
         h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
-        h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
+        if (fisDep > THRESHOLD_DEP)
+        {
+          h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
+        }
       }
 
       // loop through back photons
@@ -141,7 +150,10 @@ void readFiss::LoopExp()
       if(validBeam)
       {
         h2_backGammaMultDep[indexChannel]->Fill(fisDep, gMultBack);
-        h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
+        if (fisDep > THRESHOLD_DEP)
+        {
+          h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
+        }
       }
 
    }
