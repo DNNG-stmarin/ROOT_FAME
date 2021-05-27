@@ -297,10 +297,10 @@ void readFiss::LoopBeam()
             nMultBack++;
           }
         }
+        h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
 
         if (fisDep > THRESHOLD_DEP)
         {
-          h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
           h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
         }
 

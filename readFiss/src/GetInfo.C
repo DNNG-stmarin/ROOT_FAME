@@ -280,7 +280,7 @@ void readFiss::GetInfo(istream &inputStream)
 
     cout << "Input the minimum and maximum beam energies [MeV], and the # of energy bins";
     inputStream >> BEAM_ERG_MIN >> BEAM_ERG_MAX >> BEAM_ERG_BINNUM;
-    cout << " Using beam range between " << BEAM_ERG_MIN << " and "
+    cout << "\nUsing beam range between " << BEAM_ERG_MIN << " and "
          << BEAM_ERG_MAX << " MeV, "
          << BEAM_ERG_BINNUM << " bins" << endl;
 
