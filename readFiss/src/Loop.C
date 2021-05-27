@@ -98,6 +98,7 @@ void readFiss::LoopExp()
           photonPSDExp->Fill(photonPSD[i]);
           photonSinglesExp->Fill(photonDet[i]);
           neutronMultPhotonLO->Fill(nMult, photonLightOut[i]);
+          photonLightOutPSD->Fill(photonLightOut[i], photonPSD[i]);
         }
       }
       photonMultExp->Fill(gMult);

@@ -30,7 +30,8 @@ void readFiss::PlotAll()
   PlotMultCor();
   PlotMultLO();
   PlotEnergyLO();
-  PlotLOPSD();
+  PlotN_LOPSD();
+  PlotP_LOPSD();
 }
 
 void readFiss::CompareAll()
@@ -432,16 +433,16 @@ void readFiss::PlotEnergyLO()
   //c_EnergyLO->SaveAs("neutronEnergyLightOut.eps");
 }
 
-void readFiss::PlotLOPSD()
+void readFiss::PlotN_LOPSD()
 {
   writeFile->cd();
   cd_correlated->cd();
   cout << "Plotting correlated neutron LO/PSD" << endl;
 
   //make canvas
-  TCanvas* c_LOPSD = new TCanvas("cLOPSD",
+  TCanvas* c_N_LOPSD = new TCanvas("cN_LOPSD",
                                   "Neutron LO vs. Neutron PSD", 800, 400);
-  c_LOPSD->cd();
+  c_N_LOPSD->cd();
 
   neutronLightOutPSD->SetLineColor(kRed);
   neutronLightOutPSD->SetStats(0);
@@ -454,8 +455,34 @@ void readFiss::PlotLOPSD()
   neutronLightOutPSD->GetXaxis()->SetTickSize(x_tickSize);
   neutronLightOutPSD->GetYaxis()->SetTickSize(y_tickSize);
 
-  c_LOPSD->Write();
-  //c_LOPSD->SaveAs("neutronLightOutPSD.eps");
+  c_N_LOPSD->Write();
+  //c_N_LOPSD->SaveAs("neutronLightOutPSD.eps");
+}
+
+void readFiss::PlotP_LOPSD()
+{
+  writeFile->cd();
+  cd_correlated->cd();
+  cout << "Plotting correlated photon LO/PSD" << endl;
+
+  //make canvas
+  TCanvas* c_P_LOPSD = new TCanvas("cP_LOPSD",
+                                  "Photon LO vs. Photon PSD", 800, 400);
+  c_P_LOPSD->cd();
+
+  photonLightOutPSD->SetLineColor(kRed);
+  photonLightOutPSD->SetStats(0);
+  photonLightOutPSD->Draw("SURF");
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  photonLightOutPSD->GetXaxis()->SetTitleSize(x_labelSize);
+  photonLightOutPSD->GetYaxis()->SetTitleSize(y_labelSize);
+  photonLightOutPSD->GetXaxis()->SetTickSize(x_tickSize);
+  photonLightOutPSD->GetYaxis()->SetTickSize(y_tickSize);
+
+  c_P_LOPSD->Write();
+  //c_P_LOPSD->SaveAs("neutronLightOutPSD.eps");
 }
 
 /*

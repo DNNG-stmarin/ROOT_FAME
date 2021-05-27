@@ -104,6 +104,9 @@ void readFiss::InitializeHistograms()
 // neutron Light Output vs neutron PSD
   neutronLightOutPSD = new TH2D("neutronLightOutPSD", "Neutron Light Output vs. Neutron PSD; Neutron Light Output [MeVee]; Neutron PSP [tail/total]; Counts", numLObins, minLO, maxLO, numPSDBins, minPSP, maxPSP);
 
+// photon Light Output vs neutron PSD
+  photonLightOutPSD = new TH2D("photonLightOutPSD", "Photon Light Output vs. Photon PSD; Photon Light Output [MeVee]; Photon PSP [tail/total]; Counts", numLObins, minLO, maxLO, numPSDBins, minPSP, maxPSP);
+
 // angular coorrelations
   neutronDoublesMat = new TH2D("neutronDoublesExp", "Neutron Doubles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
   neutronSinglesMat = new TH2D("neutronSinglesMatExp", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);

@@ -169,6 +169,8 @@ public :
    TH2D* neutronMultPhotonLO;
    TH2D* neutronEnergyLO;
    TH2D* neutronLightOutPSD;
+   TH2D* photonLightOutPSD;
+
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
@@ -482,7 +484,8 @@ public :
    virtual void     PlotMultCor();
    virtual void     PlotMultLO();
    virtual void     PlotEnergyLO();
-   virtual void     PlotLOPSD();
+   virtual void     PlotN_LOPSD();
+   virtual void     PlotP_LOPSD();
 
    // plot the beam parameters
    virtual void     PlotDepSubtraction();
