@@ -122,12 +122,13 @@ void readFiss::PlotMultErg()
   cout << "Plotting incident-dependent multiplicities " << endl;
 
   TCanvas** c_incMult = new TCanvas* [NUM_TRIGGERS];
+  TCanvas** c_ngMult =  new TCanvas* [NUM_TRIGGERS];
 
   for (int r = 0; r < NUM_TRIGGERS; r++)
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
-    c_incMult[r] = new TCanvas("MultiplicityRatioErg_Channel_" + s_TRIG_NUM, "Neutron/Gamma Multiplicity Comparision to Fission Fractiom", 600, 800);
+    c_incMult[r] = new TCanvas("MultCorrectedErg_Channel_" + s_TRIG_NUM, "Neutron/Gamma Multiplicity Comparision to Fission Fraction", 600, 800);
     c_incMult[r]->Divide(1,2);
 
     c_incMult[r]->cd(1);
@@ -199,4 +200,23 @@ void readFiss::PlotMultErg()
 
     c_incMult[r]->Write();
   }
+
+  cout << "Plotting gamma vs. neutron multiplicities " << endl;
+
+  for (int r = 0; r < NUM_TRIGGERS; r++)
+	{
+    TString s_TRIG_NUM = (TString)to_string(r);
+
+    c_ngMult[r] = new TCanvas("MultGammaPerNeutronErg_Channel_" + s_TRIG_NUM, "Gamma/Neutron Multiplicity", 600, 400);
+    c_ngMult[r]->cd();
+
+    g_gMultnMult[r]->Draw("AP");
+    g_gMultnMult[r]->SetLineColor(kBlack);
+    g_gMultnMult[r]->SetMarkerColor(kBlack);
+    g_gMultnMult[r]->SetMarkerSize(1);
+    g_gMultnMult[r]->SetMarkerStyle(20);
+
+    c_ngMult[r]->Write();
+  }
+
 }
