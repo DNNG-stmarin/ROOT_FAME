@@ -42,6 +42,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
 
 	TRIGGER_PATH = info->triggerPath;
+	DETECTOR_PATH = info->triggerPath;
 	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
