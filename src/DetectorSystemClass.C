@@ -102,7 +102,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
       triggers[i].X = stod(x) * 100;
       triggers[i].Y = stod(y) * 100;
       triggers[i].Z = stod(z) * 100;
-      cout << info->triggerPath << endl;
+      //cout << info->triggerPath << endl;
       cout << i << " " << triggers[i].X << " " << triggers[i].Y << " " << triggers[i].Z << endl;
     }
 	}
