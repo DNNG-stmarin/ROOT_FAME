@@ -138,7 +138,13 @@ void readFiss::PlotMultErg()
     p_backGammaMultErg[r]->Draw("SAME");
 
     g_fisRatioErg[r]->SetLineColor(kBlack);
+    g_fisRatioErg[r]->SetMarkerColor(kBlack);
+    g_fisRatioErg[r]->SetMarkerSize(0.5);
+    g_fisRatioErg[r]->SetMarkerStyle(21);
+    g_fisRatioErg[r]->GetYaxis()->SetRangeUser(0., 1.);
+
     p_neutronMultErg[r]->SetLineColor(kBlue);
+
     p_gammaMultErg[r]->SetLineColor(kRed);
     p_backNeutronMultErg[r]->SetLineColor(kBlue);
     p_backNeutronMultErg[r]->SetLineStyle(kDashed);
@@ -160,11 +166,26 @@ void readFiss::PlotMultErg()
     g_gMultBackErg[r]->Draw("SAME");
 
     g_nMultErg[r]->SetLineColor(kBlue);
+    g_nMultErg[r]->SetMarkerColor(kBlue);
+    g_nMultErg[r]->SetMarkerSize(0.5);
+    g_nMultErg[r]->SetMarkerStyle(21);
+
     g_gMultErg[r]->SetLineColor(kRed);
+    g_gMultErg[r]->SetMarkerColor(kRed);
+    g_gMultErg[r]->SetMarkerSize(0.5);
+    g_gMultErg[r]->SetMarkerStyle(22);
+
     g_nMultBackErg[r]->SetLineColor(kBlue);
     g_nMultBackErg[r]->SetLineStyle(kDashed);
+    g_nMultBackErg[r]->SetMarkerColor(kBlue);
+    g_nMultBackErg[r]->SetMarkerSize(0.5);
+    g_nMultBackErg[r]->SetMarkerStyle(21);
+
     g_gMultBackErg[r]->SetLineColor(kRed);
     g_gMultBackErg[r]->SetLineStyle(kDashed);
+    g_gMultBackErg[r]->SetMarkerColor(kRed);
+    g_gMultBackErg[r]->SetMarkerSize(0.5);
+    g_gMultBackErg[r]->SetMarkerStyle(22);
 
     TLegend *ratLeg = new TLegend(0.4,0.7,0.15,0.88);			//Define Legend
     ratLeg->AddEntry("g_nMultErg" + s_TRIG_NUM, "Fission Neutrons","l");
