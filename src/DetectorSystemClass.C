@@ -42,7 +42,8 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
 
 	TRIGGER_PATH = info->triggerPath;
-	DETECTOR_PATH = info->triggerPath;
+	DETECTOR_PATH = info->detectorPath;
+	DET_CALIBRATION = new TGraph(*(info->calibrationDet));
 	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
@@ -64,7 +65,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
   // Setting detector distances
 	string line;
 	string x, y, z;
-	ifstream inDet (info->detectorPath);
+	ifstream inDet (DETECTOR_PATH);
 	for(int i=0; i<NUM_DETS; i++)
 	{
 		// cout << "reading detector coordinates from file" << endl;
@@ -108,11 +109,10 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
   inTrig.close();
 
 	//calibration for only chinu system
-	detCalibration = new TGraph(*(info->calibrationDet));
 	for(int i=0; i<NUM_DETS; i++)
 	{
 		// cout << "Reading detector calibration from file" << endl;
-		detectors[i].calibration = detCalibration->Eval(i)/CSCOMPTEDGE;
+		detectors[i].calibration = DET_CALIBRATION->Eval(i)/CSCOMPTEDGE;
 	}
 	cout << "Detector calibration complete\n" << endl;
 
