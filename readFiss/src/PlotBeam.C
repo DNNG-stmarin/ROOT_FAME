@@ -161,9 +161,10 @@ void readFiss::PlotMultErg()
 
     c_incMult[r]->cd(2);
     g_nMultErg[r]->Draw("ALP");
-    g_gMultErg[r]->Draw("SAME");
-    g_nMultBackErg[r]->Draw("SAME");
-    g_gMultBackErg[r]->Draw("SAME");
+    g_nMultErg[r]->GetYaxis()->SetRangeUser(0., 0.2);
+    g_gMultErg[r]->Draw("SAME LP");
+    g_nMultBackErg[r]->Draw("SAME LP");
+    g_gMultBackErg[r]->Draw("SAME LP");
 
     g_nMultErg[r]->SetLineColor(kBlue);
     g_nMultErg[r]->SetMarkerColor(kBlue);
@@ -186,6 +187,8 @@ void readFiss::PlotMultErg()
     g_gMultBackErg[r]->SetMarkerColor(kRed);
     g_gMultBackErg[r]->SetMarkerSize(0.5);
     g_gMultBackErg[r]->SetMarkerStyle(22);
+
+    c_incMult[r]->Update();
 
     TLegend *ratLeg = new TLegend(0.4,0.7,0.15,0.88);			//Define Legend
     ratLeg->AddEntry("g_nMultErg" + s_TRIG_NUM, "Fission Neutrons","l");
