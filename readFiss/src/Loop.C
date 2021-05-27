@@ -68,7 +68,7 @@ void readFiss::LoopExp()
       // loop through back neutrons
       for (int i = 0; i < neutronBackMult; i++)
       {
-        if (backNeutronLightOut[i] > THRESHOLD)
+        if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N))
         {
             nMultBack++;
             neutronLightOutputBack->Fill(backNeutronLightOut[i]);
@@ -222,7 +222,7 @@ void readFiss::LoopBeam()
         // loop through back neutrons
         for (int i = 0; i < neutronBackMult; i++)
         {
-          if (backNeutronLightOut[i] > THRESHOLD)
+          if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N))
           {
             nMultBack++;
           }
