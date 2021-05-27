@@ -114,6 +114,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		// cout << "Reading detector calibration from file" << endl;
 		detectors[i].calibration = DET_CALIBRATION->Eval(i)/CSCOMPTEDGE;
 	}
+
 	cout << "Detector calibration complete\n" << endl;
 
 	// initialize the tree and the file to write to
@@ -125,11 +126,6 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdPsd = detFile->mkdir("PSD");
 	cdToF = detFile->mkdir("TOF");
 	cdKin = detFile->mkdir("Kinematics");
-	// cdMult =  detFile->mkdir("Multiplicity");
-	// cdCoinc =  detFile->mkdir("Coincidences");
-	// cdFigCoinc = detFile->mkdir("CoincFigs");
-	// cdBicorr = detFile->mkdir("Bicorr");
-	// cdRef = detFile->mkdir("Reflections");
 	cdBeam = detFile->mkdir("Beam");
 
 	// create the folder for psd slices
@@ -142,6 +138,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdTOFPSD = cdPsd->mkdir("TOF_PSD");
 	cdTofErg = cdToF->mkdir("TOFErg_discrimination");
 	cdTOFCorr = cdToF->mkdir("TOF_Corrected");
+
 }
 
 DetectorSystemClass::~DetectorSystemClass()
