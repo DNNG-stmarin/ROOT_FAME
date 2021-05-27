@@ -160,8 +160,6 @@ void readFiss::BeamErgAnalysis()
     p_backNeutronMultErg[r] = h2_backNeutronMultErg[r]->ProfileX("p_backNeutronMultErg" + s_TRIG_NUM);
     p_backGammaMultErg[r] = h2_backGammaMultErg[r]->ProfileX("p_backGammaMultErg" + s_TRIG_NUM);
 
-    p_neutronMultErg[r]->Write();
-
     for (int i = 0; i < BEAM_ERG_BINNUM; i++)
     {
       double ergBinLow = BEAM_ERG_MIN + i * (BEAM_ERG_MAX - BEAM_ERG_MIN) / BEAM_ERG_BINNUM;
@@ -200,8 +198,22 @@ void readFiss::BeamErgAnalysis()
       g_gMultBackErg[r]->SetPoint(i, meanErg,
         p_backGammaMultErg[r]->GetBinContent(i) * numTot / numFis);
     }
+
+    // Set graph names
+    g_fisRatioErg[r]->SetName("g_fisRatioErg" + s_TRIG_NUM);
+    g_fisRatioErg[r]->SetTitle("Fission-to-total ratio; Beam energy [MeV];f / (f + #alpha)");
+
     g_nMultErg[r]->SetName("g_nMultErg" + s_TRIG_NUM);
     g_nMultErg[r]->SetTitle("Fission Neutron Multiplicity; Beam energy [MeV]; Average Multiplicity");
-    g_nMultErg[r]->Write();
+
+    g_gMultErg[r]->SetName("g_gMultErg" + s_TRIG_NUM);
+    g_gMultErg[r]->SetTitle("Fission Photon Multiplicity; Beam energy [MeV]; Average Multiplicity");
+
+    g_nMultBackErg[r]->SetName("g_nMultBackErg" + s_TRIG_NUM);
+    g_nMultBackErg[r]->SetTitle("Background Neutron Multiplicity; Beam energy [MeV]; Average Multiplicity");
+
+    g_gMultBackErg[r]->SetName("g_gMultBackErg" + s_TRIG_NUM);
+    g_gMultBackErg[r]->SetTitle("Background Photon Multiplicity; Beam energy [MeV]; Average Multiplicity");
+    // g_nMultErg[r]->Write();
   }
 }
