@@ -68,6 +68,7 @@ void readFiss::BeamDepAnalysis()
 
 		//cout << "Bin #; Energy Threshold; Ratio" << endl;
     double minDepErg, numFis, numTot;
+    int numPoints = 0;
     // cout << "start" << endl;
 		for (int i = 1; i < minDepBin; i++)
     {						//for loop to get all threshold ratios until max threshold bin
@@ -80,12 +81,15 @@ void readFiss::BeamDepAnalysis()
 
     g_fisRatioThreshold[r]->SetName("fissRatioThreshold" + s_TRIG_NUM);
 		g_fisRatioThreshold[r]->SetTitle("Ratio of Fissions to Alphas due to Energy Threshold; Energy Threshold (V us); Fraction of Fissions");
-
+    g_fisRatioThreshold[r]->Set(numPoints);
     cout << "finished threshold" << endl;
 
 		//Energy Segments (between two energies)
 		int binSeg = 10;									//Energy segment width (10 = width of 0.001; 20 = 0.002)
-		for (int j = 1; j < minDepBin/binSeg; j++){																			//Get all segments before energy threshold
+    numPoints = 0;
+		for (int j = 0; j < minDepBin/binSeg; j++)
+    {																			//Get all segments before energy threshold
+      numPoints++;
 			minDepErg = 0.5*(h_fisSubtract[r]->GetBinCenter(j*binSeg) + h_fisSubtract[r]->GetBinCenter((j+1)*binSeg));	//Get middle of threshold to plot on graph so that
 			numFis = h_fisSubtract[r]->Integral(j*binSeg,(j+1)*binSeg);												//Integrating over energy segment for fission products curve
 			numTot = h_fisDep[r]->Integral(j*binSeg,(j+1)*binSeg);													//Integrating over energy segment for total hisogram
@@ -94,6 +98,7 @@ void readFiss::BeamDepAnalysis()
 		}
     g_fisRatioSelect[r]->SetName("fissRatioSelect" + s_TRIG_NUM);
     g_fisRatioSelect[r]->SetTitle("Ratio of Fissions to Alphas due to Energy Selection; Energy Selection (V us); Fraction of Fissions");
+    g_fisRatioSelect[r]->Set(numPoints);
 
     cout << "finished selection" << endl;
 
@@ -102,8 +107,10 @@ void readFiss::BeamDepAnalysis()
     double nMult, gMult, nbMult, gbMult, ergPt;
     TGraph *pg_neutronMult = new TGraph(minDepBin);
     TGraph *pg_gammaMult = new TGraph(minDepBin);
-		for (int k = 0; k <= minDepBin; k++){
-
+    numPoints = 0;
+		for (int k = 0; k <= minDepBin; k++)
+    {
+      numPoints++;
 			nMult = p_neutronMultDep[r]->GetBinContent(k);
 			gMult = p_gammaMultDep[r]->GetBinContent(k);
 
@@ -121,11 +128,15 @@ void readFiss::BeamDepAnalysis()
 
     g_neutronMultRatioDep[r]->SetName("g_neutronMultRatioDep" + s_TRIG_NUM);
     g_neutronMultRatioDep[r]->SetTitle("Fission Neutron Multiplicity; Energy Selection (V us); Average Multiplicity");
+    g_neutronMultRatioDep[r]->Set(numPoints);
 
     g_gammaMultRatioDep[r]->SetName("g_gammaMultRatioDep" + s_TRIG_NUM);
     g_gammaMultRatioDep[r]->SetTitle("Fission Gamma Multiplicity; Energy Selection (V us); Average Multiplicity");
+    g_gammaMultRatioDep[r]->Set(numPoints);
 
-    cout << "taking ratios" << endl;
+    //cout << "taking ratios" << endl;
+
+
 
   }
 
