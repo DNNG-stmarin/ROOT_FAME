@@ -119,11 +119,11 @@ void readFiss::BeamDepAnalysis()
 
 			ergPt = p_neutronMultDep[r]->GetBinCenter(k+1);
 
-			pg_neutronMult->SetPoint(k+1, ergPt, nMult - nbMult);
-			pg_gammaMult->SetPoint(k+1, ergPt, gMult - gbMult);
+			pg_neutronMult->SetPoint(k, ergPt, nMult - nbMult);
+			pg_gammaMult->SetPoint(k, ergPt, gMult - gbMult);
 
-			g_neutronMultRatioDep[r]->SetPoint(k+1, ergPt, (nMult - nbMult)/g_fisRatioSelect[r]->Eval(ergPt));
-			g_gammaMultRatioDep[r]->SetPoint(k+1, ergPt, (gMult - gbMult)/g_fisRatioSelect[r]->Eval(ergPt));
+			g_neutronMultRatioDep[r]->SetPoint(k, ergPt, (nMult - nbMult)/g_fisRatioSelect[r]->Eval(ergPt));
+			g_gammaMultRatioDep[r]->SetPoint(k, ergPt, (gMult - gbMult)/g_fisRatioSelect[r]->Eval(ergPt));
 		}
 
     g_neutronMultRatioDep[r]->SetName("g_neutronMultRatioDep" + s_TRIG_NUM);
@@ -145,12 +145,20 @@ void readFiss::BeamDepAnalysis()
 void readFiss::BeamErgAnalysis()
 {
   cd_beam->cd();
+  // set the correct initial parameters for the beam
+  f_TimeFromErg->SetParameters(BEAM_PATH, LIGHT_C, N_MASS);
 
   for (int r = 0; r < NUM_TRIGGERS; r++)
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
-    cout << "Trigger " << r << "of" << NUM_TRIGGERS << endl;
+    cout << "Trigger " << r + 1 << " of " << NUM_TRIGGERS << endl;
+
+    // Populate profiles
+    p_neutronMultErg[r] = h2_neutronMultErg[r]->ProfileX("p_neutronMultErg" + s_TRIG_NUM);
+    p_gammaMultErg[r] = h2_gammaMultErg[r]->ProfileX("p_gammaMultErg" + s_TRIG_NUM);
+    p_backNeutronMultErg[r] = h2_backNeutronMultErg[r]->ProfileX("p_backNeutronMultErg" + s_TRIG_NUM);
+    p_backGammaMultErg[r] = h2_backGammaMultErg[r]->ProfileX("p_backGammaMultErg" + s_TRIG_NUM);
 
     for (int i = 0; i < BEAM_ERG_BINNUM; i++)
     {
@@ -161,7 +169,52 @@ void readFiss::BeamErgAnalysis()
       double timeBinLow = f_TimeFromErg->Eval(ergBinLow);
       double timeBinHigh = f_TimeFromErg->Eval(ergBinHigh);
 
+      TH1D* h_ergDep = h2_fisDepErg[r]->ProjectionX("h_ergDep", i + 1, i + 1);
+      // cout << "Erg bins: " << meanErg << " " << h2_fisDepErg[r]->GetYaxis()->GetBinCenter(i + 1) << endl;
 
+      h_ergDep->Scale(1 / (h_macroPop->GetMean() * (timeBinLow - timeBinHigh)), "n");
+
+      TH1D *h_ergSubtract = (TH1D*)h_ergDep->Clone("h_ergSubtract");
+      h_ergSubtract->Add(h_alphaDep[r], -1);  // Subtract alpha count rate
+      // Take integrals
+      int thresholdDepBin = h_ergDep->GetXaxis()->FindBin(THRESHOLD_DEP);
+      cout << "Threshold: " << THRESHOLD_DEP << endl;
+      cout << "Threshold bin: " << thresholdDepBin << endl;
+
+      double numFis = h_ergSubtract->Integral(thresholdDepBin, -1);
+      double numTot = h_ergDep->Integral(thresholdDepBin, -1);
+      double numAlpha = h_alphaDep[r]->Integral(thresholdDepBin, -1);
+      // cout << numFis / numTot << endl;
+
+      // Add points to graphs
+      g_fisRatioErg[r]->SetPoint(i, meanErg, numFis / numTot);
+
+      g_nMultErg[r]->SetPoint(i, meanErg,
+        (p_neutronMultErg[r]->GetBinContent(i) - p_backNeutronMultErg[r]->GetBinContent(i)) * numTot / numFis);
+      g_gMultErg[r]->SetPoint(i, meanErg,
+        (p_gammaMultErg[r]->GetBinContent(i) - p_backGammaMultErg[r]->GetBinContent(i)) * numTot / numFis);
+
+      g_nMultBackErg[r]->SetPoint(i, meanErg,
+        p_backNeutronMultErg[r]->GetBinContent(i) * numTot / numFis);
+      g_gMultBackErg[r]->SetPoint(i, meanErg,
+        p_backGammaMultErg[r]->GetBinContent(i) * numTot / numFis);
     }
+
+    // Set graph names
+    g_fisRatioErg[r]->SetName("g_fisRatioErg" + s_TRIG_NUM);
+    g_fisRatioErg[r]->SetTitle("Fission-to-total ratio; Beam energy [MeV];f / (f + #alpha)");
+
+    g_nMultErg[r]->SetName("g_nMultErg" + s_TRIG_NUM);
+    g_nMultErg[r]->SetTitle("Fission Neutron Multiplicity; Beam energy [MeV]; Average Multiplicity");
+
+    g_gMultErg[r]->SetName("g_gMultErg" + s_TRIG_NUM);
+    g_gMultErg[r]->SetTitle("Fission Photon Multiplicity; Beam energy [MeV]; Average Multiplicity");
+
+    g_nMultBackErg[r]->SetName("g_nMultBackErg" + s_TRIG_NUM);
+    g_nMultBackErg[r]->SetTitle("Background Neutron Multiplicity; Beam energy [MeV]; Average Multiplicity");
+
+    g_gMultBackErg[r]->SetName("g_gMultBackErg" + s_TRIG_NUM);
+    g_gMultBackErg[r]->SetTitle("Background Photon Multiplicity; Beam energy [MeV]; Average Multiplicity");
+    // g_nMultErg[r]->Write();
   }
 }

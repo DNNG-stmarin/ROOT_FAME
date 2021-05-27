@@ -47,7 +47,7 @@ readFiss::readFiss(int &argc, char** &argv)
   {
     ReadBeamInfo();
     BeamDepAnalysis();
-    // BeamErgAnalysis();
+    BeamErgAnalysis();
   }
 
   // run CovEM if user wanted to
@@ -67,6 +67,7 @@ readFiss::readFiss(int &argc, char** &argv)
   {
     PlotDepSubtraction();
     PlotRatioMult();
+    PlotMultErg();
   }
   writeFile->Close();
 }

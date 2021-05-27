@@ -191,7 +191,13 @@ void readFiss::InitializeHistograms()
     g_nMultBackErg = new TGraph* [NUM_TRIGGERS];
     g_gMultBackErg = new TGraph* [NUM_TRIGGERS];
 
-
-
+    for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
+    {
+      g_fisRatioErg[indexChannel] =  new TGraph(BEAM_ERG_BINNUM);
+      g_nMultErg[indexChannel] =     new TGraph(BEAM_ERG_BINNUM);
+      g_gMultErg[indexChannel] =     new TGraph(BEAM_ERG_BINNUM);
+      g_nMultBackErg[indexChannel] = new TGraph(BEAM_ERG_BINNUM);
+      g_gMultBackErg[indexChannel] = new TGraph(BEAM_ERG_BINNUM);
+    }
   }
 }
