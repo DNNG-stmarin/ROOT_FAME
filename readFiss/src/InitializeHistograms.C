@@ -180,20 +180,3 @@ void readFiss::InitializeHistograms()
 
 
 }
-
-int readFiss::isTrigger(int triggerNumber)
-{
-  int triggerIndex = -1;
-  for(int i = 0; i < NUM_TRIGGERS; ++i)
-  {
-    if(triggerNumber = TRIGGERS[i])
-    {
-      triggerIndex = i;
-    }
-  }
-  if(triggerIndex = -1)
-  {
-    cout << "Trigger not found." << endl;
-  }
-  return triggerIndex;
-}
