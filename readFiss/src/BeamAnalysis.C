@@ -47,7 +47,7 @@ void readFiss::BeamDepAnalysis()
     double maxCountBin = h_alphaDep[r]->GetMaximumBin();									//Use GetMaximumBin to find candidate for peak (most events/counts)
    // JAMES & NATHAN: make an array of functions and FitResultsPtr in readFiss.h, declare them in a new file initializeFunctions.h, and save the fits for each
    f_alpha[r]->SetRange(h_alphaDep[r]->GetBinCenter(maxCountBin), DEP_MAX);
-   h_alphaDep[r]->Fit((TString)"f_alpha" + (TString)to_string(r));
+   h_alphaDep[r]->Fit((TString)"f_alpha" + (TString)to_string(r), "RS");
    f_expo[r]->SetParameters(f_alpha[r]->GetParameter(0), f_alpha[r]->GetParameter(1));
 
    h_fisSubtract[r]->Fit((TString)"f_fisProducts" + (TString)to_string(r));
