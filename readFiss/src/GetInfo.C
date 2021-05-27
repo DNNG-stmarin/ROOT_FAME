@@ -82,7 +82,7 @@ void readFiss::BadInputMessage()
           "expFile path \n " <<
           "If in mode 1: simFile path \n " <<
           "If in mode 2: beamFile path \n " <<
-          "Threshold [MeVee] Max Time [ns] \n " <<
+          "Detector threshold [MeVee] Chamber threshold [V us] tMax Time [ns] \n " <<
           "Whether or not you want to use CovEM (0/1) \n " <<
           "If using CovEM: BN BP \n " <<
           "If using CovEM: MIN_N_ERG MAX_N_ERG MIN_P_ERG MAX_P_ERG \n\n" <<
@@ -221,9 +221,11 @@ void readFiss::GetInfo(istream &inputStream)
                               |_|
 */
   // get threshold and max time from user
-  cout << "Input threshold [MeVee] and max time [ns]. Sample input: \n 0.20 70.0" << endl;
-  inputStream >> THRESHOLD >> MAX_TIME_N;
-  cout << " Using: threshold = " << THRESHOLD << " MeVee, " << " Tmax = " << MAX_TIME_N << " ns." << endl;
+  cout << "Input detector threshold [MeVee], fission chamber threshold [V us], and max time [ns]. Sample input: \n 0.20 0.005 70.0" << endl;
+  inputStream >> THRESHOLD >> THRESHOLD_DEP >> MAX_TIME_N;
+  cout << " Using: detector threshold = " << THRESHOLD << " MeVee, "
+       << " fission chamber threshold = " << THRESHOLD_DEP << " V us, "
+       << " Tmax = " << MAX_TIME_N << " ns." << endl;
   cout << "\n";
 
   // ask user for background delay
@@ -276,9 +278,11 @@ void readFiss::GetInfo(istream &inputStream)
     }
     cout << "\n\n";
 
-    cout << "Input the minimum and maximum beam energies (MeV)";
-    inputStream >> MIN_ERG_BEAM >> MAX_ERG_BEAM;
-    cout << " Using beam range between " << MIN_ERG_BEAM << " and " << MAX_ERG_BEAM << " MeV" << endl;
+    cout << "Input the minimum and maximum beam energies [MeV], and the # of energy bins";
+    inputStream >> BEAM_ERG_MIN >> BEAM_ERG_MAX >> BEAM_ERG_BINNUM;
+    cout << " Using beam range between " << BEAM_ERG_MIN << " and "
+         << BEAM_ERG_MAX << " MeV, "
+         << BEAM_ERG_BINNUM << " bins" << endl;
 
 
   }

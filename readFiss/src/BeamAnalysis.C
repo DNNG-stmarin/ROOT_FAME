@@ -8,8 +8,8 @@ void readFiss::BeamDepAnalysis()
   // set the correct initial parameters for the beam
   f_TimeFromErg->SetParameters(BEAM_PATH, LIGHT_C, N_MASS);
 
-  double minTimeFiss = f_TimeFromErg->Eval(MAX_ERG_BEAM);
-  double maxTimeFiss = f_TimeFromErg->Eval(MIN_ERG_BEAM);
+  double minTimeFiss = f_TimeFromErg->Eval(BEAM_ERG_MAX);
+  double maxTimeFiss = f_TimeFromErg->Eval(BEAM_ERG_MIN);
   intWindowFiss = maxTimeFiss - minTimeFiss;
   cout << "Integrating fission over " << intWindowFiss << " (ns)" << endl;
 
@@ -144,5 +144,22 @@ void readFiss::BeamDepAnalysis()
 
 void readFiss::BeamErgAnalysis()
 {
+  cd_beam->cd();
 
+  for (int r = 0; r < NUM_TRIGGERS; r++)
+	{
+    TString s_TRIG_NUM = (TString)to_string(r);
+
+    cout << "Trigger " << r << "of" << NUM_TRIGGERS << endl;
+
+    for (int i = 0; i < BEAM_ERG_BINNUM; i++)
+    {
+      double ergBinLow = BEAM_ERG_MIN + i * (BEAM_ERG_MAX - BEAM_ERG_MIN) / BEAM_ERG_BINNUM;
+      double ergBinHigh = ergBinLow + (BEAM_ERG_MAX - BEAM_ERG_MIN) / BEAM_ERG_BINNUM;
+      double meanErg = (ergBinLow + ergBinHigh) / 2;
+
+      double timeBinLow = f_TimeFromErg->Eval(ergBinLow);
+      double timeBinHigh = f_TimeFromErg->Eval(ergBinHigh);
+    }
+  }
 }
