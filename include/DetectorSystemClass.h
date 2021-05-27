@@ -130,6 +130,7 @@ public:
 
 	// calibrations of the detectors
 	TGraph* detCalibration;
+	string DETECTOR_PATH;
 
 /*
 _  _ _    _
