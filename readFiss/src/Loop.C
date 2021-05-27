@@ -179,7 +179,7 @@ void readFiss::LoopBeam()
         // skip if the energy of the beam is outside the range
         // nathan remove
 
-        if(beamEnergy > MIN_ERG_BEAM && beamEnergy < MAX_ERG_BEAM)
+        if(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX)
         {
           h_fisDep[indexChannel]->Fill(fisDep);
           h_beamTime[indexChannel]->Fill(beamTime);
@@ -206,7 +206,11 @@ void readFiss::LoopBeam()
           }
         }
         h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
-        h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
+
+        if (fisDep > THRESHOLD_DEP)
+        {
+          h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
+        }
 
         // loop through gamma rays
         for (int i = 0; i < gammaMult; i++)
@@ -217,7 +221,11 @@ void readFiss::LoopBeam()
           }
         }
         h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
-        h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
+
+        if (fisDep > THRESHOLD_DEP)
+        {
+          h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
+        }
 
         // loop through back neutrons
         for (int i = 0; i < neutronBackMult; i++)
@@ -227,8 +235,12 @@ void readFiss::LoopBeam()
             nMultBack++;
           }
         }
-        h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
-        h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
+
+        if (fisDep > THRESHOLD_DEP)
+        {
+          h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
+          h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
+        }
 
 
         // loop through back photons
@@ -240,6 +252,10 @@ void readFiss::LoopBeam()
           }
         }
         h2_backGammaMultDep[indexChannel]->Fill(fisDep, gMultBack);
-        h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
+
+        if (fisDep > THRESHOLD_DEP)
+        {
+          h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
+        }
     }
 }

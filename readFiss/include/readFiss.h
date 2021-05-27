@@ -80,7 +80,8 @@ public :
   double THRESHOLD_DEP;
   double BACKGROUND_DELAY;
 
-  double MIN_ERG_BEAM, MAX_ERG_BEAM; // range of the beam energies to be employed
+  double BEAM_ERG_MIN, BEAM_ERG_MAX; // range of the beam energies to be employed
+  double BEAM_ERG_BINNUM;            // number of energy bins in range
 
   double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
   double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
@@ -205,10 +206,22 @@ public :
 	TProfile** p_backGammaMultDep;                         //Profile backGammaMult vs fisDep
 
   TGraph** g_fisRatioThreshold;                          // fis ratio for different dep threshold
-  TGraph** g_fisRatioSelect;                          // fis ratio for different dep threshold
+  TGraph** g_fisRatioSelect;                             // fis ratio for different dep threshold
 
   TGraph** g_neutronMultRatioDep;
   TGraph** g_gammaMultRatioDep;
+
+
+  TProfile** p_neutronMultErg;				                   //Profile neutronMult vs beamEnergy
+  TProfile** p_gammaMultErg;				                     //Profile gammaMult vs beamEnergy
+  TProfile** p_backNeutronMultErg;                       //Profile backNeutronMult vs beamEnergy
+	TProfile** p_backGammaMultErg;                         //Profile backGammaMult vs beamEnergy
+
+  TGraph** g_fisRatioErg;                                // fission triggers / total vs. beamEnergy
+  TGraph** g_nMultErg;                                   // Background-subtracted nMult vs. beamEnergy
+  TGraph** g_gMultErg;                                   // Background-subtracted gMult vs. beamEnergy
+  TGraph** g_nMultBackErg;                               // Background-subtracted nBackMult vs. beamEnergy
+  TGraph** g_gMultBackErg;                               // Background-subtracted gBackMult vs. beamEnergy
 
 
 
