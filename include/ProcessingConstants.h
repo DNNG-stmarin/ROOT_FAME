@@ -12,6 +12,10 @@ const double CSCOMPTEDGE = 0.477;
 const double MASS_NEUTRONS = 939.565; // MeV/c^2
 const double LIGHT_C = 29.979; // cm/ns
 
+// signal TYPES DEFINITIONS
+const short BACKGROUND_EVENT = 1;
+const short FISSION_EVENT = 0;
+
 // particle types definitions
 const short NO_PARTICLE = 0;
 const short NEUTRON = 1;

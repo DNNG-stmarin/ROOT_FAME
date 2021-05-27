@@ -78,6 +78,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	// declatre the variables to store the fission branches
 	// fission trigger
+	int tType = 0;
 	int tMult = 0;
 	double tTime = 0;
 	double tDep = 0;
@@ -101,6 +102,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	int totTail[MAX_MULTIPLICITY] = {0};
 
 	// trigger variables
+	coincTree->Branch("tType", &tType, "tType/I");
 	coincTree->Branch("tMult", &tMult, "tMult/I");
 	coincTree->Branch("tTime", &tTime, "fissionTime/D");
 	coincTree->Branch("tDep", &tDep, "fissionErg/D");
@@ -204,6 +206,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		// trigger variables
 		double fissionTime = 0;
+		int fissionType = 0;
 		double fissionEnergy = 0;
 		int fissionChan = 0;
 		double fissionPSP = 0;
@@ -657,6 +660,22 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
             h2_alphaChanSpec->Fill(curFis.triggerChannel, curFis.triggerEnergy);
           }
 
+					goodFis = CoincidenceEvent(curFis.triggerTime,
+					 													 curFis.triggerEnergy,
+																		 curFis.triggerChannel,
+																		 curFis.triggerPSP,
+																		 curFis.triggerTail);
+
+					goodFis.fissionType = BACKGROUND_EVENT;
+
+					goodFis.beamTime = 0;
+					goodFis.beamEnergy = curBeam.getEnergy();
+					goodFis.beamPSP = curBeam.getPsp();
+					goodFis.beamChannel = curBeam.getDetector();
+					goodFis.beamMicroIndex = BACKGROUND_EVENT;
+
+					FissionBuffer.push(goodFis);
+
 					ValidTriggerBuffer.pop();
 				}
 
@@ -670,6 +689,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 																		 curFis.triggerChannel,
 																		 curFis.triggerPSP,
 																		 curFis.triggerTail);
+
+					goodFis.fissionType = FISSION_EVENT;
 
 					goodFis.beamTime = deltaFissBeam;
 					goodFis.beamEnergy = curBeam.getEnergy();
@@ -741,6 +762,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			qFission = FissionBuffer.front();
 
 			// assign the detector channel
+			fissionType = qFission.getFissionType();
 			fissionChan = qFission.getTriggerChan();
 			fissionTime = qFission.getTriggerTime();
 			fissionEnergy = qFission.getEnergy();
@@ -813,6 +835,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 				// now fill the histogram of particle-particle coincidences
 				tMult = totMult;
+				tType = fissionType;
 				tTime = fissionTime;
 				tDep = fissionEnergy;
 				tPSP = fissionPSP;

@@ -18,6 +18,7 @@ class CoincidenceEvent {
 private:
 
 public:
+	int fissionType; // 0 is a good fission, 1 is background
 	double beamTime;
 	double beamEnergy;
 	int beamChannel;
@@ -44,7 +45,7 @@ public:
 
 	CoincidenceEvent()
 	{
-
+		fissionType = 0;
 		// initialize beam properties
 		beamTime = 0;
 		beamEnergy = 0;
@@ -63,6 +64,7 @@ public:
 	}
 
 	CoincidenceEvent(double triggerTimein, double triggerEnergyin, int triggerChannelin, double triggerPSPin, double triggerTailin) {
+		fissionType = 0;
 		totalMultiplicity = 0;
 		triggerTime = triggerTimein;
 		triggerEnergy = triggerEnergyin;
@@ -78,6 +80,11 @@ public:
 		beamChannel = beamChannelin;
 		beamPSP = beamPSPin;
 		beamMicroIndex = beamMicroIndexin;
+	}
+
+	void SetFissionType(int fissionTypeIn)
+	{
+		fissionType = fissionTypeIn;
 	}
 
 	// default destructor
@@ -139,6 +146,11 @@ public:
 	double getBeamTail()
 	{
 		return beamTail;
+	}
+
+	int getFissionType()
+	{
+		return fissionType;
 	}
 
 };
