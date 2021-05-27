@@ -1,5 +1,5 @@
 tests_v1:
-	tags:
-		- test
-	script:
-		- echo Hello World
+     tags:
+       - test
+     script:
+       - echo Hello World
