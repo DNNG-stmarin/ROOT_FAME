@@ -43,9 +43,8 @@ readFiss::readFiss(int &argc, char** &argv)
   {
     LoopSim();
   }
-  if(mode == 2) // JONATHAN - beam placeholder
+  if(mode == 2)
   {
-    LoopBeam(); // JONATHAN - not implemented
     ReadBeamInfo();
     BeamDepAnalysis();
   }
