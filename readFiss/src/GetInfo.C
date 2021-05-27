@@ -3,7 +3,6 @@
 
 using namespace std;
 
-
 // readFiss main constructor constructor
 readFiss::readFiss(int &argc, char** &argv)
 {
@@ -36,6 +35,7 @@ readFiss::readFiss(int &argc, char** &argv)
 
 
   InitializeHistograms();
+  InitializeFunctions();
 
   // loop through
   LoopExp();
@@ -46,6 +46,8 @@ readFiss::readFiss(int &argc, char** &argv)
   if(mode == 2) // JONATHAN - beam placeholder
   {
     LoopBeam(); // JONATHAN - not implemented
+    ReadBeamInfo();
+    BeamDepAnalysis();
   }
 
   // run CovEM if user wanted to
@@ -63,7 +65,8 @@ readFiss::readFiss(int &argc, char** &argv)
   }
   if(mode == 2)
   {
-    cout << "BEAM PLOT FUNCTIONALITY NOT IMPLEMENTED." << endl;
+    PlotDepSubtraction();
+    PlotRatioMult();
     // JONATHAN - placeholder
   }
   writeFile->Close();
@@ -204,6 +207,7 @@ void readFiss::GetInfo(istream &inputStream)
     cd_beam = writeFile->mkdir("Beam");
     cout << "Input beamFile path" << endl;
     inputStream >> nameBeam;
+    cout << "Reading beam information from " << nameBeam << endl;
     // TODO - BEAM FUNCTIONALITY
   }
 
@@ -226,6 +230,7 @@ void readFiss::GetInfo(istream &inputStream)
   // ask user for background delay
   cout << "background delay to visualize background (ns), put 0 if unsure" << endl;
   inputStream >> BACKGROUND_DELAY;
+  cout << "\n";
 
   // ask user if they want to use CovEM
   cout << "Input 1 for CovEM, input 0 for no CovEM" << endl;
@@ -254,7 +259,7 @@ void readFiss::GetInfo(istream &inputStream)
   if(mode == 2)
   {
     cout << "Input number of channels. Sample input: \n 10 \n";
-    cin >> NUM_TRIGGERS;
+    inputStream >> NUM_TRIGGERS;
     cout << " Using " << NUM_TRIGGERS << " triggers. \n\n";
 
     TRIGGERS = new int[NUM_TRIGGERS];
@@ -263,7 +268,7 @@ void readFiss::GetInfo(istream &inputStream)
     " \n4 \n5 \n6 \n21 \n22 \n23 \n24 \n31 \n32 \n38 \n";
     for(int i = 0; i < NUM_TRIGGERS; ++i)
     {
-      cin >> TRIGGERS[i];
+      inputStream >> TRIGGERS[i];
     }
     cout << " Using trigger numbers ";
     for(int i = 0; i < NUM_TRIGGERS; ++i)
@@ -271,6 +276,12 @@ void readFiss::GetInfo(istream &inputStream)
       cout << TRIGGERS[i] << " ";
     }
     cout << "\n\n";
+
+    cout << "Input the minimum and maximum beam energies (MeV)";
+    inputStream >> MIN_ERG_BEAM >> MAX_ERG_BEAM;
+    cout << " Using beam range between " << MIN_ERG_BEAM << " and " << MAX_ERG_BEAM << " MeV" << endl;
+
+
   }
 
   // histogram visual parameters, get from user?

@@ -11,17 +11,19 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TF1.h>
 #include <TH1.h>
 #include <TH2.h>
 #include <TString.h>
 #include <TMatrixD.h>
+#include <TProfile.h>
+#include <TGraph.h>
 
 #include <iostream>
 #include <fstream>
 // Header file for the classes stored in the TTree if any.
 
-// Fixed size dimensions of array or collections stored in the TTree if any.
-const int MAX_MULT = 20;
+#include "Constants.h"
 
 class readFiss {
 public :
@@ -77,6 +79,8 @@ public :
   double THRESHOLD;
   double BACKGROUND_DELAY;
 
+  double MIN_ERG_BEAM, MAX_ERG_BEAM; // range of the beam energies to be employed
+
   double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
   double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
 
@@ -89,8 +93,8 @@ public :
   long int expEntries;
   long int simEntries;
 
-
-
+  double intWindowAlpha = 1e5; // ns integration window
+  double intWindowFiss;
 
 
  /*
@@ -167,10 +171,11 @@ public :
 
    // alphaFile histograms
    TH1D** h_alphaDep;
-   TH1D* h_macroPop;
+   TH1I* h_macroPop;
 
    // beam histograms
    TH1D** h_fisDep;
+   TH1D** h_fisSubtract;
    TH2D** h2_fisDepErg;
    TH1D** h_beamTime;
 
@@ -195,6 +200,61 @@ public :
 
    Float_t x_tickSize;
    Float_t y_tickSize;
+
+
+/*
+   ___          __ _ _
+  | _ \_ _ ___ / _(_) |___ ___
+  |  _/ '_/ _ \  _| | / -_|_-<
+  |_| |_| \___/_| |_|_\___/__/
+
+*/
+
+  TProfile** p_neutronMultDep;				                   //Profile neutronMult vs fisDep
+  TProfile** p_gammaMultDep;				                     //Profile gammaMult vs fisDep
+  TProfile** p_backNeutronMultDep;                       //Profile backNeutronMult vs fisDep
+	TProfile** p_backGammaMultDep;                         //Profile backGammaMult vs fisDep
+
+  TGraph** g_fisRatioThreshold;                          // fis ratio for different dep threshold
+  TGraph** g_fisRatioSelect;                          // fis ratio for different dep threshold
+
+  TGraph** g_neutronMultRatioDep;
+  TGraph** g_gammaMultRatioDep;
+
+
+
+
+/*
+   ___                   ___
+  | _ ) ___ __ _ _ __   | _ \__ _ _ _  __ _ ___ ___
+  | _ \/ -_) _` | '  \  |   / _` | ' \/ _` / -_|_-<
+  |___/\___\__,_|_|_|_| |_|_\__,_|_||_\__, \___/__/
+                                      |___/
+*/
+
+  double DEP_MIN = 0;       // Min energy for alpha fit
+  double DEP_MAX = 0.05;    // Max energy for alpha fit
+
+  double FIS_MIN = 0.005;   // Min energy for fission fit
+  double FIS_MAX = 0.05;    // Max energy for fission fit
+
+/*
+ ___             _   _
+| __|  _ _ _  __| |_(_)___ _ _  ___
+| _| || | ' \/ _|  _| / _ \ ' \(_-<
+|_| \_,_|_||_\__|\__|_\___/_||_/__/
+
+*/
+
+   TF1* f_TimeFromErg = new TF1("f_TimeFromErg", "[0] / [1] * ([2] + x) / sqrt(x * (2 * [2] + x))", 0, 20);
+
+   // Fit Functions
+   TF1** f_alpha;// = new TF1("f_alpha", "expo", DEP_MIN, DEP_MAX);  // Define expo fit for alpha background to start at middle bin with most counts
+   TF1** f_expo;// = new TF1("f_expo", "expo");
+   TF1** f_fisProducts;// = new TF1("f_fisProducts", "gaus", FIS_MIN, FIS_MAX);  // Define gaus fit function for after binning errors in low values of fisDep
+   TF1** f_gauss;// = new TF1("f_gauss", "gaus");
+
+
 
 /*
               _____              ___                  _
@@ -368,6 +428,8 @@ public :
    virtual void     ShowExp(Long64_t entry = -1);
    virtual void     ShowSim(Long64_t entry = -1);
 
+   virtual void     ReadBeamInfo();
+
    // loop through data
    virtual void     LoopExp();
    virtual void     LoopSim();
@@ -379,9 +441,14 @@ public :
    virtual void     WriteCovEM();
    virtual void     analyseCovEM(); // number of
 
+   // perform beam analysis
+   virtual void     BeamDepAnalysis();
+   virtual void     BeamErgAnalysis();
+
 
    // initialization functions
    virtual void     InitializeHistograms();
+   virtual void     InitializeFunctions();
    virtual int      isTrigger(int triggerNumber);
 
    // callable functions
@@ -397,6 +464,10 @@ public :
    virtual void     PlotSingles();
    virtual void     PlotMultCor();
    virtual void     PlotMultLO();
+
+   // plot the beam parameters
+   virtual void     PlotDepSubtraction();
+   virtual void     PlotRatioMult();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();
