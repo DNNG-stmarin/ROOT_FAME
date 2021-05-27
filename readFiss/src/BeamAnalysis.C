@@ -48,7 +48,7 @@ void readFiss::BeamDepAnalysis()
 
     // Fit alpha background and subtracted fissions
     h_alphaDep[r]->Fit((TString)"f_alpha" + (TString)to_string(r),
-                       "", "", h_alphaDep[r]->GetBinCenter(h_alphaDep[r]->GetMaximumBin()), DEP_MAX);
+        "", "", h_alphaDep[r]->GetBinCenter(h_alphaDep[r]->GetMaximumBin()), DEP_MAX);
     f_expo[r]->SetParameters(f_alpha[r]->GetParameter(0), f_alpha[r]->GetParameter(1));
 
     h_fisSubtract[r]->Fit((TString)"f_fisProducts" + (TString)to_string(r));

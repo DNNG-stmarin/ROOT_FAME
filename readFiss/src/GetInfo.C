@@ -48,6 +48,7 @@ readFiss::readFiss(int &argc, char** &argv)
     LoopBeam(); // JONATHAN - not implemented
     ReadBeamInfo();
     BeamDepAnalysis();
+    // BeamErgAnalysis();
   }
 
   // run CovEM if user wanted to
