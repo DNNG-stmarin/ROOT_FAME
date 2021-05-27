@@ -468,6 +468,7 @@ public :
    // plot the beam parameters
    virtual void     PlotDepSubtraction();
    virtual void     PlotRatioMult();
+   virtual void     PlotMultErg();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();

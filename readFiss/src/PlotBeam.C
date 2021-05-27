@@ -115,3 +115,57 @@ void readFiss::PlotRatioMult()
     c_depRatio[r]->Write();
   }
 }
+
+void readFiss::PlotMultErg()
+{
+  cd_beam->cd();
+  cout << "Plotting incident-dependent multiplicities " << endl;
+
+  TCanvas** c_incMult = new TCanvas* [NUM_TRIGGERS];
+
+  for (int r = 0; r < NUM_TRIGGERS; r++)
+	{
+    TString s_TRIG_NUM = (TString)to_string(r);
+
+    c_incMult[r] = new TCanvas("MultiplicityRatio_Channel_" + s_TRIG_NUM, "Neutron/Gamma Multiplicity Comparision to Fission Fractiom", 600, 800);
+    c_incMult[r]->Divide(1,2);
+
+    c_incMult[r]->cd(1);
+    g_fisRatioErg[r]->Draw();
+    p_neutronMultErg[r]->Draw("SAME");
+    p_gammaMultErg[r]->Draw("SAME");
+    p_backNeutronMultErg[r]->Draw("SAME");
+    p_backGammaMultErg[r]->Draw("SAME");
+
+    g_fisRatioErg[r]->SetLineColor(kBlack);
+    p_neutronMultErg[r]->SetLineColor(kBlue);
+    p_gammaMultErg[r]->SetLineColor(kRed);
+    p_backNeutronMultErg[r]->SetLineColor(kBlue);
+    p_backNeutronMultErg[r]->SetLineStyle(kDashed);
+    p_backGammaMultErg[r]->SetLineColor(kRed);
+    p_backGammaMultErg[r]->SetLineStyle(kDashed);
+
+    TLegend *segLeg = new TLegend(0.4,0.7,0.15,0.88);			//Define Legend
+    segLeg->AddEntry("g_fisRatioErg" + s_TRIG_NUM, "Fission Fraction","l");
+    segLeg->AddEntry("p_neutronMultErg" + s_TRIG_NUM,"Mean Neutron Mult","l");
+    segLeg->AddEntry("p_gammaMultErg"+ s_TRIG_NUM,"Mean Gamma Mult","l");
+    segLeg->AddEntry("p_backNeutronMultErg" + s_TRIG_NUM,"Mean Background Neutron Mult","l");
+    segLeg->AddEntry("p_backGammaMultErg"+ s_TRIG_NUM,"Mean Background Gamma Mult","l");
+    segLeg->Draw();												//Draw Legend
+
+    c_incMult[r]->cd(2);
+    g_nMultErg[r]->Draw();
+    g_gMultErg[r]->Draw("SAME");
+    g_nMultBackErg[r]->Draw("SAME");
+    g_gMultBackErg[r]->Draw("SAME");
+
+    TLegend *ratLeg = new TLegend(0.4,0.7,0.15,0.88);			//Define Legend
+    ratLeg->AddEntry("g_nMultErg" + s_TRIG_NUM, "Fission Neutrons","l");
+    ratLeg->AddEntry("g_gMultErg" + s_TRIG_NUM,"Fission Gammas","l");
+    ratLeg->AddEntry("g_nMultBackErg"+ s_TRIG_NUM,"Background Neutrons","l");
+    ratLeg->AddEntry("g_gMultBackErg" + s_TRIG_NUM,"Background Gammas","l");
+    ratLeg->Draw();												//Draw Legend
+
+    c_incMult[r]->Write();
+  }
+}
