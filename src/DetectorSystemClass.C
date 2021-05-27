@@ -40,6 +40,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	FISSION_TRIGGERS = info->FISSION_TRIGGERS;
 	DETECTORS = info->DETECTORS;
 	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
+	DETECTOR_PATH = info->detectorPath;
 	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
@@ -61,7 +62,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
   // Setting detector distances
 	string line;
 	string x, y, z;
-	ifstream inDet (info->detectorPath);
+	ifstream inDet (DETECTOR_PATH);
 	for(int i=0; i<NUM_DETS; i++)
 	{
 		// cout << "reading detector coordinates from file" << endl;
