@@ -40,6 +40,8 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	FISSION_TRIGGERS = info->FISSION_TRIGGERS;
 	DETECTORS = info->DETECTORS;
 	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
+
+	TRIGGER_PATH = info->triggerPath;
 	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
@@ -78,7 +80,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 
   // Setting trigger offsets
   string trigLine;
-	ifstream inTrig (info->triggerPath);
+	ifstream inTrig (TRIGGER_PATH);
 
 	for(int i=0; i<NUM_TRIGGERS; i++)
 	{

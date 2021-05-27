@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "FissionAnalysis.C": "cpp",
+        "DetectorSystemClass.C": "cpp"
+    }
+}
