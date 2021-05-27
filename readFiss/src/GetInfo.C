@@ -47,6 +47,7 @@ readFiss::readFiss(int &argc, char** &argv)
   {
     ReadBeamInfo();
     BeamDepAnalysis();
+    // BeamErgAnalysis();
   }
 
   // run CovEM if user wanted to

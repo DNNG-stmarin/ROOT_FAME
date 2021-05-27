@@ -77,6 +77,7 @@ public :
   int BP;                       // CovEM setting
   double MAX_TIME_N;
   double THRESHOLD;
+  double THRESHOLD_DEP;
   double BACKGROUND_DELAY;
 
   double MIN_ERG_BEAM, MAX_ERG_BEAM; // range of the beam energies to be employed
