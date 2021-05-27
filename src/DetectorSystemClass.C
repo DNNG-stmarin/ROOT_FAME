@@ -154,7 +154,7 @@ DetectorSystemClass::~DetectorSystemClass()
 	 delete DETECTORS;
 	 delete FISSION_TRIGGERS;
 	 delete EXCLUDE_DETECTORS;
-	 delete detCalibration;
+	 delete DET_CALIBRATION;
 }
 
 Int_t DetectorSystemClass::GetEntry(Long64_t entry)

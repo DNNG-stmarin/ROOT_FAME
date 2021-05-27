@@ -348,6 +348,7 @@ ___             _   _
 	// functions to perfom the detection analysis
 	//virtual void     TriggerAnalysis();
 	virtual int      DetectionAnalysis();
+	virtual int      DetectionImport();
 	// virtual void     SystemAnalysis();
 	virtual void     FissionAnalysis();
 	virtual void     FissionAnalysisLoop();

@@ -154,13 +154,14 @@ int FissionExperimentClass::CreateDetectionAnalysis()
 	// cout << "Entering system analysis mode" << endl;
 	// detectorData->SystemAnalysis();
 
-	cout << "Entering fission analysis mode" << endl;
+// uncomment when pushing 
+/*	cout << "Entering fission analysis mode" << endl;
 	if(DEBUG==1)
 		detectorData->FissionAnalysisLoop();
 	else
 		detectorData->FissionAnalysis();
 
-	return 1;
+	return 1; */
 }
 
 // getSystemInfo
