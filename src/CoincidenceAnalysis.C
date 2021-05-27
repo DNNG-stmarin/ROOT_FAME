@@ -854,7 +854,12 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 				// fill the tree branches
 				coincTree->Fill();
-				fisTracker++;
+				
+				if(tType == FISSION_EVENT)
+				{
+					fisTracker++;
+				}
+
 
 				// cout << tTime << " " << tMult << " " << tDep << " " << tPSP << " " << tChan << endl;
 
