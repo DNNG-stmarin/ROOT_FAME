@@ -2,9 +2,6 @@
 // Purpose: Reading the fission events generated frmo ROOT_FAME
 // Date: April 2021
 
-// NOTE: Beam functionality is not at all implemented!
-// I've left some placeholders, but not for everything.
-
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>

@@ -165,6 +165,8 @@ public :
    // correlated histograms
    TH2I* neutronGammaMult;
    TH2D* neutronMultPhotonLO;
+   TH2D* neutronEnergyLO;
+   TH2D* neutronLightOutPSD;
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
@@ -461,8 +463,11 @@ public :
    virtual void     PlotPSD();
    virtual void     PlotMult();
    virtual void     PlotSingles();
+   // correlated
    virtual void     PlotMultCor();
    virtual void     PlotMultLO();
+   virtual void     PlotEnergyLO();
+   virtual void     PlotLOPSD();
 
    // plot the beam parameters
    virtual void     PlotDepSubtraction();

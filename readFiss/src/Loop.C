@@ -73,6 +73,8 @@ void readFiss::LoopExp()
             neutronEnergyExp->Fill(neutronToFErg[i]);
             neutronPSDExp->Fill(neutronPSD[i]);
             neutronSinglesExp->Fill(neutronDet[i]);
+            neutronEnergyLO->Fill(neutronToFErg[i], neutronLightOut[i]);
+            neutronLightOutPSD->Fill(neutronLightOut[i], neutronPSD[i]);
         }
       }
       neutronMultExp->Fill(nMult);
