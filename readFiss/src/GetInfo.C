@@ -221,6 +221,25 @@ void readFiss::GetInfo(istream &inputStream)
   \___//__/\___|_|   |___|_||_| .__/\_,_|\__|
                               |_|
 */
+  // get triggers and trigger numbers from user
+  cout << "Input number of channels. Sample input: \n 10 \n";
+  inputStream >> NUM_TRIGGERS;
+  cout << " Using " << NUM_TRIGGERS << " triggers. \n\n";
+
+  TRIGGERS = new int[NUM_TRIGGERS];
+
+  cout << "Input trigger numbers. \n";
+  for(int i = 0; i < NUM_TRIGGERS; ++i)
+  {
+    inputStream >> TRIGGERS[i];
+  }
+  cout << " Using trigger numbers ";
+  for(int i = 0; i < NUM_TRIGGERS; ++i)
+  {
+    cout << TRIGGERS[i] << " ";
+  }
+  cout << "\n\n";
+
   // get threshold and max time from user
   cout << "Input detector threshold [MeVee], fission chamber threshold [V us], and max time [ns]. Sample input: \n 0.20 0.005 70.0" << endl;
   inputStream >> THRESHOLD >> THRESHOLD_DEP >> MAX_TIME_N;
@@ -257,35 +276,14 @@ void readFiss::GetInfo(istream &inputStream)
     cout << "\n";
   }
 
-  // get number of triggers and trigger numbers from user
+  // get beam specs from user
   if(mode == 2)
   {
-    cout << "Input number of channels. Sample input: \n 10 \n";
-    inputStream >> NUM_TRIGGERS;
-    cout << " Using " << NUM_TRIGGERS << " triggers. \n\n";
-
-    TRIGGERS = new int[NUM_TRIGGERS];
-
-    cout << "Input trigger numbers. Sample input: \n" <<
-    " \n4 \n5 \n6 \n21 \n22 \n23 \n24 \n31 \n32 \n38 \n";
-    for(int i = 0; i < NUM_TRIGGERS; ++i)
-    {
-      inputStream >> TRIGGERS[i];
-    }
-    cout << " Using trigger numbers ";
-    for(int i = 0; i < NUM_TRIGGERS; ++i)
-    {
-      cout << TRIGGERS[i] << " ";
-    }
-    cout << "\n\n";
-
     cout << "Input the minimum and maximum beam energies [MeV], and the # of energy bins";
     inputStream >> BEAM_ERG_MIN >> BEAM_ERG_MAX >> BEAM_ERG_BINNUM;
     cout << "\nUsing beam range between " << BEAM_ERG_MIN << " and "
          << BEAM_ERG_MAX << " MeV, "
          << BEAM_ERG_BINNUM << " bins" << endl;
-
-
   }
 
   // histogram visual parameters, get from user?

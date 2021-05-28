@@ -164,7 +164,7 @@ public :
    TH1D* photonSinglesSim;
    TH1D* photonSinglesBack;
 
-   // correlated histograms
+   // correlated histograms - add Exp to the end of these
    TH2I* neutronGammaMult;
    TH2D* neutronMultPhotonLO;
    TH2D* neutronEnergyLO;

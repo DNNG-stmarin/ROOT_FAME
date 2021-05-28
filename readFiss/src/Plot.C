@@ -446,7 +446,7 @@ void readFiss::PlotN_LOPSD()
 
   neutronLightOutPSD->SetLineColor(kRed);
   neutronLightOutPSD->SetStats(0);
-  neutronLightOutPSD->Draw("COLZ");
+  neutronLightOutPSD->Draw("SURF2");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
@@ -472,7 +472,7 @@ void readFiss::PlotP_LOPSD()
 
   photonLightOutPSD->SetLineColor(kRed);
   photonLightOutPSD->SetStats(0);
-  photonLightOutPSD->Draw("SURF");
+  photonLightOutPSD->Draw("SURF2");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function

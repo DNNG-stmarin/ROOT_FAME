@@ -15,19 +15,11 @@ void readFiss::LoopExp()
 {
 
    cout << "Now looping through experiment. " << endl;
-   if(mode == 2)
-   {
-     cout << "Now looping through beam. " << endl;
-   }
 
    if (expTree == 0) return;
 
    expEntries = expTree->GetEntries();
    cout << "Analyzing " << expEntries << " experimental events \n";
-   if(mode == 2)
-   {
-     cout << "Analyzing (again)" << expEntries << " experimental events \n ";
-   }
 
    int nMult, gMult, nMultBack, gMultBack, indexChannel;
    Long64_t nbytes = 0, nb = 0;
@@ -37,19 +29,28 @@ void readFiss::LoopExp()
       nb = expTree->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
 
-      if(mode == 2)
-      {
-        indexChannel = isTrigger(fisChan); // this should be a function of fisChan
 
-        if(indexChannel < 0)
-        {
-          cout << "Trigger number " << fisChan << " not recognized." << endl;
-          exit(10);
-        }
+      indexChannel = isTrigger(fisChan); // this should be a function of fisChan
+
+      if(indexChannel < 0)
+      {
+        cout << "Trigger number " << fisChan << " not recognized." << endl;
+        exit(10);
       }
 
       bool validBeam = (mode == 2) &&
                        (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX);
+      // beam coincidence test
+      if((mode == 2) && !(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX))
+      {
+        continue;
+      }
+      // trigger threshold test
+      if(!(fisDep > THRESHOLD_DEP))
+      {
+        continue;
+      }
+
       if(validBeam)
       {
         h_fisDep[indexChannel]->Fill(fisDep);
@@ -81,10 +82,7 @@ void readFiss::LoopExp()
       if(validBeam)
       {
         h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
-        if (fisDep > THRESHOLD_DEP)
-        {
-          h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
-        }
+        h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
       }
 
       // loop through gamma rays
@@ -106,10 +104,7 @@ void readFiss::LoopExp()
       if(validBeam)
       {
         h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
-        if (fisDep > THRESHOLD_DEP)
-        {
-          h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
-        }
+        h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
       }
 
       // loop through back neutrons
@@ -129,10 +124,7 @@ void readFiss::LoopExp()
       if(validBeam)
       {
         h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
-        if (fisDep > THRESHOLD_DEP)
-        {
-          h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
-        }
+        h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
       }
 
       // loop through back photons
@@ -151,12 +143,8 @@ void readFiss::LoopExp()
       if(validBeam)
       {
         h2_backGammaMultDep[indexChannel]->Fill(fisDep, gMultBack);
-        if (fisDep > THRESHOLD_DEP)
-        {
-          h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
-        }
+        h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
       }
-
    }
 }
 
