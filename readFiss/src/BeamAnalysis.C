@@ -203,9 +203,9 @@ void readFiss::BeamErgAnalysis()
       g_gMultnMult[r]->SetPoint(i, nMultSubt, gMultSubt);
 
       g_nMultBackErg[r]->SetPoint(i, meanErg,
-        p_backNeutronMultErg[r]->GetBinContent(i + 1) * numTot / numFis);
+        p_backNeutronMultErg[r]->GetBinContent(i + 1));
       g_gMultBackErg[r]->SetPoint(i, meanErg,
-        p_backGammaMultErg[r]->GetBinContent(i + 1) * numTot / numFis);
+        p_backGammaMultErg[r]->GetBinContent(i + 1));
     }
 
     // Set graph names
