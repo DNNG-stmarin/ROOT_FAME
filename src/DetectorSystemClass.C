@@ -187,7 +187,7 @@ void DetectorSystemClass::Init(TChain* treeIn)
 		 tree->SetMakeClass(1);
 
 		 tree->SetBranchAddress("tMult", &tMult, &b_tMult);
-
+		 tree->SetBranchAddress("tType", &tType, &b_tType);
 		 tree->SetBranchAddress("tTime", &tTime, &b_tTime);
 		 tree->SetBranchAddress("tDep", &tDep, &b_tDep);
 		 tree->SetBranchAddress("tPSP", &tPSP, &b_tPSP);

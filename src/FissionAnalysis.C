@@ -80,6 +80,7 @@ void DetectorSystemClass::FissionAnalysis()
     f_fisChan = tChan;
     f_fisPSP = tPSP;
 
+
     // Assign fission trigger type based on beamTime
     // Times are hard-coded for now since I anticipate needing more complex logic later
     if (f_beamTime < 70)
