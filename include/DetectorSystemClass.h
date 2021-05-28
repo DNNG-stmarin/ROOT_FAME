@@ -198,7 +198,7 @@ _  _ _    _
 	// set up the reader for the coincidence tree
 	// Declaration of leaf types
 	int           tMult;
-
+	int						tType;
 	double        tTime;
 	double        tDep;
 	int 				  tChan;
@@ -218,7 +218,7 @@ _  _ _    _
 
 	// List of branches
 	TBranch        *b_tMult;   //!
-
+	TBranch        *b_tType;   //!
 	TBranch        *b_tTime;   //!
 	TBranch        *b_tDep;   //!
 	TBranch        *b_tPSP;   //!
