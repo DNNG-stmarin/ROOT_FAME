@@ -238,8 +238,7 @@ public :
   TGraph** g_gMultErg;                                   // Background-subtracted gMult vs. beamEnergy
   TGraph** g_nMultBackErg;                               // Background-subtracted nBackMult vs. beamEnergy
   TGraph** g_gMultBackErg;                               // Background-subtracted gBackMult vs. beamEnergy
-
-
+  TGraph** g_gMultnMult;                               // Background-subtracted gBackMult vs. beamEnergy
 
 
 /*

@@ -40,6 +40,10 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	FISSION_TRIGGERS = info->FISSION_TRIGGERS;
 	DETECTORS = info->DETECTORS;
 	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
+
+	TRIGGER_PATH = info->triggerPath;
+	DETECTOR_PATH = info->detectorPath;
+	DET_CALIBRATION = new TGraph(*(info->calibrationDet));
 	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
@@ -61,7 +65,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
   // Setting detector distances
 	string line;
 	string x, y, z;
-	ifstream inDet (info->detectorPath);
+	ifstream inDet (DETECTOR_PATH);
 	for(int i=0; i<NUM_DETS; i++)
 	{
 		// cout << "reading detector coordinates from file" << endl;
@@ -78,7 +82,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 
   // Setting trigger offsets
   string trigLine;
-	ifstream inTrig (info->triggerPath);
+	ifstream inTrig (TRIGGER_PATH);
 
 	for(int i=0; i<NUM_TRIGGERS; i++)
 	{
@@ -98,19 +102,19 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
       triggers[i].X = stod(x) * 100;
       triggers[i].Y = stod(y) * 100;
       triggers[i].Z = stod(z) * 100;
-      cout << info->triggerPath << endl;
+      //cout << info->triggerPath << endl;
       cout << i << " " << triggers[i].X << " " << triggers[i].Y << " " << triggers[i].Z << endl;
     }
 	}
   inTrig.close();
 
 	//calibration for only chinu system
-	detCalibration = new TGraph(*(info->calibrationDet));
 	for(int i=0; i<NUM_DETS; i++)
 	{
 		// cout << "Reading detector calibration from file" << endl;
-		detectors[i].calibration = detCalibration->Eval(i)/CSCOMPTEDGE;
+		detectors[i].calibration = DET_CALIBRATION->Eval(i)/CSCOMPTEDGE;
 	}
+
 	cout << "Detector calibration complete\n" << endl;
 
 	// initialize the tree and the file to write to
@@ -122,11 +126,6 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdPsd = detFile->mkdir("PSD");
 	cdToF = detFile->mkdir("TOF");
 	cdKin = detFile->mkdir("Kinematics");
-	// cdMult =  detFile->mkdir("Multiplicity");
-	// cdCoinc =  detFile->mkdir("Coincidences");
-	// cdFigCoinc = detFile->mkdir("CoincFigs");
-	// cdBicorr = detFile->mkdir("Bicorr");
-	// cdRef = detFile->mkdir("Reflections");
 	cdBeam = detFile->mkdir("Beam");
 
 	// create the folder for psd slices
@@ -139,6 +138,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cdTOFPSD = cdPsd->mkdir("TOF_PSD");
 	cdTofErg = cdToF->mkdir("TOFErg_discrimination");
 	cdTOFCorr = cdToF->mkdir("TOF_Corrected");
+
 }
 
 DetectorSystemClass::~DetectorSystemClass()
@@ -151,7 +151,7 @@ DetectorSystemClass::~DetectorSystemClass()
 	 delete DETECTORS;
 	 delete FISSION_TRIGGERS;
 	 delete EXCLUDE_DETECTORS;
-	 delete detCalibration;
+	 delete DET_CALIBRATION;
 }
 
 Int_t DetectorSystemClass::GetEntry(Long64_t entry)

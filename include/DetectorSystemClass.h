@@ -129,7 +129,9 @@ public:
 	DetectorClass* detectors;
 
 	// calibrations of the detectors
-	TGraph* detCalibration;
+	TGraph* DET_CALIBRATION;
+	string DETECTOR_PATH;
+	string TRIGGER_PATH;
 
 /*
 _  _ _    _

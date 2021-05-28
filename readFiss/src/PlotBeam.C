@@ -122,12 +122,13 @@ void readFiss::PlotMultErg()
   cout << "Plotting incident-dependent multiplicities " << endl;
 
   TCanvas** c_incMult = new TCanvas* [NUM_TRIGGERS];
+  TCanvas** c_ngMult =  new TCanvas* [NUM_TRIGGERS];
 
   for (int r = 0; r < NUM_TRIGGERS; r++)
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
-    c_incMult[r] = new TCanvas("MultiplicityRatioErg_Channel_" + s_TRIG_NUM, "Neutron/Gamma Multiplicity Comparision to Fission Fractiom", 600, 800);
+    c_incMult[r] = new TCanvas("MultCorrectedErg_Channel_" + s_TRIG_NUM, "Neutron/Gamma Multiplicity Comparision to Fission Fraction", 600, 800);
     c_incMult[r]->Divide(1,2);
 
     c_incMult[r]->cd(1);
@@ -138,7 +139,13 @@ void readFiss::PlotMultErg()
     p_backGammaMultErg[r]->Draw("SAME");
 
     g_fisRatioErg[r]->SetLineColor(kBlack);
+    g_fisRatioErg[r]->SetMarkerColor(kBlack);
+    g_fisRatioErg[r]->SetMarkerSize(0.5);
+    g_fisRatioErg[r]->SetMarkerStyle(21);
+    g_fisRatioErg[r]->GetYaxis()->SetRangeUser(0., 1.);
+
     p_neutronMultErg[r]->SetLineColor(kBlue);
+
     p_gammaMultErg[r]->SetLineColor(kRed);
     p_backNeutronMultErg[r]->SetLineColor(kBlue);
     p_backNeutronMultErg[r]->SetLineStyle(kDashed);
@@ -155,16 +162,34 @@ void readFiss::PlotMultErg()
 
     c_incMult[r]->cd(2);
     g_nMultErg[r]->Draw("ALP");
-    g_gMultErg[r]->Draw("SAME");
-    g_nMultBackErg[r]->Draw("SAME");
-    g_gMultBackErg[r]->Draw("SAME");
+    g_nMultErg[r]->GetYaxis()->SetRangeUser(0., 0.2);
+    g_gMultErg[r]->Draw("SAME LP");
+    g_nMultBackErg[r]->Draw("SAME LP");
+    g_gMultBackErg[r]->Draw("SAME LP");
 
     g_nMultErg[r]->SetLineColor(kBlue);
+    g_nMultErg[r]->SetMarkerColor(kBlue);
+    g_nMultErg[r]->SetMarkerSize(0.5);
+    g_nMultErg[r]->SetMarkerStyle(21);
+
     g_gMultErg[r]->SetLineColor(kRed);
+    g_gMultErg[r]->SetMarkerColor(kRed);
+    g_gMultErg[r]->SetMarkerSize(0.5);
+    g_gMultErg[r]->SetMarkerStyle(22);
+
     g_nMultBackErg[r]->SetLineColor(kBlue);
     g_nMultBackErg[r]->SetLineStyle(kDashed);
+    g_nMultBackErg[r]->SetMarkerColor(kBlue);
+    g_nMultBackErg[r]->SetMarkerSize(0.5);
+    g_nMultBackErg[r]->SetMarkerStyle(21);
+
     g_gMultBackErg[r]->SetLineColor(kRed);
     g_gMultBackErg[r]->SetLineStyle(kDashed);
+    g_gMultBackErg[r]->SetMarkerColor(kRed);
+    g_gMultBackErg[r]->SetMarkerSize(0.5);
+    g_gMultBackErg[r]->SetMarkerStyle(22);
+
+    c_incMult[r]->Update();
 
     TLegend *ratLeg = new TLegend(0.4,0.7,0.15,0.88);			//Define Legend
     ratLeg->AddEntry("g_nMultErg" + s_TRIG_NUM, "Fission Neutrons","l");
@@ -175,4 +200,23 @@ void readFiss::PlotMultErg()
 
     c_incMult[r]->Write();
   }
+
+  cout << "Plotting gamma vs. neutron multiplicities " << endl;
+
+  for (int r = 0; r < NUM_TRIGGERS; r++)
+	{
+    TString s_TRIG_NUM = (TString)to_string(r);
+
+    c_ngMult[r] = new TCanvas("MultGammaPerNeutronErg_Channel_" + s_TRIG_NUM, "Gamma/Neutron Multiplicity", 600, 400);
+    c_ngMult[r]->cd();
+
+    g_gMultnMult[r]->Draw("AP");
+    g_gMultnMult[r]->SetLineColor(kBlack);
+    g_gMultnMult[r]->SetMarkerColor(kBlack);
+    g_gMultnMult[r]->SetMarkerSize(1);
+    g_gMultnMult[r]->SetMarkerStyle(20);
+
+    c_ngMult[r]->Write();
+  }
+
 }

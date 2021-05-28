@@ -176,28 +176,36 @@ void readFiss::BeamErgAnalysis()
 
       TH1D *h_ergSubtract = (TH1D*)h_ergDep->Clone("h_ergSubtract");
       h_ergSubtract->Add(h_alphaDep[r], -1);  // Subtract alpha count rate
+
       // Take integrals
       int thresholdDepBin = h_ergDep->GetXaxis()->FindBin(THRESHOLD_DEP);
-      cout << "Threshold: " << THRESHOLD_DEP << endl;
-      cout << "Threshold bin: " << thresholdDepBin << endl;
 
       double numFis = h_ergSubtract->Integral(thresholdDepBin, -1);
       double numTot = h_ergDep->Integral(thresholdDepBin, -1);
       double numAlpha = h_alphaDep[r]->Integral(thresholdDepBin, -1);
-      // cout << numFis / numTot << endl;
+
 
       // Add points to graphs
       g_fisRatioErg[r]->SetPoint(i, meanErg, numFis / numTot);
 
-      g_nMultErg[r]->SetPoint(i, meanErg,
-        (p_neutronMultErg[r]->GetBinContent(i) - p_backNeutronMultErg[r]->GetBinContent(i)) * numTot / numFis);
-      g_gMultErg[r]->SetPoint(i, meanErg,
-        (p_gammaMultErg[r]->GetBinContent(i) - p_backGammaMultErg[r]->GetBinContent(i)) * numTot / numFis);
+      // double nMultSubt = (p_neutronMultErg[r]->GetBinContent(i + 1)
+      //   - p_backNeutronMultErg[r]->GetBinContent(i + 1)) * numTot / numFis;
+      // double gMultSubt = (p_gammaMultErg[r]->GetBinContent(i + 1)
+      //   - p_backGammaMultErg[r]->GetBinContent(i + 1)) * numTot / numFis;
+      double nMultSubt = numTot / numFis * p_neutronMultErg[r]->GetBinContent(i + 1)
+        - p_backNeutronMultErg[r]->GetBinContent(i + 1);
+      double gMultSubt = numTot / numFis * p_gammaMultErg[r]->GetBinContent(i + 1)
+        - p_backGammaMultErg[r]->GetBinContent(i + 1);
+
+      g_nMultErg[r]->SetPoint(i, meanErg, nMultSubt);
+      g_gMultErg[r]->SetPoint(i, meanErg, gMultSubt);
+
+      g_gMultnMult[r]->SetPoint(i, nMultSubt, gMultSubt);
 
       g_nMultBackErg[r]->SetPoint(i, meanErg,
-        p_backNeutronMultErg[r]->GetBinContent(i) * numTot / numFis);
+        p_backNeutronMultErg[r]->GetBinContent(i + 1));
       g_gMultBackErg[r]->SetPoint(i, meanErg,
-        p_backGammaMultErg[r]->GetBinContent(i) * numTot / numFis);
+        p_backGammaMultErg[r]->GetBinContent(i + 1));
     }
 
     // Set graph names
@@ -215,6 +223,8 @@ void readFiss::BeamErgAnalysis()
 
     g_gMultBackErg[r]->SetName("g_gMultBackErg" + s_TRIG_NUM);
     g_gMultBackErg[r]->SetTitle("Background Photon Multiplicity; Beam energy [MeV]; Average Multiplicity");
-    // g_nMultErg[r]->Write();
+
+    g_gMultnMult[r]->SetName("g_gMultnMult" + s_TRIG_NUM);
+    g_gMultnMult[r]->SetTitle("Photon / Neutron Multiplicity;Average Neutron Multiplicity;Average Photon Multiplicity");
   }
 }
