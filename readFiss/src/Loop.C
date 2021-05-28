@@ -77,15 +77,15 @@ void readFiss::LoopExp()
             neutronEnergyExp->Fill(neutronToFErg[i]);
             neutronPSDExp->Fill(neutronPSD[i]);
             neutronSinglesExp->Fill(neutronDet[i]);
-            neutronEnergyLO->Fill(neutronToFErg[i], neutronLightOut[i]);
-            neutronLightOutPSD->Fill(neutronLightOut[i], neutronPSD[i]);
+            neutronEnergyLOExp->Fill(neutronToFErg[i], neutronLightOut[i]);
+            neutronLightOutPSDExp->Fill(neutronLightOut[i], neutronPSD[i]);
         }
       }
       neutronMultExp->Fill(nMult);
+      h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
       if(validBeam)
       {
         h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
-        h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
       }
 
       // loop through gamma rays
@@ -98,17 +98,17 @@ void readFiss::LoopExp()
           photonTofExp->Fill(photonDetTimes[i]);
           photonPSDExp->Fill(photonPSD[i]);
           photonSinglesExp->Fill(photonDet[i]);
-          neutronMultPhotonLO->Fill(nMult, photonLightOut[i]);
-          photonLightOutPSD->Fill(photonLightOut[i], photonPSD[i]);
+          neutronMultPhotonLOExp->Fill(nMult, photonLightOut[i]);
+          photonLightOutPSDExp->Fill(photonLightOut[i], photonPSD[i]);
         }
       }
       photonMultExp->Fill(gMult);
-      neutronGammaMult->Fill(nMult, gMult);
+      h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
       if(validBeam)
       {
-        h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
         h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
       }
+      neutronGammaMultExp->Fill(nMult, gMult); // correlated plot
 
       // loop through back neutrons
       for (int i = 0; i < neutronBackMult; i++)
@@ -124,9 +124,9 @@ void readFiss::LoopExp()
         }
       }
       neutronMultBack->Fill(nMultBack);
+      h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
       if(validBeam)
       {
-        h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
         h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
       }
 
@@ -143,9 +143,9 @@ void readFiss::LoopExp()
         }
       }
       photonMultBack->Fill(gMultBack);
+      h2_backGammaMultDep[indexChannel]->Fill(fisDep, gMultBack);
       if(validBeam)
       {
-        h2_backGammaMultDep[indexChannel]->Fill(fisDep, gMultBack);
         h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
       }
    }

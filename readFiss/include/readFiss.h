@@ -165,11 +165,11 @@ public :
    TH1D* photonSinglesBack;
 
    // correlated histograms - add Exp to the end of these
-   TH2I* neutronGammaMult;
-   TH2D* neutronMultPhotonLO;
-   TH2D* neutronEnergyLO;
-   TH2D* neutronLightOutPSD;
-   TH2D* photonLightOutPSD;
+   TH2I* neutronGammaMultExp;
+   TH2D* neutronMultPhotonLOExp;
+   TH2D* neutronEnergyLOExp;
+   TH2D* neutronLightOutPSDExp;
+   TH2D* photonLightOutPSDExp;
 
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
@@ -480,11 +480,11 @@ public :
    virtual void     PlotMult();
    virtual void     PlotSingles();
    // correlated
-   virtual void     PlotMultCor();
-   virtual void     PlotMultLO();
-   virtual void     PlotEnergyLO();
-   virtual void     PlotN_LOPSD();
-   virtual void     PlotP_LOPSD();
+   virtual void     PlotMultCorExp();
+   virtual void     PlotMultLOExp();
+   virtual void     PlotEnergyLOExp();
+   virtual void     PlotN_LOPSD_Exp();
+   virtual void     PlotP_LOPSD_Exp();
 
    // plot the beam parameters
    virtual void     PlotDepSubtraction();

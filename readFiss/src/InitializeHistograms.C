@@ -93,19 +93,19 @@ void readFiss::InitializeHistograms()
 
  */
   // correlated multiplicity
-  neutronGammaMult = new TH2I("neutronGammaMult", "Neutron-Gamma Multiplicity;Neutron Multiplicity; Gamma Multiplicity; Counts",maxMult, minMult, maxMult, maxMult, minMult, maxMult);
+  neutronGammaMultExp = new TH2I("neutronGammaMultExp", "Neutron-Gamma Multiplicity;Neutron Multiplicity; Gamma Multiplicity; Counts",maxMult, minMult, maxMult, maxMult, minMult, maxMult);
 
 // neutron mult vs photon light output
-  neutronMultPhotonLO = new TH2D("neutronMultPhotonLO", "Neutron Multiplicity vs. Photon Light Output; Neutron Multiplicity; Photon Light Output [MeVee]; Counts", maxMult, minMult-0.5, maxMult-0.5, numLObins, minLO, maxLO);
+  neutronMultPhotonLOExp = new TH2D("neutronMultPhotonLOExp", "Neutron Multiplicity vs. Photon Light Output; Neutron Multiplicity; Photon Light Output [MeVee]; Counts", maxMult, minMult-0.5, maxMult-0.5, numLObins, minLO, maxLO);
 
 // neutron ToFErg vs neutron Light Ouput
-  neutronEnergyLO = new TH2D("neutronEnergyLO", "Neutron Energy vs. Neutron Light Output; Neutron Energy [MeV]; Neutron Light Output [MeVee]; Counts", numErgBins, minErg, maxErg, numLObins, minLO, maxLO);
+  neutronEnergyLOExp = new TH2D("neutronEnergyLOExp", "Neutron Energy vs. Neutron Light Output; Neutron Energy [MeV]; Neutron Light Output [MeVee]; Counts", numErgBins, minErg, maxErg, numLObins, minLO, maxLO);
 
 // neutron Light Output vs neutron PSD
-  neutronLightOutPSD = new TH2D("neutronLightOutPSD", "Neutron Light Output vs. Neutron PSD; Neutron Light Output [MeVee]; Neutron PSP [tail/total]; Counts", numLObins, minLO, maxLO, numPSDBins, minPSP, maxPSP);
+  neutronLightOutPSDExp = new TH2D("neutronLightOutPSDExp", "Neutron Light Output vs. Neutron PSD; Neutron Light Output [MeVee]; Neutron PSP [tail/total]; Counts", numLObins, minLO, maxLO, numPSDBins, minPSP, maxPSP);
 
 // photon Light Output vs neutron PSD
-  photonLightOutPSD = new TH2D("photonLightOutPSD", "Photon Light Output vs. Photon PSD; Photon Light Output [MeVee]; Photon PSP [tail/total]; Counts", numLObins, minLO, maxLO, numPSDBins, minPSP, maxPSP);
+  photonLightOutPSDExp = new TH2D("photonLightOutPSDExp", "Photon Light Output vs. Photon PSD; Photon Light Output [MeVee]; Photon PSP [tail/total]; Counts", numLObins, minLO, maxLO, numPSDBins, minPSP, maxPSP);
 
 // angular coorrelations
   neutronDoublesMat = new TH2D("neutronDoublesExp", "Neutron Doubles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
