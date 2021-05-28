@@ -45,18 +45,21 @@ void readFiss::LoopExp()
       {
         continue;
       }
+
+      if(mode == 2)
+      {
+        h_fisDep[indexChannel]->Fill(fisDep);
+        h_beamTime[indexChannel]->Fill(beamTime);
+        h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
+      }
+
       // trigger threshold test
       if(!(fisDep > THRESHOLD_DEP))
       {
         continue;
       }
 
-      if(validBeam)
-      {
-        h_fisDep[indexChannel]->Fill(fisDep);
-        h_beamTime[indexChannel]->Fill(beamTime);
-        h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
-      }
+
 
       nMult = 0;
       gMult = 0;
