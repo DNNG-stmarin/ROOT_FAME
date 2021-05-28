@@ -225,8 +225,6 @@ public :
   TGraph** g_gMultnMult;                               // Background-subtracted gBackMult vs. beamEnergy
 
 
-
-
 /*
    ___                   ___
   | _ ) ___ __ _ _ __   | _ \__ _ _ _  __ _ ___ ___
