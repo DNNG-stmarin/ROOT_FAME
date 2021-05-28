@@ -864,7 +864,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				// cout << tTime << " " << tMult << " " << tDep << " " << tPSP << " " << tChan << endl;
 
 				// update user on status of processing
-				if(fisTracker%1000000 == 0)
+				if(fisTracker%1000000 == 1)
 				{
 					cout << fisTracker << " fissions in " << tTime/1e9 << " seconds " << endl;
 				}
