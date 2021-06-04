@@ -18,6 +18,7 @@
 #include <TMatrixD.h>
 #include <TProfile.h>
 #include <TGraph.h>
+#include <TGraphErrors.h>
 
 #include <iostream>
 #include <fstream>
@@ -238,7 +239,11 @@ public :
   TGraph** g_gMultErg;                                   // Background-subtracted gMult vs. beamEnergy
   TGraph** g_nMultBackErg;                               // Background-subtracted nBackMult vs. beamEnergy
   TGraph** g_gMultBackErg;                               // Background-subtracted gBackMult vs. beamEnergy
-  TGraph** g_gMultnMult;                               // Background-subtracted gBackMult vs. beamEnergy
+  TGraph** g_gMultnMult;                                 // Background-subtracted gBackMult vs. beamEnergy
+
+  TGraphErrors* g_aveRatio;                                 // TEST graph
+  TGraphErrors* g_nSlope;                                 // TEST graph
+  TGraphErrors* g_gSlope;                                 // TEST graph
 
 
 /*
@@ -270,6 +275,8 @@ public :
    TF1** f_expo;// = new TF1("f_expo", "expo");
    TF1** f_fisProducts;// = new TF1("f_fisProducts", "gaus", FIS_MIN, FIS_MAX);  // Define gaus fit function for after binning errors in low values of fisDep
    TF1** f_gauss;// = new TF1("f_gauss", "gaus");
+   TF1** f_aveGmult; // = new TF1((TString)"f_aveGmult" + (TString)to_string(indexChannel), "pol1");
+   TF1** f_aveNmult; // = new TF1((TString)"f_aveNmult" + (TString)to_string(indexChannel), "pol1");
 
 
 
@@ -461,6 +468,7 @@ public :
    // perform beam analysis
    virtual void     BeamDepAnalysis();
    virtual void     BeamErgAnalysis();
+   virtual void     FitMult();
 
 
    // initialization functions

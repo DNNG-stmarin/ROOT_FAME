@@ -193,6 +193,10 @@ void readFiss::InitializeHistograms()
 
     g_gMultnMult =   new TGraph* [NUM_TRIGGERS];
 
+    g_aveRatio = new TGraphErrors(NUM_TRIGGERS);
+    g_nSlope = new TGraphErrors(NUM_TRIGGERS);
+    g_gSlope = new TGraphErrors(NUM_TRIGGERS);
+
     for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
     {
       g_fisRatioErg[indexChannel] =  new TGraph(BEAM_ERG_BINNUM);

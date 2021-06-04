@@ -1,6 +1,9 @@
 #include "readFiss.h"
+#include <TFitResultPtr.h>
+#include <Constants.h>
 
 using namespace std;
+
 
 void readFiss::BeamDepAnalysis()
 {
@@ -206,6 +209,7 @@ void readFiss::BeamErgAnalysis()
         p_backNeutronMultErg[r]->GetBinContent(i + 1));
       g_gMultBackErg[r]->SetPoint(i, meanErg,
         p_backGammaMultErg[r]->GetBinContent(i + 1));
+
     }
 
     // Set graph names
@@ -227,4 +231,58 @@ void readFiss::BeamErgAnalysis()
     g_gMultnMult[r]->SetName("g_gMultnMult" + s_TRIG_NUM);
     g_gMultnMult[r]->SetTitle("Photon / Neutron Multiplicity;Average Neutron Multiplicity;Average Photon Multiplicity");
   }
+}
+
+void readFiss::FitMult(){ //Doesn't run function so had try code in above function
+
+  TFitResultPtr nMultFit;
+  TFitResultPtr gMultFit;
+  Int_t n = NUM_TRIGGERS;
+  Double_t TriggerAxis[MAX_TRIGGERS];
+  Double_t gammaSlope[MAX_TRIGGERS];
+  Double_t gammaSlopeError[MAX_TRIGGERS];
+  Double_t neutronSlope[MAX_TRIGGERS];
+  Double_t neutronSlopeError[MAX_TRIGGERS];
+  Double_t ratioSlope[MAX_TRIGGERS];
+  Double_t ratioSlopeError[MAX_TRIGGERS];
+
+
+  for (int r = 0; r < NUM_TRIGGERS; r++){
+    TriggerAxis[r] = r;
+    TString s_TRIG_NUM = (TString)to_string(r);
+
+    //fit (linear) g_nMultErg[r] and g_gMultErg[r] ratio multiplicty lines as function of r (PPAC)
+    nMultFit = g_nMultErg[r]->Fit((TString)"f_aveNmult" + s_TRIG_NUM, "SQ");
+    gMultFit = g_gMultErg[r]->Fit((TString)"f_aveGmult" + s_TRIG_NUM, "SQ");
+    // f_aveNmult[r]->SetLineColor(kBlue);
+
+    //Print out results, slopes, and intercepts
+    gammaSlope[r] = f_aveGmult[r]->GetParameter(1);
+    neutronSlope[r] = f_aveNmult[r]->GetParameter(1);
+    ratioSlope[r] = gammaSlope[r]/neutronSlope[r];
+
+    gammaSlopeError[r] = f_aveGmult[r]->GetParError(1);
+    neutronSlopeError[r] = f_aveNmult[r]->GetParError(1);
+    ratioSlopeError[r] = (gammaSlope[r]/neutronSlope[r])*sqrt(pow(neutronSlopeError[r]/neutronSlope[r], 2) + pow(gammaSlopeError[r]/gammaSlope[r], 2));
+    // cout << "Ratio of Error to slope value: " << gammaSlopeError/gammaSlope << endl;
+
+    // cout << "Gamma Intercept: " << f_aveGmult[r]->GetParameter(0) << " Gamma Slope: " << gammaSlope << " +/- " << gammaSlopeError << endl;
+    // cout << "Neutron Intercept: " << f_aveNmult[r]->GetParameter(0) << " Neutron Slope: " << neutronSlope << " +/- " << neutronSlopeError << endl;
+
+    //Graph gamma/neutron slope ratio vs PPAC
+    // g_aveRatio->SetPoint(r, r + 1, gammaSlope/neutronSlope, 0, (gammaSlope/neutronSlope)*sqrt(pow(neutronSlopeError/neutronSlope, 2) + pow(gammaSlopeError/gammaSlope, 2)));
+    // g_nSlope->SetPoint(r, r + 1, neutronSlope, 0, neutronSlopeError);
+    // g_gSlope->SetPoint(r, r + 1, gammaSlope, 0, gammaSlopeError);
+
+    // g_nSlopeError->SetPoint(r, r + 1, neutronSlopeError);    //graph to save neutron slope errors
+    // g_gSlopeError->SetPoint(r, r + 1, gammaSlopeError);      //graph to save gamma slope errors
+  }
+  g_aveRatio = new TGraphErrors(n, TriggerAxis, ratioSlope, 0, ratioSlopeError);
+  g_nSlope = new TGraphErrors(n, TriggerAxis, neutronSlope, 0, neutronSlopeError);
+  g_gSlope = new TGraphErrors(n, TriggerAxis, gammaSlope, 0, gammaSlopeError);
+
+  g_aveRatio->SetName("g_aveRatio");
+  g_nSlope->SetName("g_nSlope");
+  g_gSlope->SetName("g_gSlope");
+
 }

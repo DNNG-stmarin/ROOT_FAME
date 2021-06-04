@@ -3,6 +3,7 @@
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 const int MAX_MULT = 20;
+const int MAX_TRIGGERS = 1000;
 
 // Set physical constants
 const double BEAM_PATH = 2150;//cm
