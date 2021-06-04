@@ -264,24 +264,16 @@ void readFiss::FitMult(){ //Doesn't run function so had try code in above functi
     gammaSlopeError[r] = f_aveGmult[r]->GetParError(1);
     neutronSlopeError[r] = f_aveNmult[r]->GetParError(1);
     ratioSlopeError[r] = (gammaSlope[r]/neutronSlope[r])*sqrt(pow(neutronSlopeError[r]/neutronSlope[r], 2) + pow(gammaSlopeError[r]/gammaSlope[r], 2));
-    // cout << "Ratio of Error to slope value: " << gammaSlopeError/gammaSlope << endl;
 
+    // cout << "Ratio of Error to slope value: " << gammaSlopeError/gammaSlope << endl;
     // cout << "Gamma Intercept: " << f_aveGmult[r]->GetParameter(0) << " Gamma Slope: " << gammaSlope << " +/- " << gammaSlopeError << endl;
     // cout << "Neutron Intercept: " << f_aveNmult[r]->GetParameter(0) << " Neutron Slope: " << neutronSlope << " +/- " << neutronSlopeError << endl;
-
-    //Graph gamma/neutron slope ratio vs PPAC
-    // g_aveRatio->SetPoint(r, r + 1, gammaSlope/neutronSlope, 0, (gammaSlope/neutronSlope)*sqrt(pow(neutronSlopeError/neutronSlope, 2) + pow(gammaSlopeError/gammaSlope, 2)));
-    // g_nSlope->SetPoint(r, r + 1, neutronSlope, 0, neutronSlopeError);
-    // g_gSlope->SetPoint(r, r + 1, gammaSlope, 0, gammaSlopeError);
-
-    // g_nSlopeError->SetPoint(r, r + 1, neutronSlopeError);    //graph to save neutron slope errors
-    // g_gSlopeError->SetPoint(r, r + 1, gammaSlopeError);      //graph to save gamma slope errors
   }
-  g_aveRatio = new TGraphErrors(n, TriggerAxis, ratioSlope, 0, ratioSlopeError);
+  g_gnRatio = new TGraphErrors(n, TriggerAxis, ratioSlope, 0, ratioSlopeError);
   g_nSlope = new TGraphErrors(n, TriggerAxis, neutronSlope, 0, neutronSlopeError);
   g_gSlope = new TGraphErrors(n, TriggerAxis, gammaSlope, 0, gammaSlopeError);
 
-  g_aveRatio->SetName("g_aveRatio");
+  g_gnRatio->SetName("g_gnRatio");
   g_nSlope->SetName("g_nSlope");
   g_gSlope->SetName("g_gSlope");
 

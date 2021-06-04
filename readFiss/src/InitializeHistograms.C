@@ -193,7 +193,7 @@ void readFiss::InitializeHistograms()
 
     g_gMultnMult =   new TGraph* [NUM_TRIGGERS];
 
-    g_aveRatio = new TGraphErrors(NUM_TRIGGERS);
+    g_gnRatio = new TGraphErrors(NUM_TRIGGERS);
     g_nSlope = new TGraphErrors(NUM_TRIGGERS);
     g_gSlope = new TGraphErrors(NUM_TRIGGERS);
 
