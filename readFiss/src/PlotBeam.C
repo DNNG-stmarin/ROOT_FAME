@@ -226,37 +226,28 @@ void readFiss::PlotMultErg()
   c_gnRatio = new TCanvas("c_gnRatio", "GammasPerNeutronDueToPPAC", 600, 800);
   c_gnRatio->Divide(1,2);
   c_gnRatio->cd(1);
-  // Gamma/Neutron lines versus PPAC channel
-  g_aveRatio->Draw("AP");                       //Change name of this graph to something more descriptive of what it actually does
-  g_aveRatio->SetTitle("Gammas Per Neutron vs. PPAC Channel; PPAC Channel; g/n Fraction");
-  g_aveRatio->SetMarkerColor(kBlack);
-  g_aveRatio->SetMarkerSize(1);
-  g_aveRatio->SetMarkerStyle(20);
+
+  g_gnRatio->Draw("AP");
+  g_gnRatio->SetTitle("Gammas Per Neutron vs. PPAC Channel; PPAC Channel; g/n Fraction");
+  g_gnRatio->SetMarkerColor(kBlack);
+  g_gnRatio->SetMarkerSize(1);
+  g_gnRatio->SetMarkerStyle(20);
 
   c_gnRatio->cd(2);
-  g_nSlope->SetMarkerSize(2);
-  g_nSlope->SetMarkerStyle(34);
-  g_nSlope->SetMarkerColor(kBlue);
+  g_nRatioSlopeInt->SetMarkerSize(2);
+  g_nRatioSlopeInt->SetMarkerStyle(34);
+  g_nRatioSlopeInt->SetMarkerColor(kBlue);
 
-  g_gSlope->SetMarkerSize(2);
-  g_gSlope->SetMarkerStyle(21);
-  g_gSlope->SetMarkerColor(kRed);
+  g_gRatioSlopeInt->SetMarkerSize(2);
+  g_gRatioSlopeInt->SetMarkerStyle(21);
+  g_gRatioSlopeInt->SetMarkerColor(kRed);
 
-  g_nSlope->Draw("AP");        //Also why do the graphs final point go back to zero? Extra data all origin points?
-  g_gSlope->Draw("SAMEP");
-  //Draw graph with slope errors?
-  g_nSlope->SetTitle("Neutron Slope; PPAC Channel; Slope");
-  g_gSlope->SetTitle("Gamma Slope");
+  g_nRatioSlopeInt->Draw("AP");
+  g_gRatioSlopeInt->Draw("SAMEP");
+  g_nRatioSlopeInt->SetTitle("Neutron Slope/Int; PPAC Channel; Slope/Int");
+  g_gRatioSlopeInt->SetTitle("Gamma Slope/Int");
   gPad->BuildLegend();
-  g_nSlope->SetTitle("Neutron and Gamma Slopes vs. PPAC Channel");
-
-  // c_gnRatio->Update();
-  //
-  // TLegend* gnLeg = new TLegend(0.4,0.7,0.15,0.88);			      //Define Legend
-  // gnLeg->AddEntry("g_nSlope", "Ave Neutron Slope", "p");      //Doesn't put correct marker style and color in legend
-  // gnLeg->AddEntry("g_gSlope","Ave Gamma Slope", "p");         //Doesn't put correct marker style and color in legend
-  // //Adde entry for errors?
-  // gnLeg->Draw();
+  g_nRatioSlopeInt->SetTitle("Neutron and Gamma Slope/Int vs. PPAC Channel");
 
   c_gnRatio->Write();
 

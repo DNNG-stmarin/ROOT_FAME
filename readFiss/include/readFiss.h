@@ -241,9 +241,9 @@ public :
   TGraph** g_gMultBackErg;                               // Background-subtracted gBackMult vs. beamEnergy
   TGraph** g_gMultnMult;                                 // Background-subtracted gBackMult vs. beamEnergy
 
-  TGraphErrors* g_aveRatio;                                 // TEST graph
-  TGraphErrors* g_nSlope;                                 // TEST graph
-  TGraphErrors* g_gSlope;                                 // TEST graph
+  TGraphErrors* g_gnRatio;                               // ave gamma-neutron slope ratio due to PPAC
+  TGraphErrors* g_nRatioSlopeInt;                                // ave neutron slope due to PPAC
+  TGraphErrors* g_gRatioSlopeInt;                                // ave gamma slope due to PPAC
 
 
 /*

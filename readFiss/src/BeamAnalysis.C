@@ -239,12 +239,23 @@ void readFiss::FitMult(){ //Doesn't run function so had try code in above functi
   TFitResultPtr gMultFit;
   Int_t n = NUM_TRIGGERS;
   Double_t TriggerAxis[MAX_TRIGGERS];
+
   Double_t gammaSlope[MAX_TRIGGERS];
   Double_t gammaSlopeError[MAX_TRIGGERS];
+  Double_t gammaIntercept[MAX_TRIGGERS];
+  Double_t gammaInterceptError[MAX_TRIGGERS];
+
   Double_t neutronSlope[MAX_TRIGGERS];
   Double_t neutronSlopeError[MAX_TRIGGERS];
+  Double_t neutronIntercept[MAX_TRIGGERS];
+  Double_t neutronInterceptError[MAX_TRIGGERS];
+
   Double_t ratioSlope[MAX_TRIGGERS];
   Double_t ratioSlopeError[MAX_TRIGGERS];
+  Double_t nRatioSlopeInt[MAX_TRIGGERS];
+  Double_t nRatioSlopeIntError[MAX_TRIGGERS];
+  Double_t gRatioSlopeInt[MAX_TRIGGERS];
+  Double_t gRatioSlopeIntError[MAX_TRIGGERS];
 
 
   for (int r = 0; r < NUM_TRIGGERS; r++){
@@ -257,32 +268,34 @@ void readFiss::FitMult(){ //Doesn't run function so had try code in above functi
     // f_aveNmult[r]->SetLineColor(kBlue);
 
     //Print out results, slopes, and intercepts
+    gammaIntercept[r] = f_aveGmult[r]->GetParameter(0);
     gammaSlope[r] = f_aveGmult[r]->GetParameter(1);
+    neutronIntercept[r] = f_aveNmult[r]->GetParameter(0);
     neutronSlope[r] = f_aveNmult[r]->GetParameter(1);
+
     ratioSlope[r] = gammaSlope[r]/neutronSlope[r];
+    nRatioSlopeInt[r] = neutronSlope[r]/neutronIntercept[r];
+    gRatioSlopeInt[r] = gammaSlope[r]/gammaIntercept[r];
 
+    gammaInterceptError[r] = f_aveGmult[r]->GetParError(0);
     gammaSlopeError[r] = f_aveGmult[r]->GetParError(1);
+    neutronInterceptError[r] = f_aveNmult[r]->GetParError(0);
     neutronSlopeError[r] = f_aveNmult[r]->GetParError(1);
-    ratioSlopeError[r] = (gammaSlope[r]/neutronSlope[r])*sqrt(pow(neutronSlopeError[r]/neutronSlope[r], 2) + pow(gammaSlopeError[r]/gammaSlope[r], 2));
-    // cout << "Ratio of Error to slope value: " << gammaSlopeError/gammaSlope << endl;
 
+    ratioSlopeError[r] = (gammaSlope[r]/neutronSlope[r])*sqrt(pow(neutronSlopeError[r]/neutronSlope[r], 2) + pow(gammaSlopeError[r]/gammaSlope[r], 2));
+    nRatioSlopeIntError[r] = (nRatioSlopeInt[r])*sqrt(pow(neutronSlopeError[r]/neutronSlope[r], 2) + pow(neutronInterceptError[r]/neutronIntercept[r], 2));
+    gRatioSlopeIntError[r] = (gRatioSlopeInt[r])*sqrt(pow(gammaSlopeError[r]/gammaSlope[r], 2) + pow(gammaInterceptError[r]/gammaIntercept[r], 2));
+
+    // cout << "Ratio of Error to slope value: " << gammaSlopeError/gammaSlope << endl;
     // cout << "Gamma Intercept: " << f_aveGmult[r]->GetParameter(0) << " Gamma Slope: " << gammaSlope << " +/- " << gammaSlopeError << endl;
     // cout << "Neutron Intercept: " << f_aveNmult[r]->GetParameter(0) << " Neutron Slope: " << neutronSlope << " +/- " << neutronSlopeError << endl;
-
-    //Graph gamma/neutron slope ratio vs PPAC
-    // g_aveRatio->SetPoint(r, r + 1, gammaSlope/neutronSlope, 0, (gammaSlope/neutronSlope)*sqrt(pow(neutronSlopeError/neutronSlope, 2) + pow(gammaSlopeError/gammaSlope, 2)));
-    // g_nSlope->SetPoint(r, r + 1, neutronSlope, 0, neutronSlopeError);
-    // g_gSlope->SetPoint(r, r + 1, gammaSlope, 0, gammaSlopeError);
-
-    // g_nSlopeError->SetPoint(r, r + 1, neutronSlopeError);    //graph to save neutron slope errors
-    // g_gSlopeError->SetPoint(r, r + 1, gammaSlopeError);      //graph to save gamma slope errors
   }
-  g_aveRatio = new TGraphErrors(n, TriggerAxis, ratioSlope, 0, ratioSlopeError);
-  g_nSlope = new TGraphErrors(n, TriggerAxis, neutronSlope, 0, neutronSlopeError);
-  g_gSlope = new TGraphErrors(n, TriggerAxis, gammaSlope, 0, gammaSlopeError);
+  g_gnRatio = new TGraphErrors(n, TriggerAxis, ratioSlope, 0, ratioSlopeError);
+  g_nRatioSlopeInt = new TGraphErrors(n, TriggerAxis, nRatioSlopeInt, 0, nRatioSlopeIntError);
+  g_gRatioSlopeInt = new TGraphErrors(n, TriggerAxis, gRatioSlopeInt, 0, gRatioSlopeIntError);
 
-  g_aveRatio->SetName("g_aveRatio");
-  g_nSlope->SetName("g_nSlope");
-  g_gSlope->SetName("g_gSlope");
+  g_gnRatio->SetName("g_gnRatio");
+  g_nRatioSlopeInt->SetName("g_nRatioSlopeInt");
+  g_gRatioSlopeInt->SetName("g_gRatioSlopeInt");
 
 }
