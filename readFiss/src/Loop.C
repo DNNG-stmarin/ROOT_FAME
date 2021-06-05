@@ -110,7 +110,7 @@ void readFiss::LoopExp()
       // loop through back neutrons
       for (int i = 0; i < neutronBackMult; i++)
       {
-        if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronIntegral[i] < CLIPPING ) && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N))
+        if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronLightOut[i] < CLIPPING ) && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N))
         {
             nMultBack++;
             neutronLightOutputBack->Fill(backNeutronLightOut[i]);
@@ -130,7 +130,7 @@ void readFiss::LoopExp()
       // loop through back photons
       for (int i = 0; i < gammaBackMult; i++)
       {
-        if (backPhotonLightOut[i] > THRESHOLD && backPhotonIntegral[i] < CLIPPING )
+        if (backPhotonLightOut[i] > THRESHOLD && backPhotonLightOut[i] < CLIPPING )
         {
           gMultBack++;
           photonLightOutputBack->Fill(backPhotonLightOut[i]);
