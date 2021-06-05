@@ -251,7 +251,7 @@ void readFiss::GetInfo(istream &inputStream)
   cout << "\n";
 
   cout << "Input trigger threshold [MeVee], and trigger clipping [MeVee]" << endl;
-  inputStream >> THRESHOLD_DEP >> CLIPPING_DEP >>;
+  inputStream >> THRESHOLD_DEP >> CLIPPING_DEP;
   cout << " Using: trigger threshold = " << THRESHOLD_DEP << " MeVee, "
        << " fission chamber clipping = " << CLIPPING_DEP << " V us, "
   cout << "\n";
