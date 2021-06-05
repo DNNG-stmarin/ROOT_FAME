@@ -40,7 +40,7 @@ void readFiss::LoopExp()
 
       bool validBeam = (mode == 2) &&
                        (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX);
-      // beam coincidence test
+      // beam coincidence cut
       if((mode == 2) && !(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX))
       {
         continue;
@@ -53,8 +53,8 @@ void readFiss::LoopExp()
         h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
       }
 
-      // trigger threshold test
-      if(!(fisDep > THRESHOLD_DEP))
+      // trigger threshold cut
+      if(!(fisDep > THRESHOLD_DEP) && !(fisDep < CLIPPING_DEP))
       {
         continue;
       }
@@ -69,7 +69,7 @@ void readFiss::LoopExp()
       // loop through neutrons
       for (int i = 0; i < neutronMult; i++)
       {
-        if ((neutronLightOut[i] > THRESHOLD) && (neutronDetTimes[i] < MAX_TIME_N) )
+        if ((neutronLightOut[i] > THRESHOLD) && (neutronLightOut[i] < CLIPPING) && (neutronDetTimes[i] < MAX_TIME_N) )
         {
             nMult++;
             neutronLightOutputExp->Fill(neutronLightOut[i]);
@@ -91,7 +91,7 @@ void readFiss::LoopExp()
       // loop through gamma rays
       for (int i = 0; i < gammaMult; i++)
       {
-        if (photonLightOut[i] > THRESHOLD)
+        if (photonLightOut[i] > THRESHOLD && photonIntegral[i] < CLIPPING )
         {
           gMult++;
           photonLightOutputExp->Fill(photonLightOut[i]);
@@ -113,7 +113,7 @@ void readFiss::LoopExp()
       // loop through back neutrons
       for (int i = 0; i < neutronBackMult; i++)
       {
-        if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N))
+        if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronIntegral[i] < CLIPPING ) && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N))
         {
             nMultBack++;
             neutronLightOutputBack->Fill(backNeutronLightOut[i]);
@@ -133,7 +133,7 @@ void readFiss::LoopExp()
       // loop through back photons
       for (int i = 0; i < gammaBackMult; i++)
       {
-        if (backPhotonLightOut[i] > THRESHOLD)
+        if (backPhotonLightOut[i] > THRESHOLD && backPhotonIntegral[i] < CLIPPING )
         {
           gMultBack++;
           photonLightOutputBack->Fill(backPhotonLightOut[i]);
@@ -178,7 +178,7 @@ void readFiss::LoopSim()
         // loop through neutrons
         for (int i = 0; i < neutronMult; i++)
         {
-          if (neutronIntegral[i] > THRESHOLD && neutronDetTimes[i] < MAX_TIME_N)
+          if (neutronIntegral[i] > THRESHOLD && neutronIntegral[i] < CLIPPING && neutronDetTimes[i] < MAX_TIME_N)
           {
               nMult++;
               neutronLightOutputSim->Fill(neutronIntegral[i]);
@@ -192,7 +192,7 @@ void readFiss::LoopSim()
         // loop through gamma rays
         for (int i = 0; i < gammaMult; i++)
         {
-          if (photonIntegral[i] > THRESHOLD)
+          if (photonIntegral[i] > THRESHOLD && photonIntegral[i] < CLIPPING )
           {
               gMult++;
               photonLightOutputSim->Fill(photonIntegral[i]);
