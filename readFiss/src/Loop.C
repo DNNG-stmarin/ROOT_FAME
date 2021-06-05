@@ -29,7 +29,6 @@ void readFiss::LoopExp()
       nb = expTree->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
 
-
       indexChannel = isTrigger(fisChan); // this should be a function of fisChan
 
       if(indexChannel < 0)
@@ -45,10 +44,9 @@ void readFiss::LoopExp()
       {
         continue;
       }
-
+      h_fisDep[indexChannel]->Fill(fisDep);
       if(mode == 2)
       {
-        h_fisDep[indexChannel]->Fill(fisDep);
         h_beamTime[indexChannel]->Fill(beamTime);
         h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
       }
@@ -58,8 +56,6 @@ void readFiss::LoopExp()
       {
         continue;
       }
-
-
 
       nMult = 0;
       gMult = 0;
@@ -82,10 +78,11 @@ void readFiss::LoopExp()
         }
       }
       neutronMultExp->Fill(nMult);
-      h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
+      h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
+
       if(validBeam)
       {
-        h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
+        h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
       }
 
       // loop through gamma rays
