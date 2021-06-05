@@ -234,20 +234,20 @@ void readFiss::PlotMultErg()
   g_gnRatio->SetMarkerStyle(20);
 
   c_gnRatio->cd(2);
-  g_nSlope->SetMarkerSize(2);
-  g_nSlope->SetMarkerStyle(34);
-  g_nSlope->SetMarkerColor(kBlue);
+  g_nRatioSlopeInt->SetMarkerSize(2);
+  g_nRatioSlopeInt->SetMarkerStyle(34);
+  g_nRatioSlopeInt->SetMarkerColor(kBlue);
 
-  g_gSlope->SetMarkerSize(2);
-  g_gSlope->SetMarkerStyle(21);
-  g_gSlope->SetMarkerColor(kRed);
+  g_gRatioSlopeInt->SetMarkerSize(2);
+  g_gRatioSlopeInt->SetMarkerStyle(21);
+  g_gRatioSlopeInt->SetMarkerColor(kRed);
 
-  g_nSlope->Draw("AP");
-  g_gSlope->Draw("SAMEP");
-  g_nSlope->SetTitle("Neutron Slope; PPAC Channel; Slope");
-  g_gSlope->SetTitle("Gamma Slope");
+  g_nRatioSlopeInt->Draw("AP");
+  g_gRatioSlopeInt->Draw("SAMEP");
+  g_nRatioSlopeInt->SetTitle("Neutron Slope/Int; PPAC Channel; Slope/Int");
+  g_gRatioSlopeInt->SetTitle("Gamma Slope/Int");
   gPad->BuildLegend();
-  g_nSlope->SetTitle("Neutron and Gamma Slopes vs. PPAC Channel");
+  g_nRatioSlopeInt->SetTitle("Neutron and Gamma Slope/Int vs. PPAC Channel");
 
   c_gnRatio->Write();
 
