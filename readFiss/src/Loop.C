@@ -88,7 +88,7 @@ void readFiss::LoopExp()
       // loop through gamma rays
       for (int i = 0; i < gammaMult; i++)
       {
-        if (photonLightOut[i] > THRESHOLD && photonIntegral[i] < CLIPPING )
+        if (photonLightOut[i] > THRESHOLD && photonLightOut[i] < CLIPPING )
         {
           gMult++;
           photonLightOutputExp->Fill(photonLightOut[i]);
