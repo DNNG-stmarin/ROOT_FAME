@@ -48,7 +48,7 @@ void readFiss::PlotDepSubtraction()
      c_Alpha[r]->cd(2);												//Second canvas assignment
      h_fisSubtract[r]->Draw("HIST");							//Isolated fissions plot
      f_gauss[r]->Draw("SAME");							//Fissions fit
-     h_fisSubtract[r]->SetTitle("Fissions without 'Alphas';Pulse Integral (V us); Count Rate");	//Title
+     h_fisSubtract[r]->SetTitle("Fissions without Alphas;Pulse Integral (V us); Count Rate");	//Title
 
      c_Alpha[r]->cd(3);							//Third canvas assignment
      gPad->SetLogy(3);
