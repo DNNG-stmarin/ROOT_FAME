@@ -244,14 +244,14 @@ void readFiss::GetInfo(istream &inputStream)
   cout << "\n\n";
 
   // get threshold and max time from user
-  cout << "Input detector threshold [MeVee], detector clipping [MeVee] and max neutron time [ns]. Sample input: \n 0.20 0.005 70.0" << endl;
+  cout << "Input detector threshold [MeVee], detector clipping [MeVee] and max neutron time [ns]. Sample input: \n 0.20 4.0 70.0" << endl;
   inputStream >> THRESHOLD >> CLIPPING >> MAX_TIME_N;
   cout << " Using: detector threshold = " << THRESHOLD << " MeVee, "
        << " detector clipping = " << CLIPPING << " MeVee, "
        << " Tmax = " << MAX_TIME_N << " ns." << endl;
   cout << "\n";
 
-  cout << "Input trigger threshold [V us], and trigger clipping [V us]" << endl;
+  cout << "Input trigger threshold [V us], and trigger clipping [V us].\nSample input: 0.005 0.1" << endl;
   inputStream >> THRESHOLD_DEP >> CLIPPING_DEP;
   cout << " Using: trigger threshold = " << THRESHOLD_DEP << " V us, "
        << " fission chamber clipping = " << CLIPPING_DEP << " V us, "<< endl;
