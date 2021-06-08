@@ -115,97 +115,96 @@ void readFiss::InitializeHistograms()
 
 
   //
-  if(mode == 2) // beam mode is on
+
+  // alphaFile histograms
+  h_alphaDep = new TH1D* [NUM_TRIGGERS];
+
+  // beam histograms
+  h_fisDep = new TH1D* [NUM_TRIGGERS];
+  h_fisSubtract = new TH1D* [NUM_TRIGGERS];
+  h2_fisDepErg = new TH2D* [NUM_TRIGGERS];
+  h_beamTime = new TH1D* [NUM_TRIGGERS];
+
+  h2_neutronMultDep = new TH2D* [NUM_TRIGGERS];
+  h2_gammaMultDep = new TH2D* [NUM_TRIGGERS];
+  h2_backNeutronMultDep = new TH2D* [NUM_TRIGGERS];
+  h2_backGammaMultDep = new TH2D* [NUM_TRIGGERS];
+
+  h2_neutronMultErg = new TH2D* [NUM_TRIGGERS];
+  h2_gammaMultErg = new TH2D* [NUM_TRIGGERS];
+  h2_backNeutronMultErg = new TH2D* [NUM_TRIGGERS];
+  h2_backGammaMultErg = new TH2D* [NUM_TRIGGERS];
+
+  for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
   {
-    // alphaFile histograms
-    h_alphaDep = new TH1D* [NUM_TRIGGERS];
-
+    // h_alphaDep[indexChannel] = new TH1D("h_alphaDep","Total PPAC events; Event energy (V us); counts", numfisDepBins, minDep, maxDep);
     // beam histograms
-    h_fisDep = new TH1D* [NUM_TRIGGERS];
-    h_fisSubtract = new TH1D* [NUM_TRIGGERS];
-    h2_fisDepErg = new TH2D* [NUM_TRIGGERS];
-    h_beamTime = new TH1D* [NUM_TRIGGERS];
+    h_fisDep[indexChannel]  = new TH1D((TString)"h_fisDep" + (TString)to_string(indexChannel), "Total Fission Spectrum; Event Energy (V us); counts",  numfisDepBins, minDep, maxDep);
+    h_fisSubtract[indexChannel]  = new TH1D((TString)"h_fisSubtract" + (TString)to_string(indexChannel), "Total Fission Spectrum; Event Energy (V us); counts",  numfisDepBins, minDep, maxDep);
+    h2_fisDepErg[indexChannel]  = new TH2D((TString)"h2_fisDepErg" + (TString)to_string(indexChannel), "Total Fission Spectrum vs Ei; Event Energy (V us); Incident Neutron Energy (MeV); counts", numfisDepBins, minDep, maxDep, BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX);
+    h_beamTime[indexChannel]  = new TH1D((TString)"h_beamTime" + (TString)to_string(indexChannel), "Fission rate in Beam Window; Time within micro beam Index (ns); counts",  numfisBeamTimeBins, minBeamTime, maxBeamTime);
 
-    h2_neutronMultDep = new TH2D* [NUM_TRIGGERS];
-    h2_gammaMultDep = new TH2D* [NUM_TRIGGERS];
-    h2_backNeutronMultDep = new TH2D* [NUM_TRIGGERS];
-    h2_backGammaMultDep = new TH2D* [NUM_TRIGGERS];
+    h2_neutronMultDep[indexChannel]  = new TH2D((TString)"h2_neutronMultDep" + (TString)to_string(indexChannel), "Energy Dependent Neutron Multiplicity; Event Energy (V us); Neutron Multiplicity; counts", numfisDepBins, minDep, maxDep, maxMult, minMult-0.5, maxMult-0.5);
+    h2_gammaMultDep[indexChannel]  =  new TH2D((TString)"h2_gammaMultDep" + (TString)to_string(indexChannel), "Energy Dependent Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", numfisDepBins, minDep, maxDep, maxMult, minMult-0.5, maxMult-0.5);
+    h2_backNeutronMultDep[indexChannel]  = new TH2D((TString)"h2_backNeutronMultDep"+ (TString)to_string(indexChannel), "Energy Dependent Background Neutron Multiplicity; Event Energy (V us); Neutron Multiplicity; counts", numfisDepBins, minDep, maxDep, maxMult, minMult-0.5, maxMult-0.5);
+    h2_backGammaMultDep[indexChannel]  =  new TH2D((TString)"h2_backGammaMultDep"+ (TString)to_string(indexChannel), "Energy Dependent Background Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", numfisDepBins, minDep, maxDep, maxMult, minMult-0.5, maxMult-0.5);
 
-    h2_neutronMultErg = new TH2D* [NUM_TRIGGERS];
-    h2_gammaMultErg = new TH2D* [NUM_TRIGGERS];
-    h2_backNeutronMultErg = new TH2D* [NUM_TRIGGERS];
-    h2_backGammaMultErg = new TH2D* [NUM_TRIGGERS];
-
-    for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
-    {
-      // h_alphaDep[indexChannel] = new TH1D("h_alphaDep","Total PPAC events; Event energy (V us); counts", numfisDepBins, minDep, maxDep);
-      // beam histograms
-      h_fisDep[indexChannel]  = new TH1D((TString)"h_fisDep" + (TString)to_string(indexChannel), "Total Fission Spectrum; Event Energy (V us); counts",  numfisDepBins, minDep, maxDep);
-      h_fisSubtract[indexChannel]  = new TH1D((TString)"h_fisSubtract" + (TString)to_string(indexChannel), "Total Fission Spectrum; Event Energy (V us); counts",  numfisDepBins, minDep, maxDep);
-      h2_fisDepErg[indexChannel]  = new TH2D((TString)"h2_fisDepErg" + (TString)to_string(indexChannel), "Total Fission Spectrum vs Ei; Event Energy (V us); Incident Neutron Energy (MeV); counts", numfisDepBins, minDep, maxDep, BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX);
-      h_beamTime[indexChannel]  = new TH1D((TString)"h_beamTime" + (TString)to_string(indexChannel), "Fission rate in Beam Window; Time within micro beam Index (ns); counts",  numfisBeamTimeBins, minBeamTime, maxBeamTime);
-
-      h2_neutronMultDep[indexChannel]  = new TH2D((TString)"h2_neutronMultDep" + (TString)to_string(indexChannel), "Energy Dependent Neutron Multiplicity; Event Energy (V us); Neutron Multiplicity; counts", numfisDepBins, minDep, maxDep, maxMult, minMult-0.5, maxMult-0.5);
-      h2_gammaMultDep[indexChannel]  =  new TH2D((TString)"h2_gammaMultDep" + (TString)to_string(indexChannel), "Energy Dependent Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", numfisDepBins, minDep, maxDep, maxMult, minMult-0.5, maxMult-0.5);
-      h2_backNeutronMultDep[indexChannel]  = new TH2D((TString)"h2_backNeutronMultDep"+ (TString)to_string(indexChannel), "Energy Dependent Background Neutron Multiplicity; Event Energy (V us); Neutron Multiplicity; counts", numfisDepBins, minDep, maxDep, maxMult, minMult-0.5, maxMult-0.5);
-      h2_backGammaMultDep[indexChannel]  =  new TH2D((TString)"h2_backGammaMultDep"+ (TString)to_string(indexChannel), "Energy Dependent Background Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", numfisDepBins, minDep, maxDep, maxMult, minMult-0.5, maxMult-0.5);
-
-      h2_neutronMultErg[indexChannel]  = new TH2D((TString)"h2_neutronMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Neutron Multiplicity; Incident Neutron Energy (MeV); Neutron Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
-      h2_gammaMultErg[indexChannel]  = new TH2D((TString)"h2_gammaMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
-      h2_backNeutronMultErg[indexChannel] =  new TH2D((TString)"h2_backNeutronMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Neutron Multiplicity; Incident Neutron Energy (MeV); Neutron Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
-      h2_backGammaMultErg[indexChannel]  = new TH2D((TString)"h2_backGammaMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
-    }
-
-
-    // declare the profiles for the analysis
-    p_neutronMultDep = new TProfile* [NUM_TRIGGERS];
-    p_gammaMultDep = new TProfile* [NUM_TRIGGERS];
-    p_backNeutronMultDep = new TProfile* [NUM_TRIGGERS];
-    p_backGammaMultDep = new TProfile* [NUM_TRIGGERS];
-
-
-    g_fisRatioThreshold = new TGraph* [NUM_TRIGGERS];
-    g_fisRatioSelect = new TGraph* [NUM_TRIGGERS];
-
-    g_neutronMultRatioDep = new TGraph* [NUM_TRIGGERS];
-    g_gammaMultRatioDep = new TGraph* [NUM_TRIGGERS];
-
-    for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
-    {
-      g_fisRatioThreshold[indexChannel] = new TGraph(numfisDepBins);
-      g_fisRatioSelect[indexChannel] = new TGraph(numfisDepBins);
-
-      g_neutronMultRatioDep[indexChannel] = new TGraph(numfisDepBins);
-      g_gammaMultRatioDep[indexChannel] = new TGraph(numfisDepBins);
-    }
-
-    // BeamErgAnalysis profiles and graphs
-    p_neutronMultErg =     new TProfile* [NUM_TRIGGERS];
-    p_gammaMultErg =       new TProfile* [NUM_TRIGGERS];
-    p_backNeutronMultErg = new TProfile* [NUM_TRIGGERS];
-    p_backGammaMultErg =   new TProfile* [NUM_TRIGGERS];
-
-    g_fisRatioErg =  new TGraph* [NUM_TRIGGERS];
-    g_nMultErg =     new TGraph* [NUM_TRIGGERS];
-    g_gMultErg =     new TGraph* [NUM_TRIGGERS];
-    g_nMultBackErg = new TGraph* [NUM_TRIGGERS];
-    g_gMultBackErg = new TGraph* [NUM_TRIGGERS];
-
-    g_gMultnMult =   new TGraph* [NUM_TRIGGERS];
-
-    g_gnRatio = new TGraphErrors(NUM_TRIGGERS);
-    g_nRatioSlopeInt = new TGraphErrors(NUM_TRIGGERS);
-    g_gRatioSlopeInt = new TGraphErrors(NUM_TRIGGERS);
-
-    for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
-    {
-      g_fisRatioErg[indexChannel] =  new TGraph(BEAM_ERG_BINNUM);
-      g_nMultErg[indexChannel] =     new TGraph(BEAM_ERG_BINNUM);
-      g_gMultErg[indexChannel] =     new TGraph(BEAM_ERG_BINNUM);
-      g_nMultBackErg[indexChannel] = new TGraph(BEAM_ERG_BINNUM);
-      g_gMultBackErg[indexChannel] = new TGraph(BEAM_ERG_BINNUM);
-
-      g_gMultnMult[indexChannel] =   new TGraph(BEAM_ERG_BINNUM);
-    }
+    h2_neutronMultErg[indexChannel]  = new TH2D((TString)"h2_neutronMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Neutron Multiplicity; Incident Neutron Energy (MeV); Neutron Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
+    h2_gammaMultErg[indexChannel]  = new TH2D((TString)"h2_gammaMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
+    h2_backNeutronMultErg[indexChannel] =  new TH2D((TString)"h2_backNeutronMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Neutron Multiplicity; Incident Neutron Energy (MeV); Neutron Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
+    h2_backGammaMultErg[indexChannel]  = new TH2D((TString)"h2_backGammaMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
   }
+
+
+  // declare the profiles for the analysis
+  p_neutronMultDep = new TProfile* [NUM_TRIGGERS];
+  p_gammaMultDep = new TProfile* [NUM_TRIGGERS];
+  p_backNeutronMultDep = new TProfile* [NUM_TRIGGERS];
+  p_backGammaMultDep = new TProfile* [NUM_TRIGGERS];
+
+
+  g_fisRatioThreshold = new TGraph* [NUM_TRIGGERS];
+  g_fisRatioSelect = new TGraph* [NUM_TRIGGERS];
+
+  g_neutronMultRatioDep = new TGraph* [NUM_TRIGGERS];
+  g_gammaMultRatioDep = new TGraph* [NUM_TRIGGERS];
+
+  for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
+  {
+    g_fisRatioThreshold[indexChannel] = new TGraph(numfisDepBins);
+    g_fisRatioSelect[indexChannel] = new TGraph(numfisDepBins);
+
+    g_neutronMultRatioDep[indexChannel] = new TGraph(numfisDepBins);
+    g_gammaMultRatioDep[indexChannel] = new TGraph(numfisDepBins);
+  }
+
+  // BeamErgAnalysis profiles and graphs
+  p_neutronMultErg =     new TProfile* [NUM_TRIGGERS];
+  p_gammaMultErg =       new TProfile* [NUM_TRIGGERS];
+  p_backNeutronMultErg = new TProfile* [NUM_TRIGGERS];
+  p_backGammaMultErg =   new TProfile* [NUM_TRIGGERS];
+
+  g_fisRatioErg =  new TGraph* [NUM_TRIGGERS];
+  g_nMultErg =     new TGraph* [NUM_TRIGGERS];
+  g_gMultErg =     new TGraph* [NUM_TRIGGERS];
+  g_nMultBackErg = new TGraph* [NUM_TRIGGERS];
+  g_gMultBackErg = new TGraph* [NUM_TRIGGERS];
+
+  g_gMultnMult =   new TGraph* [NUM_TRIGGERS];
+
+  g_gnRatio = new TGraphErrors(NUM_TRIGGERS);
+  g_nRatioSlopeInt = new TGraphErrors(NUM_TRIGGERS);
+  g_gRatioSlopeInt = new TGraphErrors(NUM_TRIGGERS);
+
+  for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
+  {
+    g_fisRatioErg[indexChannel] =  new TGraph(BEAM_ERG_BINNUM);
+    g_nMultErg[indexChannel] =     new TGraph(BEAM_ERG_BINNUM);
+    g_gMultErg[indexChannel] =     new TGraph(BEAM_ERG_BINNUM);
+    g_nMultBackErg[indexChannel] = new TGraph(BEAM_ERG_BINNUM);
+    g_gMultBackErg[indexChannel] = new TGraph(BEAM_ERG_BINNUM);
+
+    g_gMultnMult[indexChannel] =   new TGraph(BEAM_ERG_BINNUM);
+  }
+
 }

@@ -234,6 +234,7 @@ void readFiss::GetInfo(istream &inputStream)
   {
     inputStream >> TRIGGERS[i];
   }
+
   cout << " Using trigger numbers ";
   for(int i = 0; i < NUM_TRIGGERS; ++i)
   {
@@ -242,12 +243,19 @@ void readFiss::GetInfo(istream &inputStream)
   cout << "\n\n";
 
   // get threshold and max time from user
-  cout << "Input detector threshold [MeVee], fission chamber threshold [V us], and max time [ns]. Sample input: \n 0.20 0.005 70.0" << endl;
-  inputStream >> THRESHOLD >> THRESHOLD_DEP >> MAX_TIME_N;
+  cout << "Input detector threshold [MeVee], detector clipping [MeVee] and max neutron time [ns]. Sample input: \n 0.20 0.005 70.0" << endl;
+  inputStream >> THRESHOLD >> CLIPPING >> MAX_TIME_N;
   cout << " Using: detector threshold = " << THRESHOLD << " MeVee, "
-       << " fission chamber threshold = " << THRESHOLD_DEP << " V us, "
+       << " detector clipping = " << CLIPPING << " V us, "
        << " Tmax = " << MAX_TIME_N << " ns." << endl;
   cout << "\n";
+
+  cout << "Input trigger threshold [MeVee], and trigger clipping [MeVee]" << endl;
+  inputStream >> THRESHOLD_DEP >> CLIPPING_DEP;
+  cout << " Using: trigger threshold = " << THRESHOLD_DEP << " MeVee, "
+       << " fission chamber clipping = " << CLIPPING_DEP << " V us, "<< endl;
+  cout << "\n";
+
 
   // ask user for background delay
   cout << "background delay to visualize background (ns), put 0 if unsure" << endl;
