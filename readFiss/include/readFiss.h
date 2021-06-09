@@ -19,6 +19,7 @@
 #include <TProfile.h>
 #include <TGraph.h>
 #include <TGraphErrors.h>
+#include <THStack.h>
 
 #include <iostream>
 #include <fstream>
@@ -195,6 +196,9 @@ public :
    TH2D** h2_gammaMultErg;
    TH2D** h2_backNeutronMultErg;
    TH2D** h2_backGammaMultErg;
+
+   //beam stack
+   THStack** stack;   
 
    // visual settings
    Float_t legend_x1;

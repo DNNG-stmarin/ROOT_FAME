@@ -1,6 +1,7 @@
 #include "readFiss.h"
 #include <TFitResultPtr.h>
 #include <Constants.h>
+#include <THStack.h>
 
 using namespace std;
 
@@ -155,6 +156,8 @@ void readFiss::BeamErgAnalysis()
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
+    stack[r] = new THStack();   //Define stack before for loop for no segmentation errors
+
     cout << "Trigger " << r + 1 << " of " << NUM_TRIGGERS << endl;
 
     // Populate profiles
@@ -209,6 +212,11 @@ void readFiss::BeamErgAnalysis()
         p_backNeutronMultErg[r]->GetBinContent(i + 1));
       g_gMultBackErg[r]->SetPoint(i, meanErg,
         p_backGammaMultErg[r]->GetBinContent(i + 1));
+
+      if (i < 16){                          //16 indicates ~beamErg (MeV)
+        h_ergSubtract->SetLineColor(i + 1); //different colors for each ToF energy
+        stack[r]->Add(h_ergSubtract);       //takes in all h_ergSubtract's to evaluate subtraction as function of incident neutron energy
+      }
 
     }
 

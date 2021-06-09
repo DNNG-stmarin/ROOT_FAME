@@ -223,7 +223,7 @@ void readFiss::PlotMultErg()
   cout << "Plotting gammas per neutron vs. PPAC Channel" << endl;
 
   TCanvas* c_gnRatio = new TCanvas;
-  c_gnRatio = new TCanvas("c_gnRatio", "GammasPerNeutronDueToPPAC", 600, 800);
+  c_gnRatio = new TCanvas("GammasPerNeutronForPPACs", "GammasPerNeutronDueToPPAC", 600, 800);
   c_gnRatio->Divide(1,2);
   c_gnRatio->cd(1);
 
@@ -250,5 +250,20 @@ void readFiss::PlotMultErg()
   g_nRatioSlopeInt->SetTitle("Neutron and Gamma Slope/Int vs. PPAC Channel");
 
   c_gnRatio->Write();
+
+  cout << "Plotting stack" << endl;
+
+  TCanvas** c_stack =  new TCanvas* [NUM_TRIGGERS];
+  for (int r = 0; r < NUM_TRIGGERS; r++)
+	{
+    TString s_TRIG_NUM = (TString)to_string(r);
+
+  c_stack[r] = new TCanvas("FissionSpectrumDueToBeamErg_Chan_" + s_TRIG_NUM, "Fission Spectrum due to Beam Energies", 600, 400);
+  c_stack[r]->Divide(1,1);
+  c_stack[r]->cd(1);
+  stack[r]->Draw("PADS");
+
+  c_stack[r]->Write();
+  }
 
 }

@@ -155,6 +155,8 @@ void readFiss::InitializeHistograms()
     h2_backGammaMultErg[indexChannel]  = new TH2D((TString)"h2_backGammaMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
   }
 
+  //beam stack
+  stack = new THStack* [NUM_TRIGGERS];  
 
   // declare the profiles for the analysis
   p_neutronMultDep = new TProfile* [NUM_TRIGGERS];
