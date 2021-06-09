@@ -36,6 +36,7 @@ private:
 
 	int DATA_TYPE;
 	int REUSE_DATA;
+	int REUSE_DETECTOR;
 	int DEBUG;
 
 	TString nameExpFile = "fiss";

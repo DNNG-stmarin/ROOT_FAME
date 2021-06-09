@@ -11,6 +11,7 @@ Date: May 14th, Ann Arbor
 
 void DetectorSystemClass::FissionAnalysis()
 {
+
   fissionFile = new TFile(nameFission + ".root", "RECREATE");
   fissionTree = new TTree(nameFission, nameFission);
   InitFiss();
@@ -158,7 +159,6 @@ void DetectorSystemClass::FissionAnalysis()
         neutronVz[nMult] = adjZ / detectors[numDet].distance*neutVelocity;
         nMult++;
       }
-
       // cuts for gammas
       else if(
         (totPSP[j] < detectors[numDet].discPSD->Eval(engDet))  //^^ -0.03 +0.03

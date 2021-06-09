@@ -4,6 +4,11 @@
         "DetectorSystemClass.C": "cpp",
         "DetectionImport.C": "cpp",
         "DetectionAnalysis.C": "cpp",
-        "FissionExperimentClass.C": "cpp"
+        "FissionExperimentClass.C": "cpp",
+        "fakePsdSlice3.C": "cpp",
+        "temp.C": "cpp",
+        "iostream": "cpp",
+        "InitializeDetectorHistograms.C": "cpp",
+        "MappingFunctions.C": "cpp"
     }
 }

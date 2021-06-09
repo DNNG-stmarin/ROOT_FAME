@@ -66,6 +66,7 @@ public:
 	int PSD_ERG;
 	int TOF_ERG;
 	int STEP_SIZE;
+	int REUSE_DETECTOR;
 
 	// inputs given by the fission experiment class file, made up of the data collected and where to write
 	TChain* tree;

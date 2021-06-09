@@ -695,7 +695,7 @@ int DetectorSystemClass::DetectionAnalysis()
 					discLines[det]->SetLineWidth(3);
 
 					// fit the psd discriminations
-					cout << "fitting the slices with energy dependent parameters" << endl;
+					//cout << "fitting the slices with energy dependent parameters" << endl;
 					psdDisc_opt = discLines[det]->Fit(psdDisc, "SQ", "",  MINERG_FIT, MAXERG_FIT);
 
 				  detectors[det].discPSD = (TF1*)psdDisc->Clone();

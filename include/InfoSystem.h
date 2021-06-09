@@ -51,6 +51,7 @@ public:
   int NUM_FILES;
   int DATA_TYPE;
   int REUSE_DATA;
+  int REUSE_DETECTOR;
 
   double COINC_WINDOW;
   double BEAM_WINDOW;
@@ -113,6 +114,7 @@ public:
     NUM_FILES = 0;
     DATA_TYPE = 0;
     REUSE_DATA = 0;
+    REUSE_DETECTOR = 0;
 
     COINC_WINDOW = 200;
     BEAM_WINDOW = 200;
@@ -185,6 +187,10 @@ public:
       else if(tag == "<REUSE_DATA>:") {
         file >> value;
         REUSE_DATA = stoi(value);
+      }
+      else if(tag == "<REUSE_DETECTOR>:") {
+        file >> value;
+        REUSE_DETECTOR = stoi(value);
       }
       else if(tag == "<DETECTOR_PATH>:") {
         file >> value;
