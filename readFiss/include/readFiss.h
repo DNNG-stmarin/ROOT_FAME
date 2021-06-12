@@ -82,7 +82,7 @@ public :
   double BACKGROUND_DELAY;
 
   double BEAM_ERG_MIN, BEAM_ERG_MAX; // range of the beam energies to be employed
-  double BEAM_ERG_BINNUM;            // number of energy bins in range
+  double BEAM_ERG_BINNUM = 1;            // number of energy bins in range
 
   double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
   double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
@@ -469,6 +469,9 @@ public :
    virtual void     BeamDepAnalysis();
    virtual void     BeamErgAnalysis();
    virtual void     FitMult();
+
+   // perform correlated analysis
+   virtual void     Slice();
 
 
    // initialization functions
