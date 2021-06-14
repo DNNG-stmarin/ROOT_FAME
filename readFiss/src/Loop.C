@@ -20,6 +20,7 @@ void readFiss::LoopExp()
 
    expEntries = expTree->GetEntries();
    cout << "Analyzing " << expEntries << " experimental events \n";
+   long int numFissIter = 0;
 
    int nMult, gMult, nMultBack, gMultBack, indexChannel;
    Long64_t nbytes = 0, nb = 0;
@@ -57,6 +58,11 @@ void readFiss::LoopExp()
         continue;
       }
 
+      numFissIter++;
+      if(numFissIter%1000000 == 0)
+      {
+        cout << "finished processing " << numFissIter << "fissions" << endl;
+      }
       nMult = 0;
       gMult = 0;
       nMultBack = 0;
@@ -146,6 +152,9 @@ void readFiss::LoopExp()
         h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
       }
    }
+
+   expEntries = numFissIter;
+   cout << "We found " << expEntries << "valid measured fissions" << endl;
 }
 
 
@@ -160,7 +169,8 @@ void readFiss::LoopSim()
 
     int nMult, gMult, nMultBack, gMultBack;
     Long64_t nbytes = 0, nb = 0;
-    for (Long64_t jentry = 0; jentry < simEntries; jentry++) {
+    for (Long64_t jentry = 0; jentry < simEntries; jentry++)
+    {
         Long64_t ientry = LoadSimTree(jentry);
         if (ientry < 0) break;
         nb = simTree->GetEntry(jentry);   nbytes += nb;
@@ -200,6 +210,9 @@ void readFiss::LoopSim()
         photonMultSim->Fill(gMult);
 
     }
+
+    simEntries = 1e7;
+    cout << "We found " << simEntries << "valid simulated fissions" << endl;
 }
 
 void readFiss::LoopBeam()
