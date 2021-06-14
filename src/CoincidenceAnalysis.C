@@ -3,6 +3,7 @@
 #include "CoincidenceAnalysis.h"
 
 #include <TH2.h>
+#include <TH3.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TLegend.h>
@@ -55,6 +56,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
   TH1D* h_beamTime = new TH1D("beamTime", "Beam Time; t (ns); Counts", 1e5, 0 + .5e6, 20e6 + .5e6);
   TH2D* h2_triggerTimeChan = new TH2D("triggerTimeChan", "Trigger chan vs. time; t (ns); Channel", 1e5, 0 + .5e6, 40e6 + .5e6, 4, 5, 9);
 
+	TH3D* h3_fileDesc = new TH3D("h3_fileDesc", "File clustering; Number of Beams; Number of Fissions; Number of Particles;counts", 100, 0,  1e9, 100, 0,  1e9, 100, 0,  1e9);
 
 	queue<BeamEvent> microStructure;
 
@@ -230,6 +232,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		// keep track of the fission index
 		long int fisTracker = 0;
 
+		long int countBeams, countFiss, countDet;
+
 
 
 	/*
@@ -313,7 +317,12 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
       {
         timeDel = timeDet;
       }
-			// cout << timeDel << endl;
+
+			countBeams = 0;
+			countFiss = 0;
+			countDet = 0;
+
+			h3_fileDesc->Fill(countBeams, countFiss, countDet);
 		}
 
 		//  ___ _ _ _ _
@@ -345,6 +354,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			entryChannel = isDetector(detChannel, NUM_DETS, DETECTORS);
 			newParticle = ParticleEvent(detChannel, timeDet - BEAM_DELAY, energyDep, energyTail);
 			DetectorBuffer[entryChannel].push(newParticle);
+			countDet++;
 		}
 
 		// new event is in a trigger
@@ -358,6 +368,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			{
 				// cout << newTrigger.getEnergy() << endl;
 				TriggerBuffer[entryChannel].push(newTrigger);
+				countFiss++;
 				// cout << TriggerBuffer[entryChannel].size() << endl;
 			}
 
@@ -370,7 +381,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			entryChannel = isBeam(detChannel, NUM_BEAMS, BEAM);
 			newBeam = BeamEvent(detChannel, timeDet, energyDep, energyTail);
 			BeamBuffer[entryChannel].push(newBeam);
-
+			countBeams++;
       h_beamTime->Fill(timeDet);
 			// cout << newBeam.getEnergy() << endl;
 		}
