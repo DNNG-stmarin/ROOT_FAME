@@ -875,6 +875,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
       h_triggerTime->Write();
       h_beamTime->Write();
       h2_triggerTimeChan->Write();
+			h3_fileDesc->Write();
 
       expFile->cd();
 		}
