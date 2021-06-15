@@ -197,8 +197,15 @@ public :
    TH2D** h2_backNeutronMultErg;
    TH2D** h2_backGammaMultErg;
 
+   //************
+   TH2D** h2_photonLightOutErg;
+   TH2D** h2_nLightOutErg;
+   TH2D** h2_nToFErg;
+   TH2D** h2_nBackToFErg;
+   //**********
+
    //beam stack
-   THStack** stack;   
+   THStack** stack;
 
    // visual settings
    Float_t legend_x1;
@@ -225,6 +232,7 @@ public :
   TProfile** p_gammaMultDep;				                     //Profile gammaMult vs fisDep
   TProfile** p_backNeutronMultDep;                       //Profile backNeutronMult vs fisDep
 	TProfile** p_backGammaMultDep;                         //Profile backGammaMult vs fisDep
+  TProfile** p_nToFErg;
 
   TGraph** g_fisRatioThreshold;                          // fis ratio for different dep threshold
   TGraph** g_fisRatioSelect;                             // fis ratio for different dep threshold

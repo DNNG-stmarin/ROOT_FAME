@@ -166,6 +166,12 @@ void readFiss::BeamErgAnalysis()
     p_backNeutronMultErg[r] = h2_backNeutronMultErg[r]->ProfileX("p_backNeutronMultErg" + s_TRIG_NUM);
     p_backGammaMultErg[r] = h2_backGammaMultErg[r]->ProfileX("p_backGammaMultErg" + s_TRIG_NUM);
 
+    //*******
+    //Profile Neutron ToF vs beamEnergy
+    h2_nToFErg[r]->Add(h2_nBackToFErg[r], -1);    //Why is h2_nBackToFErg have so many more entries than the non background h2_nToFErg
+    p_nToFErg[r] = h2_nToFErg[r]->ProfileX("p_nToFErg" + s_TRIG_NUM);
+    //**********
+
     for (int i = 0; i < BEAM_ERG_BINNUM; i++)
     {
       double ergBinLow = BEAM_ERG_MIN + i * (BEAM_ERG_MAX - BEAM_ERG_MIN) / BEAM_ERG_BINNUM;
@@ -241,7 +247,7 @@ void readFiss::BeamErgAnalysis()
   }
 }
 
-void readFiss::FitMult(){ //Doesn't run function so had try code in above function
+void readFiss::FitMult(){
 
   TFitResultPtr nMultFit;
   TFitResultPtr gMultFit;

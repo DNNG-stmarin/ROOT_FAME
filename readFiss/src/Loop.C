@@ -81,6 +81,12 @@ void readFiss::LoopExp()
             neutronSinglesExp->Fill(neutronDet[i]);
             neutronEnergyLOExp->Fill(neutronToFErg[i], neutronLightOut[i]);
             neutronLightOutPSDExp->Fill(neutronLightOut[i], neutronPSD[i]);
+
+            if (validBeam)
+            {
+              h2_nLightOutErg[indexChannel]->Fill(beamEnergy, neutronLightOut[i]);
+              h2_nToFErg[indexChannel]->Fill(beamEnergy, neutronToFErg[i]);
+            }
         }
       }
       neutronMultExp->Fill(nMult);
@@ -103,6 +109,11 @@ void readFiss::LoopExp()
           photonSinglesExp->Fill(photonDet[i]);
           neutronMultPhotonLOExp->Fill(nMult, photonLightOut[i]);
           photonLightOutPSDExp->Fill(photonLightOut[i], photonPSD[i]);
+
+          if (validBeam)
+          {
+            h2_photonLightOutErg[indexChannel]->Fill(beamEnergy, photonLightOut[i]);
+          }
         }
       }
       photonMultExp->Fill(gMult);
@@ -124,6 +135,12 @@ void readFiss::LoopExp()
             neutronEnergyBack->Fill(backNeutronToFErg[i]);
             neutronPSDBack->Fill(backNeutronPSD[i]);
             neutronSinglesBack->Fill(backNeutronDet[i]);
+
+            if(validBeam)
+            {
+              h2_nBackToFErg[indexChannel]->Fill(beamEnergy, backNeutronToFErg[i]);
+              //get LO background
+            }
         }
       }
       neutronMultBack->Fill(nMultBack);
@@ -143,6 +160,8 @@ void readFiss::LoopExp()
           photonTofBack->Fill(backPhotonDetTimes[i] + BACKGROUND_DELAY);
           photonPSDBack->Fill(photonPSD[i]);
           photonSinglesBack->Fill(backPhotonDet[i]);
+
+          //get background
         }
       }
       photonMultBack->Fill(gMultBack);

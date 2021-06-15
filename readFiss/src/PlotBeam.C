@@ -122,7 +122,6 @@ void readFiss::PlotMultErg()
   cout << "Plotting incident-dependent multiplicities " << endl;
 
   TCanvas** c_incMult = new TCanvas* [NUM_TRIGGERS];
-  TCanvas** c_ngMult =  new TCanvas* [NUM_TRIGGERS];
 
 
   for (int r = 0; r < NUM_TRIGGERS; r++)
@@ -204,6 +203,7 @@ void readFiss::PlotMultErg()
 
   cout << "Plotting gamma vs. neutron multiplicities " << endl;
 
+  TCanvas** c_ngMult =  new TCanvas* [NUM_TRIGGERS];
   for (int r = 0; r < NUM_TRIGGERS; r++)
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
@@ -265,5 +265,36 @@ void readFiss::PlotMultErg()
 
   c_stack[r]->Write();
   }
+
+  cout << "Plotting neutronLightOutput, neutronToF, and photonLightOut" << endl;
+
+  TCanvas** c_vsbeamErg =  new TCanvas* [NUM_TRIGGERS];
+  for (int r = 0; r < NUM_TRIGGERS; r++)
+	{
+    TString s_TRIG_NUM = (TString)to_string(r);
+
+    c_vsbeamErg[r] = new TCanvas("nLightOutErg_PhotonLightOutErg_nToFErg_Channel_" + s_TRIG_NUM, "nLO, photonLO, and nToF vs beamEnergy for Channel " + s_TRIG_NUM, 1300, 800);
+    c_vsbeamErg[r]->Divide(2,2);
+
+    c_vsbeamErg[r]->cd(1);
+    h2_photonLightOutErg[r]->Draw("COLZ");
+
+    c_vsbeamErg[r]->cd(2);
+    h2_nLightOutErg[r]->Draw("COLZ");
+
+
+    c_vsbeamErg[r]->cd(3);
+    h2_nToFErg[r]->Draw("COLZ");
+    p_nToFErg[r]->Draw("SAME");
+    p_nToFErg[r]->SetLineColor(kRed);
+    
+    c_vsbeamErg[r]->cd(4);
+    h2_nBackToFErg[r]->Draw("COLZ");
+
+    c_vsbeamErg[r]->Write();
+  }
+
+
+
 
 }
