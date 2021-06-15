@@ -24,7 +24,8 @@ void readFiss::LoopExp()
 
    int nMult, gMult, nMultBack, gMultBack, indexChannel;
    Long64_t nbytes = 0, nb = 0;
-   for (Long64_t jentry=0; jentry<expEntries;jentry++) {
+   for (Long64_t jentry=0; jentry<expEntries;jentry++)
+   {
       Long64_t ientry = LoadExpTree(jentry);
       if (ientry < 0) break;
       nb = expTree->GetEntry(jentry);   nbytes += nb;
@@ -46,6 +47,7 @@ void readFiss::LoopExp()
         continue;
       }
       h_fisDep[indexChannel]->Fill(fisDep);
+
       if(mode == 2)
       {
         h_beamTime[indexChannel]->Fill(beamTime);
@@ -53,7 +55,7 @@ void readFiss::LoopExp()
       }
 
       // trigger threshold cut
-      if(!(fisDep > THRESHOLD_DEP) && !(fisDep < CLIPPING_DEP))
+      if(!(fisDep > THRESHOLD_DEP && fisDep < CLIPPING_DEP))
       {
         continue;
       }
@@ -61,7 +63,7 @@ void readFiss::LoopExp()
       numFissIter++;
       if(numFissIter%1000000 == 0)
       {
-        cout << "finished processing " << numFissIter << "fissions" << endl;
+        cout << "finished processing " << numFissIter << " fissions" << endl;
       }
       nMult = 0;
       gMult = 0;
@@ -122,6 +124,8 @@ void readFiss::LoopExp()
       {
         h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
       }
+
+
       neutronGammaMultExp->Fill(nMult, gMult); // correlated plot
 
       // loop through back neutrons
