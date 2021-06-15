@@ -167,9 +167,15 @@ void readFiss::BeamErgAnalysis()
     p_backGammaMultErg[r] = h2_backGammaMultErg[r]->ProfileX("p_backGammaMultErg" + s_TRIG_NUM);
 
     //*******
-    //Profile Neutron ToF vs beamEnergy
-    h2_nToFErg[r]->Add(h2_nBackToFErg[r], -1);    //Why is h2_nBackToFErg have so many more entries than the non background h2_nToFErg
+    //Profile Neutron ToF, photon and neutron LO vs beamEnergy
+    h2_nToFErg[r]->Add(h2_nBackToFErg[r], -1); 
     p_nToFErg[r] = h2_nToFErg[r]->ProfileX("p_nToFErg" + s_TRIG_NUM);
+
+    h2_photonLightOutErg[r]->Add(h2_photonBackLightOutErg[r], -1);
+    p_photonLightOutErg[r] = h2_photonLightOutErg[r]->ProfileX("p_photonLightOutErg" + s_TRIG_NUM);
+
+    h2_nLightOutErg[r]->Add(h2_nBackLightOutErg[r], -1);
+    p_nLightOutErg[r] = h2_nLightOutErg[r]->ProfileX("p_nLightOutErg" + s_TRIG_NUM);
     //**********
 
     for (int i = 0; i < BEAM_ERG_BINNUM; i++)

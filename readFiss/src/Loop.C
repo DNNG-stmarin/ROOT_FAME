@@ -143,6 +143,7 @@ void readFiss::LoopExp()
             if(validBeam)
             {
               h2_nBackToFErg[indexChannel]->Fill(beamEnergy, backNeutronToFErg[i]);
+              h2_nBackLightOutErg[indexChannel]->Fill(beamEnergy, backNeutronLightOut[i]);
               //get LO background
             }
         }
@@ -165,6 +166,10 @@ void readFiss::LoopExp()
           photonPSDBack->Fill(photonPSD[i]);
           photonSinglesBack->Fill(backPhotonDet[i]);
 
+          if (validBeam)
+          {
+            h2_photonBackLightOutErg[indexChannel]->Fill(beamEnergy, backPhotonLightOut[i]);
+          }
           //get background
         }
       }

@@ -273,23 +273,24 @@ void readFiss::PlotMultErg()
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
-    c_vsbeamErg[r] = new TCanvas("nLightOutErg_PhotonLightOutErg_nToFErg_Channel_" + s_TRIG_NUM, "nLO, photonLO, and nToF vs beamEnergy for Channel " + s_TRIG_NUM, 1300, 800);
-    c_vsbeamErg[r]->Divide(2,2);
+    c_vsbeamErg[r] = new TCanvas("nLightOutErg_PhotonLightOutErg_nToFErg_Channel_" + s_TRIG_NUM, "nLO, photonLO, and nToF vs beamEnergy for Channel " + s_TRIG_NUM, 700, 1200);
+    c_vsbeamErg[r]->Divide(1,3);
 
     c_vsbeamErg[r]->cd(1);
     h2_photonLightOutErg[r]->Draw("COLZ");
+    p_photonLightOutErg[r]->Draw("SAME");
+    p_photonLightOutErg[r]->SetLineColor(kRed);
 
     c_vsbeamErg[r]->cd(2);
     h2_nLightOutErg[r]->Draw("COLZ");
+    p_nLightOutErg[r]->Draw("SAME");
+    p_nLightOutErg[r]->SetLineColor(kRed);
 
 
     c_vsbeamErg[r]->cd(3);
     h2_nToFErg[r]->Draw("COLZ");
     p_nToFErg[r]->Draw("SAME");
     p_nToFErg[r]->SetLineColor(kRed);
-    
-    c_vsbeamErg[r]->cd(4);
-    h2_nBackToFErg[r]->Draw("COLZ");
 
     c_vsbeamErg[r]->Write();
   }
