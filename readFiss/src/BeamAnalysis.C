@@ -168,7 +168,7 @@ void readFiss::BeamErgAnalysis()
 
     //*******
     //Profile Neutron ToF, photon and neutron LO vs beamEnergy
-    h2_nToFErg[r]->Add(h2_nBackToFErg[r], -1); 
+    h2_nToFErg[r]->Add(h2_nBackToFErg[r], -1);
     p_nToFErg[r] = h2_nToFErg[r]->ProfileX("p_nToFErg" + s_TRIG_NUM);
 
     h2_photonLightOutErg[r]->Add(h2_photonBackLightOutErg[r], -1);
@@ -210,10 +210,10 @@ void readFiss::BeamErgAnalysis()
       //   - p_backNeutronMultErg[r]->GetBinContent(i + 1)) * numTot / numFis;
       // double gMultSubt = (p_gammaMultErg[r]->GetBinContent(i + 1)
       //   - p_backGammaMultErg[r]->GetBinContent(i + 1)) * numTot / numFis;
-      double nMultSubt = numTot / numFis * p_neutronMultErg[r]->GetBinContent(i + 1)
-        - p_backNeutronMultErg[r]->GetBinContent(i + 1);
-      double gMultSubt = numTot / numFis * p_gammaMultErg[r]->GetBinContent(i + 1)
-        - p_backGammaMultErg[r]->GetBinContent(i + 1);
+      double nMultSubt = numTot / numFis * (p_neutronMultErg[r]->GetBinContent(i + 1)
+        - p_backNeutronMultErg[r]->GetBinContent(i + 1));
+      double gMultSubt = numTot / numFis * (p_gammaMultErg[r]->GetBinContent(i + 1)
+        - p_backGammaMultErg[r]->GetBinContent(i + 1));
 
       g_nMultErg[r]->SetPoint(i, meanErg, nMultSubt);
       g_gMultErg[r]->SetPoint(i, meanErg, gMultSubt);
