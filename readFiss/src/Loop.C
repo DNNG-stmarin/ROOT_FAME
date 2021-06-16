@@ -22,9 +22,6 @@ void readFiss::LoopExp()
    expEntries = expTree->GetEntries();
    cout << "Analyzing " << expEntries << " experimental events \n";
    long int numFissIter = 0;
-   long int numCutBeamIter = 0;
-   long int numCutDepIter = 0;
-   long int num
 
    int nMult, gMult, nMultBack, gMultBack, indexChannel;
    Long64_t nbytes = 0, nb = 0;
@@ -87,7 +84,7 @@ void readFiss::LoopExp()
 
       // fissions passed all the tests, delete
       numFissIter++;
-      fissRej->Fill(ACCEPTED_SIGNAL)
+      fissRej->Fill(ACCEPTED_SIGNAL);
       if(numFissIter%1000000 == 0)
       {
         cout << "finished processing " << numFissIter << " fissions" << endl;
