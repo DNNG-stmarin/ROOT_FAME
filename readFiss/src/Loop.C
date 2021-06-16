@@ -33,21 +33,25 @@ void readFiss::LoopExp()
 
       indexChannel = isTrigger(fisChan); // this should be a function of fisChan
 
+
+
+      // broken channel cut
       if(indexChannel < 0)
       {
         cout << "Trigger number " << fisChan << " not recognized." << endl;
         exit(10);
       }
 
+       // beam coincidence cut
       bool validBeam = (mode == 2) &&
                        (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX);
-      // beam coincidence cut
       if((mode == 2) && !(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX))
       {
         continue;
       }
-      h_fisDep[indexChannel]->Fill(fisDep);
 
+      // store values for histograms
+      h_fisDep[indexChannel]->Fill(fisDep);
       if(mode == 2)
       {
         h_beamTime[indexChannel]->Fill(beamTime);
@@ -60,6 +64,23 @@ void readFiss::LoopExp()
         continue;
       }
 
+
+      // fission pile-up test
+      double currTime = fisTime;
+      b_fisTime->GetEntry(jentry+1);
+      if(fisTime - currTime < 400)
+      {
+        cout << "fiss pileup" << endl;
+        continue;
+      }
+      else
+      {
+        fisTime = currTime;
+      }
+
+
+
+      // fissions passed all the tests, delete
       numFissIter++;
       if(numFissIter%1000000 == 0)
       {
