@@ -144,8 +144,7 @@ void readFiss::GetInfo(istream &inputStream)
   cd_individual = writeFile->mkdir("Individual");
   cd_FAME = writeFile->mkdir("FAME");
   cd_correlated = writeFile->mkdir("Correlated");
-
-
+  cd_trigger = writeFile->mkdir("Trigger");
 
 /*
  ___                _     ___ _ _
@@ -161,6 +160,7 @@ void readFiss::GetInfo(istream &inputStream)
 
   cout << "Input number of exp files" << endl;
   inputStream >> numExpFiles;
+  cout << "rading " << numExpFiles << " files." << endl;
 
   // initialize experiment tree
   // TTree* tree;

@@ -33,21 +33,26 @@ void readFiss::LoopExp()
 
       indexChannel = isTrigger(fisChan); // this should be a function of fisChan
 
+
+
+      // broken channel cut
       if(indexChannel < 0)
       {
         cout << "Trigger number " << fisChan << " not recognized." << endl;
         exit(10);
       }
 
+       // beam coincidence cut
       bool validBeam = (mode == 2) &&
                        (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX);
-      // beam coincidence cut
       if((mode == 2) && !(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX))
       {
+        fissRej->Fill(CUT_BEAM);
         continue;
       }
-      h_fisDep[indexChannel]->Fill(fisDep);
 
+      // store values for histograms
+      h_fisDep[indexChannel]->Fill(fisDep);
       if(mode == 2)
       {
         h_beamTime[indexChannel]->Fill(beamTime);
@@ -57,10 +62,29 @@ void readFiss::LoopExp()
       // trigger threshold cut
       if(!(fisDep > THRESHOLD_DEP && fisDep < CLIPPING_DEP))
       {
+        fissRej->Fill(CUT_DEP);
         continue;
       }
 
+      // fission pile-up test
+      double currTime = fisTime;
+      b_fisTime->GetEntry(jentry+1);
+      if(fisTime - currTime < 200)
+      {
+        h_timeDiffTrig[indexChannel]->Fill(fisTime - currTime);
+        fissRej->Fill(CUT_PILEUP);
+        continue;
+      }
+      else
+      {
+        fisTime = currTime;
+      }
+
+
+
+      // fissions passed all the tests, delete
       numFissIter++;
+      fissRej->Fill(ACCEPTED_SIGNAL);
       if(numFissIter%1000000 == 0)
       {
         cout << "finished processing " << numFissIter << " fissions" << endl;
@@ -183,6 +207,8 @@ void readFiss::LoopExp()
 
    expEntries = numFissIter;
    cout << "We found " << expEntries << "valid measured fissions" << endl;
+
+   fissRej->Draw();
 }
 
 

@@ -226,10 +226,10 @@ void readFiss::BeamErgAnalysis()
       //   - p_backNeutronMultErg[r]->GetBinContent(i + 1)) * numTot / numFis;
       // double gMultSubt = (p_gammaMultErg[r]->GetBinContent(i + 1)
       //   - p_backGammaMultErg[r]->GetBinContent(i + 1)) * numTot / numFis;
-      double nMultSubt = numTot / numFis * p_neutronMultErg[r]->GetBinContent(i + 1)
-        - p_backNeutronMultErg[r]->GetBinContent(i + 1);
-      double gMultSubt = numTot / numFis * p_gammaMultErg[r]->GetBinContent(i + 1)
-        - p_backGammaMultErg[r]->GetBinContent(i + 1);
+      double nMultSubt = numTot / numFis * (p_neutronMultErg[r]->GetBinContent(i + 1)
+        - p_backNeutronMultErg[r]->GetBinContent(i + 1));
+      double gMultSubt = numTot / numFis * (p_gammaMultErg[r]->GetBinContent(i + 1)
+        - p_backGammaMultErg[r]->GetBinContent(i + 1));
 
       g_nMultErg[r]->SetPoint(i, meanErg, nMultSubt);
       g_gMultErg[r]->SetPoint(i, meanErg, gMultSubt);
