@@ -161,6 +161,7 @@ void readFiss::GetInfo(istream &inputStream)
 
   cout << "Input number of exp files" << endl;
   inputStream >> numExpFiles;
+  cout << "rading " << numExpFiles << " files." << endl;
 
   // initialize experiment tree
   // TTree* tree;
