@@ -35,6 +35,13 @@ void readFiss::InitializeHistograms()
   const double minBeamTime = -200;
   const double maxBeamTime = 1800;
 
+  const int numDeltaT = 0;
+  const double minDeltaT = 0;
+  const double maxDeltaT = 200;
+
+
+
+
   /*
    _   _                         _      _          _
   | | | |_ _  __ ___ _ _ _ _ ___| |__ _| |_ ___ __| |
@@ -43,6 +50,12 @@ void readFiss::InitializeHistograms()
 
    */
 
+  fissRej = new TH1I("fissRej", "Composition of Fission Rejection; Fission Type; Counts", 10, -0.5, 9.5);
+  h_timeDiffTrig = new TH1D* [NUM_TRIGGERS];
+  for(int j = 0; j < NUM_TRIGGERS; j++)
+  {
+    h_timeDiffTrig[j] = new TH1D("h_timeDiffTrig_" + TString(to_string(j)), "Time difference Triggers; Delta Time (ns); Counts", numDeltaT, minDeltaT, maxDeltaT);
+  }
 
   neutronLightOutputExp = new TH1D("neutronLightOutputExp", "Light Output Experiment;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
   photonLightOutputExp = new TH1D("photonLightOutputExp", "Light Output Experiment;Light Output [MeVee];Counts", numLObins, minLO, maxLO);

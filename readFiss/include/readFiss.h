@@ -59,6 +59,7 @@ public :
    TDirectory*      cd_FAME;
    TDirectory*      cd_correlated;
    TDirectory*      cd_beam;
+   TDirectory*      cd_trigger;
 
    int NUM_TRIGGERS; // number of trigger channels
    int* TRIGGERS;
@@ -114,6 +115,9 @@ public :
 
    // loop histograms quality of data
    TH1I* fissRej;
+
+   // trigger histograms
+   TH1D** h_timeDiffTrig;
 
    // n LO
    TH1D* neutronLightOutputSim;
@@ -500,6 +504,9 @@ public :
    // callable functions
    virtual void     PlotAll();
    virtual void     CompareAll();
+
+   // plot the trigger properties
+   virtual void     PlotTrigger();
 
    // plot the experiment branches
    virtual void     PlotTof();

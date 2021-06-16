@@ -21,6 +21,10 @@ using namespace std;
 
 void readFiss::PlotAll()
 {
+  // trigger
+  PlotTrigger();
+
+  // detector
   PlotLightOut();
   PlotTof();
   PlotErg();
