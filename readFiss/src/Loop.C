@@ -15,7 +15,6 @@ void readFiss::LoopExp()
 {
 
    cout << "Now looping through experiment. " << endl;
-   fissRej = new TH1I("fissRej", "Composition of Fission Rejection; Fission Type; Counts", 10, -0.5, 9.5);
 
    if (expTree == 0) return;
 
@@ -72,6 +71,7 @@ void readFiss::LoopExp()
       b_fisTime->GetEntry(jentry+1);
       if(fisTime - currTime < 200)
       {
+        h_timeDiffTrig[indexChannel]->Fill(fisTime - currTime);
         fissRej->Fill(CUT_PILEUP);
         continue;
       }
