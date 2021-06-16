@@ -15,12 +15,16 @@ void readFiss::LoopExp()
 {
 
    cout << "Now looping through experiment. " << endl;
+   fissRej = new TH1I("fissRej", "Composition of Fission Rejection; Fission Type; Counts", 10, -0.5, 9.5);
 
    if (expTree == 0) return;
 
    expEntries = expTree->GetEntries();
    cout << "Analyzing " << expEntries << " experimental events \n";
    long int numFissIter = 0;
+   long int numCutBeamIter = 0;
+   long int numCutDepIter = 0;
+   long int num
 
    int nMult, gMult, nMultBack, gMultBack, indexChannel;
    Long64_t nbytes = 0, nb = 0;
@@ -47,6 +51,7 @@ void readFiss::LoopExp()
                        (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX);
       if((mode == 2) && !(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX))
       {
+        fissRej->Fill(CUT_BEAM);
         continue;
       }
 
@@ -61,16 +66,16 @@ void readFiss::LoopExp()
       // trigger threshold cut
       if(!(fisDep > THRESHOLD_DEP && fisDep < CLIPPING_DEP))
       {
+        fissRej->Fill(CUT_DEP);
         continue;
       }
-
 
       // fission pile-up test
       double currTime = fisTime;
       b_fisTime->GetEntry(jentry+1);
-      if(fisTime - currTime < 400)
+      if(fisTime - currTime < 200)
       {
-        cout << "fiss pileup" << endl;
+        fissRej->Fill(CUT_PILEUP);
         continue;
       }
       else
@@ -82,6 +87,7 @@ void readFiss::LoopExp()
 
       // fissions passed all the tests, delete
       numFissIter++;
+      fissRej->Fill(ACCEPTED_SIGNAL)
       if(numFissIter%1000000 == 0)
       {
         cout << "finished processing " << numFissIter << " fissions" << endl;
@@ -204,6 +210,8 @@ void readFiss::LoopExp()
 
    expEntries = numFissIter;
    cout << "We found " << expEntries << "valid measured fissions" << endl;
+
+   fissRej->Draw();
 }
 
 

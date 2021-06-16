@@ -112,6 +112,9 @@ public :
    TH2D* arrayCorr;
    TH2D* arraySpec;
 
+   // loop histograms quality of data
+   TH1I* fissRej;
+
    // n LO
    TH1D* neutronLightOutputSim;
    TH1D* neutronLightOutputExp;
