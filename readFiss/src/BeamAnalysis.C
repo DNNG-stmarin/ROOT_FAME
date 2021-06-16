@@ -166,9 +166,8 @@ void readFiss::BeamErgAnalysis()
     p_backNeutronMultErg[r] = h2_backNeutronMultErg[r]->ProfileX("p_backNeutronMultErg" + s_TRIG_NUM);
     p_backGammaMultErg[r] = h2_backGammaMultErg[r]->ProfileX("p_backGammaMultErg" + s_TRIG_NUM);
 
-    //*******
     //Profile Neutron ToF, photon and neutron LO vs beamEnergy
-    h2_nToFErg[r]->Add(h2_nBackToFErg[r], -1); 
+    h2_nToFErg[r]->Add(h2_nBackToFErg[r], -1);
     p_nToFErg[r] = h2_nToFErg[r]->ProfileX("p_nToFErg" + s_TRIG_NUM);
 
     h2_photonLightOutErg[r]->Add(h2_photonBackLightOutErg[r], -1);
@@ -176,7 +175,24 @@ void readFiss::BeamErgAnalysis()
 
     h2_nLightOutErg[r]->Add(h2_nBackLightOutErg[r], -1);
     p_nLightOutErg[r] = h2_nLightOutErg[r]->ProfileX("p_nLightOutErg" + s_TRIG_NUM);
-    //**********
+
+    //Projections of neutron and photon LO vs beamEnergy
+    double pLOScale, nLOScale;
+    TString ergRangeLow, ergRangeHigh;
+
+    for (int i = 0; i < BEAM_ERG_BINNUM/4; i++) //need to change 10 to numEnergyBins variable  and divide by 4 to go four bins at a time
+    {
+      ergRangeLow = (TString)to_string(4*i);
+      ergRangeHigh = (TString)to_string(4*i + 3);
+
+      pj_pLightOutErg[r][i] = h2_photonLightOutErg[r]->ProjectionY("pj_pLightOutErg_" + ergRangeLow + "_" + ergRangeHigh + "_Chan" + s_TRIG_NUM, 4*i, 4*i + 3);
+      pLOScale = pj_pLightOutErg[r][i]->Integral(0, -1);
+      pj_pLightOutErg[r][i]->Scale(1.0 / pLOScale);
+
+      pj_nLightOutErg[r][i] = h2_nLightOutErg[r]->ProjectionY("pj_nLightOutErg_" + ergRangeLow + "_" + ergRangeHigh + "_Chan" + s_TRIG_NUM, 4*i, 4*i + 3);
+      nLOScale = pj_nLightOutErg[r][i]->Integral(0, -1);
+      pj_nLightOutErg[r][i]->Scale(1.0 / nLOScale);
+    }
 
     for (int i = 0; i < BEAM_ERG_BINNUM; i++)
     {

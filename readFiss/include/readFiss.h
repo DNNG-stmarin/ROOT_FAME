@@ -181,6 +181,10 @@ public :
    TH1D** h_alphaDep;
    TH1I* h_macroPop;
 
+   //Projection histograms
+   TH1D*** pj_pLightOutErg;
+   TH1D*** pj_nLightOutErg;
+
    // beam histograms
    TH1D** h_fisDep;
    TH1D** h_fisSubtract;
@@ -197,7 +201,6 @@ public :
    TH2D** h2_backNeutronMultErg;
    TH2D** h2_backGammaMultErg;
 
-   //************
    TH2D** h2_photonLightOutErg;
    TH2D** h2_nLightOutErg;
    TH2D** h2_nToFErg;
@@ -205,7 +208,7 @@ public :
    TH2D** h2_nBackToFErg;
    TH2D** h2_photonBackLightOutErg;
    TH2D** h2_nBackLightOutErg;
-   //**********
+
 
    //beam stack
    THStack** stack;
