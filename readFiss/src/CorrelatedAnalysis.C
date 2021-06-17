@@ -35,7 +35,6 @@ void readFiss::Slice()
 
     for(int j = 1; j < Projections[i]->GetNbinsX(); ++j)
     {
-      //cout << Projections[i]->GetBinContent(j+1) << " " << Projections[i]->GetBinContent(j) << endl;
       Derivatives[i]->SetBinContent(j, abs((Projections[i]->GetBinContent(j+1) - Projections[i]->GetBinContent(j)) /
                             (Projections[i]->GetBinCenter(j+1) - Projections[i]->GetBinCenter(j))));
     }
@@ -57,10 +56,9 @@ void readFiss::Slice()
     }
 
     myfunc[i]->SetParameters(100000, left_bound, 0.25);
-    // myfunc[i]->SetParLimits(0, 0, 50000);
     myfunc[i]->SetParLimits(1, max(left_bound - 0.1, 0.1), left_bound + 0.1);
-    Results[i] = Derivatives[i]->Fit((TString)"myfunc" + (TString)to_string(i), "B0", "", left_bound, 5);
-    cout << i << " " << left_bound << "\n\n";
+    Results[i] = Derivatives[i]->Fit((TString)"myfunc" + (TString)to_string(i), "B0Q", "", left_bound, 5);
+    //cout << i << " " << left_bound << "\n\n";
   }
 
   writeFile->cd();
