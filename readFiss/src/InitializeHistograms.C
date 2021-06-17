@@ -37,7 +37,7 @@ void readFiss::InitializeHistograms()
 
   const int numDeltaT = 200;
   const double minDeltaT = 0;
-  const double maxDeltaT = 400;
+  const double maxDeltaT = 10000;
 
 
 
