@@ -35,9 +35,9 @@ void readFiss::InitializeHistograms()
   const double minBeamTime = -200;
   const double maxBeamTime = 1800;
 
-  const int numDeltaT = 0;
+  const int numDeltaT = 200;
   const double minDeltaT = 0;
-  const double maxDeltaT = 200;
+  const double maxDeltaT = 400;
 
 
 
