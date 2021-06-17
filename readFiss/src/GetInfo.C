@@ -117,8 +117,7 @@ void readFiss::GetInfo(istream &inputStream)
   cd_individual = writeFile->mkdir("Individual");
   cd_FAME = writeFile->mkdir("FAME");
   cd_correlated = writeFile->mkdir("Correlated");
-
-
+  cd_trigger = writeFile->mkdir("Trigger");
 
 /*
  ___                _     ___ _ _
@@ -134,6 +133,7 @@ void readFiss::GetInfo(istream &inputStream)
 
   cout << "Input number of exp files" << endl;
   inputStream >> numExpFiles;
+  cout << "rading " << numExpFiles << " files." << endl;
 
   // initialize experiment tree
   // TTree* tree;
@@ -217,16 +217,16 @@ void readFiss::GetInfo(istream &inputStream)
   cout << "\n\n";
 
   // get threshold and max time from user
-  cout << "Input detector threshold [MeVee], detector clipping [MeVee] and max neutron time [ns]. Sample input: \n 0.20 0.005 70.0" << endl;
+  cout << "Input detector threshold [MeVee], detector clipping [MeVee] and max neutron time [ns]. Sample input: \n 0.20 4.0 70.0" << endl;
   inputStream >> THRESHOLD >> CLIPPING >> MAX_TIME_N;
   cout << " Using: detector threshold = " << THRESHOLD << " MeVee, "
-       << " detector clipping = " << CLIPPING << " V us, "
+       << " detector clipping = " << CLIPPING << " MeVee, "
        << " Tmax = " << MAX_TIME_N << " ns." << endl;
   cout << "\n";
 
-  cout << "Input trigger threshold [MeVee], and trigger clipping [MeVee]" << endl;
+  cout << "Input trigger threshold [V us], and trigger clipping [V us].\nSample input: 0.005 0.1" << endl;
   inputStream >> THRESHOLD_DEP >> CLIPPING_DEP;
-  cout << " Using: trigger threshold = " << THRESHOLD_DEP << " MeVee, "
+  cout << " Using: trigger threshold = " << THRESHOLD_DEP << " V us, "
        << " fission chamber clipping = " << CLIPPING_DEP << " V us, "<< endl;
   cout << "\n";
 
@@ -234,6 +234,12 @@ void readFiss::GetInfo(istream &inputStream)
   // ask user for background delay
   cout << "background delay to visualize background (ns), put 0 if unsure" << endl;
   inputStream >> BACKGROUND_DELAY;
+  cout << "\n";
+
+  // ask user for background delay
+  cout << "time for separation of pileup fissions (ns): " << endl;
+  inputStream >> FISS_PILEUP_TIME;
+  cout << "using " << FISS_PILEUP_TIME << " ns" << endl;
   cout << "\n";
 
   // ask user if they want to use CovEM
@@ -262,7 +268,7 @@ void readFiss::GetInfo(istream &inputStream)
   // get beam specs from user
   if(mode == 2)
   {
-    cout << "Input the minimum and maximum beam energies [MeV], and the # of energy bins";
+    cout << "Input the minimum and maximum beam energies [MeV], and the # of energy bins" << endl;
     inputStream >> BEAM_ERG_MIN >> BEAM_ERG_MAX >> BEAM_ERG_BINNUM;
     cout << "\nUsing beam range between " << BEAM_ERG_MIN << " and "
          << BEAM_ERG_MAX << " MeV, "

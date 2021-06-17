@@ -35,6 +35,13 @@ void readFiss::InitializeHistograms()
   const double minBeamTime = -200;
   const double maxBeamTime = 1800;
 
+  const int numDeltaT = 200;
+  const double minDeltaT = 0;
+  const double maxDeltaT = 10000;
+
+
+
+
   /*
    _   _                         _      _          _
   | | | |_ _  __ ___ _ _ _ _ ___| |__ _| |_ ___ __| |
@@ -43,6 +50,12 @@ void readFiss::InitializeHistograms()
 
    */
 
+  fissRej = new TH1I("fissRej", "Composition of Fission Rejection; Fission Type; Counts", 10, -0.5, 9.5);
+  h_timeDiffTrig = new TH1D* [NUM_TRIGGERS];
+  for(int j = 0; j < NUM_TRIGGERS; j++)
+  {
+    h_timeDiffTrig[j] = new TH1D("h_timeDiffTrig_" + TString(to_string(j)), "Time difference Triggers; Delta Time (ns); Counts", numDeltaT, minDeltaT, maxDeltaT);
+  }
 
   neutronLightOutputExp = new TH1D("neutronLightOutputExp", "Light Output Experiment;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
   photonLightOutputExp = new TH1D("photonLightOutputExp", "Light Output Experiment;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
@@ -119,6 +132,10 @@ void readFiss::InitializeHistograms()
   // alphaFile histograms
   h_alphaDep = new TH1D* [NUM_TRIGGERS];
 
+  //Projection histograms
+  pj_pLightOutErg = new TH1D** [(int)BEAM_ERG_BINNUM];
+  pj_nLightOutErg = new TH1D** [(int)BEAM_ERG_BINNUM];
+
   // beam histograms
   h_fisDep = new TH1D* [NUM_TRIGGERS];
   h_fisSubtract = new TH1D* [NUM_TRIGGERS];
@@ -134,6 +151,14 @@ void readFiss::InitializeHistograms()
   h2_gammaMultErg = new TH2D* [NUM_TRIGGERS];
   h2_backNeutronMultErg = new TH2D* [NUM_TRIGGERS];
   h2_backGammaMultErg = new TH2D* [NUM_TRIGGERS];
+
+  h2_photonLightOutErg = new TH2D* [NUM_TRIGGERS];
+  h2_nLightOutErg = new TH2D* [NUM_TRIGGERS];
+  h2_nToFErg = new TH2D* [NUM_TRIGGERS];
+
+  h2_nBackToFErg = new TH2D* [NUM_TRIGGERS];
+  h2_photonBackLightOutErg = new TH2D* [NUM_TRIGGERS];
+  h2_nBackLightOutErg = new TH2D* [NUM_TRIGGERS];
 
   for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
   {
@@ -153,14 +178,32 @@ void readFiss::InitializeHistograms()
     h2_gammaMultErg[indexChannel]  = new TH2D((TString)"h2_gammaMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
     h2_backNeutronMultErg[indexChannel] =  new TH2D((TString)"h2_backNeutronMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Neutron Multiplicity; Incident Neutron Energy (MeV); Neutron Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
     h2_backGammaMultErg[indexChannel]  = new TH2D((TString)"h2_backGammaMultErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Gamma Multiplicity; Event Energy (V us); Gamma Multiplicity; counts", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, maxMult, minMult-0.5, maxMult-0.5);
+
+    pj_pLightOutErg[indexChannel] = new TH1D* [(int)BEAM_ERG_BINNUM];
+    pj_nLightOutErg[indexChannel] = new TH1D* [(int)BEAM_ERG_BINNUM];
+
+    h2_photonLightOutErg[indexChannel] = new TH2D((TString)"h2_photonLightOutErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Photon Light Output; Incident Neutron Energy (MeV); Photon Light Output (MeVee)", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, numLObins, minLO, maxLO);
+    h2_nLightOutErg[indexChannel] = new TH2D((TString)"h2_nLightOutErg"+ (TString)to_string(indexChannel), "Incident Energy Depnedent Neutron Light Output; Incident Neutron Energy (MeV); Neutron Light Output (MeVee)", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, numLObins, minLO, maxLO);
+    h2_nToFErg[indexChannel] = new TH2D((TString)"h2_nToFErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Neutron Time of Flight Energy; Incident Neutron Energy (MeV); Neutron Time of Flight Energy (MeV)", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, numErgBins, minErg, maxErg);
+
+    h2_nBackToFErg[indexChannel] = new TH2D((TString)"h2_nBackToFErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Background Neutron Time of Flight Energy; Incident Neutron Energy (MeV); Background Neutron Time of Flight Energy (MeV)", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, numErgBins, minErg, maxErg);
+    h2_photonBackLightOutErg[indexChannel] = new TH2D((TString)"h2_photonBackLightOutErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Background Photon Light Output; Incident Neutron Energy (MeV); Background Photon Light Output", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, numLObins, minLO, maxLO);
+    h2_nBackLightOutErg[indexChannel] = new TH2D((TString)"h2_nBackLightOutErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Background Neutron Light Output; Incident Neutron Energy (MeV); Background Neutron Light Output", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, numLObins, minLO, maxLO);
+
   }
 
+  //beam stack
+  stack = new THStack* [NUM_TRIGGERS];
 
   // declare the profiles for the analysis
   p_neutronMultDep = new TProfile* [NUM_TRIGGERS];
   p_gammaMultDep = new TProfile* [NUM_TRIGGERS];
   p_backNeutronMultDep = new TProfile* [NUM_TRIGGERS];
   p_backGammaMultDep = new TProfile* [NUM_TRIGGERS];
+
+  p_nToFErg = new TProfile* [NUM_TRIGGERS];
+  p_photonLightOutErg = new TProfile* [NUM_TRIGGERS];
+  p_nLightOutErg = new TProfile* [NUM_TRIGGERS];
 
 
   g_fisRatioThreshold = new TGraph* [NUM_TRIGGERS];

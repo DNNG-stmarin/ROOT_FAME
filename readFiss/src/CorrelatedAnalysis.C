@@ -13,8 +13,6 @@ using namespace std;
 
 void readFiss::Slice()
 {
-  cout << "\n\n\n In Slice \n\n\n";
-
   int projectionNum = 40;
   int startBin = 11;
   int numProjectionBins = 250;
@@ -57,7 +55,7 @@ void readFiss::Slice()
 
     myfunc[i]->SetParameters(100000, left_bound, 0.25);
     myfunc[i]->SetParLimits(1, max(left_bound - 0.1, 0.1), left_bound + 0.1);
-    Results[i] = Derivatives[i]->Fit((TString)"myfunc" + (TString)to_string(i), "B0Q", "", left_bound, 5);
+    Results[i] = Derivatives[i]->Fit((TString)"myfunc" + (TString)to_string(i), "B0QS", "", left_bound, 5);
     //cout << i << " " << left_bound << "\n\n";
   }
 
@@ -117,6 +115,4 @@ void readFiss::Slice()
   finalfit->FixParameter(3, 1.001);
   final->Fit("finalfit", "B");
   c_Final->Write();
-
-  cout << "\n\n\n Out Of Slice \n\n\n";
 }

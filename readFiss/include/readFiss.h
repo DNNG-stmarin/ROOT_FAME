@@ -19,6 +19,7 @@
 #include <TProfile.h>
 #include <TGraph.h>
 #include <TGraphErrors.h>
+#include <THStack.h>
 
 #include <iostream>
 #include <fstream>
@@ -58,6 +59,7 @@ public :
    TDirectory*      cd_FAME;
    TDirectory*      cd_correlated;
    TDirectory*      cd_beam;
+   TDirectory*      cd_trigger;
 
    int NUM_TRIGGERS; // number of trigger channels
    int* TRIGGERS;
@@ -79,10 +81,12 @@ public :
   double MAX_TIME_N;
   double THRESHOLD, CLIPPING;
   double THRESHOLD_DEP, CLIPPING_DEP;
+
   double BACKGROUND_DELAY;
+  double FISS_PILEUP_TIME;
 
   double BEAM_ERG_MIN, BEAM_ERG_MAX; // range of the beam energies to be employed
-  double BEAM_ERG_BINNUM = 1;            // number of energy bins in range
+  double BEAM_ERG_BINNUM = 10;            // number of energy bins in range (default so no breaking)
 
   double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
   double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
@@ -110,6 +114,12 @@ public :
    // matrix variables
    TH2D* arrayCorr;
    TH2D* arraySpec;
+
+   // loop histograms quality of data
+   TH1I* fissRej;
+
+   // trigger histograms
+   TH1D** h_timeDiffTrig;
 
    // n LO
    TH1D* neutronLightOutputSim;
@@ -180,6 +190,10 @@ public :
    TH1D** h_alphaDep;
    TH1I* h_macroPop;
 
+   //Projection histograms
+   TH1D*** pj_pLightOutErg;
+   TH1D*** pj_nLightOutErg;
+
    // beam histograms
    TH1D** h_fisDep;
    TH1D** h_fisSubtract;
@@ -195,6 +209,18 @@ public :
    TH2D** h2_gammaMultErg;
    TH2D** h2_backNeutronMultErg;
    TH2D** h2_backGammaMultErg;
+
+   TH2D** h2_photonLightOutErg;
+   TH2D** h2_nLightOutErg;
+   TH2D** h2_nToFErg;
+
+   TH2D** h2_nBackToFErg;
+   TH2D** h2_photonBackLightOutErg;
+   TH2D** h2_nBackLightOutErg;
+
+
+   //beam stack
+   THStack** stack;
 
    // visual settings
    Float_t legend_x1;
@@ -221,6 +247,10 @@ public :
   TProfile** p_gammaMultDep;				                     //Profile gammaMult vs fisDep
   TProfile** p_backNeutronMultDep;                       //Profile backNeutronMult vs fisDep
 	TProfile** p_backGammaMultDep;                         //Profile backGammaMult vs fisDep
+
+  TProfile** p_nToFErg;
+  TProfile** p_photonLightOutErg;
+  TProfile** p_nLightOutErg;
 
   TGraph** g_fisRatioThreshold;                          // fis ratio for different dep threshold
   TGraph** g_fisRatioSelect;                             // fis ratio for different dep threshold
@@ -482,6 +512,9 @@ public :
    // callable functions
    virtual void     PlotAll();
    virtual void     CompareAll();
+
+   // plot the trigger properties
+   virtual void     PlotTrigger();
 
    // plot the experiment branches
    virtual void     PlotTof();

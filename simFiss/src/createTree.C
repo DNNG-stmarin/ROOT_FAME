@@ -6,9 +6,9 @@
 
 #include "createTree.h"
 
-void createTree(TString nameSim, int firstFile, int numFiles) 
+void createTree(TString nameSim, int firstFile, int numFiles)
 {
- 
+
   const int MAX_MULT = 50;
 
   //declare dynamic array parameters
@@ -69,6 +69,7 @@ void createTree(TString nameSim, int firstFile, int numFiles)
   //iterate sim file
   for(int fileNum = firstFile; fileNum < firstFile + numFiles; fileNum++)
   {
+
     TString nameFile = nameSim + to_string(fileNum);
     cout << "reading from " << nameFile << endl;
 
@@ -85,32 +86,32 @@ void createTree(TString nameSim, int firstFile, int numFiles)
     int pMult = 0;
     int prevhist = 0;
     double type, hist;
-    int rowcount = 0;
+
+    int numFiss = 0;
 
     //iterate through lines
-    while(getline(file, line)) {
+    while(getline(file, line))
+    {
+
       stringstream ss(line);
       col = 2;
-      rowcount++;
 
       //read in history of line (first column)
       ss >> hist;
       if(ss.peek() == ',')
         ss.ignore();
-
-      if(int(hist) != rowcount && int(hist) != prevhist) {
-        f_neutronMult = 0;
-        f_gammaMult = 0;
-        fissionTree->Fill();
-      }
+      // cout << "lineHist: " << hist << endl;
 
       //if new history
-      if(int(hist) != prevhist) {
-        if(prevhist != 0) {
+      if(int(hist) != prevhist)
+      {
+        if(prevhist != 0)
+        {
           f_neutronMult = nMult;
           f_gammaMult = pMult;
           //totMult = pMult + nMult;
           fissionTree->Fill();
+          numFiss++;
         }
 
         //set new history
@@ -120,13 +121,23 @@ void createTree(TString nameSim, int firstFile, int numFiles)
         pMult = 0;
       }
 
+      while(int(hist)-1 != numFiss)
+      {
+        f_neutronMult = 0;
+        f_gammaMult = 0;
+        fissionTree->Fill();
+        numFiss++;
+      }
+
       //ignore comma and read type
       ss >> type;
       if(ss.peek() == ',')
         ss.ignore();
 
       //read in rest of line - regardless of new history or not
-      while(ss >> val) {
+      while(ss >> val)
+      {
+
         //neutron
         if(int(type) == 1) {
           if(col == 2)
@@ -150,7 +161,8 @@ void createTree(TString nameSim, int firstFile, int numFiles)
         }
 
         //photon
-        else if(int(type) == 2) {
+        else if(int(type) == 2)
+        {
           if(col == 2)
             photonChannel[pMult] = int(val);
           else if(col == 3)
@@ -173,15 +185,29 @@ void createTree(TString nameSim, int firstFile, int numFiles)
       }
 
       //record event type
-      if(int(type) == 1) {
+      if(int(type) == 1)
+      {
         nMult++;
       }
-      else if(int(type) == 2) {
+      else if(int(type) == 2)
+      {
         pMult++;
       }
+
+
     }
+
+    // record the last histories in the buffer of this file
+    f_neutronMult = nMult;
+    f_gammaMult = pMult;
+    //totMult = pMult + nMult;
+    fissionTree->Fill();
+    numFiss++;
+    nMult = 0;
+    pMult = 0;
+
   }
-  
+
 
   outfile = fissionTree->GetCurrentFile();
   fissionTree->Write();

@@ -48,7 +48,7 @@ void readFiss::PlotDepSubtraction()
      c_Alpha[r]->cd(2);												//Second canvas assignment
      h_fisSubtract[r]->Draw("HIST");							//Isolated fissions plot
      f_gauss[r]->Draw("SAME");							//Fissions fit
-     h_fisSubtract[r]->SetTitle("Fissions without 'Alphas';Pulse Integral (V us); Count Rate");	//Title
+     h_fisSubtract[r]->SetTitle("Fissions without Alphas;Pulse Integral (V us); Count Rate");	//Title
 
      c_Alpha[r]->cd(3);							//Third canvas assignment
      gPad->SetLogy(3);
@@ -122,7 +122,6 @@ void readFiss::PlotMultErg()
   cout << "Plotting incident-dependent multiplicities " << endl;
 
   TCanvas** c_incMult = new TCanvas* [NUM_TRIGGERS];
-  TCanvas** c_ngMult =  new TCanvas* [NUM_TRIGGERS];
 
 
   for (int r = 0; r < NUM_TRIGGERS; r++)
@@ -204,6 +203,7 @@ void readFiss::PlotMultErg()
 
   cout << "Plotting gamma vs. neutron multiplicities " << endl;
 
+  TCanvas** c_ngMult =  new TCanvas* [NUM_TRIGGERS];
   for (int r = 0; r < NUM_TRIGGERS; r++)
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
@@ -223,7 +223,7 @@ void readFiss::PlotMultErg()
   cout << "Plotting gammas per neutron vs. PPAC Channel" << endl;
 
   TCanvas* c_gnRatio = new TCanvas;
-  c_gnRatio = new TCanvas("c_gnRatio", "GammasPerNeutronDueToPPAC", 600, 800);
+  c_gnRatio = new TCanvas("GammasPerNeutronForPPACs", "GammasPerNeutronDueToPPAC", 600, 800);
   c_gnRatio->Divide(1,2);
   c_gnRatio->cd(1);
 
@@ -250,5 +250,67 @@ void readFiss::PlotMultErg()
   g_nRatioSlopeInt->SetTitle("Neutron and Gamma Slope/Int vs. PPAC Channel");
 
   c_gnRatio->Write();
+
+  cout << "Plotting stack" << endl;
+
+  TCanvas** c_stack =  new TCanvas* [NUM_TRIGGERS];
+  for (int r = 0; r < NUM_TRIGGERS; r++)
+	{
+    TString s_TRIG_NUM = (TString)to_string(r);
+
+  c_stack[r] = new TCanvas("FissionSpectrumDueToBeamErg_Chan_" + s_TRIG_NUM, "Fission Spectrum due to Beam Energies", 600, 400);
+  c_stack[r]->Divide(1,1);
+  c_stack[r]->cd(1);
+  stack[r]->Draw("PADS");
+
+  c_stack[r]->Write();
+  }
+
+  cout << "Plotting neutronLightOutput, neutronToF, and photonLightOut" << endl;
+
+  TCanvas** c_vsbeamErg =  new TCanvas* [NUM_TRIGGERS];
+  for (int r = 0; r < NUM_TRIGGERS; r++)
+	{
+    TString s_TRIG_NUM = (TString)to_string(r);
+
+    c_vsbeamErg[r] = new TCanvas("nLightOutErg_PhotonLightOutErg_nToFErg_Channel_" + s_TRIG_NUM, "nLO, photonLO, and nToF vs beamEnergy for Channel " + s_TRIG_NUM, 800, 1000);
+    c_vsbeamErg[r]->Divide(1,2);
+
+    c_vsbeamErg[r]->cd(1);
+
+    pj_pLightOutErg[r][0]->Draw();
+    pj_pLightOutErg[r][0]->SetLineColor(1);
+    pj_pLightOutErg[r][0]->SetTitle("Bin Range 0-4; Neutron Light Output (MeVee); Integral Normalized Counts From Projection (Counts/area)");
+    for (int i = 1; i < BEAM_ERG_BINNUM/4; i++)
+    {
+      TString ergRLow = (TString)to_string(4*i);
+      TString ergRHigh = (TString)to_string(4*i + 3);
+      pj_pLightOutErg[r][i]->Draw("SAME");
+      pj_pLightOutErg[r][i]->SetLineColor(i + 1);
+      pj_pLightOutErg[r][i]->SetTitle("Bin Range " + ergRLow + "-" + ergRHigh);
+    }
+    gPad->BuildLegend();
+    pj_pLightOutErg[r][0]->SetTitle("Incident Neutron Energy Dependent Photon Light Output");
+
+  c_vsbeamErg[r]->cd(2);
+    pj_nLightOutErg[r][0]->Draw();
+    pj_nLightOutErg[r][0]->SetLineColor(1);
+    pj_nLightOutErg[r][0]->SetTitle("Bin Range 0-4; Neutron Light Output (MeVee); Integral Normalized Counts From Projection (Counts/area)");
+    for (int i = 1; i < BEAM_ERG_BINNUM/4; i++)
+    {
+      TString ergRLow = (TString)to_string(4*i);
+      TString ergRHigh = (TString)to_string(4*i + 3);
+      pj_nLightOutErg[r][i]->Draw("SAME");
+      pj_nLightOutErg[r][i]->SetLineColor(i + 1);
+      pj_nLightOutErg[r][i]->SetTitle("Bin Range " + ergRLow + "-" + ergRHigh);
+    }
+    gPad->BuildLegend();
+    pj_nLightOutErg[r][0]->SetTitle("Incident Neutron Energy Dependent Neutron Light Output");
+
+    c_vsbeamErg[r]->Write();
+  }
+
+
+
 
 }

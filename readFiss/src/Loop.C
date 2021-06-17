@@ -20,17 +20,14 @@ void readFiss::LoopExp()
 
    expEntries = expTree->GetEntries();
    cout << "Analyzing " << expEntries << " experimental events \n";
+   long int numFissIter = 0;
 
    int nMult, gMult, nMultBack, gMultBack, indexChannel;
+   Double_t currTime;
    Long64_t nbytes = 0, nb = 0;
-   for (Long64_t jentry=0; jentry<expEntries;jentry++) {
-      if((jentry % 10000000) == 0)
-      {
-        double entryNum = jentry;
-        double entryTot = expEntries;
-        double percent = (entryNum / entryTot) * 100;
-        cout << percent << "% Done" << endl;
-      }
+
+   for (Long64_t jentry=0; jentry<expEntries;jentry++)
+   {
       Long64_t ientry = LoadExpTree(jentry);
       if (ientry < 0) break;
       nb = expTree->GetEntry(jentry);   nbytes += nb;
@@ -38,19 +35,25 @@ void readFiss::LoopExp()
 
       indexChannel = isTrigger(fisChan); // this should be a function of fisChan
 
+
+
+      // broken channel cut
       if(indexChannel < 0)
       {
         cout << "Trigger number " << fisChan << " not recognized." << endl;
         exit(10);
       }
 
+       // beam coincidence cut
       bool validBeam = (mode == 2) &&
                        (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX);
-      // beam coincidence cut
       if((mode == 2) && !(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX))
       {
+        fissRej->Fill(CUT_BEAM);
         continue;
       }
+
+      // store values for histograms
       h_fisDep[indexChannel]->Fill(fisDep);
       if(mode == 2)
       {
@@ -59,11 +62,36 @@ void readFiss::LoopExp()
       }
 
       // trigger threshold cut
-      if(!(fisDep > THRESHOLD_DEP) && !(fisDep < CLIPPING_DEP))
+      if(!(fisDep > THRESHOLD_DEP && fisDep < CLIPPING_DEP))
       {
+        fissRej->Fill(CUT_DEP);
         continue;
       }
 
+      // fission pile-up test
+      currTime = fisTime;
+      expTree->GetEntry(jentry+1);
+      h_timeDiffTrig[indexChannel]->Fill(fisTime - currTime);
+      if(fisTime - currTime < FISS_PILEUP_TIME)
+      {
+        fissRej->Fill(CUT_PILEUP);
+        continue;
+      }
+      else
+      {
+        expTree->GetEntry(jentry);
+      }
+
+
+
+      // fissions passed all the tests, delete
+      numFissIter++;
+      // cout << numFissIter << endl;
+      fissRej->Fill(ACCEPTED_SIGNAL);
+      if(numFissIter%1000000 == 0)
+      {
+        cout << "finished processing " << numFissIter << " fissions" << endl;
+      }
       nMult = 0;
       gMult = 0;
       nMultBack = 0;
@@ -82,6 +110,12 @@ void readFiss::LoopExp()
             neutronSinglesExp->Fill(neutronDet[i]);
             neutronEnergyLOExp->Fill(neutronToFErg[i], neutronLightOut[i]);
             neutronLightOutPSDExp->Fill(neutronLightOut[i], neutronPSD[i]);
+
+            if (validBeam)
+            {
+              h2_nLightOutErg[indexChannel]->Fill(beamEnergy, neutronLightOut[i]);
+              h2_nToFErg[indexChannel]->Fill(beamEnergy, neutronToFErg[i]);
+            }
         }
       }
       neutronMultExp->Fill(nMult);
@@ -95,7 +129,7 @@ void readFiss::LoopExp()
       // loop through gamma rays
       for (int i = 0; i < gammaMult; i++)
       {
-        if (photonLightOut[i] > THRESHOLD && photonIntegral[i] < CLIPPING )
+        if (photonLightOut[i] > THRESHOLD && photonLightOut[i] < CLIPPING )
         {
           gMult++;
           photonLightOutputExp->Fill(photonLightOut[i]);
@@ -104,6 +138,11 @@ void readFiss::LoopExp()
           photonSinglesExp->Fill(photonDet[i]);
           neutronMultPhotonLOExp->Fill(nMult, photonLightOut[i]);
           photonLightOutPSDExp->Fill(photonLightOut[i], photonPSD[i]);
+
+          if (validBeam)
+          {
+            h2_photonLightOutErg[indexChannel]->Fill(beamEnergy, photonLightOut[i]);
+          }
         }
       }
       photonMultExp->Fill(gMult);
@@ -112,6 +151,8 @@ void readFiss::LoopExp()
       {
         h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
       }
+
+
       neutronGammaMultExp->Fill(nMult, gMult); // correlated plot
 
       // loop through back neutrons
@@ -125,6 +166,13 @@ void readFiss::LoopExp()
             neutronEnergyBack->Fill(backNeutronToFErg[i]);
             neutronPSDBack->Fill(backNeutronPSD[i]);
             neutronSinglesBack->Fill(backNeutronDet[i]);
+
+            if(validBeam)
+            {
+              h2_nBackToFErg[indexChannel]->Fill(beamEnergy, backNeutronToFErg[i]);
+              h2_nBackLightOutErg[indexChannel]->Fill(beamEnergy, backNeutronLightOut[i]);
+              //get LO background
+            }
         }
       }
       neutronMultBack->Fill(nMultBack);
@@ -144,6 +192,12 @@ void readFiss::LoopExp()
           photonTofBack->Fill(backPhotonDetTimes[i] + BACKGROUND_DELAY);
           photonPSDBack->Fill(photonPSD[i]);
           photonSinglesBack->Fill(backPhotonDet[i]);
+
+          if (validBeam)
+          {
+            h2_photonBackLightOutErg[indexChannel]->Fill(beamEnergy, backPhotonLightOut[i]);
+          }
+          //get background
         }
       }
       photonMultBack->Fill(gMultBack);
@@ -153,6 +207,11 @@ void readFiss::LoopExp()
         h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
       }
    }
+
+   expEntries = numFissIter;
+   cout << "We found " << expEntries << "valid measured fissions" << endl;
+
+   fissRej->Draw();
 }
 
 
@@ -167,7 +226,8 @@ void readFiss::LoopSim()
 
     int nMult, gMult, nMultBack, gMultBack;
     Long64_t nbytes = 0, nb = 0;
-    for (Long64_t jentry = 0; jentry < simEntries; jentry++) {
+    for (Long64_t jentry = 0; jentry < simEntries; jentry++)
+    {
         Long64_t ientry = LoadSimTree(jentry);
         if (ientry < 0) break;
         nb = simTree->GetEntry(jentry);   nbytes += nb;
@@ -207,6 +267,9 @@ void readFiss::LoopSim()
         photonMultSim->Fill(gMult);
 
     }
+
+    simEntries = 1e7;
+    cout << "We found " << simEntries << "valid simulated fissions" << endl;
 }
 
 void readFiss::LoopBeam()

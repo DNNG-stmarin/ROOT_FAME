@@ -1,6 +1,7 @@
 #include "readFiss.h"
 #include <TFitResultPtr.h>
 #include <Constants.h>
+#include <THStack.h>
 
 using namespace std;
 
@@ -155,6 +156,8 @@ void readFiss::BeamErgAnalysis()
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
+    stack[r] = new THStack();   //Define stack before for loop for no segmentation errors
+
     cout << "Trigger " << r + 1 << " of " << NUM_TRIGGERS << endl;
 
     // Populate profiles
@@ -162,6 +165,34 @@ void readFiss::BeamErgAnalysis()
     p_gammaMultErg[r] = h2_gammaMultErg[r]->ProfileX("p_gammaMultErg" + s_TRIG_NUM);
     p_backNeutronMultErg[r] = h2_backNeutronMultErg[r]->ProfileX("p_backNeutronMultErg" + s_TRIG_NUM);
     p_backGammaMultErg[r] = h2_backGammaMultErg[r]->ProfileX("p_backGammaMultErg" + s_TRIG_NUM);
+
+    //Profile Neutron ToF, photon and neutron LO vs beamEnergy
+    h2_nToFErg[r]->Add(h2_nBackToFErg[r], -1);
+    p_nToFErg[r] = h2_nToFErg[r]->ProfileX("p_nToFErg" + s_TRIG_NUM);
+
+    h2_photonLightOutErg[r]->Add(h2_photonBackLightOutErg[r], -1);
+    p_photonLightOutErg[r] = h2_photonLightOutErg[r]->ProfileX("p_photonLightOutErg" + s_TRIG_NUM);
+
+    h2_nLightOutErg[r]->Add(h2_nBackLightOutErg[r], -1);
+    p_nLightOutErg[r] = h2_nLightOutErg[r]->ProfileX("p_nLightOutErg" + s_TRIG_NUM);
+
+    //Projections of neutron and photon LO vs beamEnergy
+    double pLOScale, nLOScale;
+    TString ergRangeLow, ergRangeHigh;
+
+    for (int i = 0; i < BEAM_ERG_BINNUM/4; i++) //need to change 10 to numEnergyBins variable  and divide by 4 to go four bins at a time
+    {
+      ergRangeLow = (TString)to_string(4*i);
+      ergRangeHigh = (TString)to_string(4*i + 3);
+
+      pj_pLightOutErg[r][i] = h2_photonLightOutErg[r]->ProjectionY("pj_pLightOutErg_" + ergRangeLow + "_" + ergRangeHigh + "_Chan" + s_TRIG_NUM, 4*i, 4*i + 3);
+      pLOScale = pj_pLightOutErg[r][i]->Integral(0, -1);
+      pj_pLightOutErg[r][i]->Scale(1.0 / pLOScale);
+
+      pj_nLightOutErg[r][i] = h2_nLightOutErg[r]->ProjectionY("pj_nLightOutErg_" + ergRangeLow + "_" + ergRangeHigh + "_Chan" + s_TRIG_NUM, 4*i, 4*i + 3);
+      nLOScale = pj_nLightOutErg[r][i]->Integral(0, -1);
+      pj_nLightOutErg[r][i]->Scale(1.0 / nLOScale);
+    }
 
     for (int i = 0; i < BEAM_ERG_BINNUM; i++)
     {
@@ -195,10 +226,10 @@ void readFiss::BeamErgAnalysis()
       //   - p_backNeutronMultErg[r]->GetBinContent(i + 1)) * numTot / numFis;
       // double gMultSubt = (p_gammaMultErg[r]->GetBinContent(i + 1)
       //   - p_backGammaMultErg[r]->GetBinContent(i + 1)) * numTot / numFis;
-      double nMultSubt = numTot / numFis * p_neutronMultErg[r]->GetBinContent(i + 1)
-        - p_backNeutronMultErg[r]->GetBinContent(i + 1);
-      double gMultSubt = numTot / numFis * p_gammaMultErg[r]->GetBinContent(i + 1)
-        - p_backGammaMultErg[r]->GetBinContent(i + 1);
+      double nMultSubt = numTot / numFis * (p_neutronMultErg[r]->GetBinContent(i + 1)
+        - p_backNeutronMultErg[r]->GetBinContent(i + 1));
+      double gMultSubt = numTot / numFis * (p_gammaMultErg[r]->GetBinContent(i + 1)
+        - p_backGammaMultErg[r]->GetBinContent(i + 1));
 
       g_nMultErg[r]->SetPoint(i, meanErg, nMultSubt);
       g_gMultErg[r]->SetPoint(i, meanErg, gMultSubt);
@@ -209,6 +240,11 @@ void readFiss::BeamErgAnalysis()
         p_backNeutronMultErg[r]->GetBinContent(i + 1));
       g_gMultBackErg[r]->SetPoint(i, meanErg,
         p_backGammaMultErg[r]->GetBinContent(i + 1));
+
+      if (i < 16){                          //16 indicates ~beamErg (MeV)
+        h_ergSubtract->SetLineColor(i + 1); //different colors for each ToF energy
+        stack[r]->Add(h_ergSubtract);       //takes in all h_ergSubtract's to evaluate subtraction as function of incident neutron energy
+      }
 
     }
 
@@ -233,7 +269,7 @@ void readFiss::BeamErgAnalysis()
   }
 }
 
-void readFiss::FitMult(){ //Doesn't run function so had try code in above function
+void readFiss::FitMult(){
 
   TFitResultPtr nMultFit;
   TFitResultPtr gMultFit;
