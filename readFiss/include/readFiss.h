@@ -81,7 +81,9 @@ public :
   double MAX_TIME_N;
   double THRESHOLD, CLIPPING;
   double THRESHOLD_DEP, CLIPPING_DEP;
+
   double BACKGROUND_DELAY;
+  double FISS_PILEUP_TIME;
 
   double BEAM_ERG_MIN, BEAM_ERG_MAX; // range of the beam energies to be employed
   double BEAM_ERG_BINNUM = 10;            // number of energy bins in range (default so no breaking)

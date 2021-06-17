@@ -23,7 +23,9 @@ void readFiss::LoopExp()
    long int numFissIter = 0;
 
    int nMult, gMult, nMultBack, gMultBack, indexChannel;
+   Double_t currTime;
    Long64_t nbytes = 0, nb = 0;
+
    for (Long64_t jentry=0; jentry<expEntries;jentry++)
    {
       Long64_t ientry = LoadExpTree(jentry);
@@ -67,23 +69,24 @@ void readFiss::LoopExp()
       }
 
       // fission pile-up test
-      double currTime = fisTime;
-      b_fisTime->GetEntry(jentry+1);
-      if(fisTime - currTime < 200)
+      currTime = fisTime;
+      expTree->GetEntry(jentry+1);
+      h_timeDiffTrig[indexChannel]->Fill(fisTime - currTime);
+      if(fisTime - currTime < FISS_PILEUP_TIME)
       {
-        h_timeDiffTrig[indexChannel]->Fill(fisTime - currTime);
         fissRej->Fill(CUT_PILEUP);
         continue;
       }
       else
       {
-        fisTime = currTime;
+        expTree->GetEntry(jentry);
       }
 
 
 
       // fissions passed all the tests, delete
       numFissIter++;
+      // cout << numFissIter << endl;
       fissRej->Fill(ACCEPTED_SIGNAL);
       if(numFissIter%1000000 == 0)
       {

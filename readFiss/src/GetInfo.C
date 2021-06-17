@@ -263,6 +263,12 @@ void readFiss::GetInfo(istream &inputStream)
   inputStream >> BACKGROUND_DELAY;
   cout << "\n";
 
+  // ask user for background delay
+  cout << "time for separation of pileup fissions (ns): " << endl;
+  inputStream >> FISS_PILEUP_TIME;
+  cout << "using " << FISS_PILEUP_TIME << " ns" << endl;
+  cout << "\n";
+
   // ask user if they want to use CovEM
   cout << "Input 1 for CovEM, input 0 for no CovEM" << endl;
   inputStream >> CovEM_in;
@@ -289,7 +295,7 @@ void readFiss::GetInfo(istream &inputStream)
   // get beam specs from user
   if(mode == 2)
   {
-    cout << "Input the minimum and maximum beam energies [MeV], and the # of energy bins";
+    cout << "Input the minimum and maximum beam energies [MeV], and the # of energy bins" << endl;
     inputStream >> BEAM_ERG_MIN >> BEAM_ERG_MAX >> BEAM_ERG_BINNUM;
     cout << "\nUsing beam range between " << BEAM_ERG_MIN << " and "
          << BEAM_ERG_MAX << " MeV, "
