@@ -498,6 +498,9 @@ public :
    virtual void     BeamErgAnalysis();
    virtual void     FitMult();
 
+   // perform correlated analysis
+   virtual void     Slice();
+
 
    // initialization functions
    virtual void     InitializeHistograms();
