@@ -24,8 +24,15 @@ void readFiss::LoopExp()
 
    int nMult, gMult, nMultBack, gMultBack, indexChannel;
    Long64_t nbytes = 0, nb = 0;
-   for (Long64_t jentry=0; jentry<expEntries;jentry++)
-   {
+   for (Long64_t jentry=0; jentry<expEntries;jentry++) {
+      if((jentry % 10000000) == 0)
+      {
+        double entryNum = jentry;
+        double entryTot = expEntries;
+        double percent = (entryNum / entryTot) * 100;
+        cout << percent << "% Done" << endl;
+      }
+      
       Long64_t ientry = LoadExpTree(jentry);
       if (ientry < 0) break;
       nb = expTree->GetEntry(jentry);   nbytes += nb;

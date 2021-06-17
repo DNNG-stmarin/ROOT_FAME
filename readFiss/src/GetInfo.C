@@ -39,6 +39,7 @@ readFiss::readFiss(int &argc, char** &argv)
 
   // loop through
   LoopExp();
+  Slice();
   if(mode == 1)
   {
     LoopSim();
@@ -77,35 +78,7 @@ readFiss::readFiss(int &argc, char** &argv)
 void readFiss::BadInputMessage()
 {
   cout << "Bad input. Please run with no arguments and input options manually" <<
-          " or run with an input file with format: \n " <<
-
-          "Mode number (0/1/2) \n " <<
-          "writeFile path \n " <<
-          "expFile path \n " <<
-          "If in mode 1: simFile path \n " <<
-          "If in mode 2: beamFile path \n " <<
-          "Detector threshold [MeVee] Detector clipping [MeVee] tMax Time [ns] \n " <<
-          "Chamber threshold [V us] Chamber clipping [V us]\n " <<
-          "Whether or not you want to use CovEM (0/1) \n " <<
-          "If using CovEM: BN BP \n " <<
-          "If using CovEM: MIN_N_ERG MAX_N_ERG MIN_P_ERG MAX_P_ERG \n\n" <<
-
-          "Sample input file using mode 0 and not using CovEM: \n " <<
-          "0 \n " <<
-          "out.root \n " <<
-          "../data/Fiss.root \n " <<
-          "0.2 70 \n " <<
-          "0 \n\n" <<
-
-          "Sample input file using mode 2 and CovEM: \n " <<
-          "2 \n " <<
-          "out.root \n " <<
-          "../data/Fiss.root \n " <<
-          "../data/Beam.root \n " <<
-          "0.2 70 \n " <<
-          "1 \n " <<
-          "10 50 \n " <<
-          "0 10 0 4 \n\n";
+          " or run with a text file containing your input.\n" << endl;
 }
 
 // gets input from istream, which should either point to a file or cin
@@ -160,6 +133,7 @@ void readFiss::GetInfo(istream &inputStream)
 
   cout << "Input number of exp files" << endl;
   inputStream >> numExpFiles;
+  cout << "rading " << numExpFiles << " files." << endl;
 
   // initialize experiment tree
   // TTree* tree;
