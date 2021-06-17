@@ -112,7 +112,10 @@ void readFiss::Slice()
   final->GetXaxis()->SetLimits(0, 5);
   final->GetYaxis()->SetLimits(0, 5);
   final->Draw();
-  final->Fit("expo");
+
+  TF1* finalfit = new TF1("finalfit", "[0]x - [1] * (1-exp([2] * pow(x, [3])))", 0, 5);
+  finalfit->FixParameter(3, 1.001);
+  final->Fit("finalfit", "B");
   c_Final->Write();
 
   cout << "\n\n\n Out Of Slice \n\n\n";
