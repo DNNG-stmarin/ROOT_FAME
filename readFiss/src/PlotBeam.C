@@ -279,6 +279,7 @@ void readFiss::PlotMultErg()
     c_vsbeamErg[r]->cd(1);
 
     double separationErg = 4*(BEAM_ERG_MAX - BEAM_ERG_MIN)/BEAM_ERG_BINNUM;
+    pj_pLightOutErg[r][0]->Rebin(4);
     pj_pLightOutErg[r][0]->Draw();
     pj_pLightOutErg[r][0]->SetLineColor(1);
     pj_pLightOutErg[r][0]->SetTitle("IncErg Range " + (TString)to_string(BEAM_ERG_MIN) + "-" + (TString)to_string(BEAM_ERG_MIN + separationErg)  + " (MeV)" );
@@ -286,6 +287,7 @@ void readFiss::PlotMultErg()
     {
       TString ergRLow = (TString)to_string(BEAM_ERG_MIN + separationErg*i);
       TString ergRHigh = (TString)to_string(BEAM_ERG_MIN + separationErg*(i+1));
+      pj_pLightOutErg[r][i]->Rebin(4);
       pj_pLightOutErg[r][i]->Draw("SAME");
       pj_pLightOutErg[r][i]->SetLineColor(i + 1);
       pj_pLightOutErg[r][i]->SetTitle("IncErg Range: " + ergRLow + "-" + ergRHigh + " (MeV)");
@@ -295,6 +297,7 @@ void readFiss::PlotMultErg()
 
     c_vsbeamErg[r]->cd(2);
 
+    pj_nLightOutErg[r][0]->Rebin(4);
     pj_nLightOutErg[r][0]->Draw();
     pj_nLightOutErg[r][0]->SetLineColor(1);
     pj_nLightOutErg[r][0]->SetTitle("IncErg Range " + (TString)to_string(BEAM_ERG_MIN) + "-" + (TString)to_string(BEAM_ERG_MIN + separationErg) + " (MeV)" );
@@ -302,6 +305,7 @@ void readFiss::PlotMultErg()
     {
       TString ergRLow = (TString)to_string(BEAM_ERG_MIN + separationErg*i);
       TString ergRHigh = (TString)to_string(BEAM_ERG_MIN + separationErg*(i+1));
+      pj_nLightOutErg[r][i]->Rebin(4);
       pj_nLightOutErg[r][i]->Draw("SAME");
       pj_nLightOutErg[r][i]->SetLineColor(i + 1);
       pj_nLightOutErg[r][i]->SetTitle("IncErg Range: " + ergRLow + "-" + ergRHigh + " (MeV)");
