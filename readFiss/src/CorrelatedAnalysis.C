@@ -18,17 +18,22 @@ void readFiss::Slice()
   int numProjectionBins = 250;
 
   TF1** myfunc = new TF1*[projectionNum];
-  TFitResultPtr* Results = new TFitResultPtr[projectionNum];
+  TFitResultPtr* Results = new TFitResultPtr[projectionNum]; // currently unused
 
   TH1D** Projections = new TH1D*[projectionNum];
   TH1D** Derivatives = new TH1D*[projectionNum];
+  double* left_bound = new double[projectionNum];
+  TH1D** Seconds = new TH1D*[projectionNum];
   TGraph* final = new TGraph(projectionNum);
 
   for(int i = 0; i < projectionNum; ++i)
   {
     Projections[i] = neutronEnergyLOExp->ProjectionY((TString)"projection" + (TString)to_string(i), startBin + i, startBin + i);
+    Projections[i]->Rebin(5);
     Derivatives[i] = new TH1D((TString)"derivative"+ (TString)to_string(i), "Derivative of Projection;Neutron Light Output [MeVee];Rate of Change",
                                       Projections[i]->GetNbinsX(), Projections[i]->GetXaxis()->GetXmin(), Projections[i]->GetXaxis()->GetXmax());
+    Seconds[i] = new TH1D((TString)"2nd_derivative" + (TString)to_string(i), "2nd Derivative of Projection;Neutron Light Output [MeVee];Rate of Change",
+                                      Derivatives[i]->GetNbinsX(), Derivatives[i]->GetXaxis()->GetXmin(), Derivatives[i]->GetXaxis()->GetXmax());
     myfunc[i] = new TF1((TString)"myfunc" + (TString)to_string(i), "gaus");
 
     for(int j = 1; j < Projections[i]->GetNbinsX(); ++j)
@@ -36,33 +41,52 @@ void readFiss::Slice()
       Derivatives[i]->SetBinContent(j, abs((Projections[i]->GetBinContent(j+1) - Projections[i]->GetBinContent(j)) /
                             (Projections[i]->GetBinCenter(j+1) - Projections[i]->GetBinCenter(j))));
     }
-    Derivatives[i]->Rebin(5); // makes structure more visible
-    double left_bound = THRESHOLD;
 
-    for(int k = Derivatives[i]->GetNbinsX(); k > 1; --k)
+    for(int k = 1; k < Derivatives[i]->GetNbinsX(); ++k)
     {
-      if(Derivatives[i]->GetBinContent(k - 1) * 1.2 < Derivatives[i]->GetBinContent(k)
-        && Derivatives[i]->GetBinContent(k) > (Derivatives[i]->GetMaximum() / 10))
+      Seconds[i]->SetBinContent(k, (Derivatives[i]->GetBinContent(k+1) - Derivatives[i]->GetBinContent(k)) /
+                              (Derivatives[i]->GetBinCenter(k+1) - Derivatives[i]->GetBinCenter(k)));
+    }
+    Seconds[i]->Rebin(2);
+
+    //Derivatives[i]->Rebin(5); // makes structure more visible
+    left_bound[i] = THRESHOLD;
+
+    for(int k = Seconds[i]->GetNbinsX(); k > 1; --k)
+    {
+      if(Seconds[i]->GetBinContent(k - 1) > 0 &&
+         Seconds[i]->GetBinContent(k) < 0 &&
+        (Projections[i]->GetBinContent(2 * k) > (Projections[i]->GetMaximum() / 10)))
+        // (Seconds[i]->GetBinContent(k - 1) > (1000 * (1 - Derivatives[i]->GetMean(1))) &&
+        //  Seconds[i]->GetBinContent(k) < (-1000 * (1 - Derivatives[i]->GetMean(1)))))
       {
-        left_bound = Derivatives[i]->GetBinCenter(k);
-        if(left_bound < THRESHOLD)
-        {
-          left_bound = THRESHOLD;
-        }
+        left_bound[i] = Seconds[i]->GetBinCenter(k);
         break;
       }
     }
 
-    myfunc[i]->SetParameters(100000, left_bound, 0.25);
-    myfunc[i]->SetParLimits(1, max(left_bound - 0.1, 0.1), left_bound + 0.1);
-    Results[i] = Derivatives[i]->Fit((TString)"myfunc" + (TString)to_string(i), "B0QS", "", left_bound, 5);
-    //cout << i << " " << left_bound << "\n\n";
+
+    myfunc[i]->SetParameters(100000, left_bound[i], 0.25);
+    double leftLimit;
+    if(left_bound[i] - 0.1 > THRESHOLD)
+    {
+      leftLimit = left_bound[i] - 0.1;
+    }
+    else
+    {
+      leftLimit = THRESHOLD - 0.1;
+    }
+    myfunc[i]->SetParLimits(1, leftLimit, left_bound[i] + 0.1);
+    Results[i] = Derivatives[i]->Fit((TString)"myfunc" + (TString)to_string(i), "B0QS", "", left_bound[i], 5);
+
   }
 
   writeFile->cd();
   cd_correlated->cd();
+  TDirectory* projs = cd_correlated->mkdir("Projections");
+  projs->cd();
   TCanvas** c_Proj = new TCanvas*[projectionNum];
-  TCanvas** c_Fit = new TCanvas*[projectionNum];
+
   for(int r = 0; r < projectionNum; ++r)
   {
     // prepare to draw fit
@@ -74,7 +98,8 @@ void readFiss::Slice()
 
     // draw projection
     c_Proj[r] = new TCanvas((TString)"Proj" + (TString)to_string(r), "Projection", 800, 400);
-    c_Proj[r]->Divide(1, 2);
+    c_Proj[r]->Divide(1, 3);
+
     c_Proj[r]->cd(1);
     Projections[r]->Draw();
 
@@ -84,6 +109,10 @@ void readFiss::Slice()
 
     c_Proj[r]->cd(2);
     Derivatives[r]->Draw();
+
+    TLine* line2 = new TLine(left_bound[r], 0, left_bound[r], Derivatives[r]->GetMaximum());
+    line2->SetLineColor(kBlack);
+    line2->Draw("SAME");
 
     c_Proj[r]->Update();
     TPaveStats *stats = (TPaveStats*)Derivatives[r]->GetListOfFunctions()->FindObject("stats");
@@ -100,19 +129,31 @@ void readFiss::Slice()
 
     fitDraw.Draw("SAME");
 
+    c_Proj[r]->cd(3);
+    Seconds[r]->Draw();
+
     c_Proj[r]->Write();
   }
 
+  cd_correlated->cd();
   TCanvas* c_Final = new TCanvas("Final", "Neutron Energy vs. Neutron LO", 800, 400);
   c_Final->cd();
 
   final->SetTitle("Neutron Energy vs. Neutron Light Out;Neutron Energy [MeV];Neutron Light Out [MeVee]");
   final->GetXaxis()->SetLimits(0, 5);
   final->GetYaxis()->SetLimits(0, 5);
+  final->GetYaxis()->SetRangeUser(0, 3);
   final->Draw();
 
-  TF1* finalfit = new TF1("finalfit", "[0]x - [1] * (1-exp([2] * pow(x, [3])))", 0, 5);
-  finalfit->FixParameter(3, 1.001);
-  final->Fit("finalfit", "B");
+  TF1* finalfit = new TF1("finalfit", "[0] * x + [1] * (1-exp([2] * pow(x, [3])))", 0, 5);
+  finalfit->SetParameters(0.8, -2.5, -0.3, 1.001);
+  finalfit->SetParLimits(0, 0.5, 1);
+  finalfit->SetParLimits(1, -5, 0);
+  // finalfit->FixParameter(0, 0.817);
+  // finalfit->FixParameter(1, -2.63);
+  // finalfit->FixParameter(2, -0.297);
+  // finalfit->FixParameter(3, 1.001);
+  final->Fit("finalfit", "BQ");
+
   c_Final->Write();
 }
