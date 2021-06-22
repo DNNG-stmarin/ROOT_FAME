@@ -224,6 +224,7 @@ void readFiss::LoopSim()
     simEntries = simTree->GetEntries();
     cout << "Analyzing " << simEntries << " simulated events \n ";
 
+    long int numFissIter = 0;
     int nMult, gMult, nMultBack, gMultBack;
     Long64_t nbytes = 0, nb = 0;
     for (Long64_t jentry = 0; jentry < simEntries; jentry++)
@@ -237,6 +238,11 @@ void readFiss::LoopSim()
         gMult = 0;
         nMultBack = 0;
         gMultBack = 0;
+        numFissIter++;
+        if(numFissIter%1000000 == 0)
+        {
+          cout << "finished processing " << numFissIter << " simulated fissions" << endl;
+        }
 
 
         // loop through neutrons
@@ -268,8 +274,7 @@ void readFiss::LoopSim()
 
     }
 
-    simEntries = 1e7;
-    cout << "We found " << simEntries << "valid simulated fissions" << endl;
+    cout << "We found " << simEntries << " valid simulated fissions" << endl;
 }
 
 void readFiss::LoopBeam()

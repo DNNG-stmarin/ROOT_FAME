@@ -37,10 +37,10 @@ void readFiss::CovEM()
    TString t_rootName = "em_";
    TString titleH = "EnergyMode Correlations";
    TH2I*** emMode;
-   emMode = new TH2I**[BN];
+   emMode = new TH2I** [BN];
    for(int eN = 0; eN < BN; eN++)
    {
-   	emMode[eN] = new TH2I*[BP];
+   	emMode[eN] = new TH2I* [BP];
 
       for(int eP = 0; eP < BP; eP++)
       {
@@ -62,10 +62,14 @@ void readFiss::CovEM()
         cout << jentry << " entries done. " << endl;
       }
 
+
+
    	  // load the new entry
       Long64_t ientry = LoadExpTree(jentry);
       if (ientry < 0) break;
       nb = expTree->GetEntry(jentry);   nbytes += nb;
+
+     // cout << "loaded the new entry " << endl;
 
      // reset the event-by-event list to 0
      for(int eN = 0; eN < BN; eN ++)
@@ -77,6 +81,8 @@ void readFiss::CovEM()
       listPerg[eP] = 0;
      }
 
+     // cout << "resetted lists" << endl;
+
 
      // Neutron event-by-event spectrum
      for(int nN = 0; nN < neutronMult; nN++)
@@ -86,9 +92,9 @@ void readFiss::CovEM()
        {
          encN = int((neutronToFErg[nN] - MIN_N_ERG)/sizeNerg);
 
-         if(encN > BN)
+         if(encN >= BN)
          {
-           encN = BN;
+           encN = BN-1;
          }
          else if(encN < 0)
          {
@@ -100,14 +106,16 @@ void readFiss::CovEM()
 
      }
 
+     // cout << "encoded neutrons" << endl;
+
      // Photon event-by-event spectrum
      for(int nP = 0; nP < gammaMult; nP++)
      {
        encP = int((photonLightOut[nP] - MIN_P_ERG)/sizePerg);
 
-       if(encP > BP)
+       if(encP >= BP)
        {
-         encP = BP;
+         encP = BP-1;
        }
        else if(encP < 0)
        {
@@ -116,6 +124,8 @@ void readFiss::CovEM()
 
        listPerg[encP] += 1;
      }
+
+     // cout << "encoded gammas" << endl;
 
 
      // populate the em histograms
@@ -128,6 +138,8 @@ void readFiss::CovEM()
        }
      }
 
+     // cout << "filled EM histograms" << endl;
+
     }
 
    // find the covariance at each point
@@ -139,6 +151,8 @@ void readFiss::CovEM()
         arraySpec->SetBinContent(eN, eP, (emMode[eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2)));
        }
      }
+
+     cout << "finished setting EM matrices " << endl;
 
 }
 

@@ -273,39 +273,45 @@ void readFiss::PlotMultErg()
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
-    c_vsbeamErg[r] = new TCanvas("nLightOutErg_PhotonLightOutErg_nToFErg_Channel_" + s_TRIG_NUM, "nLO, photonLO, and nToF vs beamEnergy for Channel " + s_TRIG_NUM, 800, 1000);
+    c_vsbeamErg[r] = new TCanvas("nLightOutErgProj_pLightOutErgProj_Channel_" + s_TRIG_NUM, "nLO and photonLO vs beamEnergy for Channel " + s_TRIG_NUM, 800, 1000);
     c_vsbeamErg[r]->Divide(1,2);
 
     c_vsbeamErg[r]->cd(1);
 
+    double separationErg = 4*(BEAM_ERG_MAX - BEAM_ERG_MIN)/BEAM_ERG_BINNUM;
+    pj_pLightOutErg[r][0]->Rebin(5);
     pj_pLightOutErg[r][0]->Draw();
     pj_pLightOutErg[r][0]->SetLineColor(1);
-    pj_pLightOutErg[r][0]->SetTitle("Bin Range 0-4; Neutron Light Output (MeVee); Integral Normalized Counts From Projection (Counts/area)");
+    pj_pLightOutErg[r][0]->SetTitle("IncErg Range " + (TString)to_string(BEAM_ERG_MIN) + "-" + (TString)to_string(BEAM_ERG_MIN + separationErg)  + " (MeV)" );
     for (int i = 1; i < BEAM_ERG_BINNUM/4; i++)
     {
-      TString ergRLow = (TString)to_string(4*i);
-      TString ergRHigh = (TString)to_string(4*i + 3);
+      TString ergRLow = (TString)to_string(BEAM_ERG_MIN + separationErg*i);
+      TString ergRHigh = (TString)to_string(BEAM_ERG_MIN + separationErg*(i+1));
+      pj_pLightOutErg[r][i]->Rebin(5);
       pj_pLightOutErg[r][i]->Draw("SAME");
       pj_pLightOutErg[r][i]->SetLineColor(i + 1);
-      pj_pLightOutErg[r][i]->SetTitle("Bin Range " + ergRLow + "-" + ergRHigh);
+      pj_pLightOutErg[r][i]->SetTitle("IncErg Range: " + ergRLow + "-" + ergRHigh + " (MeV)");
     }
     gPad->BuildLegend();
-    pj_pLightOutErg[r][0]->SetTitle("Incident Neutron Energy Dependent Photon Light Output");
+    pj_pLightOutErg[r][0]->SetTitle("Incident Neutron Energy Dependent Photon Light Output; Photon Light Output (MeVee); Integral Normalized Counts From Projection (Counts/area)");
 
-  c_vsbeamErg[r]->cd(2);
+    c_vsbeamErg[r]->cd(2);
+
+    pj_nLightOutErg[r][0]->Rebin(5);
     pj_nLightOutErg[r][0]->Draw();
     pj_nLightOutErg[r][0]->SetLineColor(1);
-    pj_nLightOutErg[r][0]->SetTitle("Bin Range 0-4; Neutron Light Output (MeVee); Integral Normalized Counts From Projection (Counts/area)");
+    pj_nLightOutErg[r][0]->SetTitle("IncErg Range " + (TString)to_string(BEAM_ERG_MIN) + "-" + (TString)to_string(BEAM_ERG_MIN + separationErg) + " (MeV)" );
     for (int i = 1; i < BEAM_ERG_BINNUM/4; i++)
     {
-      TString ergRLow = (TString)to_string(4*i);
-      TString ergRHigh = (TString)to_string(4*i + 3);
+      TString ergRLow = (TString)to_string(BEAM_ERG_MIN + separationErg*i);
+      TString ergRHigh = (TString)to_string(BEAM_ERG_MIN + separationErg*(i+1));
+      pj_nLightOutErg[r][i]->Rebin(5);
       pj_nLightOutErg[r][i]->Draw("SAME");
       pj_nLightOutErg[r][i]->SetLineColor(i + 1);
-      pj_nLightOutErg[r][i]->SetTitle("Bin Range " + ergRLow + "-" + ergRHigh);
+      pj_nLightOutErg[r][i]->SetTitle("IncErg Range: " + ergRLow + "-" + ergRHigh + " (MeV)");
     }
     gPad->BuildLegend();
-    pj_nLightOutErg[r][0]->SetTitle("Incident Neutron Energy Dependent Neutron Light Output");
+    pj_nLightOutErg[r][0]->SetTitle("Incident Neutron Energy Dependent Neutron Light Output; Neutron Light Output (MeVee); Integral Normalized Counts From Projection (Counts/area)");
 
     c_vsbeamErg[r]->Write();
   }
