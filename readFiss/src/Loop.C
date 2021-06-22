@@ -22,7 +22,7 @@ void readFiss::LoopExp()
    cout << "Analyzing " << expEntries << " experimental events \n";
    long int numFissIter = 0;
 
-   int nMult, gMult, nMultBack, gMultBack, indexChannel;
+   int nMult, gMult, nMultBack, gMultBack, indexChannel, indexDet;
    Double_t currTime;
    Long64_t nbytes = 0, nb = 0;
 
@@ -111,6 +111,21 @@ void readFiss::LoopExp()
             neutronEnergyLOExp->Fill(neutronToFErg[i], neutronLightOut[i]);
             neutronLightOutPSDExp->Fill(neutronLightOut[i], neutronPSD[i]);
 
+            indexDet = isDetector(neutronDet[i]);
+            if(indexDet < 0)
+            {
+              cout << "Detector number " << neutronDet[i] << " not recognized." << endl;
+              exit(10);
+            }
+
+            IndivNeutronLightOutputExp[indexDet]->Fill(neutronLightOut[i]);
+            IndivNeutronTofExp[indexDet]->Fill(neutronDetTimes[i]);
+            IndivNeutronEnergyExp[indexDet]->Fill(neutronToFErg[i]);
+            IndivNeutronPSDExp[indexDet]->Fill(neutronPSD[i]);
+
+            IndivNeutronEnergyLOExp[indexDet]->Fill(neutronToFErg[i], neutronLightOut[i]);
+            IndivNeutronLightOutPSDExp[indexDet]->Fill(neutronLightOut[i], neutronPSD[i]);
+
             if (validBeam)
             {
               h2_nLightOutErg[indexChannel]->Fill(beamEnergy, neutronLightOut[i]);
@@ -138,6 +153,19 @@ void readFiss::LoopExp()
           photonSinglesExp->Fill(photonDet[i]);
           neutronMultPhotonLOExp->Fill(nMult, photonLightOut[i]);
           photonLightOutPSDExp->Fill(photonLightOut[i], photonPSD[i]);
+
+          indexDet = isDetector(photonDet[i]);
+          if(indexDet < 0)
+          {
+            cout << "Detector number " << photonDet[i] << " not recognized." << endl;
+            exit(10);
+          }
+
+          IndivPhotonLightOutputExp[indexDet]->Fill(photonLightOut[i]);
+          IndivPhotonTofExp[indexDet]->Fill(photonDetTimes[i]);
+          IndivPhotonPSDExp[indexDet]->Fill(photonPSD[i]);
+
+          IndivPhotonLightOutPSDExp[indexDet]->Fill(photonLightOut[i], photonPSD[i]);
 
           if (validBeam)
           {
@@ -167,6 +195,18 @@ void readFiss::LoopExp()
             neutronPSDBack->Fill(backNeutronPSD[i]);
             neutronSinglesBack->Fill(backNeutronDet[i]);
 
+            indexDet = isDetector(backNeutronDet[i]);
+            if(indexDet < 0)
+            {
+              cout << "Detector number " << backNeutronDet[i] << " not recognized." << endl;
+              exit(10);
+            }
+
+            IndivNeutronLightOutputBack[indexDet]->Fill(backNeutronLightOut[i]);
+            IndivNeutronTofBack[indexDet]->Fill(backNeutronDetTimes[i] + BACKGROUND_DELAY);
+            IndivNeutronEnergyBack[indexDet]->Fill(backNeutronToFErg[i]);
+            IndivNeutronPSDBack[indexDet]->Fill(backNeutronPSD[i]);
+
             if(validBeam)
             {
               h2_nBackToFErg[indexChannel]->Fill(beamEnergy, backNeutronToFErg[i]);
@@ -190,8 +230,19 @@ void readFiss::LoopExp()
           gMultBack++;
           photonLightOutputBack->Fill(backPhotonLightOut[i]);
           photonTofBack->Fill(backPhotonDetTimes[i] + BACKGROUND_DELAY);
-          photonPSDBack->Fill(photonPSD[i]);
+          photonPSDBack->Fill(backPhotonPSD[i]);
           photonSinglesBack->Fill(backPhotonDet[i]);
+
+          indexDet = isDetector(backPhotonDet[i]);
+          if(indexDet < 0)
+          {
+            cout << "Detector number " << backPhotonDet[i] << " not recognized." << endl;
+            exit(10);
+          }
+
+          IndivPhotonLightOutputBack[indexDet]->Fill(backPhotonLightOut[i]);
+          IndivPhotonTofBack[indexDet]->Fill(backPhotonDetTimes[i] + BACKGROUND_DELAY);
+          IndivPhotonPSDBack[indexDet]->Fill(backPhotonPSD[i]);
 
           if (validBeam)
           {
@@ -225,7 +276,7 @@ void readFiss::LoopSim()
     cout << "Analyzing " << simEntries << " simulated events \n ";
 
     long int numFissIter = 0;
-    int nMult, gMult, nMultBack, gMultBack;
+    int nMult, gMult, nMultBack, gMultBack, indexDet;
     Long64_t nbytes = 0, nb = 0;
     for (Long64_t jentry = 0; jentry < simEntries; jentry++)
     {
@@ -255,6 +306,18 @@ void readFiss::LoopSim()
               neutronTofSim->Fill(neutronDetTimes[i]);
               neutronEnergySim->Fill(neutronEnergy[i]);
               neutronSinglesSim->Fill(neutronChannel[i]);
+
+              indexDet = isDetector(neutronChannel[i]);
+              if(indexDet < 0)
+              {
+                cout << "Detector number " << neutronChannel[i] << " not recognized." << endl;
+                exit(10);
+              }
+
+              IndivNeutronLightOutputSim[indexDet]->Fill(neutronIntegral[i]);
+              IndivNeutronTofSim[indexDet]->Fill(neutronDetTimes[i]);
+              IndivNeutronEnergySim[indexDet]->Fill(neutronEnergy[i]);
+              IndivNeutronPSDSim[indexDet]->Fill(neutronPSD[i]);
           }
         }
         neutronMultSim->Fill(nMult);
@@ -268,6 +331,17 @@ void readFiss::LoopSim()
               photonLightOutputSim->Fill(photonIntegral[i]);
               photonTofSim->Fill(photonDetTimes[i]);
               photonSinglesSim->Fill(photonChannel[i]);
+
+              indexDet = isDetector(photonChannel[i]);
+              if(indexDet < 0)
+              {
+                cout << "Detector number " << photonChannel[i] << " not recognized." << endl;
+                exit(10);
+              }
+
+              IndivPhotonLightOutputSim[indexDet]->Fill(photonIntegral[i]);
+              IndivPhotonTofSim[indexDet]->Fill(photonDetTimes[i]);
+              IndivPhotonPSDSim[indexDet]->Fill(photonPSD[i]);
           }
         }
         photonMultSim->Fill(gMult);

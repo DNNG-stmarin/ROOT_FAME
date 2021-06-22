@@ -36,6 +36,8 @@ void readFiss::PlotAll()
   PlotEnergyLOExp();
   PlotN_LOPSD_Exp();
   PlotP_LOPSD_Exp();
+
+  PlotIndiv();
 }
 
 void readFiss::CompareAll()
@@ -487,6 +489,225 @@ void readFiss::PlotP_LOPSD_Exp()
 
   c_P_LOPSD_Exp->Write();
   //c_P_LOPSD_Exp->SaveAs("photonLightOutPSDExp.eps");
+}
+
+void readFiss::PlotIndiv()
+{
+  writeFile->cd();
+  cd_individual->cd();
+
+  cd_LightOutExp = cd_individual->mkdir("LightOutExp");
+  cd_ToFExp = cd_individual->mkdir("ToFExp");
+  cd_ErgExp = cd_individual->mkdir("ErgExp");
+  cd_PSDExp = cd_individual->mkdir("PSDExp");
+  cd_IndivNeutronEnergyLOExp = cd_individual->mkdir("NeutronEnergyLOExp");
+  cd_IndivNeutronLightOutPSDExp = cd_individual->mkdir("NeutronLightOutPSDExp");
+  cd_IndivPhotonLightOutPSDExp = cd_individual->mkdir("PhotonLightOutPSDExp");
+
+  cd_LightOutExp->cd();
+  TCanvas** c_LightOutExp = new TCanvas*[NUM_DETECTORS];
+
+  cd_ToFExp->cd();
+  TCanvas** c_ToFExp = new TCanvas*[NUM_DETECTORS];
+
+  cd_ErgExp->cd();
+  TCanvas** c_ErgExp = new TCanvas*[NUM_DETECTORS];
+
+  cd_PSDExp->cd();
+  TCanvas** c_PSDExp = new TCanvas*[NUM_DETECTORS];
+
+  cd_IndivNeutronEnergyLOExp->cd();
+  TCanvas** c_IndivNeutronEnergyLOExp = new TCanvas*[NUM_DETECTORS];
+
+  cd_IndivNeutronLightOutPSDExp->cd();
+  TCanvas** c_IndivNeutronLightOutPSDExp = new TCanvas*[NUM_DETECTORS];
+
+  cd_IndivPhotonLightOutPSDExp->cd();
+  TCanvas** c_IndivPhotonLightOutPSDExp = new TCanvas*[NUM_DETECTORS];
+
+  for(int i = 0; i < NUM_DETECTORS; ++i)
+  {
+    TString index = (TString)to_string(i);
+
+    cd_LightOutExp->cd();
+    c_LightOutExp[i] = new TCanvas((TString)"LightOutExp" + (TString)to_string(i), "Light Output", 800, 400);
+    c_LightOutExp[i]->cd();
+
+    IndivPhotonLightOutputExp[i]->SetLineColor(kRed);
+    IndivPhotonLightOutputExp[i]->SetStats(0);
+    IndivPhotonLightOutputExp[i]->Draw();
+
+    IndivPhotonLightOutputBack[i]->SetLineColor(kRed);
+    IndivPhotonLightOutputBack[i]->SetLineStyle(kDashed);
+    IndivPhotonLightOutputBack[i]->SetStats(0);
+    IndivPhotonLightOutputBack[i]->Draw("SAME");
+
+    IndivNeutronLightOutputExp[i]->SetLineColor(kBlue);
+    IndivNeutronLightOutputExp[i]->SetStats(0);
+    IndivNeutronLightOutputExp[i]->Draw("SAME");
+
+    IndivNeutronLightOutputBack[i]->SetLineColor(kBlue);
+    IndivNeutronLightOutputBack[i]->SetLineStyle(kDashed);
+    IndivNeutronLightOutputBack[i]->SetStats(0);
+    IndivNeutronLightOutputBack[i]->Draw("SAME");
+
+    TLegend *legend_LightOutput = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
+    legend_LightOutput->AddEntry((TString)"IndivNeutronLightOutputExp" + index, "Experimental Neutron");
+    legend_LightOutput->AddEntry((TString)"IndivPhotonLightOutputExp" + index, "Experimental Photon");
+    legend_LightOutput->AddEntry((TString)"IndivNeutronLightOutputBack" + index, "Background Neutron");
+    legend_LightOutput->AddEntry((TString)"IndivPhotonLightOutputBack" + index, "Background Photon");
+    legend_LightOutput->Draw("SAME");
+
+    IndivPhotonLightOutputExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    IndivPhotonLightOutputExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    IndivPhotonLightOutputExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    IndivPhotonLightOutputExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+
+    c_LightOutExp[i]->Write();
+
+    cd_ToFExp->cd();
+    c_ToFExp[i] = new TCanvas((TString)"ToFExp" + (TString)to_string(i), "Time of Flight", 800, 400);
+    c_ToFExp[i]->cd();
+
+    IndivPhotonTofExp[i]->SetLineColor(kRed);
+    IndivPhotonTofExp[i]->SetStats(0);
+    IndivPhotonTofExp[i]->Draw();
+
+    IndivPhotonTofBack[i]->SetLineColor(kRed);
+    IndivPhotonTofBack[i]->SetLineStyle(kDashed);
+    IndivPhotonTofBack[i]->SetStats(0);
+    IndivPhotonTofBack[i]->Draw("SAME");
+
+    IndivNeutronTofExp[i]->SetLineColor(kBlue);
+    IndivNeutronTofExp[i]->SetStats(0);
+    IndivNeutronTofExp[i]->Draw("SAME");
+
+    IndivNeutronTofBack[i]->SetLineColor(kBlue);
+    IndivNeutronTofBack[i]->SetLineStyle(kDashed);
+    IndivNeutronTofBack[i]->SetStats(0);
+    IndivNeutronTofBack[i]->Draw("SAME");
+
+    TLegend *legend_ToF = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
+    legend_ToF->AddEntry((TString)"IndivNeutronTofExp" + index, "Experimental Neutron");
+    legend_ToF->AddEntry((TString)"IndivPhotonTofExp" + index, "Experimental Photon");
+    legend_ToF->AddEntry((TString)"IndivNeutronTofBack" + index, "Background Neutron");
+    legend_ToF->AddEntry((TString)"IndivPhotonTofBack" + index, "Background Photon");
+    legend_ToF->Draw("SAME");
+
+    IndivPhotonTofExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    IndivPhotonTofExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    IndivPhotonTofExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    IndivPhotonTofExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+
+    c_ToFExp[i]->Write();
+
+    cd_ErgExp->cd();
+    c_ErgExp[i] = new TCanvas((TString)"ErgExp" + (TString)to_string(i), "ToF Energy", 800, 400);
+    c_ErgExp[i]->cd();
+
+    IndivNeutronEnergyExp[i]->SetLineColor(kBlue);
+    IndivNeutronEnergyExp[i]->SetStats(0);
+    IndivNeutronEnergyExp[i]->Draw();
+
+    IndivNeutronEnergyBack[i]->SetLineColor(kBlue);
+    IndivNeutronEnergyBack[i]->SetLineStyle(kDashed);
+    IndivNeutronEnergyBack[i]->SetStats(0);
+    IndivNeutronEnergyBack[i]->Draw("SAME");
+
+
+    TLegend *legend_Energy = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
+    legend_Energy->AddEntry((TString)"IndivNeutronEnergyExp" + index, "Experimental Neutron");
+    legend_Energy->AddEntry((TString)"IndivNeutronEnergyBack" + index, "Background Neutron");
+    legend_Energy->Draw("SAME");
+
+    IndivNeutronEnergyExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    IndivNeutronEnergyExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    IndivNeutronEnergyExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    IndivNeutronEnergyExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+
+    c_ErgExp[i]->Write();
+
+    cd_PSDExp->cd();
+    c_PSDExp[i] = new TCanvas((TString)"PSDExp" + (TString)to_string(i), "Particle Discrimination", 800, 400);
+    c_PSDExp[i]->cd();
+
+    IndivPhotonPSDExp[i]->SetLineColor(kRed);
+    IndivPhotonPSDExp[i]->SetStats(0);
+    IndivPhotonPSDExp[i]->Draw();
+
+    IndivPhotonPSDBack[i]->SetLineColor(kRed);
+    IndivPhotonPSDBack[i]->SetLineStyle(kDashed);
+    IndivPhotonPSDBack[i]->SetStats(0);
+    IndivPhotonPSDBack[i]->Draw("SAME");
+
+    IndivNeutronPSDExp[i]->SetLineColor(kBlue);
+    IndivNeutronPSDExp[i]->SetStats(0);
+    IndivNeutronPSDExp[i]->Draw("SAME");
+
+    IndivNeutronPSDBack[i]->SetLineColor(kBlue);
+    IndivNeutronPSDBack[i]->SetLineStyle(kDashed);
+    IndivNeutronPSDBack[i]->SetStats(0);
+    IndivNeutronPSDBack[i]->Draw("SAME");
+
+    TLegend *legend_PSD = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
+    legend_PSD->AddEntry((TString)"IndivNeutronPSDExp" + index, "Experimental Neutron");
+    legend_PSD->AddEntry((TString)"IndivPhotonPSDExp" + index, "Experimental Photon");
+    legend_PSD->AddEntry((TString)"IndivNeutronPSDBack" + index, "Background Neutron");
+    legend_PSD->AddEntry((TString)"IndivPhotonPSDBack" + index, "Background Photon");
+    legend_PSD->Draw("SAME");
+
+    IndivPhotonPSDExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    IndivPhotonPSDExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    IndivPhotonPSDExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    IndivPhotonPSDExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+
+    c_PSDExp[i]->Write();
+
+    cd_IndivNeutronEnergyLOExp->cd();
+    c_IndivNeutronEnergyLOExp[i] = new TCanvas((TString)"NeutronEnergyLOExp" + (TString)to_string(i), "Neutron Energy vs. LO", 800, 400);
+    c_IndivNeutronEnergyLOExp[i]->cd();
+
+    IndivNeutronEnergyLOExp[i]->SetLineColor(kRed);
+    IndivNeutronEnergyLOExp[i]->SetStats(0);
+    IndivNeutronEnergyLOExp[i]->Draw("COLZ");
+
+    IndivNeutronEnergyLOExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    IndivNeutronEnergyLOExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    IndivNeutronEnergyLOExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    IndivNeutronEnergyLOExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+
+    c_IndivNeutronEnergyLOExp[i]->Write();
+
+    cd_IndivNeutronLightOutPSDExp->cd();
+    c_IndivNeutronLightOutPSDExp[i] = new TCanvas((TString)"NeutronLightOutPSDExp" + (TString)to_string(i), "Neutron Light Output vs. PSD", 800, 400);
+    c_IndivNeutronLightOutPSDExp[i]->cd();
+
+    IndivNeutronLightOutPSDExp[i]->SetLineColor(kRed);
+    IndivNeutronLightOutPSDExp[i]->SetStats(0);
+    IndivNeutronLightOutPSDExp[i]->Draw("SURF2");
+
+    IndivNeutronLightOutPSDExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    IndivNeutronLightOutPSDExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    IndivNeutronLightOutPSDExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    IndivNeutronLightOutPSDExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+
+    c_IndivNeutronLightOutPSDExp[i]->Write();
+
+    cd_IndivPhotonLightOutPSDExp->cd();
+    c_IndivPhotonLightOutPSDExp[i] = new TCanvas((TString)"PhotonLightOutPSDExp" + (TString)to_string(i), "Photon Light Output vs. PSD", 800, 400);
+    c_IndivPhotonLightOutPSDExp[i]->cd();
+
+    IndivPhotonLightOutPSDExp[i]->SetLineColor(kRed);
+    IndivPhotonLightOutPSDExp[i]->SetStats(0);
+    IndivPhotonLightOutPSDExp[i]->Draw("SURF2");
+
+    IndivPhotonLightOutPSDExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    IndivPhotonLightOutPSDExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    IndivPhotonLightOutPSDExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    IndivPhotonLightOutPSDExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+
+    c_IndivPhotonLightOutPSDExp[i]->Write();
+  }
 }
 
 /*

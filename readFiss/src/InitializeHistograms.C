@@ -128,6 +128,103 @@ void readFiss::InitializeHistograms()
 
 
   //
+  /*
+  ___         _ _     _    _           _
+ |_ _|_ _  __| (_)_ _(_)__| |_  _ __ _| |
+  | || ' \/ _` | \ V / / _` | || / _` | |
+ |___|_||_\__,_|_|\_/|_\__,_|\_,_\__,_|_|
+
+ */
+
+ // basic
+ IndivNeutronLightOutputExp = new TH1D*[NUM_DETECTORS];
+ IndivNeutronLightOutputBack = new TH1D*[NUM_DETECTORS];
+
+ IndivPhotonLightOutputExp = new TH1D*[NUM_DETECTORS];
+ IndivPhotonLightOutputBack = new TH1D*[NUM_DETECTORS];
+
+ IndivNeutronTofExp = new TH1D*[NUM_DETECTORS];
+ IndivNeutronTofBack = new TH1D*[NUM_DETECTORS];
+
+ IndivPhotonTofExp = new TH1D*[NUM_DETECTORS];
+ IndivPhotonTofBack = new TH1D*[NUM_DETECTORS];
+
+ IndivNeutronEnergyExp = new TH1D*[NUM_DETECTORS];
+ IndivNeutronEnergyBack = new TH1D*[NUM_DETECTORS];
+
+ IndivNeutronPSDExp = new TH1D*[NUM_DETECTORS];
+ IndivNeutronPSDBack = new TH1D*[NUM_DETECTORS];
+
+ IndivPhotonPSDExp = new TH1D*[NUM_DETECTORS];
+ IndivPhotonPSDBack = new TH1D*[NUM_DETECTORS];
+
+ // simulated
+ if(mode == 1)
+ {
+   IndivNeutronLightOutputSim = new TH1D*[NUM_DETECTORS];
+   IndivPhotonLightOutputSim = new TH1D*[NUM_DETECTORS];
+   IndivNeutronTofSim = new TH1D*[NUM_DETECTORS];
+   IndivPhotonTofSim = new TH1D*[NUM_DETECTORS];
+   IndivNeutronEnergySim = new TH1D*[NUM_DETECTORS];
+   IndivNeutronPSDSim = new TH1D*[NUM_DETECTORS];
+   IndivPhotonPSDSim = new TH1D*[NUM_DETECTORS];
+ }
+
+ // correlated
+ IndivNeutronEnergyLOExp = new TH2D*[NUM_DETECTORS];
+ IndivNeutronLightOutPSDExp = new TH2D*[NUM_DETECTORS];
+ IndivPhotonLightOutPSDExp = new TH2D*[NUM_DETECTORS];
+
+ for(int i = 0; i < NUM_DETECTORS; ++i)
+ {
+   // basic
+   IndivNeutronLightOutputExp[i] = new TH1D((TString)"IndivNeutronLightOutputExp" + (TString)to_string(i), "Light Output Experiment;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
+   IndivNeutronLightOutputBack[i] = new TH1D((TString)"IndivNeutronLightOutputBack" + (TString)to_string(i), "Light Output Background;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
+
+   IndivPhotonLightOutputExp[i] = new TH1D((TString)"IndivPhotonLightOutputExp" + (TString)to_string(i), "Light Output Experiment;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
+   IndivPhotonLightOutputBack[i] = new TH1D((TString)"IndivPhotonLightOutputBack" + (TString)to_string(i), "Light Output Background;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
+
+   IndivNeutronTofExp[i] = new TH1D((TString)"IndivNeutronTofExp" + (TString)to_string(i), "Time-of-Flight Experiment;Time [ns];Counts", numTofBins, minTof, maxTof);
+   IndivNeutronTofBack[i] = new TH1D((TString)"IndivNeutronTofBack" + (TString)to_string(i), "Time-of-Flight Background;Time [ns];Counts", numTofBins, minTof, maxTof);
+
+   IndivPhotonTofExp[i] = new TH1D((TString)"IndivPhotonTofExp" + (TString)to_string(i), "Time-of-Flight Experiment;Time [ns];Counts", numTofBins, minTof, maxTof);
+   IndivPhotonTofBack[i] = new TH1D((TString)"IndivPhotonTofBack" + (TString)to_string(i), "Time-of-Flight Background;Time [ns];Counts", numTofBins, minTof, maxTof);
+
+   IndivNeutronEnergyExp[i] = new TH1D((TString)"IndivNeutronEnergyExp" + (TString)to_string(i), "Neutron Energy Experiment;Energy [MeV];Counts", numErgBins, minErg, maxErg);
+   IndivNeutronEnergyBack[i] = new TH1D((TString)"IndivNeutronEnergyBack" + (TString)to_string(i), "Neutron Energy Background;Energy [MeV];Counts", numErgBins, minErg, maxErg);
+
+   IndivNeutronPSDExp[i] = new TH1D((TString)"IndivNeutronPSDExp" + (TString)to_string(i), "Neutron PSP; PSP (tail/total); counts",  numPSDBins, minPSP, maxPSP);
+   IndivNeutronPSDBack[i] = new TH1D((TString)"IndivNeutronPSDBack" + (TString)to_string(i), "Neutron PSP; PSP (tail/total); counts",  numPSDBins, minPSP, maxPSP);
+
+   IndivPhotonPSDExp[i] = new TH1D((TString)"IndivPhotonPSDExp" + (TString)to_string(i), "Photon PSP; PSP (tail/total); counts", numPSDBins, minPSP, maxPSP);
+   IndivPhotonPSDBack[i] = new TH1D((TString)"IndivPhotonPSDBack" + (TString)to_string(i), "Photon PSP; PSP (tail/total); counts", numPSDBins, minPSP, maxPSP);
+
+   // simulated
+   if(mode == 2)
+   {
+     IndivNeutronLightOutputSim[i] = new TH1D((TString)"IndivNeutronLightOutputSim" + (TString)to_string(i), "Light Output Simulation;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
+     IndivPhotonLightOutputSim[i] = new TH1D((TString)"IndivPhotonLightOutputSim" + (TString)to_string(i), "Light Output Simulation;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
+     IndivNeutronTofSim[i] = new TH1D((TString)"IndivNeutronTofSim" + (TString)to_string(i), "Time-of-Flight Simulation;Time [ns];Counts", numTofBins, minTof, maxTof);
+     IndivPhotonTofSim[i] = new TH1D((TString)"IndivPhotonTofSim" + (TString)to_string(i), "Time-of-Flight Simulation;Time [ns];Counts", numTofBins, minTof, maxTof);
+     IndivNeutronEnergySim[i] = new TH1D((TString)"IndivNeutronEnergySim" + (TString)to_string(i), "Neutron Energy Simulation;Energy [MeV];Counts", numErgBins, minErg, maxErg);
+     IndivNeutronPSDSim[i] = new TH1D((TString)"IndivNeutronPSDSim" + (TString)to_string(i), "Neutron PSP; PSP (tail/total); counts",  numPSDBins, minPSP, maxPSP);
+     IndivPhotonPSDSim[i] = new TH1D((TString)"IndivPhotonPSDSim" + (TString)to_string(i), "Photon PSP; PSP (tail/total); counts", numPSDBins, minPSP, maxPSP);
+   }
+
+   // correlated
+   IndivNeutronEnergyLOExp[i] = new TH2D((TString)"IndivNeutronEnergyLOExp" + (TString)to_string(i), "Neutron Energy vs. Neutron Light Output; Neutron Energy [MeV]; Neutron Light Output [MeVee]; Counts", numErgBins, minErg, maxErg, numLObins, minLO, maxLO);
+   IndivNeutronLightOutPSDExp[i] = new TH2D((TString)"IndivNeutronLightOutPSDExp" + (TString)to_string(i), "Neutron Light Output vs. Neutron PSD; Neutron Light Output [MeVee]; Neutron PSP [tail/total]; Counts", numLObins, minLO, maxLO, numPSDBins, minPSP, maxPSP);
+   IndivPhotonLightOutPSDExp[i] = new TH2D((TString)"IndivPhotonLightOutPSDExp" + (TString)to_string(i), "Photon Light Output vs. Photon PSD; Photon Light Output [MeVee]; Photon PSP [tail/total]; Counts", numLObins, minLO, maxLO, numPSDBins, minPSP, maxPSP);
+ }
+
+
+ /*
+  ___
+ | _ ) ___ __ _ _ __
+ | _ \/ -_) _` | '  \
+ |___/\___\__,_|_|_|_|
+
+ */
 
   // alphaFile histograms
   h_alphaDep = new TH1D* [NUM_TRIGGERS];

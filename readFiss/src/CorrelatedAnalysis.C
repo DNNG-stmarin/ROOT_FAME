@@ -152,7 +152,7 @@ void readFiss::Slice()
   // finalfit->FixParameter(0, 0.817);
   // finalfit->FixParameter(1, -2.63);
   // finalfit->FixParameter(2, -0.297);
-  // finalfit->FixParameter(3, 1.001);
+  finalfit->FixParameter(3, 1.001);
   final->Fit("finalfit", "BQ");
 
   c_Final->Write();

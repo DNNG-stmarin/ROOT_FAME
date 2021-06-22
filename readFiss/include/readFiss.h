@@ -61,8 +61,20 @@ public :
    TDirectory*      cd_beam;
    TDirectory*      cd_trigger;
 
+   // individual directories
+   TDirectory*      cd_LightOutExp;
+   TDirectory*      cd_ToFExp;
+   TDirectory*      cd_ErgExp;
+   TDirectory*      cd_PSDExp;
+   TDirectory*      cd_IndivNeutronEnergyLOExp;
+   TDirectory*      cd_IndivNeutronLightOutPSDExp;
+   TDirectory*      cd_IndivPhotonLightOutPSDExp;
+
    int NUM_TRIGGERS; // number of trigger channels
    int* TRIGGERS;
+
+   int NUM_DETECTORS; // number of detectors
+   int* DETECTORS;
 
 
   /*
@@ -175,6 +187,35 @@ public :
    TH1D* photonSinglesSim;
    TH1D* photonSinglesBack;
 
+   // individual basic hists
+   TH1D** IndivNeutronLightOutputSim;
+   TH1D** IndivNeutronLightOutputExp;
+   TH1D** IndivNeutronLightOutputBack;
+
+   TH1D** IndivPhotonLightOutputSim;
+   TH1D** IndivPhotonLightOutputExp;
+   TH1D** IndivPhotonLightOutputBack;
+
+   TH1D** IndivNeutronTofSim;
+   TH1D** IndivNeutronTofExp;
+   TH1D** IndivNeutronTofBack;
+
+   TH1D** IndivPhotonTofSim;
+   TH1D** IndivPhotonTofExp;
+   TH1D** IndivPhotonTofBack;
+
+   TH1D** IndivNeutronEnergySim;
+   TH1D** IndivNeutronEnergyExp;
+   TH1D** IndivNeutronEnergyBack;
+
+   TH1D** IndivNeutronPSDExp;
+   TH1D** IndivNeutronPSDSim;
+   TH1D** IndivNeutronPSDBack;
+
+   TH1D** IndivPhotonPSDExp;
+   TH1D** IndivPhotonPSDSim;
+   TH1D** IndivPhotonPSDBack;
+
    // correlated histograms - add Exp to the end of these
    TH2I* neutronGammaMultExp;
    TH2D* neutronMultPhotonLOExp;
@@ -185,6 +226,11 @@ public :
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
+
+   // individual correlated hists
+   TH2D** IndivNeutronEnergyLOExp;
+   TH2D** IndivNeutronLightOutPSDExp;
+   TH2D** IndivPhotonLightOutPSDExp;
 
    // alphaFile histograms
    TH1D** h_alphaDep;
@@ -508,6 +554,7 @@ public :
    virtual void     InitializeHistograms();
    virtual void     InitializeFunctions();
    virtual int      isTrigger(int triggerNumber);
+   virtual int      isDetector(int detectorNumber);
 
    // callable functions
    virtual void     PlotAll();
@@ -529,6 +576,9 @@ public :
    virtual void     PlotEnergyLOExp();
    virtual void     PlotN_LOPSD_Exp();
    virtual void     PlotP_LOPSD_Exp();
+
+   // plot individual detectors
+   virtual void     PlotIndiv();
 
    // plot the beam parameters
    virtual void     PlotDepSubtraction();
