@@ -111,10 +111,10 @@ void readFiss::LoopExp()
             neutronEnergyLOExp->Fill(neutronToFErg[i], neutronLightOut[i]);
             neutronLightOutPSDExp->Fill(neutronLightOut[i], neutronPSD[i]);
 
-            indexDet = isDetector(neutronDet[i]);
+            indexDet = neutronDet[i];
             if(indexDet < 0)
             {
-              cout << "Detector number " << neutronDet[i] << " not recognized." << endl;
+              cout << "Detector number " << neutronDet[i] << " not recognized from neutronDet." << endl;
               exit(10);
             }
 
@@ -154,10 +154,10 @@ void readFiss::LoopExp()
           neutronMultPhotonLOExp->Fill(nMult, photonLightOut[i]);
           photonLightOutPSDExp->Fill(photonLightOut[i], photonPSD[i]);
 
-          indexDet = isDetector(photonDet[i]);
+          indexDet = photonDet[i];
           if(indexDet < 0)
           {
-            cout << "Detector number " << photonDet[i] << " not recognized." << endl;
+            cout << "Detector number " << photonDet[i] << " not recognized from photonDet." << endl;
             exit(10);
           }
 
@@ -195,10 +195,10 @@ void readFiss::LoopExp()
             neutronPSDBack->Fill(backNeutronPSD[i]);
             neutronSinglesBack->Fill(backNeutronDet[i]);
 
-            indexDet = isDetector(backNeutronDet[i]);
+            indexDet = backNeutronDet[i];
             if(indexDet < 0)
             {
-              cout << "Detector number " << backNeutronDet[i] << " not recognized." << endl;
+              cout << "Detector number " << backNeutronDet[i] << " not recognized from backNeutronDet." << endl;
               exit(10);
             }
 
@@ -233,10 +233,10 @@ void readFiss::LoopExp()
           photonPSDBack->Fill(backPhotonPSD[i]);
           photonSinglesBack->Fill(backPhotonDet[i]);
 
-          indexDet = isDetector(backPhotonDet[i]);
+          indexDet = backPhotonDet[i];
           if(indexDet < 0)
           {
-            cout << "Detector number " << backPhotonDet[i] << " not recognized." << endl;
+            cout << "Detector number " << backPhotonDet[i] << " not recognized from backPhotonDet." << endl;
             exit(10);
           }
 
@@ -307,10 +307,10 @@ void readFiss::LoopSim()
               neutronEnergySim->Fill(neutronEnergy[i]);
               neutronSinglesSim->Fill(neutronChannel[i]);
 
-              indexDet = isDetector(neutronChannel[i]);
+              indexDet = neutronChannel[i];
               if(indexDet < 0)
               {
-                cout << "Detector number " << neutronChannel[i] << " not recognized." << endl;
+                cout << "Detector number " << neutronChannel[i] << " not recognized from neutronChannel." << endl;
                 exit(10);
               }
 
@@ -332,10 +332,10 @@ void readFiss::LoopSim()
               photonTofSim->Fill(photonDetTimes[i]);
               photonSinglesSim->Fill(photonChannel[i]);
 
-              indexDet = isDetector(photonChannel[i]);
+              indexDet = photonChannel[i];
               if(indexDet < 0)
               {
-                cout << "Detector number " << photonChannel[i] << " not recognized." << endl;
+                cout << "Detector number " << photonChannel[i] << " not recognized from photonChannel." << endl;
                 exit(10);
               }
 
