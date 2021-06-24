@@ -38,6 +38,8 @@ private:
 	int REUSE_DATA;
 	int DEBUG;
 
+	int RANDOM_COINCIDENCE;
+
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";
 

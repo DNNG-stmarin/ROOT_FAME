@@ -34,6 +34,8 @@ const int NUM_LO_HIST = 400;
 
 const int MIN_ENTRIES = 50;
 
+const double FAKE_FISS_SIGNAL = 0.01;
+
 
 
 #endif

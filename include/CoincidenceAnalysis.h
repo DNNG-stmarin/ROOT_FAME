@@ -49,6 +49,8 @@ public :
    // 0: CoMPASS
    // 1: MIDAS
 
+   int RANDOM_COINCIDENCE;
+
    COMPASS_DIG* cp = new COMPASS_DIG();
    MIDAS_DIG* md = new MIDAS_DIG();
 
@@ -139,6 +141,8 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFil
     MICRO_NUM = info->MICRO_NUM;
 
     BEAM_DELAY = info->BEAM_DELAY;
+
+    RANDOM_COINCIDENCE = info->RANDOM_COINCIDENCE;
 
    // set the output stream
    beamFile = beamFileWrite;

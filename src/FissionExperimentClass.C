@@ -43,6 +43,9 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	DATA_TYPE = info->DATA_TYPE;
 	REUSE_DATA = info->REUSE_DATA;
 
+
+	RANDOM_COINCIDENCE = info->RANDOM_COINCIDENCE;
+
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
 	if(REUSE_DATA == 0) {

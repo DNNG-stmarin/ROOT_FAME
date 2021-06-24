@@ -52,6 +52,9 @@ public:
   int DATA_TYPE;
   int REUSE_DATA;
 
+
+  int RANDOM_COINCIDENCE;
+
   double COINC_WINDOW;
   double BEAM_WINDOW;
   double DETECTOR_THRESHOLD;
@@ -74,7 +77,7 @@ public:
   double MINPSD_FIT;
   double DIVPSD_FIT;
   double MAXPSD_FIT;
-  
+
   double MINERG_FIT;
   double MAXERG_FIT;
 
@@ -113,6 +116,8 @@ public:
     NUM_FILES = 0;
     DATA_TYPE = 0;
     REUSE_DATA = 0;
+
+    RANDOM_COINCIDENCE = 0;
 
     COINC_WINDOW = 200;
     BEAM_WINDOW = 200;
@@ -185,6 +190,10 @@ public:
       else if(tag == "<REUSE_DATA>:") {
         file >> value;
         REUSE_DATA = stoi(value);
+      }
+      else if(tag == "<RANDOM_COINCIDENCE>:") {
+        file >> value;
+        RANDOM_COINCIDENCE = stoi(value);
       }
       else if(tag == "<DETECTOR_PATH>:") {
         file >> value;
