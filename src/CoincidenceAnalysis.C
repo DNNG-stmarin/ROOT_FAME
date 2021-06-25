@@ -662,12 +662,19 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				// if the background is to be characterized, turn on this function and produce a random signal to characterize background
 				if(RANDOM_COINCIDENCE == 1)
 				{
-					deltaFissBeam = randomTimeCoinc->Uniform(-2*BEAM_WINDOW, +2*BEAM_WINDOW);
+					deltaFissBeam = randomTimeCoinc->Uniform(-1*BEAM_WINDOW, BEAM_WINDOW);
 
 					if(ValidBeamBuffer.empty())
 					{
+						cout << "matched fissions to beams." << endl;
+						while(ValidTriggerBuffer.size() > 0)
+						{
+							FissionBuffer.pop();
+						}
 						break;
 					}
+
+
 				}
 
 				// cout << deltaFissBeam << endl;
@@ -713,16 +720,25 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					goodFis.beamChannel = curBeam.getDetector();
 					goodFis.beamMicroIndex = curBeam.getMicroIndex();
 
+					if(RANDOM_COINCIDENCE == 1)
+					{
+						goodFis.triggerTime = deltaFissBeam + curBeam.getTime();
+						goodFis.triggerEnergy = FAKE_FISS_SIGNAL; // set this so to create
+						if(!ValidBeamBuffer.empty())
+						{
+							ValidBeamBuffer.pop();
+						}
+						else
+						{
+							break;
+						}
+					}
+
 					FissionBuffer.push(goodFis);
 					ValidTriggerBuffer.pop(); // discard only the fission, there could be several fiss for same beam.
 
 					h1_fissTimeInBeam->Fill(goodFis.beamTime);
 					numFissBeam++;
-
-					if(RANDOM_COINCIDENCE == 1)
-					{
-						goodFis.triggerEnergy = FAKE_FISS_SIGNAL; // set this so to create
-					}
 				}
 
 				else
