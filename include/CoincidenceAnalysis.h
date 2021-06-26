@@ -59,6 +59,8 @@ public :
    int NUM_DETS = 0;
    int NUM_BEAMS = 0;
 
+   int FILE_LIST_MODE = 0;
+
    double TRIGGER_THRESHOLD = 0;
    double TRIGGER_CLIP = 0;
    double TRIGGER_MIN_PSP = 0.0;
@@ -128,6 +130,8 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFil
     MAX_TRIGGER_DRIFT = info->MAX_TRIGGER_DRIFT;
     COINC_WINDOW = info->COINC_WINDOW;
     BEAM_WINDOW = info->BEAM_WINDOW;
+
+    FILE_LIST_MODE = info->FILE_LIST_MODE;
 
     NUM_TRIGGERS = info->NUM_TRIGGERS;
     NUM_DETS = info->NUM_DETS;

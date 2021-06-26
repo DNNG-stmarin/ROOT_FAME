@@ -49,6 +49,10 @@ public:
   //input file
   int MIN_FILE;
   int NUM_FILES;
+
+  int FILE_LIST_MODE;
+  int* FILE_LIST;
+
   int DATA_TYPE;
   int REUSE_DATA;
 
@@ -114,6 +118,9 @@ public:
 
     MIN_FILE = 0;
     NUM_FILES = 0;
+    FILE_LIST_MODE = 0;
+    FILE_LIST = NULL;
+
     DATA_TYPE = 0;
     REUSE_DATA = 0;
 
@@ -179,9 +186,21 @@ public:
         file >> value;
         MIN_FILE = stoi(value);
       }
+      else if(tag == "<FILE_LIST_MODE>:") {
+        file >> value;
+        FILE_LIST_MODE = stoi(value);
+      }
       else if(tag == "<NUM_FILES>:") {
         file >> value;
         NUM_FILES = stoi(value);
+      }
+      else if(tag == "<FILE_LIST>:") {
+        FILE_LIST = new int[NUM_FILES];
+        for(int i=0; i<NUM_FILES; i++)
+        {
+          file >> value;
+          FILE_LIST[i] = stoi(value);
+        }
       }
       else if(tag == "<DATA_TYPE>:") {
         file >> value;

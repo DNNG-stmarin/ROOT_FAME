@@ -43,6 +43,10 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	DATA_TYPE = info->DATA_TYPE;
 	REUSE_DATA = info->REUSE_DATA;
 
+	FILE_LIST_MODE = info->FILE_LIST_MODE;
+
+	FILE_LIST = new int[NUM_FILES];
+
 
 	RANDOM_COINCIDENCE = info->RANDOM_COINCIDENCE;
 
@@ -75,6 +79,23 @@ FissionExperimentClass::~FissionExperimentClass()
 int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFileWrite, int numEntries)
 {
 
+	// create a file list to iterate over
+	if(FILE_LIST_MODE == 1)
+	{
+		cout << "Using defined file numbers. " << endl;
+		FILE_LIST = info->FILE_LIST;
+	}
+	else
+	{
+		cout << "Using consecutive file numbers. " << endl;
+		int currFile = MIN_FILE;
+		for(int i = 0; i < NUM_FILES; i++)
+		{
+			FILE_LIST[i] = currFile;
+			currFile++;
+		}
+	}
+
 	// attach the data file to the chain
 	if(REUSE_DATA == 0)
 	{
@@ -95,8 +116,10 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 			 inputTreeName = midasName;
 		}
 
-		for(int fileNum = MIN_FILE; fileNum < MIN_FILE + NUM_FILES; fileNum++)
+		for(int i = 0; i < NUM_FILES; i++)
 		{
+			 int fileNum = FILE_LIST[i];
+
 			 cout << "reading file number " << fileNum << endl;
 			 // find the file
 			 s_fileRaw =  filename + TString(to_string(fileNum)) + extExpFile;

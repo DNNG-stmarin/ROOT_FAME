@@ -490,7 +490,7 @@ int DetectorSystemClass::DetectionAnalysis()
  //
 
  TF1* psdDisc = new TF1("psdDisc", "[0]*e^(-[1]*x) + [2]*x + [3]", MINERG_FIT, MAXERG_FIT);
- cout << "Fitting psd vs energy in the range: " <<   MINERG_FIT << ", " << MAXERG_FIT << " MeV \n"; 
+ cout << "Fitting psd vs energy in the range: " <<   MINERG_FIT << ", " << MAXERG_FIT << " MeV \n";
 
 	if(PSD_ERG==1)
 	{

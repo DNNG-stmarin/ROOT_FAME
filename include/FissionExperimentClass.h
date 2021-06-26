@@ -40,6 +40,9 @@ private:
 
 	int RANDOM_COINCIDENCE;
 
+	int FILE_LIST_MODE;
+	int* FILE_LIST;
+
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";
 
