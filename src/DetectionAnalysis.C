@@ -80,10 +80,6 @@ int DetectorSystemClass::DetectionAnalysis()
 	 if (ientry < 0) break;
 	 nb = tree->GetEntry(jentry);   nbytes += nb;
 
-	 // if(jentry%1000000 == 0)
-	 // {
-	 // 	cout << jentry << " fissions analyzed." << endl;
-	 // }
 
 	 // store the channel of the fission trigger
 	 channelTrig = isTrigger(tChan);
@@ -136,7 +132,11 @@ int DetectorSystemClass::DetectionAnalysis()
 
 */
 	cdBeam->cd();
+	TF1* fisBeamActivity = new TF1("fisBeamActivity", "landau + [0]");
+	fisBeamActivity->SetParNames("baseline", "center", "width");
 
+	const double WINDOW_FIT_FIS_BEAM = 200;
+	const double WIDTH_FIS_BEAM = 10;
 	for(int trig = 0; trig < NUM_TRIGGERS; trig++)
 	{
 		// find the macroscopic properties
@@ -177,7 +177,14 @@ int DetectorSystemClass::DetectionAnalysis()
 
 		cout << "delay of trigger " << trig << " is " << 	triggers[trig].beamDelay << " ns." << endl;
 
+		fisBeamActivity->SetRange(triggers[trig].beamDelay - WINDOW_FIT_FIS_BEAM, triggers[trig].beamDelay + WINDOW_FIT_FIS_BEAM);
+		fisBeamActivity->SetParameter(0, baselineAverage);
+		fisBeamActivity->SetParameter(1, triggers[trig].beamDelay);
+		fisBeamActivity->SetParameter(2, WIDTH_FIS_BEAM);
+		fisBeamActivity->SetLineColor(kGreen + 3);
 
+		// beamTimeHist[trig]->Fit(fisBeamActivity, "S Q R");
+		triggers[trig].fisBeamActivity = (TF1*)fisBeamActivity->Clone();
 
 		// visualizations
 
@@ -199,6 +206,8 @@ int DetectorSystemClass::DetectionAnalysis()
 		TLine* g_delay = new TLine(triggers[trig].beamDelay, 0, triggers[trig].beamDelay, 10*maxCounts);
 		g_delay->SetLineColor(kGreen);
 		g_delay->Draw("SAME");
+
+		fisBeamActivity->Draw("SAME");
 
 		canvBeam->Write();
 
@@ -312,7 +321,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				detectors[i].timeDelay[tr] = tofphotpeak_opt->Parameter(1) - detectors[channelDet].distance/LIGHT_C;
 				detectors[i].timeResolution[tr] = tofphotpeak_opt->Parameter(2);
 
-				cout << "det " << i << " and trig" << tr << " timing: " << detectors[i].timeDelay[tr] << " ns" << endl;
+				// cout << "det " << i << " and trig" << tr << " timing: " << detectors[i].timeDelay[tr] << " ns" << endl;
 
 				tracktof[i] = toftempPSD;
 			}
