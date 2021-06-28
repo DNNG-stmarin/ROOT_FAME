@@ -43,6 +43,13 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	DATA_TYPE = info->DATA_TYPE;
 	REUSE_DATA = info->REUSE_DATA;
 
+	FILE_LIST_MODE = info->FILE_LIST_MODE;
+	FILE_LIST = new int[NUM_FILES];
+	RANDOM_COINCIDENCE = info->RANDOM_COINCIDENCE;
+
+	REUSE_DETECTOR = info->REUSE_DETECTOR; 
+	FISSION_MODE = info->FISSION_MODE;
+	DEBUG = info->DEBUG; 
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
 	if(REUSE_DATA == 0) {
@@ -53,8 +60,18 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
         cout << "reading old coincidences." << endl;
 		expFile = new TFile(treeFileT + rootEnding, "READ");
 	}
-
-	detFile = new TFile(detFileT, "RECREATE");
+/////
+	//if reuse then read, otherwise recreate (only detFile)
+	cout << "about to start detector import" << endl;
+	if(REUSE_DETECTOR == 1){
+		cout << "in the detector import loop" << endl; 
+		detFile = new TFile(detFileT, "READ");
+	} 
+	else if(REUSE_DETECTOR == 0){
+		detFile = new TFile(detFileT, "RECREATE");
+	}
+	else{
+	}
   beamFile = new TFile(beamFileT, "RECREATE");
 
   // create the chain with all the entries to analyze for the raw coincidence mode
@@ -71,6 +88,23 @@ FissionExperimentClass::~FissionExperimentClass()
 // Now go ahead and create all the fission tree
 int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFileWrite, int numEntries)
 {
+
+	// create a file list to iterate over
+	if(FILE_LIST_MODE == 1)
+	{
+		cout << "Using defined file numbers. " << endl;
+		FILE_LIST = info->FILE_LIST;
+	}
+	else
+	{
+		cout << "Using consecutive file numbers. " << endl;
+		int currFile = MIN_FILE;
+		for(int i = 0; i < NUM_FILES; i++)
+		{
+			FILE_LIST[i] = currFile;
+			currFile++;
+		}
+	}
 
 	// attach the data file to the chain
 	if(REUSE_DATA == 0)
@@ -92,8 +126,10 @@ int FissionExperimentClass::CreateCoincidenceTree(TString filename, TFile* expFi
 			 inputTreeName = midasName;
 		}
 
-		for(int fileNum = MIN_FILE; fileNum < MIN_FILE + NUM_FILES; fileNum++)
+		for(int i = 0; i < NUM_FILES; i++)
 		{
+			 int fileNum = FILE_LIST[i];
+
 			 cout << "reading file number " << fileNum << endl;
 			 // find the file
 			 s_fileRaw =  filename + TString(to_string(fileNum)) + extExpFile;
@@ -148,19 +184,30 @@ int FissionExperimentClass::CreateDetectionAnalysis()
 	detectorData->InitializeDetectorHistograms();
 
 	cout << "Entering detector analysis mode" << endl;
+
+	if(REUSE_DETECTOR == 1){
+	detectorData->DetectionImport();
+	}
+	else if(REUSE_DETECTOR == 0){
 	detectorData->DetectionAnalysis();
+	}
+	else{
+	
+	}
 
-	// System analysis needs to be fixed before running it
-	// cout << "Entering system analysis mode" << endl;
-	// detectorData->SystemAnalysis();
-
+	if(FISSION_MODE){
 	cout << "Entering fission analysis mode" << endl;
-	if(DEBUG==1)
+	if(DEBUG==1){
+		cout << "debug is on" << endl;
 		detectorData->FissionAnalysisLoop();
-	else
+	}
+	else{
+		cout << "starndard fission analysis starting" << endl;
 		detectorData->FissionAnalysis();
+	}
+	}
+	return 1; 
 
-	return 1;
 }
 
 // getSystemInfo

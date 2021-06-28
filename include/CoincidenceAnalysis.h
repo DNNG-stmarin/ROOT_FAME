@@ -49,6 +49,8 @@ public :
    // 0: CoMPASS
    // 1: MIDAS
 
+   int RANDOM_COINCIDENCE;
+
    COMPASS_DIG* cp = new COMPASS_DIG();
    MIDAS_DIG* md = new MIDAS_DIG();
 
@@ -56,6 +58,8 @@ public :
    int NUM_TRIGGERS = 0;
    int NUM_DETS = 0;
    int NUM_BEAMS = 0;
+
+   int FILE_LIST_MODE = 0;
 
    double TRIGGER_THRESHOLD = 0;
    double TRIGGER_CLIP = 0;
@@ -127,6 +131,8 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFil
     COINC_WINDOW = info->COINC_WINDOW;
     BEAM_WINDOW = info->BEAM_WINDOW;
 
+    FILE_LIST_MODE = info->FILE_LIST_MODE;
+
     NUM_TRIGGERS = info->NUM_TRIGGERS;
     NUM_DETS = info->NUM_DETS;
     NUM_BEAMS = info->NUM_BEAMS;
@@ -139,6 +145,8 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFil
     MICRO_NUM = info->MICRO_NUM;
 
     BEAM_DELAY = info->BEAM_DELAY;
+
+    RANDOM_COINCIDENCE = info->RANDOM_COINCIDENCE;
 
    // set the output stream
    beamFile = beamFileWrite;

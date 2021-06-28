@@ -36,7 +36,14 @@ private:
 
 	int DATA_TYPE;
 	int REUSE_DATA;
+	int REUSE_DETECTOR;
 	int DEBUG;
+	int FISSION_MODE; 
+
+	int RANDOM_COINCIDENCE;
+
+	int FILE_LIST_MODE;
+	int* FILE_LIST;
 
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";
@@ -54,7 +61,7 @@ private:
 	TString rootEnding = ".root";
 	TString detFileT = "Detectors.root";
 	TString sysFileT = "Fission.root";
-  TString beamFileT = "BeamInfo.root";
+    TString beamFileT = "BeamInfo.root";
 
 public:
 

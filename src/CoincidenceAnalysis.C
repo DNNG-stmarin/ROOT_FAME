@@ -10,6 +10,7 @@
 #include <TCut.h>
 #include <TFitResult.h>
 #include <THStack.h>
+#include <TRandom.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -58,7 +59,17 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	TH3D* h3_fileDesc = new TH3D("h3_fileDesc", "File clustering; Number of Beams; Number of Fissions; Number of Particles;counts", 100, 0,  1e9, 100, 0,  1e9, 100, 0,  1e9);
 
+	TH1I* h1_fissNumPerBeam = new TH1I("h1_fissNumPerBeam", "Number of fissions per micropulse; Number of fissions; counts", 100, -0.5, 99.5);
+	TH1D* h1_fissTimeInBeam = new TH1D("h1_fissTimeInBeam", "Time of fissions in micropulse; Number of fissions; counts", 2000, 0, 2000);
+
 	queue<BeamEvent> microStructure;
+
+	TRandom* randomTimeCoinc = new TRandom();
+
+	if(RANDOM_COINCIDENCE == 1)
+	{
+		cout << "Producing random coincidence fission events" << endl;
+	}
 
 
 
@@ -189,6 +200,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		double deltaFissBeam;
 		double curFisTime, curBeamTime;
+
+		int numFissBeam = 0;
 		/*
 			______ _         _               _
 		 |  ____(_)       (_)             | |
@@ -646,12 +659,31 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				curBeamTime = curBeam.getTime();
 
 				deltaFissBeam = curFisTime - curBeamTime;
+				// if the background is to be characterized, turn on this function and produce a random signal to characterize background
+				if(RANDOM_COINCIDENCE == 1)
+				{
+					deltaFissBeam = randomTimeCoinc->Uniform(-1*BEAM_WINDOW, BEAM_WINDOW);
+
+					if(ValidBeamBuffer.empty())
+					{
+						cout << "matched fissions to beams." << endl;
+						while(ValidTriggerBuffer.size() > 0)
+						{
+							FissionBuffer.pop();
+						}
+						break;
+					}
+
+
+				}
 
 				// cout << deltaFissBeam << endl;
 
 				if(deltaFissBeam >= BEAM_WINDOW)
 				{
 						// the beam store in memory did not trigger a fission reaction
+						h1_fissNumPerBeam->Fill(numFissBeam);
+						numFissBeam = 0;
 						ValidBeamBuffer.pop();
 				}
 
@@ -688,8 +720,25 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					goodFis.beamChannel = curBeam.getDetector();
 					goodFis.beamMicroIndex = curBeam.getMicroIndex();
 
+					if(RANDOM_COINCIDENCE == 1)
+					{
+						goodFis.triggerTime = deltaFissBeam + curBeam.getTime();
+						goodFis.triggerEnergy = FAKE_FISS_SIGNAL; // set this so to create
+						if(!ValidBeamBuffer.empty())
+						{
+							ValidBeamBuffer.pop();
+						}
+						else
+						{
+							break;
+						}
+					}
+
 					FissionBuffer.push(goodFis);
 					ValidTriggerBuffer.pop(); // discard only the fission, there could be several fiss for same beam.
+
+					h1_fissTimeInBeam->Fill(goodFis.beamTime);
+					numFissBeam++;
 				}
 
 				else
@@ -876,6 +925,9 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
       h_beamTime->Write();
       h2_triggerTimeChan->Write();
 			h3_fileDesc->Write();
+
+			h1_fissNumPerBeam->Write();
+			h1_fissTimeInBeam->Write();
 
       expFile->cd();
 		}

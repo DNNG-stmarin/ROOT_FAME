@@ -49,8 +49,19 @@ public:
   //input file
   int MIN_FILE;
   int NUM_FILES;
+
+  int FILE_LIST_MODE;
+  int* FILE_LIST;
+
   int DATA_TYPE;
   int REUSE_DATA;
+  int REUSE_DETECTOR;
+  int FISSION_MODE; 
+  int DOUBLE_DISC; 
+  double MISC_MAX; 
+
+
+  int RANDOM_COINCIDENCE;
 
   double COINC_WINDOW;
   double BEAM_WINDOW;
@@ -74,7 +85,7 @@ public:
   double MINPSD_FIT;
   double DIVPSD_FIT;
   double MAXPSD_FIT;
-  
+
   double MINERG_FIT;
   double MAXERG_FIT;
 
@@ -111,14 +122,23 @@ public:
 
     MIN_FILE = 0;
     NUM_FILES = 0;
+    FILE_LIST_MODE = 0;
+    FILE_LIST = NULL;
+
     DATA_TYPE = 0;
     REUSE_DATA = 0;
+    REUSE_DETECTOR = 0;
+    FISSION_MODE = 1; 
+    DOUBLE_DISC = 0; 
+    MISC_MAX = 0.005;
+
+    RANDOM_COINCIDENCE = 0;
 
     COINC_WINDOW = 200;
     BEAM_WINDOW = 200;
     BEAM_DISTANCE = 2150;
 
-    DETECTOR_THRESHOLD = 0.1;
+    DETECTOR_THRESHOLD = 0.05;
     DETECTOR_CLIP = 10;
     TRIGGER_THRESHOLD = 0.1;
     TRIGGER_CLIP = 100.0;
@@ -174,9 +194,21 @@ public:
         file >> value;
         MIN_FILE = stoi(value);
       }
+      else if(tag == "<FILE_LIST_MODE>:") {
+        file >> value;
+        FILE_LIST_MODE = stoi(value);
+      }
       else if(tag == "<NUM_FILES>:") {
         file >> value;
         NUM_FILES = stoi(value);
+      }
+      else if(tag == "<FILE_LIST>:") {
+        FILE_LIST = new int[NUM_FILES];
+        for(int i=0; i<NUM_FILES; i++)
+        {
+          file >> value;
+          FILE_LIST[i] = stoi(value);
+        }
       }
       else if(tag == "<DATA_TYPE>:") {
         file >> value;
@@ -185,6 +217,26 @@ public:
       else if(tag == "<REUSE_DATA>:") {
         file >> value;
         REUSE_DATA = stoi(value);
+      }
+      else if(tag == "<RANDOM_COINCIDENCE>:"){
+        file >> value;
+        RANDOM_COINCIDENCE = stoi(value);
+      }
+      else if(tag == "<REUSE_DETECTOR>:") {
+        file >> value;
+        REUSE_DETECTOR = stoi(value);
+      }
+      else if(tag == "<FISSION_MODE>:") {
+        file >> value;
+        FISSION_MODE = stoi(value);
+      }
+      else if(tag == "<DOUBLE_DISC>:") {
+        file >> value;
+        DOUBLE_DISC = stoi(value);
+      }
+      else if(tag == "<MISC_MAX>:") {
+        file >> value;
+        MISC_MAX = stoi(value);
       }
       else if(tag == "<DETECTOR_PATH>:") {
         file >> value;

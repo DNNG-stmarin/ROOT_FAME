@@ -42,6 +42,8 @@ public:
   double X, Y, Z; // position of the center of the trigger
   // double offset; // distance of detector from source
 
+  TF1* fisBeamActivity;
+
 };
 
 #endif
