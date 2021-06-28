@@ -681,6 +681,10 @@ int DetectorSystemClass::DetectionAnalysis()
 				psdneutpeak->SetParameter(1, optimized->Parameter(4));
 				psdneutpeak->SetParameter(2, optimized->Parameter(5));
 
+				// find the number of neutrons and photons 
+				double photonArea = psdphotpeak->Integral(MINPSD_FIT, MAXPSD_FIT);
+				double neutronArea = psdneutpeak->Integral(MINPSD_FIT, MAXPSD_FIT);
+
 				//set optimized parameters to combined fit
 				psdcombined->SetParameter(0, optimized->Parameter(0));
 				psdcombined->SetParameter(1, optimized->Parameter(1));
@@ -729,40 +733,53 @@ int DetectorSystemClass::DetectionAnalysis()
 				if(DOUBLE_DISC == 1)
 				{
 					//defining and setting requred values 
-					discLineNeutPoint[numGoodSlicespsd] = tempPSD;
-					discLinePhotPoint[numGoodSlicespsd] = tempPSD; 
+					discLineNeutPoint[numGoodSlicespsd] = tempPSD - DISC_SHIFT_VALUE;
+					discLinePhotPoint[numGoodSlicespsd] = tempPSD + DISC_SHIFT_VALUE; 
 					
-					double miscNeut = normal_cdf(tempPSD, sigNeutPoint[numGoodSlicespsd], meanNeutPoint[numGoodSlicespsd]);
-   					double miscPhot = 1 - normal_cdf(tempPSD, sigPhotPoint[numGoodSlicespsd], meanPhotPoint[numGoodSlicespsd]);
+					double goodPhot, goodNeut; 
+					double badPhot, badNeut;
+					double miscPhot, miscNeut; 
 					
-					// loops throught to find the new neutron based discrimline 
-					// keep it from being intilized to zero 
-					while(miscNeut >= MISC_MAX)
+					// loops through to find the new photon based discrimline 
+					do
 					{
-					discLinePhotPoint[numGoodSlicespsd] -= DISC_SHIFT_VALUE;
-					//calculates neutron missclass again
-					miscNeut = normal_cdf(discLinePhotPoint[numGoodSlicespsd], sigNeutPoint[numGoodSlicespsd], meanNeutPoint[numGoodSlicespsd]);
-					if(discLinePhotPoint[numGoodSlicespsd] <= MINERG_FIT)
+						discLinePhotPoint[numGoodSlicespsd] -= DISC_SHIFT_VALUE;
+						
+						// finds the photon misclafficiation based on total area 
+						badNeut = neutronArea * normal_cdf(discLinePhotPoint[numGoodSlicespsd], sigNeutPoint[numGoodSlicespsd], meanNeutPoint[numGoodSlicespsd]);
+						goodPhot = photonArea * normal_cdf(discLinePhotPoint[numGoodSlicespsd], sigPhotPoint[numGoodSlicespsd], meanPhotPoint[numGoodSlicespsd]);
+						miscNeut = badNeut / goodPhot;
+
+						// stops the while loop if needed 
+						if(discLinePhotPoint[numGoodSlicespsd] <= MINPSD_FIT)
+						{
+							cout << det << ": desired phot discrim not found" << endl;
+							break;
+						}
+					}
+					while(miscNeut >= MISC_MAX);
+
+					// loops through to find the new neutron based discrimline
+					do
 					{
-						cout << det << ": desired neut discrim not found" << endl;
-						break;
-           			}
+						discLineNeutPoint[numGoodSlicespsd] += DISC_SHIFT_VALUE;
+						
+						// finds the neutron misclassification based on total area 
+						badPhot = photonArea * (1 - normal_cdf(discLineNeutPoint[numGoodSlicespsd], sigPhotPoint[numGoodSlicespsd], meanPhotPoint[numGoodSlicespsd]));
+						goodNeut = neutronArea * (1 - normal_cdf(discLineNeutPoint[numGoodSlicespsd], sigNeutPoint[numGoodSlicespsd], meanNeutPoint[numGoodSlicespsd]));
+						miscPhot = badPhot / goodNeut; 
+
+						// stops the while loop if needed
+						if(discLineNeutPoint[numGoodSlicespsd] >= MAXPSD_FIT)
+						{
+							cout << det << ": desired neut discrim not found" << endl;
+							break;
+						}
 					}
-					// loops though to find the new photon based discrimline
-					while(miscPhot >= MISC_MAX)
-					{
-					discLineNeutPoint[numGoodSlicespsd] += DISC_SHIFT_VALUE;
-					//calculates photon missclass again
-					miscPhot = 1 - normal_cdf(discLineNeutPoint[numGoodSlicespsd], sigPhotPoint[numGoodSlicespsd], meanPhotPoint[numGoodSlicespsd]);
-					if(discLineNeutPoint[numGoodSlicespsd] >= MAXERG_FIT){
-						cout << det << ": desired phot discrim not found" << endl;
-						break;
-					}
-					}
+					while(miscPhot >= MISC_MAX);
 				}
-
-				
-
+	
+	
 				TString canSliceName = "psd" + to_string(det) +  "Proj" + to_string(numGoodSlicespsd);
 
 				// canvas with the psd

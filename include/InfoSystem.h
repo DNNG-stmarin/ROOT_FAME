@@ -236,7 +236,7 @@ public:
       }
       else if(tag == "<MISC_MAX>:") {
         file >> value;
-        MISC_MAX = stoi(value);
+        MISC_MAX = stod(value);
       }
       else if(tag == "<DETECTOR_PATH>:") {
         file >> value;
