@@ -16,7 +16,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	DETECTOR_CLIP = info->DETECTOR_CLIP;
 	COINC_WINDOW = info->COINC_WINDOW;
 	BEAM_WINDOW = info->BEAM_WINDOW;
-  BEAM_DISTANCE = info->BEAM_DISTANCE;
+    BEAM_DISTANCE = info->BEAM_DISTANCE;
 	MIN_TIME_P = info->MIN_TIME_P;
 	MAX_TIME_P = info->MAX_TIME_P;
 	MIN_TIME_N = info->MIN_TIME_N;
@@ -44,6 +44,9 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	TRIGGER_PATH = info->triggerPath;
 	DETECTOR_PATH = info->detectorPath;
 	DET_CALIBRATION = new TGraph(*(info->calibrationDet));
+	REUSE_DETECTOR = info->REUSE_DETECTOR; 
+	DOUBLE_DISC = info->DOUBLE_DISC; 
+	MISC_MAX = info->MISC_MAX; 
 	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
@@ -51,7 +54,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	detectors = new DetectorClass[NUM_DETS];
 	cout << "Detectors and triggers have been created" << endl;
 
-  cout << "Background shift set to " << BACKGROUND_SHIFT << " ns." << endl;
+    cout << "Background shift set to " << BACKGROUND_SHIFT << " ns." << endl;
 	cout << "Collecting background between: " << MIN_TIME_N - BACKGROUND_SHIFT;
 	cout << "ns and " << MAX_TIME_N - BACKGROUND_SHIFT << " ns." << endl;
 
@@ -122,23 +125,33 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	cout << "Tree passed at " << treeIn << endl;
 	Init(treeIn);
 
-	//create folders and write things to correct folder
-	cdPsd = detFile->mkdir("PSD");
-	cdToF = detFile->mkdir("TOF");
-	cdKin = detFile->mkdir("Kinematics");
-	cdBeam = detFile->mkdir("Beam");
+	if(REUSE_DETECTOR == 0){
+		//create folders and write things to correct folder
+		cdPsd = detFile->mkdir("PSD");
+		cdToF = detFile->mkdir("TOF");
+		cdKin = detFile->mkdir("Kinematics");
+		// cdMult =  detFile->mkdir("Multiplicity");
+		// cdCoinc =  detFile->mkdir("Coincidences");
+		// cdFigCoinc = detFile->mkdir("CoincFigs");
+		// cdBicorr = detFile->mkdir("Bicorr");
+		// cdRef = detFile->mkdir("Reflections");
+		cdBeam = detFile->mkdir("Beam");
 
-	// create the folder for psd slices
-	cdPsdSlices = cdPsd->mkdir("PSD_slices");
-	cdPsdIndividual = cdPsd->mkdir("PSD_individual");
-	cdPsdErg = cdPsd->mkdir("PSDErg_discrimination");
+		// create the folders for psd 
+		cdPsdSlices = cdPsd->mkdir("PSD_slices");
+		cdPsdIndividual = cdPsd->mkdir("PSD_individual");
+		cdPsdErg = cdPsd->mkdir("PSDErg_discrimination");
+		cdParam = cdPsd->mkdir("PSD_parameters");
 
-	cdTofSlices = cdToF->mkdir("TOF_slices");
-	cdTofIndividual = cdToF->mkdir("TOF_individual");
-	cdTOFPSD = cdPsd->mkdir("TOF_PSD");
-	cdTofErg = cdToF->mkdir("TOFErg_discrimination");
-	cdTOFCorr = cdToF->mkdir("TOF_Corrected");
-
+		// create folders for tof 
+		cdTofIndividual = cdToF->mkdir("TOF_individual");
+		cdTOFPSD = cdPsd->mkdir("TOF_PSD");
+		if(TOF_ERG == 1){
+			cdTofSlices = cdToF->mkdir("TOF_slices");
+			cdTofErg = cdToF->mkdir("TOFErg_discrimination");
+		}
+		cdTOFCorr = cdToF->mkdir("TOF_Corrected");
+	}
 }
 
 DetectorSystemClass::~DetectorSystemClass()

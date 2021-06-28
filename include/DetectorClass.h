@@ -39,6 +39,14 @@ public:
 	double energyResolution; // store the energy resolution of this detector
 
 	TF1* discPSD; // psd discrimination line
+	TF1* meanNeut; 
+	TF1* meanPhot; 
+	TF1* sigNeut; 
+	TF1* sigPhot; 
+
+	// double discrimination lines
+	TGraph* discPSDNeut;
+	TGraph* discPSDPhot;
 
 	// double discTOFPoint; //tof discrimination
 	//TF1* discPSDPoint; //psd discrimination //have just one s

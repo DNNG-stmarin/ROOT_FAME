@@ -55,6 +55,10 @@ public:
 
   int DATA_TYPE;
   int REUSE_DATA;
+  int REUSE_DETECTOR;
+  int FISSION_MODE; 
+  int DOUBLE_DISC; 
+  double MISC_MAX; 
 
 
   int RANDOM_COINCIDENCE;
@@ -123,6 +127,10 @@ public:
 
     DATA_TYPE = 0;
     REUSE_DATA = 0;
+    REUSE_DETECTOR = 0;
+    FISSION_MODE = 1; 
+    DOUBLE_DISC = 0; 
+    MISC_MAX = 0.005;
 
     RANDOM_COINCIDENCE = 0;
 
@@ -130,7 +138,7 @@ public:
     BEAM_WINDOW = 200;
     BEAM_DISTANCE = 2150;
 
-    DETECTOR_THRESHOLD = 0.1;
+    DETECTOR_THRESHOLD = 0.05;
     DETECTOR_CLIP = 10;
     TRIGGER_THRESHOLD = 0.1;
     TRIGGER_CLIP = 100.0;
@@ -210,9 +218,25 @@ public:
         file >> value;
         REUSE_DATA = stoi(value);
       }
-      else if(tag == "<RANDOM_COINCIDENCE>:") {
+      else if(tag == "<RANDOM_COINCIDENCE>:"){
         file >> value;
         RANDOM_COINCIDENCE = stoi(value);
+      }
+      else if(tag == "<REUSE_DETECTOR>:") {
+        file >> value;
+        REUSE_DETECTOR = stoi(value);
+      }
+      else if(tag == "<FISSION_MODE>:") {
+        file >> value;
+        FISSION_MODE = stoi(value);
+      }
+      else if(tag == "<DOUBLE_DISC>:") {
+        file >> value;
+        DOUBLE_DISC = stoi(value);
+      }
+      else if(tag == "<MISC_MAX>:") {
+        file >> value;
+        MISC_MAX = stoi(value);
       }
       else if(tag == "<DETECTOR_PATH>:") {
         file >> value;

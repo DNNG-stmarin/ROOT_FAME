@@ -78,7 +78,7 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
     for(int i = 0; i < NUM_DETS; i++)
   	{
-      cout << "initializing histograms for detector number " << i << endl;
+      //cout << "initializing histograms for detector number " << i << endl;
   		// find the string name of the detector
   		numDet = to_string(DETECTORS[i]);
 
