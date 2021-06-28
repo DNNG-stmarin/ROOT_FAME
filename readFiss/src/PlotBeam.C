@@ -9,7 +9,7 @@ using namespace std;
 
 void readFiss::PlotDepSubtraction()
 {
-  cd_beam->cd();
+  cd_alphaSub->cd();
   cout << "Plotting subtracted spectra " << endl;
 
   TCanvas** c_Alpha = new TCanvas* [NUM_TRIGGERS];
@@ -72,7 +72,7 @@ void readFiss::PlotDepSubtraction()
 
 void readFiss::PlotRatioMult()
 {
-  cd_beam->cd();
+  cd_multRatio->cd();
   cout << "Plotting corrected multiplicities " << endl;
 
   TCanvas** c_depRatio = new TCanvas* [NUM_TRIGGERS];
@@ -81,7 +81,7 @@ void readFiss::PlotRatioMult()
 	{
     TString s_TRIG_NUM = (TString)to_string(r);
 
-    c_depRatio[r] = new TCanvas("MultiplicityRatio_Channel_" + s_TRIG_NUM, "Neutron/Gamma Multiplicity Comparision to Fission Fractiom", 600, 800);
+    c_depRatio[r] = new TCanvas("MultiplicityRatio_Channel_" + s_TRIG_NUM, "Neutron/Gamma Multiplicity Comparision to Fission Fraction", 600, 800);
     c_depRatio[r]->Divide(1,2);
 
     c_depRatio[r]->cd(1);
@@ -118,7 +118,7 @@ void readFiss::PlotRatioMult()
 
 void readFiss::PlotMultErg()
 {
-  cd_beam->cd();
+  cd_multErg->cd();
   cout << "Plotting incident-dependent multiplicities " << endl;
 
   TCanvas** c_incMult = new TCanvas* [NUM_TRIGGERS];
@@ -250,7 +250,10 @@ void readFiss::PlotMultErg()
   g_nRatioSlopeInt->SetTitle("Neutron and Gamma Slope/Int vs. PPAC Channel");
 
   c_gnRatio->Write();
-
+}
+void readFiss::PlotStack()
+{
+  cd_stack->cd();
   cout << "Plotting stack" << endl;
 
   TCanvas** c_stack =  new TCanvas* [NUM_TRIGGERS];
@@ -265,7 +268,11 @@ void readFiss::PlotMultErg()
 
   c_stack[r]->Write();
   }
+}
 
+void readFiss::PlotLO()
+{
+  cd_LO->cd();
   cout << "Plotting neutronLightOutput, neutronToF, and photonLightOut" << endl;
 
   TCanvas** c_vsbeamErg =  new TCanvas* [NUM_TRIGGERS];
@@ -315,8 +322,4 @@ void readFiss::PlotMultErg()
 
     c_vsbeamErg[r]->Write();
   }
-
-
-
-
 }

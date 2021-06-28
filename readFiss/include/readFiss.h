@@ -60,7 +60,13 @@ public :
    TDirectory*      cd_correlated;
    TDirectory*      cd_beam;
    TDirectory*      cd_trigger;
-
+   //******
+   TDirectory*      cd_alphaSub;
+   TDirectory*      cd_multRatio;
+   TDirectory*      cd_multErg;
+   TDirectory*      cd_stack;
+   TDirectory*      cd_LO;
+   //*******
    int NUM_TRIGGERS; // number of trigger channels
    int* TRIGGERS;
 
@@ -534,6 +540,8 @@ public :
    virtual void     PlotDepSubtraction();
    virtual void     PlotRatioMult();
    virtual void     PlotMultErg();
+   virtual void     PlotStack();
+   virtual void     PlotLO();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();

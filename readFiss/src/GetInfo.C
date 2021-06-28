@@ -70,6 +70,8 @@ readFiss::readFiss(int &argc, char** &argv)
     PlotDepSubtraction();
     PlotRatioMult();
     PlotMultErg();
+    PlotStack();
+    PlotLO();
   }
   writeFile->Close();
 }
@@ -180,6 +182,13 @@ void readFiss::GetInfo(istream &inputStream)
   else if(mode == 2)
   {
     cd_beam = writeFile->mkdir("Beam");
+    //******
+    cd_alphaSub = cd_beam->mkdir("AlphaSubtraction");
+    cd_multRatio = cd_beam->mkdir("MultiplicityRatio");
+    cd_multErg = cd_beam->mkdir("MultipicityErg");
+    cd_stack = cd_beam->mkdir("FissionSpectrumDueToBeamErg");
+    cd_LO = cd_beam->mkdir("LightOutput");
+    //******
     cout << "Input beamFile path" << endl;
     inputStream >> nameBeam;
     cout << "Reading beam information from " << nameBeam << endl;
