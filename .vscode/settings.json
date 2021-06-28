@@ -9,6 +9,13 @@
         "temp.C": "cpp",
         "iostream": "cpp",
         "InitializeDetectorHistograms.C": "cpp",
-        "MappingFunctions.C": "cpp"
+        "MappingFunctions.C": "cpp",
+        "InitializePSDFunctions.C": "cpp",
+        "exampleData.C": "cpp",
+        "exampleDatav2.C": "cpp",
+        "fakePsdSlice.C": "cpp",
+        "formula1.C": "cpp",
+        "findDist.C": "cpp",
+        "fakePsdSlice2X.C": "cpp"
     }
 }

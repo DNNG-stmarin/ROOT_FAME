@@ -27,6 +27,10 @@ const double MIN_PSD_HIST = 0;
 const double MAX_PSD_HIST = 1;
 const int NUM_PSD_HIST = 100;
 
+// double discrimination values 
+const double miscMax = 0.005;
+const double discShiftValue = 0.005; 
+
 // specifications of LO bins
 const double MIN_LO_HIST = 0;
 const double MAX_LO_HIST = 4;

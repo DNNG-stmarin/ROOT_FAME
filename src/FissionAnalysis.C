@@ -73,6 +73,20 @@ void DetectorSystemClass::FissionAnalysis()
       f_beamPSP = bPSP;
       f_beamChan = bChan;
       f_beamIndex = bIndex;
+
+      if (f_beamTime < 70)
+      {
+        f_fisType = ALPHA;
+      }
+      else if (f_beamTime < 140 && f_beamTime > 60)
+      {
+        f_fisType = PHOTON;
+      }
+      else
+      {
+        f_fisType = NEUTRON;
+      }
+
     }
 
     // allocating the fission info
@@ -83,18 +97,8 @@ void DetectorSystemClass::FissionAnalysis()
 
     // Assign fission trigger type based on beamTime
     // Times are hard-coded for now since I anticipate needing more complex logic later
-    if (f_beamTime < 70)
-    {
-      f_fisType = ALPHA;
-    }
-    else if (f_beamTime < 140 && f_beamTime > 60)
-    {
-      f_fisType = PHOTON;
-    }
-    else
-    {
-      f_fisType = NEUTRON;
-    }
+    
+    
 
     // reset the neutron and photon multiplicities
     nMult = 0;
@@ -136,17 +140,20 @@ void DetectorSystemClass::FissionAnalysis()
       {
         continue;
       }
-
+  
       if(
-        (totPSP[j] > detectors[numDet].discPSD->Eval(engDet))
-        &
-        (timeDet > MIN_TIME_N)
-        &
-        (timeDet < MAX_TIME_N)
-        &
-        (engDet > DETECTOR_THRESHOLD)
-        )
+      (((DOUBLE_DISC == 1) & (totPSP[j] > detectors[numDet].discPSDNeut->Eval(engDet)))
+      ||
+      ((DOUBLE_DISC != 1) & (totPSP[j] > detectors[numDet].discPSD->Eval(engDet))))
+      &
+      (timeDet > MIN_TIME_N)
+      &
+      (timeDet < MAX_TIME_N)
+      &
+      (engDet > DETECTOR_THRESHOLD)
+      )
       {
+    
         neutronDetTimes[nMult] = timeDet;
         neutronLightOut[nMult] = engDet;
         neutronPSD[nMult] = totPSP[j];
@@ -161,7 +168,9 @@ void DetectorSystemClass::FissionAnalysis()
       }
       // cuts for gammas
       else if(
-        (totPSP[j] < detectors[numDet].discPSD->Eval(engDet))  //^^ -0.03 +0.03
+        ((((DOUBLE_DISC == 1) & (totPSP[j] < detectors[numDet].discPSDPhot->Eval(engDet))))
+        ||
+        ((DOUBLE_DISC != 1) & (totPSP[j] < detectors[numDet].discPSD->Eval(engDet)))) //^^ -0.03 +0.03
         &
         (timeDet > MIN_TIME_P)
         &
@@ -182,7 +191,9 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for background neutrons
       else if(
-        (totPSP[j] > detectors[numDet].discPSD->Eval(engDet))
+       ((((DOUBLE_DISC == 1) & (totPSP[j] > detectors[numDet].discPSDNeut->Eval(engDet))))
+        ||
+        ((DOUBLE_DISC != 1) & (totPSP[j] > detectors[numDet].discPSD->Eval(engDet))))
         &
         (timeDet > MIN_TIME_N - BACKGROUND_SHIFT)
         &
@@ -205,7 +216,9 @@ void DetectorSystemClass::FissionAnalysis()
 
       // cuts for background photons
       else if(
-        (totPSP[j] < detectors[numDet].discPSD->Eval(engDet))
+        ((((DOUBLE_DISC == 1) & (totPSP[j] < detectors[numDet].discPSDPhot->Eval(engDet))))
+        ||
+        ((DOUBLE_DISC != 1) & (totPSP[j] < detectors[numDet].discPSD->Eval(engDet))))
         &
         (timeDet > MIN_TIME_P - BACKGROUND_SHIFT)
         &
@@ -223,7 +236,7 @@ void DetectorSystemClass::FissionAnalysis()
         backPhotonVz[pBackMult] = detectors[numDet].Z/detectors[numDet].distance*LIGHT_C;
         pBackMult++;
       }
-
+      // else 
     }
 
     // set branches of final tree

@@ -1,5 +1,5 @@
 /*
-Author: Stefano Marin, Isabel Hernandez
+Author: Stefano Marin, Katie Ballard 
 Purpose: Perform the analyisis of the collected data on a detector-by-detector basis.
 The result of this code will be a series of cuts to clean the data.
 
@@ -53,6 +53,10 @@ TString fileNameStartTOF= "TOF/TOF_individual/ToFDiscrimination";
 TString fileNameEndTOF = "trig";
 TString fileNameTOF;
 
+// Double Discrim
+TString fileNameBasePsdParam = "PSD/PSD_parameters/param";
+TString fileNamePsdParam;
+
 // loops through all of the detectors
 for(int det = 0; det < NUM_DETS; ++det){
 
@@ -64,10 +68,30 @@ for(int det = 0; det < NUM_DETS; ++det){
     fileNamePsd =  fileNameBasePsd + (TString)to_string(det);
     //sets the canvas equal to the psdErg one for that detector 
     c_psdErg = (TCanvas*)detFile->Get(fileNamePsd);
-    f_psdDisc = (TF1*)c_psdErg->GetPrimitive("psdDisc");
+    f_psdDisc = (TF1*)c_psdErg->GetPrimitive("expLinPsd");
     detectors[det].discPSD = (TF1*)f_psdDisc->Clone();  
+    // DOUBLE DISCRIM 
+    if(DOUBLE_DISC == 1){
+        TGraph* f_psdDiscNeut;
+        TGraph* f_psdDiscPhot;
+        //neutron line
+        f_psdDiscNeut = (TGraph*)c_psdErg->GetPrimitive("psdNeut");
+        detectors[det].discPSDNeut = (TGraph*)f_psdDiscNeut->Clone();  
+        //photon line
+        f_psdDiscPhot = (TGraph*)c_psdErg->GetPrimitive("psdPhot");
+        detectors[det].discPSDPhot = (TGraph*)f_psdDiscPhot->Clone();  
+    }
+    else if(DOUBLE_DISC != 1){
+        TGraph* f_psdDiscNeut;
+        TGraph* f_psdDiscPhot;
+        //neutron line
+        f_psdDiscNeut = (TGraph*)c_psdErg->GetPrimitive("expLinPsd");
+        detectors[det].discPSDNeut = (TGraph*)f_psdDiscNeut->Clone();  
+        //photon line
+        f_psdDiscPhot = (TGraph*)c_psdErg->GetPrimitive("expLinPsd");
+        detectors[det].discPSDPhot = (TGraph*)f_psdDiscPhot->Clone();  
+    }
     
-
     // TOF
     for(int trig = 0; trig < NUM_TRIGGERS; ++trig){
         // create a canvas to store the data being accessed 
@@ -77,12 +101,43 @@ for(int det = 0; det < NUM_DETS; ++det){
         fileNameTOF =  fileNameStartTOF + (TString)to_string(det) + fileNameEndTOF + (TString)to_string(trig);
         //sets the canvas equal to the psdErg one for that detector 
         c_TOF = (TCanvas*)detFile->Get(fileNameTOF);
-        f_TOF = (TF1*)c_TOF->GetPrimitive("peakFit"); // check this 
+        f_TOF = (TF1*)c_TOF->GetPrimitive("peakFit"); 
         //time delay 
         detectors[det].timeDelay[trig] = f_TOF->GetParameter(1) - detectors[det].distance/LIGHT_C; 
         //time resolution 
         detectors[det].timeResolution[trig] = f_TOF->GetParameter(2);
+
     }
+
+    // Psd parameters 
+    // create a canvas to store the data being accessed 
+    TCanvas* c_psdParam;
+    TF1* f_meanNeut;
+    TF1* f_meanPhot;
+    TF1* f_sigNeut;
+    TF1* f_sigPhot; 
+    // sets the file name to the base name and the detector 
+    fileNamePsdParam =  fileNameBasePsdParam + (TString)to_string(det);
+    //sets the canvas equal to the psdErg one for that detector 
+    c_psdParam = (TCanvas*)detFile->Get(fileNamePsdParam);
+    
+    // neutron 
+    // mean 
+    f_meanNeut = (TF1*)c_psdParam->GetPrimitive("expLinMN");
+    detectors[det].meanNeut = (TF1*)f_meanNeut->Clone(); 
+    //sigma 
+    f_sigNeut = (TF1*)c_psdParam->GetPrimitive("expLinSN");
+    detectors[det].sigNeut = (TF1*)f_sigNeut->Clone(); 
+    
+    // photon 
+    // mean
+    f_meanPhot = (TF1*)c_psdParam->GetPrimitive("expLinMP");
+    detectors[det].meanPhot = (TF1*)f_meanNeut->Clone(); 
+    //sigma 
+    f_sigPhot = (TF1*)c_psdParam->GetPrimitive("expLinSP");
+    detectors[det].sigPhot = (TF1*)f_sigPhot->Clone(); 
+    
+
 }
 
 return 1; 

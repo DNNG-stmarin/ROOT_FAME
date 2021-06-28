@@ -52,6 +52,7 @@ public:
   int DATA_TYPE;
   int REUSE_DATA;
   int REUSE_DETECTOR;
+  int DOUBLE_DISC; 
 
   double COINC_WINDOW;
   double BEAM_WINDOW;
@@ -115,12 +116,13 @@ public:
     DATA_TYPE = 0;
     REUSE_DATA = 0;
     REUSE_DETECTOR = 0;
+    DOUBLE_DISC = 0; 
 
     COINC_WINDOW = 200;
     BEAM_WINDOW = 200;
     BEAM_DISTANCE = 2150;
 
-    DETECTOR_THRESHOLD = 0.1;
+    DETECTOR_THRESHOLD = 0.05;
     DETECTOR_CLIP = 10;
     TRIGGER_THRESHOLD = 0.1;
     TRIGGER_CLIP = 100.0;
@@ -191,6 +193,10 @@ public:
       else if(tag == "<REUSE_DETECTOR>:") {
         file >> value;
         REUSE_DETECTOR = stoi(value);
+      }
+      else if(tag == "<DOUBLE_DISC>:") {
+        file >> value;
+        DOUBLE_DISC = stoi(value);
       }
       else if(tag == "<DETECTOR_PATH>:") {
         file >> value;

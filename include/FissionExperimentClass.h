@@ -55,7 +55,7 @@ private:
 	TString rootEnding = ".root";
 	TString detFileT = "Detectors.root";
 	TString sysFileT = "Fission.root";
-  TString beamFileT = "BeamInfo.root";
+    TString beamFileT = "BeamInfo.root";
 
 public:
 
