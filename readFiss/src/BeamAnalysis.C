@@ -180,7 +180,7 @@ void readFiss::BeamErgAnalysis()
     double pLOScale, nLOScale;
     TString ergRangeLow, ergRangeHigh;
 
-    for (int i = 0; i < BEAM_ERG_BINNUM/4; i++) //need to change 10 to numEnergyBins variable  and divide by 4 to go four bins at a time
+    for (int i = 0; i < BEAM_ERG_BINNUM/4; i++) 
     {
       ergRangeLow = (TString)to_string(4*i);
       ergRangeHigh = (TString)to_string(4*i + 3);
