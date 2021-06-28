@@ -38,6 +38,7 @@ private:
 	int REUSE_DATA;
 	int REUSE_DETECTOR;
 	int DEBUG;
+	int FISSION_MODE; 
 
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";

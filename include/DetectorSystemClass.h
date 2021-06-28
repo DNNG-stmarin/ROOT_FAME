@@ -68,6 +68,7 @@ public:
 	int STEP_SIZE;
 	int REUSE_DETECTOR;
 	int DOUBLE_DISC; 
+	double MISC_MAX; 
 
 	// inputs given by the fission experiment class file, made up of the data collected and where to write
 	TChain* tree;

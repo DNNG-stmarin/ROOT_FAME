@@ -43,6 +43,7 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	DATA_TYPE = info->DATA_TYPE;
 	REUSE_DATA = info->REUSE_DATA;
 	REUSE_DETECTOR = info->REUSE_DETECTOR; 
+	FISSION_MODE = info->FISSION_MODE;
 	DEBUG = info->DEBUG; 
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
@@ -170,7 +171,7 @@ int FissionExperimentClass::CreateDetectionAnalysis()
 	
 	}
 
-
+	if(FISSION_MODE){
 	cout << "Entering fission analysis mode" << endl;
 	if(DEBUG==1){
 		cout << "debug is on" << endl;
@@ -180,7 +181,9 @@ int FissionExperimentClass::CreateDetectionAnalysis()
 		cout << "starndard fission analysis starting" << endl;
 		detectorData->FissionAnalysis();
 	}
+	}
 	return 1; 
+
 }
 
 // getSystemInfo

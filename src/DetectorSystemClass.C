@@ -46,6 +46,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	DET_CALIBRATION = new TGraph(*(info->calibrationDet));
 	REUSE_DETECTOR = info->REUSE_DETECTOR; 
 	DOUBLE_DISC = info->DOUBLE_DISC; 
+	MISC_MAX = info->MISC_MAX; 
 	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers

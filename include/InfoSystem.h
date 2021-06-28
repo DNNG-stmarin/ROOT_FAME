@@ -52,7 +52,9 @@ public:
   int DATA_TYPE;
   int REUSE_DATA;
   int REUSE_DETECTOR;
+  int FISSION_MODE; 
   int DOUBLE_DISC; 
+  double MISC_MAX; 
 
   double COINC_WINDOW;
   double BEAM_WINDOW;
@@ -116,7 +118,9 @@ public:
     DATA_TYPE = 0;
     REUSE_DATA = 0;
     REUSE_DETECTOR = 0;
+    FISSION_MODE = 1; 
     DOUBLE_DISC = 0; 
+    MISC_MAX = 0.005;
 
     COINC_WINDOW = 200;
     BEAM_WINDOW = 200;
@@ -194,9 +198,17 @@ public:
         file >> value;
         REUSE_DETECTOR = stoi(value);
       }
+      else if(tag == "<FISSION_MODE>:") {
+        file >> value;
+        FISSION_MODE = stoi(value);
+      }
       else if(tag == "<DOUBLE_DISC>:") {
         file >> value;
         DOUBLE_DISC = stoi(value);
+      }
+      else if(tag == "<MISC_MAX>:") {
+        file >> value;
+        MISC_MAX = stoi(value);
       }
       else if(tag == "<DETECTOR_PATH>:") {
         file >> value;

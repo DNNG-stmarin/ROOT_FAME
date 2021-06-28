@@ -493,7 +493,14 @@ int DetectorSystemClass::DetectionAnalysis()
  // |___|_||_\___|_| \__, |\_, | |_|  |___/___/
  //                  |___/ |__/
  //
-
+ if(DOUBLE_DISC == 1){
+	 cout << "Using double discrimination with maximum misclassification of: " << MISC_MAX << endl;
+ }
+ else{
+	 cout << "Using single misclassification" << endl;
+ }
+ 
+ // declare a TF1 function to be used for the fits 
  const TF1 expLin = TF1("expLin", "[0]*e^(-[1]*x) + [2]*x + [3]", MINERG_FIT, MAXERG_FIT);
  cout << "Fitting psd vs energy in the range: " << MINERG_FIT << ", " << MAXERG_FIT << " MeV \n"; 
 
@@ -721,24 +728,24 @@ int DetectorSystemClass::DetectionAnalysis()
 					
 					// loops throught to find the new neutron based discrimline 
 					// keep it from being intilized to zero 
-					while(miscNeut >= miscMax)
+					while(miscNeut >= MISC_MAX)
 					{
-					discLineNeutPoint[numGoodSlicespsd] -= discShiftValue;
+					discLinePhotPoint[numGoodSlicespsd] -= DISC_SHIFT_VALUE;
 					//calculates neutron missclass again
-					miscNeut = normal_cdf(discLineNeutPoint[numGoodSlicespsd], sigNeutPoint[numGoodSlicespsd], meanNeutPoint[numGoodSlicespsd]);
-					if(discLineNeutPoint[numGoodSlicespsd] <= MINERG_FIT)
+					miscNeut = normal_cdf(discLinePhotPoint[numGoodSlicespsd], sigNeutPoint[numGoodSlicespsd], meanNeutPoint[numGoodSlicespsd]);
+					if(discLinePhotPoint[numGoodSlicespsd] <= MINERG_FIT)
 					{
 						cout << det << ": desired neut discrim not found" << endl;
 						break;
            			}
 					}
 					// loops though to find the new photon based discrimline
-					while(miscPhot >= miscMax)
+					while(miscPhot >= MISC_MAX)
 					{
-					discLinePhotPoint[numGoodSlicespsd] += discShiftValue;
+					discLineNeutPoint[numGoodSlicespsd] += DISC_SHIFT_VALUE;
 					//calculates photon missclass again
-					miscPhot = 1 - normal_cdf(discLinePhotPoint[numGoodSlicespsd], sigPhotPoint[numGoodSlicespsd], meanPhotPoint[numGoodSlicespsd]);
-					if(discLinePhotPoint[numGoodSlicespsd] >= MAXERG_FIT){
+					miscPhot = 1 - normal_cdf(discLineNeutPoint[numGoodSlicespsd], sigPhotPoint[numGoodSlicespsd], meanPhotPoint[numGoodSlicespsd]);
+					if(discLineNeutPoint[numGoodSlicespsd] >= MAXERG_FIT){
 						cout << det << ": desired phot discrim not found" << endl;
 						break;
 					}
