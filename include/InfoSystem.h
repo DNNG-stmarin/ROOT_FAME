@@ -56,9 +56,9 @@ public:
   int DATA_TYPE;
   int REUSE_DATA;
   int REUSE_DETECTOR;
-  int FISSION_MODE; 
-  int DOUBLE_DISC; 
-  double MISC_MAX; 
+  int FISSION_MODE;
+  int DOUBLE_DISC;
+  double MISC_MAX;
 
 
   int RANDOM_COINCIDENCE;
@@ -128,8 +128,8 @@ public:
     DATA_TYPE = 0;
     REUSE_DATA = 0;
     REUSE_DETECTOR = 0;
-    FISSION_MODE = 1; 
-    DOUBLE_DISC = 0; 
+    FISSION_MODE = 1;
+    DOUBLE_DISC = 0;
     MISC_MAX = 0.005;
 
     RANDOM_COINCIDENCE = 0;
@@ -307,7 +307,7 @@ public:
 
       else if(tag == "<BEAM_DISTANCE>:") {
         file >> value;
-        BEAM_DISTANCE = stoi(value);
+        BEAM_DISTANCE = stod(value);
       }
 
       else if(tag == "<DETECTOR_THRESHOLD>:") {
@@ -426,7 +426,7 @@ public:
 
       else if(tag == "<BEAM_DELAY>:") {
         file >> value;
-        BEAM_DELAY = stoi(value);
+        BEAM_DELAY = stod(value);
       }
     }
 
