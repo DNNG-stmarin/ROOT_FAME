@@ -212,7 +212,8 @@ int DetectorSystemClass::DetectionAnalysis()
 		g_delay->SetLineColor(kGreen);
 		g_delay->Draw("SAME");
 
-		fisBeamActivity->Draw("SAME");
+		cout << "writing activity with " << fisBeamActivity->GetParameter(1) << endl;
+		triggers[trig].fisBeamActivity->Draw("SAME");
 
 		canvBeam->Write();
 
@@ -508,57 +509,57 @@ int DetectorSystemClass::DetectionAnalysis()
  else{
 	 cout << "Using single misclassification" << endl;
  }
- 
- // declare a TF1 function to be used for the fits 
+
+ // declare a TF1 function to be used for the fits
  const TF1 expLin = TF1("expLin", "[0]*e^(-[1]*x) + [2]*x + [3]", MINERG_FIT, MAXERG_FIT);
- cout << "Fitting psd vs energy in the range: " << MINERG_FIT << ", " << MAXERG_FIT << " MeV \n"; 
+ cout << "Fitting psd vs energy in the range: " << MINERG_FIT << ", " << MAXERG_FIT << " MeV \n";
 
 // if this doesn't work use a clone
- TF1* expLinPsd = new TF1(expLin); 
+ TF1* expLinPsd = new TF1(expLin);
  expLinPsd->SetName("expLinPsd");
- TF1* expLinMN = new TF1(expLin); 
+ TF1* expLinMN = new TF1(expLin);
  expLinMN->SetName("expLinMN");
- TF1* expLinMP= new TF1(expLin); 
+ TF1* expLinMP= new TF1(expLin);
  expLinMP->SetName("expLinMP");
- TF1* expLinSN = new TF1(expLin); 
+ TF1* expLinSN = new TF1(expLin);
  expLinSN->SetName("expLinSN");
- TF1* expLinSP = new TF1(expLin); 
+ TF1* expLinSP = new TF1(expLin);
  expLinSP->SetName("expLinSP");
- TF1* expLinPsdN = new TF1(expLin); 
+ TF1* expLinPsdN = new TF1(expLin);
  expLinPsdN->SetName("expLinPsdN");
- TF1* expLinPsdP = new TF1(expLin); 
+ TF1* expLinPsdP = new TF1(expLin);
  expLinPsdP->SetName("expLinPsdP");
 
 	if(PSD_ERG==1)
 	{
 
-		// defines arrays used in and for the slicing process 
+		// defines arrays used in and for the slicing process
 		int numGoodSlicespsd;
 		int energyBinspsd;
 		double tempPSD, tempErgPSD;
 		double psdPhotCounts, psdPhotMean, psdPhotStd;
-		double psdNeutCounts, psdNeutMean, psdNeutStd; 
-		double *meanNeutPoint, *meanPhotPoint, *sigNeutPoint, *sigPhotPoint; 
+		double psdNeutCounts, psdNeutMean, psdNeutStd;
+		double *meanNeutPoint, *meanPhotPoint, *sigNeutPoint, *sigPhotPoint;
 		double *energySliceInd, *discLinePoint, *discLineNeutPoint, *discLinePhotPoint;
-		
+
 		// defines TGraphs for all of the paramter and discrim lines
 		TGraph** discLines;
 		discLines = new TGraph* [NUM_DETS];
 		double p0Disc, p1Disc, p2Disc;
-		// parameters 
-		TGraph** meanNeut; 
+		// parameters
+		TGraph** meanNeut;
 		meanNeut = new TGraph* [NUM_DETS];
 		double m0Neut, m1Neut, m2Neut, m3Neut;
-		TGraph** meanPhot; 
+		TGraph** meanPhot;
 		meanPhot = new TGraph* [NUM_DETS];
 		double m0Phot, m1Phot, m2Phot, m3Phot;
-		TGraph** sigNeut; 
+		TGraph** sigNeut;
 		sigNeut = new TGraph* [NUM_DETS];
 		double s0Neut, s1Neut, s2Neut, s3Neut;
-		TGraph** sigPhot; 
+		TGraph** sigPhot;
 		sigPhot = new TGraph* [NUM_DETS];
 		double s0Phot, s1Phot, s2Phot, s3Phot;
-		// double discrim 
+		// double discrim
 		TGraph** discLinesNeut;
 		discLinesNeut = new TGraph* [NUM_DETS];
 		double p0DiscN, p1DiscN, p2DiscN;
@@ -581,7 +582,7 @@ int DetectorSystemClass::DetectionAnalysis()
 			cdPsd->cd();
 			// cout << "For detector " << det << ":" << endl;
 
-			// sets the number of bins for each array 
+			// sets the number of bins for each array
 			energyBinspsd = psdErgHists[det]->GetNbinsX(); // get the number of slices
 			energySliceInd = new double [energyBinspsd]; //energy slice
 			discLinePoint = new double [energyBinspsd]; //discrimination
@@ -590,7 +591,7 @@ int DetectorSystemClass::DetectionAnalysis()
 			meanPhotPoint = new double [energyBinspsd];
 			sigNeutPoint = new double [energyBinspsd];
 			sigPhotPoint = new double [energyBinspsd];
-			// double discrim arrays 
+			// double discrim arrays
 			discLineNeutPoint = new double [energyBinspsd];
 			discLinePhotPoint = new double [energyBinspsd];
 
@@ -681,7 +682,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				psdneutpeak->SetParameter(1, optimized->Parameter(4));
 				psdneutpeak->SetParameter(2, optimized->Parameter(5));
 
-				// find the number of neutrons and photons 
+				// find the number of neutrons and photons
 				double photonArea = psdphotpeak->Integral(MINPSD_FIT, MAXPSD_FIT);
 				double neutronArea = psdneutpeak->Integral(MINPSD_FIT, MAXPSD_FIT);
 
@@ -723,8 +724,8 @@ int DetectorSystemClass::DetectionAnalysis()
 				// stores the points for the graphs
 				energySliceInd[numGoodSlicespsd] = tempErgPSD; //xvalue
 				discLinePoint[numGoodSlicespsd] = tempPSD; //yvalue
-				// paramater values 
-				meanNeutPoint[numGoodSlicespsd] = psdcombined->GetParameter(4); 
+				// paramater values
+				meanNeutPoint[numGoodSlicespsd] = psdcombined->GetParameter(4);
 				meanPhotPoint[numGoodSlicespsd] = psdcombined->GetParameter(1);
 				sigNeutPoint[numGoodSlicespsd] = psdcombined->GetParameter(5);
 				sigPhotPoint[numGoodSlicespsd] = psdcombined->GetParameter(2);
@@ -732,25 +733,25 @@ int DetectorSystemClass::DetectionAnalysis()
 				// loops through and finds the double discrim lines when turned on
 				if(DOUBLE_DISC == 1)
 				{
-					//defining and setting requred values 
+					//defining and setting requred values
 					discLineNeutPoint[numGoodSlicespsd] = tempPSD - DISC_SHIFT_VALUE;
-					discLinePhotPoint[numGoodSlicespsd] = tempPSD + DISC_SHIFT_VALUE; 
-					
-					double goodPhot, goodNeut; 
+					discLinePhotPoint[numGoodSlicespsd] = tempPSD + DISC_SHIFT_VALUE;
+
+					double goodPhot, goodNeut;
 					double badPhot, badNeut;
-					double miscPhot, miscNeut; 
-					
-					// loops through to find the new photon based discrimline 
+					double miscPhot, miscNeut;
+
+					// loops through to find the new photon based discrimline
 					do
 					{
 						discLinePhotPoint[numGoodSlicespsd] -= DISC_SHIFT_VALUE;
-						
-						// finds the photon misclafficiation based on total area 
+
+						// finds the photon misclafficiation based on total area
 						badNeut = neutronArea * normal_cdf(discLinePhotPoint[numGoodSlicespsd], sigNeutPoint[numGoodSlicespsd], meanNeutPoint[numGoodSlicespsd]);
 						goodPhot = photonArea * normal_cdf(discLinePhotPoint[numGoodSlicespsd], sigPhotPoint[numGoodSlicespsd], meanPhotPoint[numGoodSlicespsd]);
 						miscNeut = badNeut / goodPhot;
 
-						// stops the while loop if needed 
+						// stops the while loop if needed
 						if(discLinePhotPoint[numGoodSlicespsd] <= MINPSD_FIT)
 						{
 							cout << det << ": desired phot discrim not found" << endl;
@@ -763,11 +764,11 @@ int DetectorSystemClass::DetectionAnalysis()
 					do
 					{
 						discLineNeutPoint[numGoodSlicespsd] += DISC_SHIFT_VALUE;
-						
-						// finds the neutron misclassification based on total area 
+
+						// finds the neutron misclassification based on total area
 						badPhot = photonArea * (1 - normal_cdf(discLineNeutPoint[numGoodSlicespsd], sigPhotPoint[numGoodSlicespsd], meanPhotPoint[numGoodSlicespsd]));
 						goodNeut = neutronArea * (1 - normal_cdf(discLineNeutPoint[numGoodSlicespsd], sigNeutPoint[numGoodSlicespsd], meanNeutPoint[numGoodSlicespsd]));
-						miscPhot = badPhot / goodNeut; 
+						miscPhot = badPhot / goodNeut;
 
 						// stops the while loop if needed
 						if(discLineNeutPoint[numGoodSlicespsd] >= MAXPSD_FIT)
@@ -778,8 +779,8 @@ int DetectorSystemClass::DetectionAnalysis()
 					}
 					while(miscPhot >= MISC_MAX);
 				}
-	
-	
+
+
 				TString canSliceName = "psd" + to_string(det) +  "Proj" + to_string(numGoodSlicespsd);
 
 				// canvas with the psd
@@ -819,12 +820,12 @@ int DetectorSystemClass::DetectionAnalysis()
 					TString canDiscErgName = "psdErg" + to_string(det);
 					TCanvas* canvasDiscErg = new TCanvas(canDiscErgName, canDiscErgName, 800, 500);
 
-					// stores the psd discrimination line by detector 
+					// stores the psd discrimination line by detector
 				    discLines[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, discLinePoint);
 					discLines[det]->SetLineColor(kBlack);
 					discLines[det]->SetLineWidth(3);
-					
-					// stores the paramater data by detector 
+
+					// stores the paramater data by detector
 					meanNeut[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, meanNeutPoint);
 					meanNeut[det]->SetLineColor(kBlue);
 					meanNeut[det]->SetLineWidth(3);
@@ -843,7 +844,7 @@ int DetectorSystemClass::DetectionAnalysis()
 					sigPhot[det]->SetLineStyle(kDashed);
 					sigPhot[det]->SetLineWidth(3);
 
-					// stores the double discrimination line data by detector 
+					// stores the double discrimination line data by detector
 					if(DOUBLE_DISC == 1)
 					{
 						discLinesNeut[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, discLineNeutPoint);
@@ -857,15 +858,15 @@ int DetectorSystemClass::DetectionAnalysis()
 						discLinesPhot[det]->SetName("psdPhot");
 					}
 
-					// fit the different parameters by detector 
-					// fits the dirsim line 
+					// fit the different parameters by detector
+					// fits the dirsim line
 					psdDisc_opt = discLines[det]->Fit(expLinPsd, "SQ", "",  MINERG_FIT, MAXERG_FIT);
-					// fits the parameters 
+					// fits the parameters
 					meanNeut_opt = meanNeut[det]->Fit(expLinMN, "SQ", "", MINERG_FIT, MAXERG_FIT);
 					meanPhot_opt = meanPhot[det]->Fit(expLinMP, "SQ", "", MINERG_FIT, MAXERG_FIT);
 					sigNeut_opt = sigNeut[det]->Fit(expLinSN, "SQ", "", MINERG_FIT, MAXERG_FIT);
 					sigPhot_opt = sigPhot[det]->Fit(expLinSP, "SQ", "", MINERG_FIT, MAXERG_FIT);
-					
+
 					// stores the parameter fits as a TF1
 				    detectors[det].discPSD = (TF1*)expLinPsd->Clone();
 					detectors[det].meanNeut = (TF1*)expLinMN->Clone();
@@ -885,10 +886,10 @@ int DetectorSystemClass::DetectionAnalysis()
 					}
 
 
-					// adds axis labels to the energy plots 
+					// adds axis labels to the energy plots
 					psdErgHists[det]->GetXaxis()->SetTitle("Total (MeVee)");
-					psdErgHists[det]->GetYaxis()->SetTitle("Tail/Total"); 
-					
+					psdErgHists[det]->GetYaxis()->SetTitle("Tail/Total");
+
 					// draw the parameter points on top of the histogram
 					canvasDiscErg->cd();
 					psdErgHists[det]->Draw();
@@ -901,26 +902,26 @@ int DetectorSystemClass::DetectionAnalysis()
 					}
 					discLines[det]->Draw("SAME");
 
-					// draws the paramater lines onto the histogram 
+					// draws the paramater lines onto the histogram
 					detectors[det].discPSD->Draw("SAME");
 					detectors[det].meanNeut->Draw("SAME");
 					detectors[det].meanPhot->Draw("SAME");
 					cdPsdErg->cd();
 					canvasDiscErg->Write();
 
-					// changes line colors for the pure paramter plots 
+					// changes line colors for the pure paramter plots
 					detectors[det].discPSD->SetLineColor(kBlack);
-					detectors[det].meanNeut->SetLineColor(kBlue); 
-					detectors[det].meanPhot->SetLineColor(kRed); 
-					detectors[det].sigNeut->SetLineColor(kGreen); 
-					detectors[det].sigPhot->SetLineColor(kOrange); 
+					detectors[det].meanNeut->SetLineColor(kBlue);
+					detectors[det].meanPhot->SetLineColor(kRed);
+					detectors[det].sigNeut->SetLineColor(kGreen);
+					detectors[det].sigPhot->SetLineColor(kOrange);
 
 					// creates a canvas for all of the parameter plots
 					TString canParamName = "param" + to_string(det);
 					TCanvas* canvasParam = new TCanvas(canParamName, canParamName, 800, 500);
 					detectors[det].discPSD->SetTitle("PSD Paramters; Light Output (MeVee); PSD");
 
-					// draws the points and fits onto the paramater plots 
+					// draws the points and fits onto the paramater plots
 					canvasParam->cd();
 					detectors[det].discPSD->Draw();
 					detectors[det].meanNeut->Draw("SAME");

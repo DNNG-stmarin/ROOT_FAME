@@ -44,9 +44,9 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	TRIGGER_PATH = info->triggerPath;
 	DETECTOR_PATH = info->detectorPath;
 	DET_CALIBRATION = new TGraph(*(info->calibrationDet));
-	REUSE_DETECTOR = info->REUSE_DETECTOR; 
-	DOUBLE_DISC = info->DOUBLE_DISC; 
-	MISC_MAX = info->MISC_MAX; 
+	REUSE_DETECTOR = info->REUSE_DETECTOR;
+	DOUBLE_DISC = info->DOUBLE_DISC;
+	MISC_MAX = info->MISC_MAX;
 	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
@@ -106,7 +106,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
       triggers[i].Y = stod(y) * 100;
       triggers[i].Z = stod(z) * 100;
       //cout << info->triggerPath << endl;
-      cout << i << " " << triggers[i].X << " " << triggers[i].Y << " " << triggers[i].Z << endl;
+      // cout << i << " " << triggers[i].X << " " << triggers[i].Y << " " << triggers[i].Z << endl;
     }
 	}
   inTrig.close();
@@ -137,13 +137,13 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		// cdRef = detFile->mkdir("Reflections");
 		cdBeam = detFile->mkdir("Beam");
 
-		// create the folders for psd 
+		// create the folders for psd
 		cdPsdSlices = cdPsd->mkdir("PSD_slices");
 		cdPsdIndividual = cdPsd->mkdir("PSD_individual");
 		cdPsdErg = cdPsd->mkdir("PSDErg_discrimination");
 		cdParam = cdPsd->mkdir("PSD_parameters");
 
-		// create folders for tof 
+		// create folders for tof
 		cdTofIndividual = cdToF->mkdir("TOF_individual");
 		cdTOFPSD = cdPsd->mkdir("TOF_PSD");
 		if(TOF_ERG == 1){
