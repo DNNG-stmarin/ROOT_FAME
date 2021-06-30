@@ -69,6 +69,7 @@ public:
 	int REUSE_DETECTOR;
 	int DOUBLE_DISC; 
 	double MISC_MAX; 
+	int PARAM_FILES;
 
 	// inputs given by the fission experiment class file, made up of the data collected and where to write
 	TChain* tree;
@@ -353,6 +354,7 @@ ___             _   _
 	//virtual void     TriggerAnalysis();
 	virtual int      DetectionAnalysis();
 	virtual int      DetectionImport();
+	virtual int      ParamFiles();
 	// virtual void     SystemAnalysis();
 	virtual void     FissionAnalysis();
 	virtual void     FissionAnalysisLoop();

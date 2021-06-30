@@ -4,6 +4,8 @@
         "DetectorSystemClass.C": "cpp",
         "DetectionAnalysis.C": "cpp",
         "FissionExperimentClass.C": "cpp",
-        "DetectionImport.C": "cpp"
+        "DetectionImport.C": "cpp",
+        "InitializeDetectorHistograms.C": "cpp",
+        "SystemAnalysis.C": "cpp"
     }
 }

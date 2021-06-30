@@ -59,6 +59,7 @@ public:
   int FISSION_MODE;
   int DOUBLE_DISC;
   double MISC_MAX;
+  int PARAM_FILES;
 
 
   int RANDOM_COINCIDENCE;
@@ -131,6 +132,7 @@ public:
     FISSION_MODE = 1;
     DOUBLE_DISC = 0;
     MISC_MAX = 0.005;
+    PARAM_FILES = 1;
 
     RANDOM_COINCIDENCE = 0;
 
@@ -237,6 +239,10 @@ public:
       else if(tag == "<MISC_MAX>:") {
         file >> value;
         MISC_MAX = stod(value);
+      }
+      else if(tag == "<PARAM_FILES>:") {
+        file >> value;
+        PARAM_FILES = stoi(value);
       }
       else if(tag == "<DETECTOR_PATH>:") {
         file >> value;
