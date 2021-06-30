@@ -42,6 +42,7 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	NUM_FILES = info->NUM_FILES;
 	DATA_TYPE = info->DATA_TYPE;
 	REUSE_DATA = info->REUSE_DATA;
+	PARAM_FILES = info->PARAM_FILES; 
 
 	FILE_LIST_MODE = info->FILE_LIST_MODE;
 	FILE_LIST = new int[NUM_FILES];
@@ -192,8 +193,13 @@ int FissionExperimentClass::CreateDetectionAnalysis()
 	detectorData->DetectionAnalysis();
 	}
 	else{
-	
 	}
+
+	// V
+	if(PARAM_FILES == 1){
+		detectorData->ParamFiles();
+	}
+
 
 	if(FISSION_MODE){
 	cout << "Entering fission analysis mode" << endl;

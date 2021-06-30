@@ -47,6 +47,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	REUSE_DETECTOR = info->REUSE_DETECTOR;
 	DOUBLE_DISC = info->DOUBLE_DISC;
 	MISC_MAX = info->MISC_MAX;
+	PARAM_FILES = info->PARAM_FILES;
 	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers

@@ -39,6 +39,7 @@ private:
 	int REUSE_DETECTOR;
 	int DEBUG;
 	int FISSION_MODE; 
+	int PARAM_FILES;
 
 	int RANDOM_COINCIDENCE;
 
