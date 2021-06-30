@@ -31,12 +31,15 @@ void readFiss::PlotAll()
   PlotMult();
   PlotPSD();
   PlotSingles();
+
   PlotMultCorExp();
+  PlotMultCorBack();
   PlotMultLOExp();
   PlotEnergyLOExp();
   PlotN_LOPSD_Exp();
   PlotP_LOPSD_Exp();
-  
+  PlotN_AngleCorr();
+
   PlotIndiv();
 }
 
@@ -387,6 +390,58 @@ void readFiss::PlotMultCorExp()
   //c_MultCorExp->SaveAs("MultiplicityCorrelationExp.eps");
 }
 
+void readFiss::PlotMultCorBack()
+{
+  writeFile->cd();
+  cd_correlated->cd();
+  cout << "Plotting correlated back multiplicity." << endl;
+
+  //make canvas
+  TCanvas* c_MultCorBack = new TCanvas("cMultCorBack", "Neutron-Gamma Back Multiplicity",
+                                                                  800, 400);
+  c_MultCorBack->cd();
+
+  neutronGammaMultBack->SetLineColor(kRed);
+  neutronGammaMultBack->Draw("COLZ");
+
+  // change stat box
+  c_MultCorBack->Update();
+  TPaveStats *statsBox = (TPaveStats*)c_MultCorBack->GetPrimitive("stats");
+  statsBox->SetName("mystats");
+  TList* statsList = statsBox->GetListOfLines();
+
+  TText* xline = statsBox->GetLineWith("Mean x");
+  TString xtext = xline->GetTitle();
+  xtext.Replace(0, xtext.First('='), "Mean Neutrons ");
+  TLatex* xlatex = new TLatex(0, 0, xtext);
+  xlatex->SetTextFont(42);
+  xlatex->SetTextSize(0.035);
+  statsList->Remove(xline);
+  statsList->Add(xlatex);
+
+  TText* yline = statsBox->GetLineWith("Mean y");
+  TString ytext = yline->GetTitle();
+  ytext.Replace(0, ytext.First('='), "Mean Gammas ");
+  TLatex* ylatex = new TLatex(0, 0, ytext);
+  ylatex->SetTextFont(42);
+  ylatex->SetTextSize(0.035);
+  statsList->Remove(yline);
+  statsList->Add(ylatex);
+
+  neutronGammaMultBack->SetStats(0);
+  c_MultCorBack->Modified();
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  neutronGammaMultBack->GetXaxis()->SetTitleSize(x_labelSize);
+  neutronGammaMultBack->GetYaxis()->SetTitleSize(y_labelSize);
+  neutronGammaMultBack->GetXaxis()->SetTickSize(x_tickSize);
+  neutronGammaMultBack->GetYaxis()->SetTickSize(y_tickSize);
+
+  c_MultCorBack->Write();
+  //c_MultCorBack->SaveAs("MultiplicityCorrelationBack.eps");
+}
+
 void readFiss::PlotMultLOExp()
 {
   writeFile->cd();
@@ -491,10 +546,51 @@ void readFiss::PlotP_LOPSD_Exp()
   //c_P_LOPSD_Exp->SaveAs("photonLightOutPSDExp.eps");
 }
 
+void readFiss::PlotN_AngleCorr()
+{
+  writeFile->cd();
+  cd_correlated->cd();
+  cout << "Plotting neutron angular correlations." << endl;
+
+  // make canvas
+  TCanvas* c_N_AngleCorr = new TCanvas("cN_AngleCorr", "Cos(Theta) in Neutron Doubles", 800, 400);
+  c_N_AngleCorr->cd();
+
+  TH1D* N_Angles = new TH1D("N_Angles", "CosT between detectors;CosT;Counts", 100, -1, 1);
+  for(int i = 0; i < 40; ++i)
+  {
+    for(int j = 0; j < i; ++j)
+    {
+      N_Angles->Fill(angles[i][j]);
+    }
+  }
+
+  neutronAngleCorr->Divide(N_Angles);
+
+  neutronAngleCorr->SetLineColor(kRed);
+  neutronAngleCorr->SetStats(0);
+  neutronAngleCorr->Draw();
+
+  // N_Angles->SetLineColor(kBlue);
+  // N_Angles->SetStats(0);
+  // N_Angles->Draw("SAME");
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  neutronAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  neutronAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  neutronAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  neutronAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+
+  c_N_AngleCorr->Write();
+  //c_N_AngleCorr->SaveAs("neutronAngleCorrExp.eps");
+}
+
 void readFiss::PlotIndiv()
 {
   writeFile->cd();
   cd_individual->cd();
+  cout << "Plotting individual detectors" << endl;
 
   cd_LightOutExp = cd_individual->mkdir("LightOutExp");
   cd_ToFExp = cd_individual->mkdir("ToFExp");

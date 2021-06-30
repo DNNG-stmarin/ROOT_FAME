@@ -188,6 +188,26 @@ void readFiss::GetInfo(istream &inputStream)
 
   cout << "\n";
 
+  cout << "Input AngleFile path" << endl;
+  inputStream >> nameAngles;
+  cout << "Using AngleFile " << nameAngles << endl;
+
+  int numDets = 40;
+  angles = new double*[numDets];
+  ifstream fin(nameAngles);
+  if(!fin.is_open())
+  {
+    cout << "Couldn't open " << nameAngles << endl;
+  }
+  for(int i = 0; i < numDets; ++i)
+  {
+    angles[i] = new double[numDets];
+    for(int j = 0; j < i; ++j)
+    {
+      fin >> angles[i][j];
+    }
+  }
+
 
 /*
   _   _               ___                _
@@ -221,7 +241,7 @@ void readFiss::GetInfo(istream &inputStream)
   inputStream >> NUM_DETECTORS;
   cout << " Using " << NUM_DETECTORS << " detectors. \n\n";
 
-  DETECTORS = new int[NUM_DETECTORS];
+  /*DETECTORS = new int[NUM_DETECTORS];
 
   cout << "Input detector numbers. \n";
   for(int i = 0; i < NUM_DETECTORS; ++i)
@@ -234,7 +254,7 @@ void readFiss::GetInfo(istream &inputStream)
   {
     cout << DETECTORS[i] << " ";
   }
-  cout << "\n\n";
+  cout << "\n\n";*/
 
   // get threshold and max time from user
   cout << "Input detector threshold [MeVee], detector clipping [MeVee] and max neutron time [ns]. Sample input: \n 0.20 4.0 70.0" << endl;
@@ -254,6 +274,7 @@ void readFiss::GetInfo(istream &inputStream)
   // ask user for background delay
   cout << "background delay to visualize background (ns), put 0 if unsure" << endl;
   inputStream >> BACKGROUND_DELAY;
+  cout << "using " << BACKGROUND_DELAY << " ns" << endl;
   cout << "\n";
 
   // ask user for background delay

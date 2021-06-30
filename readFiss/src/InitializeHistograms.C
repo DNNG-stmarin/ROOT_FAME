@@ -107,6 +107,7 @@ void readFiss::InitializeHistograms()
  */
   // correlated multiplicity
   neutronGammaMultExp = new TH2I("neutronGammaMultExp", "Neutron-Gamma Multiplicity;Neutron Multiplicity; Gamma Multiplicity; Counts",maxMult, minMult, maxMult, maxMult, minMult, maxMult);
+  neutronGammaMultBack = new TH2I("neutronGammaMultBack", "Neutron-Gamma Back Multiplicity;Neutron Multiplicity; Gamma Multiplicity; Counts",maxMult, minMult, maxMult, maxMult, minMult, maxMult);
 
 // neutron mult vs photon light output
   neutronMultPhotonLOExp = new TH2D("neutronMultPhotonLOExp", "Neutron Multiplicity vs. Photon Light Output; Neutron Multiplicity; Photon Light Output [MeVee]; Counts", maxMult, minMult-0.5, maxMult-0.5, numLObins, minLO, maxLO);

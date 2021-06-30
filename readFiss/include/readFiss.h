@@ -42,6 +42,7 @@ public :
    TString          nameExp; // String name of where to find experiment
    TString          nameSim;
    TString          nameBeam;
+   TString          nameAngles;
 
    TFile*           expFile;
    TFile*           simFile;
@@ -74,7 +75,7 @@ public :
    int* TRIGGERS;
 
    int NUM_DETECTORS; // number of detectors
-   int* DETECTORS;
+   int* DETECTORS; // currently unused
 
 
   /*
@@ -218,6 +219,7 @@ public :
 
    // correlated histograms - add Exp to the end of these
    TH2I* neutronGammaMultExp;
+   TH2I* neutronGammaMultBack;
    TH2D* neutronMultPhotonLOExp;
    TH2D* neutronEnergyLOExp;
    TH2D* neutronLightOutPSDExp;
@@ -226,6 +228,7 @@ public :
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH1D* neutronAngleCorr;
+   double** angles;
 
    // individual correlated hists
    TH2D** IndivNeutronEnergyLOExp;
@@ -572,10 +575,12 @@ public :
    virtual void     PlotSingles();
    // correlated
    virtual void     PlotMultCorExp();
+   virtual void     PlotMultCorBack();
    virtual void     PlotMultLOExp();
    virtual void     PlotEnergyLOExp();
    virtual void     PlotN_LOPSD_Exp();
    virtual void     PlotP_LOPSD_Exp();
+   virtual void     PlotN_AngleCorr();
 
    // plot individual detectors
    virtual void     PlotIndiv();

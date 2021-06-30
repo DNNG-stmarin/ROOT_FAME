@@ -98,6 +98,7 @@ void readFiss::LoopExp()
       gMultBack = 0;
 
       // loop through neutrons
+      int n1 = -1, n2 = -1;
       for (int i = 0; i < neutronMult; i++)
       {
         if ((neutronLightOut[i] > THRESHOLD) && (neutronLightOut[i] < CLIPPING) && (neutronDetTimes[i] < MAX_TIME_N) )
@@ -112,7 +113,7 @@ void readFiss::LoopExp()
             neutronLightOutPSDExp->Fill(neutronLightOut[i], neutronPSD[i]);
 
             indexDet = neutronDet[i];
-            if(indexDet < 0)
+            if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
             {
               cout << "Detector number " << neutronDet[i] << " not recognized from neutronDet." << endl;
               exit(10);
@@ -126,6 +127,15 @@ void readFiss::LoopExp()
             IndivNeutronEnergyLOExp[indexDet]->Fill(neutronToFErg[i], neutronLightOut[i]);
             IndivNeutronLightOutPSDExp[indexDet]->Fill(neutronLightOut[i], neutronPSD[i]);
 
+            if(nMult == 1)
+            {
+              n1 = i;
+            }
+            else if(nMult == 2)
+            {
+              n2 = i;
+            }
+
             if (validBeam)
             {
               h2_nLightOutErg[indexChannel]->Fill(beamEnergy, neutronLightOut[i]);
@@ -135,6 +145,27 @@ void readFiss::LoopExp()
       }
       neutronMultExp->Fill(nMult);
       h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
+      if(nMult == 2)
+      {
+        // double dot = (neutronVx[n1] * neutronVx[n2]) +
+        //              (neutronVy[n1] * neutronVy[n2]) +
+        //              (neutronVz[n1] * neutronVz[n2]); // dot product
+        // double Mn1 = sqrt(pow(neutronVx[n1], 2) +
+        //                   pow(neutronVy[n1], 2) +
+        //                   pow(neutronVz[n1], 2)); // magnitude of n1
+        // double Mn2 = sqrt(pow(neutronVx[n2], 2) +
+        //                   pow(neutronVy[n2], 2) +
+        //                   pow(neutronVz[n2], 2)); // magnitude of n2
+        // neutronAngleCorr->Fill(dot / (Mn1 * Mn2));
+        if(neutronDet[n1] > neutronDet[n2])
+        {
+          neutronAngleCorr->Fill(angles[(int)neutronDet[n1]][(int)neutronDet[n2]]);
+        }
+        else
+        {
+          neutronAngleCorr->Fill(angles[(int)neutronDet[n2]][(int)neutronDet[n1]]);
+        }
+      }
 
       if(validBeam)
       {
@@ -155,7 +186,7 @@ void readFiss::LoopExp()
           photonLightOutPSDExp->Fill(photonLightOut[i], photonPSD[i]);
 
           indexDet = photonDet[i];
-          if(indexDet < 0)
+          if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
           {
             cout << "Detector number " << photonDet[i] << " not recognized from photonDet." << endl;
             exit(10);
@@ -196,7 +227,7 @@ void readFiss::LoopExp()
             neutronSinglesBack->Fill(backNeutronDet[i]);
 
             indexDet = backNeutronDet[i];
-            if(indexDet < 0)
+            if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
             {
               cout << "Detector number " << backNeutronDet[i] << " not recognized from backNeutronDet." << endl;
               exit(10);
@@ -234,7 +265,7 @@ void readFiss::LoopExp()
           photonSinglesBack->Fill(backPhotonDet[i]);
 
           indexDet = backPhotonDet[i];
-          if(indexDet < 0)
+          if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
           {
             cout << "Detector number " << backPhotonDet[i] << " not recognized from backPhotonDet." << endl;
             exit(10);
@@ -257,6 +288,8 @@ void readFiss::LoopExp()
       {
         h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
       }
+
+      neutronGammaMultBack->Fill(nMultBack, gMultBack);
    }
 
    expEntries = numFissIter;
@@ -308,7 +341,7 @@ void readFiss::LoopSim()
               neutronSinglesSim->Fill(neutronChannel[i]);
 
               indexDet = neutronChannel[i];
-              if(indexDet < 0)
+              if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
               {
                 cout << "Detector number " << neutronChannel[i] << " not recognized from neutronChannel." << endl;
                 exit(10);
@@ -333,7 +366,7 @@ void readFiss::LoopSim()
               photonSinglesSim->Fill(photonChannel[i]);
 
               indexDet = photonChannel[i];
-              if(indexDet < 0)
+              if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
               {
                 cout << "Detector number " << photonChannel[i] << " not recognized from photonChannel." << endl;
                 exit(10);
