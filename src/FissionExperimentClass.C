@@ -42,15 +42,15 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	NUM_FILES = info->NUM_FILES;
 	DATA_TYPE = info->DATA_TYPE;
 	REUSE_DATA = info->REUSE_DATA;
-	PARAM_FILES = info->PARAM_FILES; 
+	PARAM_FILES = info->PARAM_FILES;
 
 	FILE_LIST_MODE = info->FILE_LIST_MODE;
 	FILE_LIST = new int[NUM_FILES];
 	RANDOM_COINCIDENCE = info->RANDOM_COINCIDENCE;
 
-	REUSE_DETECTOR = info->REUSE_DETECTOR; 
+	REUSE_DETECTOR = info->REUSE_DETECTOR;
 	FISSION_MODE = info->FISSION_MODE;
-	DEBUG = info->DEBUG; 
+	DEBUG = info->DEBUG;
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
 	if(REUSE_DATA == 0) {
@@ -65,9 +65,9 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	//if reuse then read, otherwise recreate (only detFile)
 	cout << "about to start detector import" << endl;
 	if(REUSE_DETECTOR == 1){
-		cout << "in the detector import loop" << endl; 
+		cout << "in the detector import loop" << endl;
 		detFile = new TFile(detFileT, "READ");
-	} 
+	}
 	else if(REUSE_DETECTOR == 0){
 		detFile = new TFile(detFileT, "RECREATE");
 	}
@@ -201,7 +201,8 @@ int FissionExperimentClass::CreateDetectionAnalysis()
 	}
 
 
-	if(FISSION_MODE){
+	if(FISSION_MODE == 1)
+	{
 	cout << "Entering fission analysis mode" << endl;
 	if(DEBUG==1){
 		cout << "debug is on" << endl;
@@ -212,7 +213,7 @@ int FissionExperimentClass::CreateDetectionAnalysis()
 		detectorData->FissionAnalysis();
 	}
 	}
-	return 1; 
+	return 1;
 
 }
 
