@@ -54,19 +54,24 @@ _______   _
 
 */
 
-TString fileNameTrigBeam = "Beam/beamTimeTrig";
+TString fileNameTrigBeamBase = "Beam/beamTimeTrig";
+TString fileNameTrigBeam;
 
 for(int trig = 0; trig < NUM_TRIGGERS; trig++)
 {
   if(NUM_BEAMS > 0)
   {
+    cout << "importing beam fiss" << endl;
+      
     // discrmPSD
     // create a canvas to store the data being accessed
     TCanvas* c_trigBeam;
     TF1* f_trigBeam;
 
     // sets the file name to the base name and the detector
-    fileNameTrigBeam =  fileNameTrigBeam + (TString)to_string(trig);
+    fileNameTrigBeam =  fileNameTrigBeamBase + (TString)to_string(trig);
+      
+    cout << "reading from " << fileNameTrigBeam << endl;
 
     //sets the canvas equal to the psdErg one for that detector
     c_trigBeam = (TCanvas*)detFile->Get(fileNameTrigBeam);
@@ -76,6 +81,8 @@ for(int trig = 0; trig < NUM_TRIGGERS; trig++)
     triggers[trig].beamDelay = f_trigBeam->GetParameter(1);
   }
 }
+
+cout << "importing  detectors" << endl;
 
 
 
@@ -109,16 +116,13 @@ _____       _            _
 
 // loops through all of the detectors
 for(int det = 0; det < NUM_DETS; ++det){
-
-
-
-
     // discrmPSD
     // create a canvas to store the data being accessed
     TCanvas* c_psdErg;
     TF1* f_psdDisc;
     // sets the file name to the base name and the detector
     fileNamePsd =  fileNameBasePsd + (TString)to_string(det);
+    cout << fileNamePsd << endl;
     //sets the canvas equal to the psdErg one for that detector
     c_psdErg = (TCanvas*)detFile->Get(fileNamePsd);
     f_psdDisc = (TF1*)c_psdErg->GetPrimitive("expLinPsd");
