@@ -225,9 +225,9 @@ public :
    TH2D* neutronLightOutPSDExp;
    TH2D* photonLightOutPSDExp;
 
-   TH2D* neutronDoublesMat;
-   TH2D* neutronSinglesMat;
-   TH1D* neutronAngleCorr;
+   TH2I* neutronDoublesMat;
+   TH2I* neutronSinglesMat;
+   TGraph* neutronAngleCorr;
    double** angles;
 
    // individual correlated hists

@@ -36,13 +36,13 @@ void readFiss::Slice()
                                       Derivatives[i]->GetNbinsX(), Derivatives[i]->GetXaxis()->GetXmin(), Derivatives[i]->GetXaxis()->GetXmax());
     myfunc[i] = new TF1((TString)"myfunc" + (TString)to_string(i), "gaus");
 
-    for(int j = 1; j < Projections[i]->GetNbinsX(); ++j)
+    for(int j = 1; j <= Projections[i]->GetNbinsX(); ++j)
     {
       Derivatives[i]->SetBinContent(j, abs((Projections[i]->GetBinContent(j+1) - Projections[i]->GetBinContent(j)) /
                             (Projections[i]->GetBinCenter(j+1) - Projections[i]->GetBinCenter(j))));
     }
 
-    for(int k = 1; k < Derivatives[i]->GetNbinsX(); ++k)
+    for(int k = 1; k <= Derivatives[i]->GetNbinsX(); ++k)
     {
       Seconds[i]->SetBinContent(k, (Derivatives[i]->GetBinContent(k+1) - Derivatives[i]->GetBinContent(k)) /
                               (Derivatives[i]->GetBinCenter(k+1) - Derivatives[i]->GetBinCenter(k)));
@@ -52,7 +52,7 @@ void readFiss::Slice()
     //Derivatives[i]->Rebin(5); // makes structure more visible
     left_bound[i] = THRESHOLD;
 
-    for(int k = Seconds[i]->GetNbinsX(); k > 1; --k)
+    for(int k = Seconds[i]->GetNbinsX(); k >= 1; --k)
     {
       if(Seconds[i]->GetBinContent(k - 1) > 0 &&
          Seconds[i]->GetBinContent(k) < 0 &&
@@ -156,4 +156,21 @@ void readFiss::Slice()
   final->Fit("finalfit", "BQ");
 
   c_Final->Write();
+}
+
+void readFiss::AngCorr()
+{
+  // computing efficiency matrix
+  for(int i = 1; i <= neutronSinglesExp->GetNbinsX(); ++i)
+  {
+    for(int j = 1; j < i; ++j)
+    {
+      neutronSinglesMat->SetBinContent(i, j, neutronSinglesExp->GetBinContent(i) * neutronSinglesExp->GetBinContent(j));
+    }
+  }
+
+  // scale doubles matrix by eff matrix
+  TH2I* neutronScaledDoubles = neutronDoublesMat->Clone();
+  neutronScaledDoubles->Divide(neutronSinglesMat);
+  
 }
