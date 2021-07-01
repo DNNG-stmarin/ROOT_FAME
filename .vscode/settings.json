@@ -6,6 +6,7 @@
         "FissionExperimentClass.C": "cpp",
         "DetectionImport.C": "cpp",
         "InitializeDetectorHistograms.C": "cpp",
-        "SystemAnalysis.C": "cpp"
+        "SystemAnalysis.C": "cpp",
+        "ParamFIles.C": "cpp"
     }
 }
