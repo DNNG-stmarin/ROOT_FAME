@@ -42,7 +42,7 @@ public :
    TString          nameExp; // String name of where to find experiment
    TString          nameSim;
    TString          nameBeam;
-   TString          nameAngles;
+   TString          nameCoords;
 
    TFile*           expFile;
    TFile*           simFile;
@@ -62,7 +62,7 @@ public :
    TDirectory*      cd_beam;
    TDirectory*      cd_trigger;
 
-   // individual directories
+   // individual basic directories
    TDirectory*      cd_LightOutExp;
    TDirectory*      cd_ToFExp;
    TDirectory*      cd_ErgExp;
@@ -70,6 +70,10 @@ public :
    TDirectory*      cd_IndivNeutronEnergyLOExp;
    TDirectory*      cd_IndivNeutronLightOutPSDExp;
    TDirectory*      cd_IndivPhotonLightOutPSDExp;
+
+   // subdirectories for correlated analysis
+   TDirectory*      cd_projs;
+   TDirectory*      cd_AngleCorr;
 
    int NUM_TRIGGERS; // number of trigger channels
    int* TRIGGERS;
@@ -225,9 +229,10 @@ public :
    TH2D* neutronLightOutPSDExp;
    TH2D* photonLightOutPSDExp;
 
-   TH2I* neutronDoublesMat;
-   TH2I* neutronSinglesMat;
-   TGraph* neutronAngleCorr;
+   TH2D* neutronDoublesMat;
+   TH2D* neutronSinglesMat;
+   TH2I* neutronScaledDoubles;
+   TGraphErrors* neutronAngleCorr;
    double** angles;
 
    // individual correlated hists
@@ -550,10 +555,13 @@ public :
    virtual void     FitMult();
 
    // perform correlated analysis
+   virtual void     CorrAnalysis();
    virtual void     Slice();
+   virtual void     AngCorr();
 
 
    // initialization functions
+   virtual void     GenerateAngles();
    virtual void     InitializeHistograms();
    virtual void     InitializeFunctions();
    virtual int      isTrigger(int triggerNumber);

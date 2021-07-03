@@ -7,15 +7,50 @@
 #include <TLine.h>
 
 #include <algorithm>
+#include <vector>
+#include <utility>
 
 using namespace std;
 
 
+void readFiss::CorrAnalysis()
+{
+  cout << "Generating correlated neutron Energy/LO fits" << endl;
+  Slice();
+  
+  cout << "Generating angular correlations" << endl;
+  AngCorr();
+}
+
 void readFiss::Slice()
 {
-  int projectionNum = 40;
-  int startBin = 11;
-  int numProjectionBins = 250;
+  int projectionNum = 30;
+  int startBin = 1;
+
+  // choose where to start and stop
+  bool found = false;
+  for(int i = 1; i < neutronEnergyLOExp->GetNbinsX(); ++i)
+  {
+    for(int j = 1; j < neutronEnergyLOExp->GetNbinsY(); ++j)
+    {
+      if(!found && (neutronEnergyLOExp->GetBinContent(i, j) > 0) &&
+      (neutronEnergyLOExp->GetBinContent(i, j+1) > neutronEnergyLOExp->GetBinContent(i, j)) &&
+      (neutronEnergyLOExp->Integral(i, i, 1, neutronEnergyLOExp->GetNbinsY()) > (neutronEnergyLOExp->Integral() / 100)))
+      {
+        cout << neutronEnergyLOExp->GetBinContent(i, j) << " " << neutronEnergyLOExp->GetBinContent(i, j+1) << " " << (neutronEnergyLOExp->GetBinContent(i, j+1) > neutronEnergyLOExp->GetBinContent(i, j)) << endl;
+        cout << "start " << i << endl;
+        startBin = i;
+        found = true;
+        break;
+      }
+    }
+    if(found && (neutronEnergyLOExp->Integral(i, i, 1, neutronEnergyLOExp->GetNbinsY()) < (neutronEnergyLOExp->Integral() / 100)))
+    {
+      projectionNum = i - startBin;
+      cout << "end " << projectionNum << endl;
+      break;
+    }
+  }
 
   TF1** myfunc = new TF1*[projectionNum];
   TFitResultPtr* Results = new TFitResultPtr[projectionNum]; // currently unused
@@ -83,8 +118,8 @@ void readFiss::Slice()
 
   writeFile->cd();
   cd_correlated->cd();
-  TDirectory* projs = cd_correlated->mkdir("Projections");
-  projs->cd();
+  cd_projs = cd_correlated->mkdir("ErgDepLO");
+  cd_projs->cd();
   TCanvas** c_Proj = new TCanvas*[projectionNum];
 
   for(int r = 0; r < projectionNum; ++r)
@@ -135,13 +170,11 @@ void readFiss::Slice()
     c_Proj[r]->Write();
   }
 
-  cd_correlated->cd();
-  TCanvas* c_Final = new TCanvas("Final", "Neutron Energy vs. Neutron LO", 800, 400);
+  TCanvas* c_Final = new TCanvas("ErgDepLO", "Neutron Energy vs. Neutron LO", 800, 400);
   c_Final->cd();
 
   final->SetTitle("Neutron Energy vs. Neutron Light Out;Neutron Energy [MeV];Neutron Light Out [MeVee]");
   final->GetXaxis()->SetLimits(0, 5);
-  final->GetYaxis()->SetLimits(0, 5);
   final->GetYaxis()->SetRangeUser(0, 3);
   final->Draw();
 
@@ -165,12 +198,39 @@ void readFiss::AngCorr()
   {
     for(int j = 1; j < i; ++j)
     {
-      neutronSinglesMat->SetBinContent(i, j, neutronSinglesExp->GetBinContent(i) * neutronSinglesExp->GetBinContent(j));
+      neutronSinglesMat->SetBinContent(i, j, (neutronSinglesExp->GetBinContent(i) * neutronSinglesExp->GetBinContent(j)) / neutronSinglesExp->Integral());
     }
   }
 
   // scale doubles matrix by eff matrix
-  TH2I* neutronScaledDoubles = neutronDoublesMat->Clone();
+  neutronScaledDoubles = (TH2I*)neutronDoublesMat->Clone();
+  neutronScaledDoubles->SetName("neutronScaledDoubles");
   neutronScaledDoubles->Divide(neutronSinglesMat);
-  
+
+  // make arrays of angles and counts
+  int arraySize = pow(NUM_DETECTORS, 2);
+  double* a_angles = new double[arraySize];
+  double* a_counts = new double[arraySize];
+  double* a_errors = new double[arraySize];
+  int n_points = 0;
+  for(int i = 1; i <= NUM_DETECTORS; ++i)
+  {
+    for(int j = 1; j < i; ++j)
+    {
+      a_angles[n_points] = angles[i-1][j-1];
+      a_counts[n_points] = neutronScaledDoubles->GetBinContent(i, j);
+      a_errors[n_points] = neutronScaledDoubles->GetBinError(i, j);
+      n_points++;
+    }
+  }
+
+  // make graph
+  neutronAngleCorr = new TGraphErrors(n_points, a_angles, a_counts, 0, a_errors);
+  neutronAngleCorr->Sort();
+  neutronAngleCorr->SetName("neutronAngleCorr");
+  neutronAngleCorr->SetTitle("Neutron Double Angle Correlations;Cos T;Counts");
+  neutronAngleCorr->GetXaxis()->SetLimits(-1, 1);
+  //neutronAngleCorr->GetYaxis()->SetRangeUser(0, ?);
+
+  cd_AngleCorr = cd_correlated->mkdir("AngleCorr");
 }

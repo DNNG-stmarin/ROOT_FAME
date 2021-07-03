@@ -160,7 +160,6 @@ void readFiss::LoopExp()
         if(neutronDet[n1] > neutronDet[n2])
         {
           neutronDoublesMat->Fill((int)neutronDet[n1], (int)neutronDet[n2]);
-
           // neutronAngleCorr->Fill(angles[(int)neutronDet[n1]][(int)neutronDet[n2]]);
         }
         else

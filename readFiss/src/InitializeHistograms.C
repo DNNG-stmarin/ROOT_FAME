@@ -23,7 +23,7 @@ void readFiss::InitializeHistograms()
   const int minMult = 0;
   const int maxMult = 10;
 
-  const int numDets = 40;
+  const int numDets = NUM_DETECTORS;
 
   const int numCosBins = 100;
 
@@ -94,8 +94,8 @@ void readFiss::InitializeHistograms()
     photonMultSim = new TH1I("photonMultSim", "Photon Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
     neutronPSDSim = new TH1D("neutronPSDSim", "Neutron PSP; PSP (tail/total); counts",  numPSDBins, minPSP, maxPSP);
     photonPSDSim = new TH1D("photonPSDSim", "Photon PSP; PSP (tail/total); counts", numPSDBins, minPSP, maxPSP);
-    neutronSinglesSim = new TH1D("neutronSinglesSim", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets);
-    photonSinglesSim = new TH1D("photonSinglesSim", "Photon Singles; Detector1; Detector2; counts", numDets, 0, numDets);
+    neutronSinglesSim = new TH1D("neutronSinglesSim", "Neutron Singles; Detector1; counts", numDets, 0, numDets);
+    photonSinglesSim = new TH1D("photonSinglesSim", "Photon Singles; Detector1; counts", numDets, 0, numDets);
   }
 
 /*
@@ -122,8 +122,8 @@ void readFiss::InitializeHistograms()
   photonLightOutPSDExp = new TH2D("photonLightOutPSDExp", "Photon Light Output vs. Photon PSD; Photon Light Output [MeVee]; Photon PSP [tail/total]; Counts", numLObins, minLO, maxLO, numPSDBins, minPSP, maxPSP);
 
 // angular coorrelations
-  neutronDoublesMat = new TH2I("neutronDoublesExp", "Neutron Doubles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
-  neutronSinglesMat = new TH2I("neutronSinglesMatExp", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
+  neutronDoublesMat = new TH2D("neutronDoublesExp", "Neutron Doubles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
+  neutronSinglesMat = new TH2D("neutronSinglesMatExp", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
   // neutronAngleCorr = new TH1D("neutronAngleCorr", "Neutron Angular Correlations; Cos T; counts", numCosBins, -1, 1);
 
 

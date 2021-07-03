@@ -33,13 +33,12 @@ readFiss::readFiss(int &argc, char** &argv)
     return;
   }
 
-
+  GenerateAngles();
   InitializeHistograms();
   InitializeFunctions();
 
   // loop through
   LoopExp();
-  Slice();
   if(mode == 1)
   {
     LoopSim();
@@ -51,6 +50,9 @@ readFiss::readFiss(int &argc, char** &argv)
     BeamErgAnalysis();
     FitMult();
   }
+
+  // correlated analysis
+  CorrAnalysis();
 
   // run CovEM if user wanted to
   if(CovEM_in){
@@ -188,26 +190,9 @@ void readFiss::GetInfo(istream &inputStream)
 
   cout << "\n";
 
-  cout << "Input AngleFile path" << endl;
-  inputStream >> nameAngles;
-  cout << "Using AngleFile " << nameAngles << endl;
-
-  int numDets = 40;
-  angles = new double*[numDets];
-  ifstream fin(nameAngles);
-  if(!fin.is_open())
-  {
-    cout << "Couldn't open " << nameAngles << endl;
-  }
-  for(int i = 0; i < numDets; ++i)
-  {
-    angles[i] = new double[numDets];
-    for(int j = 0; j < i; ++j)
-    {
-      fin >> angles[i][j];
-    }
-  }
-
+  cout << "Input coordinate file path" << endl;
+  inputStream >> nameCoords;
+  cout << "Using coordinate file " << nameCoords << "\n" << endl;
 
 /*
   _   _               ___                _

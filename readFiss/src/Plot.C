@@ -549,31 +549,15 @@ void readFiss::PlotP_LOPSD_Exp()
 void readFiss::PlotN_AngleCorr()
 {
   writeFile->cd();
-  cd_correlated->cd();
+  cd_AngleCorr->cd();
   cout << "Plotting neutron angular correlations." << endl;
 
   // make canvas
   TCanvas* c_N_AngleCorr = new TCanvas("cN_AngleCorr", "Cos(Theta) in Neutron Doubles", 800, 400);
   c_N_AngleCorr->cd();
 
-  TH1D* N_Angles = new TH1D("N_Angles", "CosT between detectors;CosT;Counts", 100, -1, 1);
-  for(int i = 0; i < 40; ++i)
-  {
-    for(int j = 0; j < i; ++j)
-    {
-      N_Angles->Fill(angles[i][j]);
-    }
-  }
-
-  neutronAngleCorr->Divide(N_Angles);
-
   neutronAngleCorr->SetLineColor(kRed);
-  neutronAngleCorr->SetStats(0);
-  neutronAngleCorr->Draw();
-
-  // N_Angles->SetLineColor(kBlue);
-  // N_Angles->SetStats(0);
-  // N_Angles->Draw("SAME");
+  neutronAngleCorr->Draw("A*");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
@@ -584,6 +568,10 @@ void readFiss::PlotN_AngleCorr()
 
   c_N_AngleCorr->Write();
   //c_N_AngleCorr->SaveAs("neutronAngleCorrExp.eps");
+
+  neutronSinglesMat->Write();
+  neutronDoublesMat->Write();
+  neutronScaledDoubles->Write();
 }
 
 void readFiss::PlotIndiv()
