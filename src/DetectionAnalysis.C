@@ -821,28 +821,33 @@ int DetectorSystemClass::DetectionAnalysis()
 					TCanvas* canvasDiscErg = new TCanvas(canDiscErgName, canDiscErgName, 800, 500);
 
 					// stores the psd discrimination line by detector
-				    discLines[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, discLinePoint);
+				  discLines[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, discLinePoint);
 					discLines[det]->SetLineColor(kBlack);
 					discLines[det]->SetLineWidth(3);
+					discLines[det]->SetName("discLines");
 
 					// stores the paramater data by detector
 					meanNeut[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, meanNeutPoint);
 					meanNeut[det]->SetLineColor(kBlue);
 					meanNeut[det]->SetLineWidth(3);
+					meanNeut[det]->SetName("meanNeut");
 
 					meanPhot[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, meanPhotPoint);
 					meanPhot[det]->SetLineColor(kRed);
 					meanPhot[det]->SetLineWidth(3);
+					meanPhot[det]->SetName("meanPhot");
 
 					sigNeut[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, sigNeutPoint);
 					sigNeut[det]->SetLineColor(kBlue);
 					sigNeut[det]->SetLineStyle(kDashed);
 					sigNeut[det]->SetLineWidth(3);
+					sigNeut[det]->SetName("sigNeut");
 
 					sigPhot[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, sigPhotPoint);
 					sigPhot[det]->SetLineColor(kRed);
 					sigPhot[det]->SetLineStyle(kDashed);
 					sigPhot[det]->SetLineWidth(3);
+					sigPhot[det]->SetName("sigPhot");
 
 					// stores the double discrimination line data by detector
 					if(DOUBLE_DISC == 1)
@@ -868,7 +873,7 @@ int DetectorSystemClass::DetectionAnalysis()
 					sigPhot_opt = sigPhot[det]->Fit(expLinSP, "SQ", "", MINERG_FIT, MAXERG_FIT);
 
 					// stores the parameter fits as a TF1
-				    detectors[det].discPSD = (TF1*)expLinPsd->Clone();
+				  detectors[det].discPSD = (TF1*)expLinPsd->Clone();
 					detectors[det].meanNeut = (TF1*)expLinMN->Clone();
 					detectors[det].meanPhot = (TF1*)expLinMP->Clone();
 					detectors[det].sigNeut = (TF1*)expLinSN->Clone();

@@ -81,13 +81,6 @@ void readFiss::LoopExp()
       {
         expTree->GetEntry(jentry);
       }
-      //***********
-      if ((neutronMult == 0) && (gammaMult == 0))
-      {
-        continue;
-      }
-      //***********
-
 
       // fissions passed all the tests, delete
       numFissIter++;

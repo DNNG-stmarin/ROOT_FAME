@@ -203,17 +203,17 @@ int FissionExperimentClass::CreateDetectionAnalysis()
 
 	if(FISSION_MODE == 1)
 	{
-	cout << "Entering fission analysis mode" << endl;
-	if(DEBUG==1){
-		cout << "debug is on" << endl;
-		detectorData->FissionAnalysisLoop();
-	}
-	else{
-		cout << "starndard fission analysis starting" << endl;
-		detectorData->FissionAnalysis();
-	}
-	}
-	return 1;
+		cout << "Entering fission analysis mode" << endl;
+		if(DEBUG==1){
+			cout << "debug is on" << endl;
+			detectorData->FissionAnalysisLoop();
+		}
+		else{
+			cout << "starndard fission analysis starting" << endl;
+			detectorData->FissionAnalysis();
+		}
+		}
+		return 1;
 
 }
 

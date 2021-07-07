@@ -62,7 +62,7 @@ for(int trig = 0; trig < NUM_TRIGGERS; trig++)
   if(NUM_BEAMS > 0)
   {
     cout << "importing beam fiss" << endl;
-      
+
     // discrmPSD
     // create a canvas to store the data being accessed
     TCanvas* c_trigBeam;
@@ -70,8 +70,6 @@ for(int trig = 0; trig < NUM_TRIGGERS; trig++)
 
     // sets the file name to the base name and the detector
     fileNameTrigBeam =  fileNameTrigBeamBase + (TString)to_string(trig);
-      
-    cout << "reading from " << fileNameTrigBeam << endl;
 
     //sets the canvas equal to the psdErg one for that detector
     c_trigBeam = (TCanvas*)detFile->Get(fileNameTrigBeam);
@@ -122,7 +120,7 @@ for(int det = 0; det < NUM_DETS; ++det){
     TF1* f_psdDisc;
     // sets the file name to the base name and the detector
     fileNamePsd =  fileNameBasePsd + (TString)to_string(det);
-    cout << fileNamePsd << endl;
+
     //sets the canvas equal to the psdErg one for that detector
     c_psdErg = (TCanvas*)detFile->Get(fileNamePsd);
     f_psdDisc = (TF1*)c_psdErg->GetPrimitive("expLinPsd");
