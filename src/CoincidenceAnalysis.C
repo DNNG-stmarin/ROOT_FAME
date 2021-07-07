@@ -48,6 +48,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
   TH1D* h_alphaSpec = new TH1D("alphaSpec", "Alpha spectrum; Pulse Integral (V us); Counts", 500, 0, 0.05);
   TH1D* h_alphaTime = new TH1D("alphaTime", "Alpha time; t; Counts", 200000, -20000000, 0);
 
+  TH1D* h_fisSpec = new TH1D("fisSpec", "Fission window spectrum; Pulse Integral (V us); Counts", 500, 0, 0.05);
+
   TH2D* h2_alphaTimeSpec = new TH2D("alphaTimeSpec", "Alpha spec vs. time; t (ns); Pulse Integral (V us)", 100, -120000, -20000, 500, 0, 0.05);
   TH2D* h2_alphaChanSpec = new TH2D("alphaChanSpec", "Alpha spec vs. chan; Channel; Pulse Integral (V us)", 40, 0, 40, 500, 0, 0.05);
   TH2D* h2_alphaTimeChan = new TH2D("alphaTimeChan", "Alpha chan vs. time; t (ns); Channel", 1000, -10000000, 0, 40, 0, 40);
@@ -720,6 +722,9 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					goodFis.beamChannel = curBeam.getDetector();
 					goodFis.beamMicroIndex = curBeam.getMicroIndex();
 
+          h_fisSpec->Fill(curFis.triggerEnergy);
+
+
 					if(RANDOM_COINCIDENCE == 1)
 					{
 						goodFis.triggerTime = deltaFissBeam + curBeam.getTime();
@@ -915,6 +920,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			h_microTime->Write();
 			h_macroPop->Write();
       h_alphaSpec->Write();
+      h_fisSpec->Write();
       h_alphaTime->Write();
 
       h2_alphaTimeSpec->Write();
