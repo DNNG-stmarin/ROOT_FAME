@@ -132,7 +132,7 @@ public:
     FISSION_MODE = 1;
     DOUBLE_DISC = 0;
     MISC_MAX = 0.005;
-    PARAM_FILES = 1;
+    PARAM_FILES = 0;
 
     RANDOM_COINCIDENCE = 0;
 

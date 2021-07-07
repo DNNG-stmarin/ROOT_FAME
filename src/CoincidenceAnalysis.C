@@ -912,6 +912,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		}
 
+		cout << "Finished looping through data. " << endl;
+
 		if(NUM_BEAMS > 0)
 		{
       beamFile->cd();
