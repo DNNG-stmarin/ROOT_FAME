@@ -937,7 +937,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			h1_fissNumPerBeam->Write();
 			h1_fissTimeInBeam->Write();
 
-      expFile->cd();
+			cout << "Written histograms to beam info file." << endl;
 		}
 
 
