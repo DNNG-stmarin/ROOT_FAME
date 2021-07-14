@@ -233,6 +233,7 @@ public :
    TH2D* neutronSinglesMat;
    TH2I* neutronScaledDoubles;
    TGraphErrors* neutronAngleCorr;
+   TGraph* neutronAngleCorrAvg;
    double** angles;
 
    // individual correlated hists

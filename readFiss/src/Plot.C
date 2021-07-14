@@ -569,6 +569,22 @@ void readFiss::PlotN_AngleCorr()
   c_N_AngleCorr->Write();
   //c_N_AngleCorr->SaveAs("neutronAngleCorrExp.eps");
 
+  TCanvas* C_N_AngleCorrAvg = new TCanvas("cN_AngleCorrAvg", "Average line of Cos(Theta) in Neutron Doubles", 800, 400);
+  C_N_AngleCorrAvg->cd();
+
+  neutronAngleCorrAvg->SetLineColor(kBlue);
+  neutronAngleCorrAvg->Draw();
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  neutronAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  neutronAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  neutronAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  neutronAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+
+  C_N_AngleCorrAvg->Write();
+  //c_N_AngleCorrAvg->SaveAs("neutronAngleCorrExpAvg.eps");
+
   neutronSinglesMat->Write();
   neutronDoublesMat->Write();
   neutronScaledDoubles->Write();

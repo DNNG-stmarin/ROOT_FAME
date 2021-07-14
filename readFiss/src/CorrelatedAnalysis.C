@@ -17,7 +17,7 @@ void readFiss::CorrAnalysis()
 {
   cout << "Generating correlated neutron Energy/LO fits" << endl;
   Slice();
-  
+
   cout << "Generating angular correlations" << endl;
   AngCorr();
 }
@@ -37,8 +37,6 @@ void readFiss::Slice()
       (neutronEnergyLOExp->GetBinContent(i, j+1) > neutronEnergyLOExp->GetBinContent(i, j)) &&
       (neutronEnergyLOExp->Integral(i, i, 1, neutronEnergyLOExp->GetNbinsY()) > (neutronEnergyLOExp->Integral() / 100)))
       {
-        cout << neutronEnergyLOExp->GetBinContent(i, j) << " " << neutronEnergyLOExp->GetBinContent(i, j+1) << " " << (neutronEnergyLOExp->GetBinContent(i, j+1) > neutronEnergyLOExp->GetBinContent(i, j)) << endl;
-        cout << "start " << i << endl;
         startBin = i;
         found = true;
         break;
@@ -47,7 +45,6 @@ void readFiss::Slice()
     if(found && (neutronEnergyLOExp->Integral(i, i, 1, neutronEnergyLOExp->GetNbinsY()) < (neutronEnergyLOExp->Integral() / 100)))
     {
       projectionNum = i - startBin;
-      cout << "end " << projectionNum << endl;
       break;
     }
   }
@@ -231,6 +228,34 @@ void readFiss::AngCorr()
   neutronAngleCorr->SetTitle("Neutron Double Angle Correlations;Cos T;Counts");
   neutronAngleCorr->GetXaxis()->SetLimits(-1, 1);
   //neutronAngleCorr->GetYaxis()->SetRangeUser(0, ?);
+
+  // make average line
+  int numAvgBins = 20;
+  int numBin = 0;
+  int numPoints = 0;
+  double xAvg = 0;
+  double yAvg = 0;
+
+  neutronAngleCorrAvg = new TGraph();
+
+  for(int i = 0; i < n_points; ++i)
+  {
+    double rightBound = (2.0 / numAvgBins) * (numBin + 1);
+    if(((neutronAngleCorr->GetPointX(i) + 1) >= rightBound) || i == n_points - 1)
+    {
+      xAvg /= numPoints;
+      yAvg /= numPoints;
+      neutronAngleCorrAvg->AddPoint(xAvg, yAvg);
+      
+      numPoints = 0;
+      xAvg = 0;
+      yAvg = 0;
+      ++numBin;
+    }
+    xAvg += neutronAngleCorr->GetPointX(i);
+    yAvg += neutronAngleCorr->GetPointY(i);
+    ++numPoints;
+  }
 
   cd_AngleCorr = cd_correlated->mkdir("AngleCorr");
 }
