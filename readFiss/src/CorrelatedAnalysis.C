@@ -216,10 +216,9 @@ void readFiss::AngCorr()
     {
       if(neutronScaledDoubles->GetBinContent(i, j) == 0)
       {
-        cout << "Ignoring point " << i << " " << j << endl;
         continue;
       }
-      cout << neutronScaledDoubles->GetBinContent(i, j) << " " << i << " " << j << endl;
+      
       a_angles[n_points] = angles[i-1][j-1];
       a_counts[n_points] = neutronScaledDoubles->GetBinContent(i, j);
       a_errors[n_points] = neutronScaledDoubles->GetBinError(i, j);
