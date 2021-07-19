@@ -20,10 +20,17 @@ readFiss::~readFiss()
 {
     if (!expTree) return;
     delete expFile;
+
     if(mode == 1)
     {
       delete simFile;
     }
+
+    if(mode == 2)
+    {
+      delete beamFile;
+    }
+
     delete writeFile;
     delete[] TRIGGERS;
 }

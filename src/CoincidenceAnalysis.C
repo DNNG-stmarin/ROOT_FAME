@@ -916,6 +916,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		if(NUM_BEAMS > 0)
 		{
+
       beamFile->cd();
 			h_microTimeDiff->Write();
 			h_macroTimeDiff->Write();
