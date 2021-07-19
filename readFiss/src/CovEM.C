@@ -3,6 +3,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TMatrixD.h>
+#include <TMath.h>
 
 #include <iostream>
 #include <fstream>
@@ -13,7 +14,7 @@ using namespace std;
 void readFiss::CovEM()
 {
 
-  cout << "Beginning the great CovEM loop" << endl;
+   cout << "Beginning the great CovEM loop" << endl;
    // place to store all the result
 
    arrayCorr = new TH2D("CovMat", "Covariance Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
@@ -36,6 +37,7 @@ void readFiss::CovEM()
    TString t_nameH;
    TString t_rootName = "em_";
    TString titleH = "EnergyMode Correlations";
+
    TH2I*** emMode;
    emMode = new TH2I** [BN];
    for(int eN = 0; eN < BN; eN++)
@@ -49,11 +51,29 @@ void readFiss::CovEM()
       }
    }
 
+   TH2I**** emModeChunks;
+   emModeChunks = new TH2I*** [NUM_CHUNKS];
+   for(int chunk = 0; chunk < NUM_CHUNKS; chunk++)
+   {
+     emModeChunks[chunk] = new TH2I** [BN];
+     for(int eN = 0; eN < BN; eN++)
+     {
+     	emModeChunks[chunk][eN] = new TH2I* [BP];
+
+        for(int eP = 0; eP < BP; eP++)
+        {
+           t_nameH = t_rootName + to_string(eN) + " " + to_string(eP) + " " + to_string(chunk);
+           emModeChunks[chunk][eN][eP] = new TH2I(t_nameH, titleH, 10,0,10, 10,0,10);
+        }
+     }
+   }
+
 
    int encN, encP;
    // read the entries
    Long64_t nentries = expTree->GetEntriesFast();
    Long64_t nbytes = 0, nb = 0;
+
    for (Long64_t jentry=0; jentry<nentries;jentry++)
    {
 
@@ -134,7 +154,11 @@ void readFiss::CovEM()
       for(int eP = 0; eP < BP; eP ++)
        {
         emMode[eN][eP]->Fill(listNerg[eN], listPerg[eP]);
-        // cout << "populated histogram at " << eN << " " << eP << endl;
+
+        if(SELF_ERROR)
+        {
+          emModeChunks[jentry%NUM_CHUNKS][eN][eP]->Fill(listNerg[eN], listPerg[eP]);
+        }
        }
      }
 
@@ -147,12 +171,47 @@ void readFiss::CovEM()
      {
       for(int eP = 0; eP < BP; eP ++)
        {
-        arrayCorr->SetBinContent(eN, eP, emMode[eN][eP]->GetCovariance());
-        arraySpec->SetBinContent(eN, eP, (emMode[eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2)));
+        arrayCorr->SetBinContent(eN+1, eP+1, emMode[eN][eP]->GetCovariance());
+        arraySpec->SetBinContent(eN+1, eP+1, (emMode[eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2)));
+
        }
      }
 
      cout << "finished setting EM matrices " << endl;
+
+
+
+
+     if(SELF_ERROR)
+     {
+       double listCov[NUM_CHUNKS] = {0};
+       double listSpec[NUM_CHUNKS] = {0};
+
+       double totCov = 0;
+       double totSpec = 0;
+
+       cout << "computing self error from data fluctuations" << endl;
+       // find the covariance at each point
+         for(int eN = 0; eN < BN; eN ++)
+         {
+          for(int eP = 0; eP < BP; eP ++)
+           {
+             for(int chunk = 0; chunk < NUM_CHUNKS; chunk++)
+             {
+               double thisCov = emModeChunks[chunk][eN][eP]->GetCovariance();
+               double thisSpec = (emModeChunks[chunk][eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2));
+
+               listCov[chunk] = thisCov;
+               listSpecm[chunk] = thisSpec;
+
+             }
+
+             arrayCorr->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listCov)/sqrt(NUM_CHUNKS-1) );
+             arraySpec->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listSpec)/sqrt(NUM_CHUNKS-1) );
+           }
+         }
+     }
+
 
 }
 
@@ -182,8 +241,8 @@ void readFiss::WriteCovEM()
   {
    for(int eP = 0; eP < BP; eP ++)
     {
-       covMatFire << arrayCorr->GetBinContent(eN, eP);
-       specMatFire << arraySpec->GetBinContent(eN, eP);
+       covMatFire << arrayCorr->GetBinContent(eN+1, eP+1);
+       specMatFire << arraySpec->GetBinContent(eN+1, eP+1);
 
        if(eP < BP - 1)
        {

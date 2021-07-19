@@ -65,6 +65,7 @@ readFiss::readFiss(int &argc, char** &argv)
   {
     CompareAll();
   }
+
   if(mode == 2)
   {
     PlotDepSubtraction();
@@ -73,6 +74,7 @@ readFiss::readFiss(int &argc, char** &argv)
     PlotStack();
     PlotLO();
   }
+  
   writeFile->Close();
 }
 

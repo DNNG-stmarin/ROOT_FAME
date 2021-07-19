@@ -106,8 +106,11 @@ public :
   long int expEntries;
   long int simEntries;
 
+  // change these into inputs
   double intWindowAlpha = 1e5; // ns integration window
   double intWindowFiss;
+
+  bool SELF_ERROR = true;
 
 
  /*
@@ -120,6 +123,7 @@ public :
    // matrix variables
    TH2D* arrayCorr;
    TH2D* arraySpec;
+   TH2D* arrayDiff;
 
    // loop histograms quality of data
    TH1I* fissRej;

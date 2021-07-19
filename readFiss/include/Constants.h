@@ -16,4 +16,6 @@ const int CUT_BEAM = 1;
 const int CUT_DEP = 2;
 const int CUT_PILEUP = 3;
 
+const int NUM_CHUNKS = 10;
+
 #endif
