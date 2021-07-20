@@ -33,13 +33,12 @@ readFiss::readFiss(int &argc, char** &argv)
     return;
   }
 
-
+  GenerateAngles();
   InitializeHistograms();
   InitializeFunctions();
 
   // loop through
   LoopExp();
-  Slice();
   if(mode == 1)
   {
     LoopSim();
@@ -51,6 +50,9 @@ readFiss::readFiss(int &argc, char** &argv)
     BeamErgAnalysis();
     FitMult();
   }
+
+  // correlated analysis
+  CorrAnalysis();
 
   // run CovEM if user wanted to
   if(CovEM_in){
@@ -199,6 +201,9 @@ void readFiss::GetInfo(istream &inputStream)
 
   cout << "\n";
 
+  cout << "Input coordinate file path" << endl;
+  inputStream >> nameCoords;
+  cout << "Using coordinate file " << nameCoords << "\n" << endl;
 
 /*
   _   _               ___                _
@@ -227,6 +232,26 @@ void readFiss::GetInfo(istream &inputStream)
   }
   cout << "\n\n";
 
+  // get detectors from user
+  cout << "Input number of detectors. Sample input: \n 40 \n";
+  inputStream >> NUM_DETECTORS;
+  cout << " Using " << NUM_DETECTORS << " detectors. \n\n";
+
+  /*DETECTORS = new int[NUM_DETECTORS];
+
+  cout << "Input detector numbers. \n";
+  for(int i = 0; i < NUM_DETECTORS; ++i)
+  {
+    inputStream >> DETECTORS[i];
+  }
+
+  cout << " Using detector numbers ";
+  for(int i = 0; i < NUM_DETECTORS; ++i)
+  {
+    cout << DETECTORS[i] << " ";
+  }
+  cout << "\n\n";*/
+
   // get threshold and max time from user
   cout << "Input detector threshold [MeVee], detector clipping [MeVee] and max neutron time [ns]. Sample input: \n 0.20 4.0 70.0" << endl;
   inputStream >> THRESHOLD >> CLIPPING >> MAX_TIME_N;
@@ -245,6 +270,7 @@ void readFiss::GetInfo(istream &inputStream)
   // ask user for background delay
   cout << "background delay to visualize background (ns), put 0 if unsure" << endl;
   inputStream >> BACKGROUND_DELAY;
+  cout << "using " << BACKGROUND_DELAY << " ns" << endl;
   cout << "\n";
 
   // ask user for background delay
