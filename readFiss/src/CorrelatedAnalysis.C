@@ -218,7 +218,7 @@ void readFiss::AngCorr()
       {
         continue;
       }
-      
+
       a_angles[n_points] = angles[i-1][j-1];
       a_counts[n_points] = neutronScaledDoubles->GetBinContent(i, j);
       a_errors[n_points] = neutronScaledDoubles->GetBinError(i, j);
@@ -238,27 +238,29 @@ void readFiss::AngCorr()
   int numAvgBins = 20;
   int numBin = 0;
   int numPoints = 0;
-  double xAvg = 0;
-  double yAvg = 0;
+  double xAvg[n_points];
+  double yAvg[n_points];
 
-  neutronAngleCorrAvg = new TGraph();
+  neutronAngleCorrAvg = new TGraphErrors();
 
   for(int i = 0; i < n_points; ++i)
   {
     double rightBound = (2.0 / numAvgBins) * (numBin + 1);
     if(((neutronAngleCorr->GetPointX(i) + 1) >= rightBound) || i == n_points - 1)
     {
-      xAvg /= numPoints;
-      yAvg /= numPoints;
-      neutronAngleCorrAvg->AddPoint(xAvg, yAvg);
+      neutronAngleCorrAvg->AddPoint(TMath::Mean(numPoints, xAvg), TMath::Mean(numPoints, yAvg));
+      neutronAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg), TMath::StdDev(numPoints, yAvg));
 
+      for(int j = 0; j < numPoints; ++j)
+      {
+        xAvg[j] = 0;
+        yAvg[j] = 0;
+      }
       numPoints = 0;
-      xAvg = 0;
-      yAvg = 0;
       ++numBin;
     }
-    xAvg += neutronAngleCorr->GetPointX(i);
-    yAvg += neutronAngleCorr->GetPointY(i);
+    xAvg[numPoints] = neutronAngleCorr->GetPointX(i);
+    yAvg[numPoints] = neutronAngleCorr->GetPointY(i);
     ++numPoints;
   }
 
