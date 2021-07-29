@@ -43,6 +43,7 @@ public :
    TString          nameSim;
    TString          nameBeam;
    TString          nameCoords;
+   TString          nameWrite;
 
    TFile*           expFile;
    TFile*           simFile;

@@ -76,7 +76,7 @@ readFiss::readFiss(int &argc, char** &argv)
     PlotStack();
     PlotLO();
   }
-  
+
   writeFile->Close();
 }
 
@@ -90,8 +90,6 @@ void readFiss::BadInputMessage()
 // gets input from istream, which should either point to a file or cin
 void readFiss::GetInfo(istream &inputStream)
 {
-  TString writeName;
-
   // get mode from user
   cout << "What mode? \n" <<
           "Options: \n " <<
@@ -113,12 +111,12 @@ void readFiss::GetInfo(istream &inputStream)
 
   // get writeFile from user
   cout << "Input writeFile path" << endl;
-  inputStream >> writeName;
-  cout << " Using writeFile " << writeName << endl;
+  inputStream >> nameWrite;
+  cout << " Using writeFile " << nameWrite << endl;
   cout << "\n";
 
   // get writeFile ready
-  writeFile = new TFile(writeName, "RECREATE");
+  writeFile = new TFile(nameWrite, "RECREATE");
   cd_basics = writeFile->mkdir("Basic");
   cd_individual = writeFile->mkdir("Individual");
   cd_FAME = writeFile->mkdir("FAME");
