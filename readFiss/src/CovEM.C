@@ -202,7 +202,7 @@ void readFiss::CovEM()
                double thisSpec = (emModeChunks[chunk][eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2));
 
                listCov[chunk] = thisCov;
-               listSpecm[chunk] = thisSpec;
+               listSpec[chunk] = thisSpec;
 
              }
 

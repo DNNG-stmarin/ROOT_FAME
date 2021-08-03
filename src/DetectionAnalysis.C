@@ -602,10 +602,10 @@ int DetectorSystemClass::DetectionAnalysis()
 
 			cdPsdSlices->cd();
 			// loop over the slices
-			for(int energySlice = 0; energySlice < energyBinspsd; energySlice += STEP_SIZE)
+			for(int energySlice = 1; energySlice <= energyBinspsd; energySlice += STEP_SIZE)
 			{
 				// define the slice
-				TH1D* psdErgSlice = psdErgHists[det]->ProjectionY("psdErgSlice", energySlice, energySlice + STEP_SIZE);
+				TH1D* psdErgSlice = psdErgHists[det]->ProjectionY("psdErgSlice", energySlice, energySlice + STEP_SIZE-1);
 				int numEntriesInSlice = psdErgSlice->GetEntries();
 				double stdSlice = psdErgSlice->GetStdDev();
 				psdErgSlice->SetLineColor(kBlack);
