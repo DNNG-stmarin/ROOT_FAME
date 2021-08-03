@@ -13,3 +13,17 @@ int readFiss::isTrigger(int detectorNumber)
 	}
 	return chamberIndex;
 }
+
+int readFiss::isDetector(int detectorNumber)
+{
+	int detIndex = -1;
+	for(int index = 0; index < NUM_DETECTORS; index++)
+	{
+		if(detectorNumber == DETECTORS[index])
+		{
+			detIndex = index;
+			break;
+		}
+	}
+	return detIndex;
+}

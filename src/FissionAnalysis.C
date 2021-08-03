@@ -97,8 +97,8 @@ void DetectorSystemClass::FissionAnalysis()
 
     // Assign fission trigger type based on beamTime
     // Times are hard-coded for now since I anticipate needing more complex logic later
-    
-    
+
+
 
     // reset the neutron and photon multiplicities
     nMult = 0;
@@ -140,7 +140,7 @@ void DetectorSystemClass::FissionAnalysis()
       {
         continue;
       }
-  
+
       if(
       (((DOUBLE_DISC == 1) & (totPSP[j] > detectors[numDet].discPSDNeut->Eval(engDet)))
       ||
@@ -153,7 +153,7 @@ void DetectorSystemClass::FissionAnalysis()
       (engDet > DETECTOR_THRESHOLD)
       )
       {
-    
+
         neutronDetTimes[nMult] = timeDet;
         neutronLightOut[nMult] = engDet;
         neutronPSD[nMult] = totPSP[j];
@@ -236,7 +236,7 @@ void DetectorSystemClass::FissionAnalysis()
         backPhotonVz[pBackMult] = detectors[numDet].Z/detectors[numDet].distance*LIGHT_C;
         pBackMult++;
       }
-      // else 
+      // else
     }
 
     // set branches of final tree

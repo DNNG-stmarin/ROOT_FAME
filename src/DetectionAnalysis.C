@@ -136,86 +136,91 @@ int DetectorSystemClass::DetectionAnalysis()
 																	 |_|
 
 */
-	cdBeam->cd();
-	TF1* fisBeamActivity = new TF1("fisBeamActivity", "landau + [0]");
-	fisBeamActivity->SetParNames("baseline", "center", "width");
-
-	const double WINDOW_FIT_FIS_BEAM = 200;
-	const double WIDTH_FIS_BEAM = 10;
-	for(int trig = 0; trig < NUM_TRIGGERS; trig++)
+  if(NUM_BEAMS > 0)
 	{
-		// find the macroscopic properties
-		double maxCounts = beamTimeHist[trig]->GetMaximum();
-		int maxBin = beamTimeHist[trig]->GetMaximumBin();
 
-		// place an iterator
-		int maxShift = 100; // put in input file
-		int currentBin = maxBin - maxShift;
-		double currentCount = beamTimeHist[trig]->GetBinContent(currentBin);
+		cdBeam->cd();
+		TF1* fisBeamActivity = new TF1("fisBeamActivity", "landau + [0]");
+		fisBeamActivity->SetParNames("baseline", "center", "width");
 
-
-		// calculate the baseline
-		double baselineAverage = 0; // think of doing a TGraph, continuum subtraction and nice visual
-		int numBaselinePoints = 10; // put in input file
-
-		for(int binBase = currentBin; binBase < currentBin + numBaselinePoints; binBase++)
+		const double WINDOW_FIT_FIS_BEAM = 200;
+		const double WIDTH_FIS_BEAM = 10;
+		for(int trig = 0; trig < NUM_TRIGGERS; trig++)
 		{
-			baselineAverage += beamTimeHist[trig]->GetBinContent(binBase);
+			// find the macroscopic properties
+			double maxCounts = beamTimeHist[trig]->GetMaximum();
+			int maxBin = beamTimeHist[trig]->GetMaximumBin();
+
+			// place an iterator
+			int maxShift = 100; // put in input file
+			int currentBin = maxBin - maxShift;
+			double currentCount = beamTimeHist[trig]->GetBinContent(currentBin);
+
+
+			// calculate the baseline
+			double baselineAverage = 0; // think of doing a TGraph, continuum subtraction and nice visual
+			int numBaselinePoints = 10; // put in input file
+
+			for(int binBase = currentBin; binBase < currentBin + numBaselinePoints; binBase++)
+			{
+				baselineAverage += beamTimeHist[trig]->GetBinContent(binBase);
+			}
+			baselineAverage /= numBaselinePoints;
+
+			triggers[trig].backgroundActivity = baselineAverage;
+
+			cout << "baseline count for trigger" << trig <<" is " << triggers[trig].backgroundActivity << "counts/ns." << endl;
+
+
+			currentCount -= baselineAverage;
+			maxCounts -= baselineAverage;
+
+			while(currentCount < maxCounts/2)
+			{
+				currentBin++;
+				currentCount = beamTimeHist[trig]->GetBinContent(currentBin) - baselineAverage;
+			}
+
+			triggers[trig].beamDelay = beamTimeHist[trig]->GetBinCenter(currentBin);
+
+			cout << "delay of trigger " << trig << " is " << 	triggers[trig].beamDelay << " ns." << endl;
+
+			fisBeamActivity->SetRange(triggers[trig].beamDelay - WINDOW_FIT_FIS_BEAM, triggers[trig].beamDelay + WINDOW_FIT_FIS_BEAM);
+			fisBeamActivity->SetParameter(0, baselineAverage);
+			fisBeamActivity->SetParameter(1, triggers[trig].beamDelay);
+			fisBeamActivity->SetParameter(2, WIDTH_FIS_BEAM);
+			fisBeamActivity->SetLineColor(kGreen + 3);
+
+			// beamTimeHist[trig]->Fit(fisBeamActivity, "S Q R");
+			triggers[trig].fisBeamActivity = (TF1*)fisBeamActivity->Clone();
+
+			// visualizations
+
+			TString nameCanvBeam;
+			TString s_canvBeam = "beamTimeTrig";
+			nameCanvBeam = s_canvBeam + to_string(trig);
+
+			TCanvas* canvBeam = new TCanvas(nameCanvBeam, nameCanvBeam, 800, 500);
+			canvBeam->cd();
+
+			beamTimeHist[trig]->SetTitle("Time difference with beam; time (ns); counts");
+			beamTimeHist[trig]->Draw();
+
+			TLine* g_baseLine = new TLine(-1*BEAM_WINDOW, baselineAverage, BEAM_WINDOW, baselineAverage);
+			g_baseLine->SetLineColor(kRed);
+			g_baseLine->Draw("SAME");
+
+
+			TLine* g_delay = new TLine(triggers[trig].beamDelay, 0, triggers[trig].beamDelay, 10*maxCounts);
+			g_delay->SetLineColor(kGreen);
+			g_delay->Draw("SAME");
+
+			cout << "writing activity with " << fisBeamActivity->GetParameter(1) << endl;
+			triggers[trig].fisBeamActivity->Draw("SAME");
+
+			canvBeam->Write();
+
 		}
-		baselineAverage /= numBaselinePoints;
-
-		triggers[trig].backgroundActivity = baselineAverage;
-
-		cout << "baseline count for trigger" << trig <<" is " << triggers[trig].backgroundActivity << "counts/ns." << endl;
-
-
-		currentCount -= baselineAverage;
-		maxCounts -= baselineAverage;
-
-		while(currentCount < maxCounts/2)
-		{
-			currentBin++;
-			currentCount = beamTimeHist[trig]->GetBinContent(currentBin) - baselineAverage;
-		}
-
-		triggers[trig].beamDelay = beamTimeHist[trig]->GetBinCenter(currentBin);
-
-		cout << "delay of trigger " << trig << " is " << 	triggers[trig].beamDelay << " ns." << endl;
-
-		fisBeamActivity->SetRange(triggers[trig].beamDelay - WINDOW_FIT_FIS_BEAM, triggers[trig].beamDelay + WINDOW_FIT_FIS_BEAM);
-		fisBeamActivity->SetParameter(0, baselineAverage);
-		fisBeamActivity->SetParameter(1, triggers[trig].beamDelay);
-		fisBeamActivity->SetParameter(2, WIDTH_FIS_BEAM);
-		fisBeamActivity->SetLineColor(kGreen + 3);
-
-		// beamTimeHist[trig]->Fit(fisBeamActivity, "S Q R");
-		triggers[trig].fisBeamActivity = (TF1*)fisBeamActivity->Clone();
-
-		// visualizations
-
-		TString nameCanvBeam;
-		TString s_canvBeam = "beamTimeTrig";
-		nameCanvBeam = s_canvBeam + to_string(trig);
-
-		TCanvas* canvBeam = new TCanvas(nameCanvBeam, nameCanvBeam, 800, 500);
-		canvBeam->cd();
-
-		beamTimeHist[trig]->SetTitle("Time difference with beam; time (ns); counts");
-		beamTimeHist[trig]->Draw();
-
-		TLine* g_baseLine = new TLine(-1*BEAM_WINDOW, baselineAverage, BEAM_WINDOW, baselineAverage);
-		g_baseLine->SetLineColor(kRed);
-		g_baseLine->Draw("SAME");
-
-
-		TLine* g_delay = new TLine(triggers[trig].beamDelay, 0, triggers[trig].beamDelay, 10*maxCounts);
-		g_delay->SetLineColor(kGreen);
-		g_delay->Draw("SAME");
-
-		cout << "writing activity with " << fisBeamActivity->GetParameter(1) << endl;
-		triggers[trig].fisBeamActivity->Draw("SAME");
-
-		canvBeam->Write();
 
 	}
 
@@ -1145,65 +1150,65 @@ int DetectorSystemClass::DetectionAnalysis()
  //   |_|\___/_|   \__\___/_| |_| \___\__|\__|_\___/_||_|
  //
 
- cout << "Correcting times for internal delays" << endl;
-
-	// time of flight loop
-	double corrTime;
-	for (Long64_t jentry=0; jentry<nentries;jentry++)
-	{
-	 // load tree
-	 Long64_t ientry = LoadTree(jentry);
-	 if (ientry < 0) break;
-	 nb = tree->GetEntry(jentry);   nbytes += nb;
-
-	 if(tMult >= NUM_DETS)
-	 {
-		 continue;
-	 }
-
-	 // store the channel of the fission trigger
-	 channelTrig = isTrigger(tChan);
-
-	 for(int part = 0; part < tMult; part++)
-	 {
-			// store the channel number
-		 	channelDet = isDetector(totChan[part]);
-		 	corrTime = totToF[part] - detectors[channelDet].timeDelay[channelTrig];
-		 	//totpsd fill histogram w corrtime instead of time
-
-		 	tofDelPhistsCorr[channelDet]->Fill(corrTime);
-		 	tofPsdHistsCorr[channelDet]->Fill(totPSP[part], corrTime);
-		 	tofErgHistsCorr[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, corrTime);
-
-		 	// discriminate particles here (make it better) -changed discPSDPoint to discPSD in 2 ifstatements
-		 	if(totPSP[part] < detectors[channelDet].discPSD->Eval(totDep[part]/detectors[channelDet].calibration))
-		 	{
-			 	tofPhists[channelDet]->Fill(corrTime);
-			 	kinematicP[channelDet]->Fill(corrTime, totDep[part]/detectors[channelDet].calibration);
-		 	}
-
-		 	if(totPSP[part] > detectors[channelDet].discPSD->Eval(totDep[part]/detectors[channelDet].calibration) )
-		 	{
-			 	tofNhists[channelDet]->Fill(corrTime);
-			 	kinematicN[channelDet]->Fill(corrTime, totDep[part]/detectors[channelDet].calibration);
-		 	}
-		}
-	}
+ // cout << "Correcting times for internal delays" << endl;
+ //
+	// // time of flight loop
+	// double corrTime;
+	// for (Long64_t jentry=0; jentry<nentries;jentry++)
+	// {
+	//  // load tree
+	//  Long64_t ientry = LoadTree(jentry);
+	//  if (ientry < 0) break;
+	//  nb = tree->GetEntry(jentry);   nbytes += nb;
+ //
+	//  if(tMult >= NUM_DETS)
+	//  {
+	// 	 continue;
+	//  }
+ //
+	//  // store the channel of the fission trigger
+	//  channelTrig = isTrigger(tChan);
+ //
+	//  for(int part = 0; part < tMult; part++)
+	//  {
+	// 		// store the channel number
+	// 	 	channelDet = isDetector(totChan[part]);
+	// 	 	corrTime = totToF[part] - detectors[channelDet].timeDelay[channelTrig];
+	// 	 	//totpsd fill histogram w corrtime instead of time
+ //
+	// 	 	tofDelPhistsCorr[channelDet]->Fill(corrTime);
+	// 	 	tofPsdHistsCorr[channelDet]->Fill(totPSP[part], corrTime);
+	// 	 	tofErgHistsCorr[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, corrTime);
+ //
+	// 	 	// discriminate particles here (make it better) -changed discPSDPoint to discPSD in 2 ifstatements
+	// 	 	if(totPSP[part] < detectors[channelDet].discPSD->Eval(totDep[part]/detectors[channelDet].calibration))
+	// 	 	{
+	// 		 	tofPhists[channelDet]->Fill(corrTime);
+	// 		 	kinematicP[channelDet]->Fill(corrTime, totDep[part]/detectors[channelDet].calibration);
+	// 	 	}
+ //
+	// 	 	if(totPSP[part] > detectors[channelDet].discPSD->Eval(totDep[part]/detectors[channelDet].calibration) )
+	// 	 	{
+	// 		 	tofNhists[channelDet]->Fill(corrTime);
+	// 		 	kinematicN[channelDet]->Fill(corrTime, totDep[part]/detectors[channelDet].calibration);
+	// 	 	}
+	// 	}
+	// }
 
 	cout << "Writing histograms" << endl;
 
-	// write the output histograms
-	for(int i = 0; i < NUM_DETS; i++)
-	{
-			cdTOFCorr->cd();
-			tofDelPhistsCorr[i]->Write();
-			tofPsdHistsCorr[i]->Write();
-			tofErgHistsCorr[i]->Write();
-
-			cdKin->cd();
-			kinematicN[i]->Write();
-			kinematicP[i]->Write();
-	}
+	// // write the output histograms
+	// for(int i = 0; i < NUM_DETS; i++)
+	// {
+	// 		cdTOFCorr->cd();
+	// 		tofDelPhistsCorr[i]->Write();
+	// 		tofPsdHistsCorr[i]->Write();
+	// 		tofErgHistsCorr[i]->Write();
+	//
+	// 		cdKin->cd();
+	// 		kinematicN[i]->Write();
+	// 		kinematicP[i]->Write();
+	// }
 
 	// // save beam parameters
 	// if(NUM_BEAMS > 0)
