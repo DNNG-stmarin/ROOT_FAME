@@ -30,6 +30,8 @@ void readFiss::SetInfo(MainWindow* main_in)
   // modes
   mode = w->mode();
   NUM_RUNS = w->NUM_RUNS();
+  int compensator = NUM_RUNS;
+  if(compensator > 1) compensator = 0;
   CovEM_in = w->CovEM_in();
 
   // paths
@@ -47,9 +49,9 @@ void readFiss::SetInfo(MainWindow* main_in)
 
   // detectors
   NUM_DETECTORS = w->NUM_DETECTORS();
-  THRESHOLD = w->THRESHOLD() + (((w->THRESHOLD2() - w->THRESHOLD()) / (NUM_RUNS - 1)) * runNum);
-  CLIPPING = w->CLIPPING() + (((w->CLIPPING2() - w->CLIPPING()) / (NUM_RUNS - 1)) * runNum);
-  MAX_TIME_N = w->MAX_TIME_N() + (((w->MAX_TIME_N2() - w->MAX_TIME_N()) / (NUM_RUNS - 1)) * runNum);
+  THRESHOLD = w->THRESHOLD() + (((w->THRESHOLD2() - w->THRESHOLD()) / (NUM_RUNS - 1 + compensator)) * runNum);
+  CLIPPING = w->CLIPPING() + (((w->CLIPPING2() - w->CLIPPING()) / (NUM_RUNS - 1 + compensator)) * runNum);
+  MAX_TIME_N = w->MAX_TIME_N() + (((w->MAX_TIME_N2() - w->MAX_TIME_N()) / (NUM_RUNS - 1 + compensator)) * runNum);
 
   // triggers
   NUM_TRIGGERS = w->NUM_TRIGGERS();
@@ -58,12 +60,12 @@ void readFiss::SetInfo(MainWindow* main_in)
     delete[] TRIGGERS;
   }
   TRIGGERS = w->TRIGGERS();
-  THRESHOLD_DEP = w->THRESHOLD_DEP() + (((w->THRESHOLD_DEP2() - w->THRESHOLD_DEP()) / (NUM_RUNS - 1)) * runNum);
-  CLIPPING_DEP = w->CLIPPING_DEP() + (((w->CLIPPING_DEP2() - w->CLIPPING_DEP()) / (NUM_RUNS - 1)) * runNum);
+  THRESHOLD_DEP = w->THRESHOLD_DEP() + (((w->THRESHOLD_DEP2() - w->THRESHOLD_DEP()) / (NUM_RUNS - 1 + compensator)) * runNum);
+  CLIPPING_DEP = w->CLIPPING_DEP() + (((w->CLIPPING_DEP2() - w->CLIPPING_DEP()) / (NUM_RUNS - 1 + compensator)) * runNum);
 
   // other settings for all modes
-  BACKGROUND_DELAY = w->BACKGROUND_DELAY() + (((w->BACKGROUND_DELAY2() - w->BACKGROUND_DELAY()) / (NUM_RUNS - 1)) * runNum);
-  FISS_PILEUP_TIME = w->FISS_PILEUP_TIME() + (((w->FISS_PILEUP_TIME2() - w->FISS_PILEUP_TIME()) / (NUM_RUNS - 1)) * runNum);
+  BACKGROUND_DELAY = w->BACKGROUND_DELAY() + (((w->BACKGROUND_DELAY2() - w->BACKGROUND_DELAY()) / (NUM_RUNS - 1 + compensator)) * runNum);
+  FISS_PILEUP_TIME = w->FISS_PILEUP_TIME() + (((w->FISS_PILEUP_TIME2() - w->FISS_PILEUP_TIME()) / (NUM_RUNS - 1 + compensator)) * runNum);
 
   // beam settings
   if(mode == 2)

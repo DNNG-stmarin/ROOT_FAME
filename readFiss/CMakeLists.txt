@@ -32,7 +32,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/gui)
 
 # Qt packages
-list(APPEND CMAKE_PREFIX_PATH ~/Qt/5.15.2/gcc_64)
+# for this to work, set Qt5_DIR to the location of Qt5Config.cmake in .bash_profile
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt5 COMPONENTS Gui REQUIRED)
