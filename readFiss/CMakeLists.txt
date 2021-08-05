@@ -29,9 +29,13 @@ include(${ROOT_USE_FILE})
 
 # Setup include directory for this project
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/gui)
 
 # Qt packages
+list(APPEND CMAKE_PREFIX_PATH ~/Qt/5.15.2/gcc_64)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(Qt5 COMPONENTS Gui REQUIRED)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
@@ -47,4 +51,5 @@ file(GLOB gui ${PROJECT_SOURCE_DIR}/gui/*)
 
 #---Create  a main program using the library
 add_executable(READ_FAME main.cc ${sources} ${headers} ${gui})
-target_link_libraries(READ_FAME ${ROOT_LIBRARIES} Qt5::Widgets)
+target_link_libraries(READ_FAME ${ROOT_LIBRARIES} Qt5::Widgets Qt5::Core Qt5::Gui)
+set_target_properties(Qt5::Core PROPERTIES MAP_IMPORTED_CONFIG_COVERAGE "RELEASE")
