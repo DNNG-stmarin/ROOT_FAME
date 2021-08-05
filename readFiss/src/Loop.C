@@ -28,6 +28,9 @@ void readFiss::LoopExp()
 
    for (Long64_t jentry=0; jentry<expEntries;jentry++)
    {
+      // updates READ_FAME progress bar (negligible impact on runtime)
+      w->setProgress((int)(((double)runNum * (100.0 / (double)NUM_RUNS)) + 100.0 * (((double)jentry / (double)expEntries) / (double)NUM_RUNS)));
+
       Long64_t ientry = LoadExpTree(jentry);
       if (ientry < 0) break;
       nb = expTree->GetEntry(jentry);   nbytes += nb;
@@ -88,7 +91,7 @@ void readFiss::LoopExp()
       fissRej->Fill(ACCEPTED_SIGNAL);
       if(numFissIter%1000000 == 0)
       {
-        cout << "finished processing " << numFissIter << " fissions" << endl;
+        cout << "finished processing " << numFissIter << " valid fissions, " << (int)jentry + 1 << " total" << endl;
       }
       nMult = 0;
       gMult = 0;

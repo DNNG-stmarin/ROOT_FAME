@@ -21,14 +21,22 @@
 #include <TGraphErrors.h>
 #include <THStack.h>
 
+#include <QApplication>
+
 #include <iostream>
 #include <fstream>
+#include <string>
+
+#include "mainwindow.h"
 // Header file for the classes stored in the TTree if any.
 
 #include "Constants.h"
 
+extern QApplication* app; // pointer to application
+
 class readFiss {
 public :
+   MainWindow*      w; // pointer to GUI
 
 /*
   _____                _      _    _
@@ -39,10 +47,11 @@ public :
    TChain*           expTree;   //!pointer to the analyzed TTree or TChain
    TChain*           simTree;
    // TTree*           beamTree;
-   TString          nameExp; // String name of where to find experiment
-   TString          nameSim;
-   TString          nameBeam;
-   TString          nameCoords;
+   std::string      nameExp; // String name of where to find experiment
+   std::string      nameSim;
+   std::string      nameBeam;
+   std::string      nameCoords;
+   std::string      nameWrite;
 
    TFile*           expFile;
    TFile*           simFile;
@@ -92,6 +101,8 @@ public :
   */
   // objects specific to this run of the analysis
   int mode;                     // what mode this run is using
+  int NUM_RUNS;                 // how many runs READ_FAME is doing
+  int runNum;                   // what run READ_FAME is on
   bool CovEM_in;                // whether or not this run uses CovEM
 
   int BN;                       // CovEM setting
@@ -518,12 +529,19 @@ public :
  |_|  |_\___|\__|_||_\___/\__,_/__/*/
 
   // constructors
-   readFiss(int &argc, char** &argv);
+   readFiss();
+   // readFiss(int &argc, char** &argv);
    virtual ~readFiss();
 
    // create a menu
-   virtual void GetInfo(std::istream &inputStream);
-   virtual void BadInputMessage();
+   virtual void Run();
+   virtual void Save(MainWindow* main_in);
+   virtual void Load(MainWindow* main_in);
+   virtual void Print(std::ostream &out);
+   virtual void LoadInput(std::istream &in);
+   virtual void SetInfo(MainWindow* main_in);
+   // virtual void GetInfo(std::istream &inputStream);
+   // virtual void BadInputMessage();
 
    // set thresholds and time limit
    virtual void SetRunThresholds(double threshold, double max_time_n);
