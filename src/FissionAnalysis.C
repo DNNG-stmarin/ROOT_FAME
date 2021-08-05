@@ -116,8 +116,7 @@ void DetectorSystemClass::FissionAnalysis()
       double adjX = detectors[numDet].X - triggers[numTrig].X;
       double adjY = detectors[numDet].Y - triggers[numTrig].Y;
       double adjZ = detectors[numDet].Z - triggers[numTrig].Z;
-      detectors[numDet].distance = sqrt(pow(adjX, 2.)
-        + pow(adjY, 2.) + pow(adjZ, 2.));
+      detectors[numDet].distance = sqrt(pow(adjX, 2.) + pow(adjY, 2.) + pow(adjZ, 2.));
 
       // detection time corrected for delay
       timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];

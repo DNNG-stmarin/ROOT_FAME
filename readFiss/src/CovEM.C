@@ -166,7 +166,7 @@ void readFiss::CovEM()
 
     }
 
-   // find the covariance at each point
+   // find the covariance and spec at each point
      for(int eN = 0; eN < BN; eN ++)
      {
       for(int eP = 0; eP < BP; eP ++)
