@@ -13,7 +13,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "createTree.h"
+#include "SFAME.h"
 
 using namespace std;
 
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
   int firstFile;
   int numFiles;
 
-  if(argc == 1) 
+  /*if(argc == 1) 
   {
     cout << "USAGE STATEMENT:" << endl;
     cout << "Provide name of sim file, first file, and number of files to process" << endl;
@@ -42,9 +42,12 @@ int main(int argc, char** argv)
   {
     cout << "wrong number of inputs provided! \n";
     return 2;
-  }
+  }*/
 
-  createTree(simFile, firstFile, numFiles);
+  sfame* simFame = new sfame();
+  simFame->readFromCol();
+  simFame->readFromSimFile(simFile, firstFile, numFiles);
+  
 
   return 0;
 }

@@ -3,12 +3,15 @@
 #include <sstream>
 #include <queue>
 #include <string>
+#include "Constants.h"
 
-#include "createTree.h"
+#include "SFAME.h"
 
-void createTree(TString nameSim, int firstFile, int numFiles)
+void sfame::readFromSimFile(TString nameSim, int firstFile, int numFiles)
 {
 
+  // V
+  cout << "read from sim file is running" << endl;
   const int MAX_MULT = 50;
 
   //declare dynamic array parameters

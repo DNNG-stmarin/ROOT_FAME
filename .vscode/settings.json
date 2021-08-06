@@ -7,6 +7,20 @@
         "DetectionImport.C": "cpp",
         "InitializeDetectorHistograms.C": "cpp",
         "SystemAnalysis.C": "cpp",
-        "ParamFIles.C": "cpp"
+        "ParamFIles.C": "cpp",
+        "fileToTree.C": "cpp",
+        "fakePsdSlice3.C": "cpp",
+        "fakePsdSlice2X.C": "cpp",
+        "fakePsdSlice2D.C": "cpp",
+        "pseudoReadTree.C": "cpp",
+        "createTree.C": "cpp",
+        "readCollisionFile.C": "cpp",
+        "ostream": "cpp",
+        "readFromSimFile.C": "cpp",
+        "readFromCol.C": "cpp",
+        "sfame.C": "cpp",
+        "lightOutout.C": "cpp",
+        "lightOutput.C": "cpp",
+        "functions.C": "cpp"
     }
 }
