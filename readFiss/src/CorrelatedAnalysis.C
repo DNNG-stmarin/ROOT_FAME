@@ -241,14 +241,14 @@ void readFiss::AngCorr()
   double xAvg[n_points];
   double yAvg[n_points];
 
-  neutronAngleCorrAvg = new TGraphErrors();
+  neutronAngleCorrAvg = new TGraphErrors(numAvgBins);
 
   for(int i = 0; i < n_points; ++i)
   {
     double rightBound = (2.0 / numAvgBins) * (numBin + 1);
     if(((neutronAngleCorr->GetPointX(i) + 1) >= rightBound) || i == n_points - 1)
     {
-      neutronAngleCorrAvg->AddPoint(TMath::Mean(numPoints, xAvg), TMath::Mean(numPoints, yAvg));
+      neutronAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg), TMath::Mean(numPoints, yAvg));
       neutronAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg), TMath::StdDev(numPoints, yAvg));
 
       for(int j = 0; j < numPoints; ++j)
