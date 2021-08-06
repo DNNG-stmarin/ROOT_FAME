@@ -3,38 +3,34 @@
 
 #include "SFAME.h"
 #include "Constants.h"
-<<<<<<< Updated upstream
-=======
-#include "functions.C"
->>>>>>> Stashed changes
 #include <sstream>
 
 void sfame::lightOutput()
 {
-// constants 
+// constants
 
 
 // loop through energies
 
 
-// convert from cell to channel 
+// convert from cell to channel
 //// channel = cellToChannel(cell);
 
-// assign lightoutput 
+// assign lightoutput
 //// lightoutput[particle] = birks(channel, energy, typeP, zaid);
 
 
-// assign height 
+// assign height
 
 
 // group by interaction type
 
 
-// sum lightout 
+// sum lightout
 //// for(all particles)
     //// sumLightoutput += lightoutput[particle];
 
-// time and energy broadening 
+// time and energy broadening
 
 
 // ? convert from cell to channel again
@@ -46,19 +42,13 @@ void sfame::lightOutput()
 // ? broaden time again
 
 
-// now we actually run the broaden function 
+// now we actually run the broaden function
 //// broadening = findBroad(erg);
 
-// lightoutput and time cuts 
+// lightoutput and time cuts
 //// particleType = cutLightOut(height, typeP);
 //// particleType = cutTimePsd(times, typeP);
 
 
 
 }
-
-
-
-
-
-

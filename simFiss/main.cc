@@ -26,7 +26,7 @@ int main(int argc, char** argv)
   int firstFile;
   int numFiles;
 
-  /*if(argc == 1) 
+  /*if(argc == 1)
   {
     cout << "USAGE STATEMENT:" << endl;
     cout << "Provide name of sim file, first file, and number of files to process" << endl;
@@ -36,7 +36,7 @@ int main(int argc, char** argv)
   {
     simFile = TString(argv[1]);
     firstFile = stoi(argv[2]);
-    numFiles = stoi(argv[3]);    
+    numFiles = stoi(argv[3]);
   }
   else
   {
@@ -45,14 +45,10 @@ int main(int argc, char** argv)
   }*/
 
   sfame* simFame = new sfame();
-<<<<<<< Updated upstream
-  //simFame->readFromCol();
-  //simFame->readFromSimFile(simFile, firstFile, numFiles);
-=======
-  simFame->readFromCol();
-  simFame->readFromSimFile(simFile, firstFile, numFiles);
->>>>>>> Stashed changes
-  
+  // simFame->readFromCol();
+  // simFame->readFromSimFile(simFile, firstFile, numFiles);
+  //
+
 
   return 0;
 }
