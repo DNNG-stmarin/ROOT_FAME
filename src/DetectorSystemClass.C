@@ -16,7 +16,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	DETECTOR_CLIP = info->DETECTOR_CLIP;
 	COINC_WINDOW = info->COINC_WINDOW;
 	BEAM_WINDOW = info->BEAM_WINDOW;
-    BEAM_DISTANCE = info->BEAM_DISTANCE;
+  BEAM_DISTANCE = info->BEAM_DISTANCE;
 	MIN_TIME_P = info->MIN_TIME_P;
 	MAX_TIME_P = info->MAX_TIME_P;
 	MIN_TIME_N = info->MIN_TIME_N;
@@ -55,7 +55,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	detectors = new DetectorClass[NUM_DETS];
 	cout << "Detectors and triggers have been created" << endl;
 
-    cout << "Background shift set to " << BACKGROUND_SHIFT << " ns." << endl;
+  out << "Background shift set to " << BACKGROUND_SHIFT << " ns." << endl;
 	cout << "Collecting background between: " << MIN_TIME_N - BACKGROUND_SHIFT;
 	cout << "ns and " << MAX_TIME_N - BACKGROUND_SHIFT << " ns." << endl;
 
@@ -81,6 +81,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		detectors[i].Y = stod(y)*100;
 		detectors[i].Z = stod(z)*100;
 		detectors[i].distance = sqrt(pow(stod(x),2)+pow(stod(y),2)+pow(stod(z),2))*100;
+		cout << "Detector " << i << " at: " << detectors[i].X << " " << detectors[i].Y << " " << detectors[i].Z << endl;
 	}
   inDet.close();
 
@@ -107,7 +108,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
       triggers[i].Y = stod(y) * 100;
       triggers[i].Z = stod(z) * 100;
       //cout << info->triggerPath << endl;
-      // cout << i << " " << triggers[i].X << " " << triggers[i].Y << " " << triggers[i].Z << endl;
+      cout << "Trigger " << i << " at: " << triggers[i].X << " " << triggers[i].Y << " " << triggers[i].Z << endl;
     }
 	}
   inTrig.close();

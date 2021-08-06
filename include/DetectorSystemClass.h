@@ -55,7 +55,7 @@ public:
 	double DETECTOR_CLIP;
 	double COINC_WINDOW;
 	double BEAM_WINDOW;
-    double BEAM_DISTANCE;
+  double BEAM_DISTANCE;
 	double MIN_TIME_P;
 	double MAX_TIME_P;
 	double MIN_TIME_N;
@@ -67,8 +67,8 @@ public:
 	int TOF_ERG;
 	int STEP_SIZE;
 	int REUSE_DETECTOR;
-	int DOUBLE_DISC; 
-	double MISC_MAX; 
+	int DOUBLE_DISC;
+	double MISC_MAX;
 	int PARAM_FILES;
 
 	// inputs given by the fission experiment class file, made up of the data collected and where to write

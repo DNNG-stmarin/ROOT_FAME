@@ -6,7 +6,11 @@ void readFiss::ReadBeamInfo()
 {
   cout << "Extracting information from file" << endl;
 
-  beamFile = new TFile(nameBeam, "READ");
+  beamFile = new TFile((TString)nameBeam, "READ");
+  if(!beamFile->IsOpen())
+  {
+    w->noBeamFile();
+  }
   cd_beam->cd();
 
   // extract the histrograms from the file

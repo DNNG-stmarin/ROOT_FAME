@@ -116,8 +116,7 @@ void DetectorSystemClass::FissionAnalysis()
       double adjX = detectors[numDet].X - triggers[numTrig].X;
       double adjY = detectors[numDet].Y - triggers[numTrig].Y;
       double adjZ = detectors[numDet].Z - triggers[numTrig].Z;
-      detectors[numDet].distance = sqrt(pow(adjX, 2.)
-        + pow(adjY, 2.) + pow(adjZ, 2.));
+      detectors[numDet].distance = sqrt(pow(adjX, 2.) + pow(adjY, 2.) + pow(adjZ, 2.));
 
       // detection time corrected for delay
       timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
@@ -208,9 +207,9 @@ void DetectorSystemClass::FissionAnalysis()
         neutVelocity = (1.0/LIGHT_C)*detectors[numDet].distance/(timeDet + BACKGROUND_SHIFT);
         backNeutronToFErg[nBackMult] = (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2);
         backNeutronDet[nBackMult] = numDet;
-        backNeutronVx[nBackMult] = detectors[numDet].X/detectors[numDet].distance*neutVelocity;
-        backNeutronVy[nBackMult] = detectors[numDet].Y/detectors[numDet].distance*neutVelocity;
-        backNeutronVz[nBackMult] = detectors[numDet].Z/detectors[numDet].distance*neutVelocity;
+        backNeutronVx[nBackMult] = adjX/detectors[numDet].distance*neutVelocity;
+        backNeutronVy[nBackMult] = adjY/detectors[numDet].distance*neutVelocity;
+        backNeutronVz[nBackMult] = adjZ/detectors[numDet].distance*neutVelocity;
         nBackMult++;
       }
 
@@ -231,9 +230,9 @@ void DetectorSystemClass::FissionAnalysis()
         backPhotonLightOut[pBackMult] = engDet;
         backPhotonPSD[pBackMult] = totPSP[j];
         backPhotonDet[pBackMult] = numDet;
-        backPhotonVx[pBackMult] = detectors[numDet].X/detectors[numDet].distance*LIGHT_C;
-        backPhotonVy[pBackMult] = detectors[numDet].Y/detectors[numDet].distance*LIGHT_C;
-        backPhotonVz[pBackMult] = detectors[numDet].Z/detectors[numDet].distance*LIGHT_C;
+        backPhotonVx[pBackMult] = adjX/detectors[numDet].distance*LIGHT_C;
+        backPhotonVy[pBackMult] = adjY/detectors[numDet].distance*LIGHT_C;
+        backPhotonVz[pBackMult] = adjZ/detectors[numDet].distance*LIGHT_C;
         pBackMult++;
       }
       // else
