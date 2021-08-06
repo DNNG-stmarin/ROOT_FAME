@@ -11,6 +11,7 @@ sfame::sfame()
     firstFile = 0;
     numFiles = 1;
     
+<<<<<<< Updated upstream
     // 
     NUM_DETECTORS = 40; 
 
@@ -34,4 +35,19 @@ sfame::sfame()
 sfame::~sfame()
 {
     delete detectors; 
+=======
+
+    // external lightoutput files 
+    DET_DIST_FILE = "FS3_closeDists.csv";
+    TIME_RESOLUTION_FILE = "tResFile.csv";
+    CELL_NUMBERS_FILE = "cellNumbers.csv";
+    LIGHTOUTPUT_FILE = "birksLO.csv";
+    RESOLUTION_COEFFICIENTS = [10.61, 0.355, 3.923];
+    // energy resolution file 
+
+    // supplamental files
+    dEdX_FILE = "stilbene_dEdX.csv";
+    DET_BIRKCOEFF_FILE = "BirkCoeff.csv";
+
+>>>>>>> Stashed changes
 }

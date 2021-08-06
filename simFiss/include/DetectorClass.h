@@ -23,7 +23,11 @@ public:
     int channel; 
     int cell; 
 
+<<<<<<< Updated upstream
 };
+=======
+}
+>>>>>>> Stashed changes
 
 #endif
 

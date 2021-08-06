@@ -3,6 +3,10 @@
 
 #include "SFAME.h"
 #include "Constants.h"
+<<<<<<< Updated upstream
+=======
+#include "functions.C"
+>>>>>>> Stashed changes
 #include <sstream>
 
 void sfame::lightOutput()

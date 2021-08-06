@@ -10,7 +10,11 @@ const int MAX_LINES = 1000; // put a large number representing the maximum numbe
 const int NUM_ROWS = 16; 
 
 // lightoutput functions
+<<<<<<< Updated upstream
 
+=======
+double RESOLUTION_COEFFICIENTS = [10.61, 0.355, 3.923];
+>>>>>>> Stashed changes
 
 // partilce types 
 const int NEUTRONS = 1;
@@ -25,8 +29,13 @@ const int HYDROGEN = 1001;
 const int CARBON = 6000;
 
 // constants 
+<<<<<<< Updated upstream
 const double C = 29.9792; // speed of light in cm/ns
 const double MASS_NEUTRON = 939.565;   // mass of the neutron in MeV/c^2
+=======
+const double C = 29.9792; # speed of light in cm/ns
+const double MASS_NEUTRON = 939.565;   # mass of the neutron in MeV/c^2
+>>>>>>> Stashed changes
 
 const double N_PER_FISSION = 3.757;
 const double P_PER_FISSION = 8.29;

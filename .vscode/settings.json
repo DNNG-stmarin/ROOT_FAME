@@ -21,10 +21,14 @@
         "sfame.C": "cpp",
         "lightOutout.C": "cpp",
         "lightOutput.C": "cpp",
+<<<<<<< Updated upstream
         "functions.C": "cpp",
         "initalizeDetectors.C": "cpp",
         "initalizeInputFiles.C": "cpp",
         "initializeInputFiles.C": "cpp",
         "initializeDetectors.C": "cpp"
+=======
+        "functions.C": "cpp"
+>>>>>>> Stashed changes
     }
 }
