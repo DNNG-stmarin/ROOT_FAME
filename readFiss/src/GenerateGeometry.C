@@ -12,7 +12,7 @@ void readFiss::GenerateAngles()
   ifstream fin(nameCoords); // detector coordinates
   if(!fin.is_open())
   {
-    cout << "Couldn't open coordinate file" << endl;
+    w->noCoordsFile();
   }
 
   double* x = new double[NUM_DETECTORS];
