@@ -19,6 +19,10 @@ void readFiss::LoopExp()
    if (expTree == 0) return;
 
    expEntries = expTree->GetEntries();
+   if(expEntries == 0)
+   {
+     w->noExpFile();
+   }
    cout << "Analyzing " << expEntries << " experimental events \n";
    long int numFissIter = 0;
 
@@ -309,6 +313,10 @@ void readFiss::LoopSim()
     if (expTree == 0) return;
     //CHANGE BACK TO SIM TREE
     simEntries = simTree->GetEntries();
+    if(simEntries == 0)
+    {
+      w->noSimFile();
+    }
     cout << "Analyzing " << simEntries << " simulated events \n ";
 
     long int numFissIter = 0;

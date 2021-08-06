@@ -329,7 +329,11 @@ int DetectorSystemClass::DetectionAnalysis()
 				canvasDiscTOF->Write();
 
 				// find the delay of photon peak for each detector
-				detectors[i].timeDelay[tr] = tofphotpeak_opt->Parameter(1) - detectors[channelDet].distance/LIGHT_C;
+				double sourceDetDist = sqrt( pow(detectors[channelDet].X - triggers[tr].X, 2) +
+																		 pow(detectors[channelDet].Y - triggers[tr].Y, 2) +
+																		 pow(detectors[channelDet].Z - triggers[tr].Z, 2));
+																		
+				detectors[i].timeDelay[tr] = tofphotpeak_opt->Parameter(1) - sourceDetDist/LIGHT_C;
 				detectors[i].timeResolution[tr] = tofphotpeak_opt->Parameter(2);
 
 				// cout << "det " << i << " and trig" << tr << " timing: " << detectors[i].timeDelay[tr] << " ns" << endl;

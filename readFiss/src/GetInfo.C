@@ -95,11 +95,19 @@ void readFiss::Run()
   {
     writeFile = new TFile((TString)nameWrite + (TString)".root", "RECREATE");
     cout << "Writing output to " << ((TString)nameWrite + (TString)".root") << endl;
+    if(!writeFile->IsOpen())
+    {
+      w->noWriteFile();
+    }
   }
   else
   {
     writeFile = new TFile((TString)nameWrite + (TString)to_string(runNum) + (TString)".root", "RECREATE");
     cout << "Writing run " << runNum << " output to " << ((TString)nameWrite + (TString)to_string(runNum) + (TString)".root") << endl;
+    if(!writeFile->IsOpen())
+    {
+      w->noWriteFile();
+    }
   }
   cd_basics = writeFile->mkdir("Basic");
   cd_individual = writeFile->mkdir("Individual");

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QEventLoop>
+#include <QMessageBox>
 
 #include <iostream>
 #include <string>
@@ -21,6 +22,48 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    // error messages
+    void noWriteFile()
+    {
+      std::cout << "Couldn't open output file" << std::endl;
+      QMessageBox messageBox;
+      messageBox.critical(0,"Error","Couldn't open output file");
+      messageBox.setFixedSize(500,200);
+      close();
+    }
+
+    void noExpFile()
+    {
+      std::cout << "Couldn't open experiment file" << std::endl;
+      QMessageBox messageBox;
+      messageBox.critical(0,"Error","Couldn't open experiment file");
+      messageBox.setFixedSize(500,200);
+    }
+
+    void noSimFile()
+    {
+      std::cout << "Couldn't open simulation file" << std::endl;
+      QMessageBox messageBox;
+      messageBox.critical(0,"Error","Couldn't open simulation file");
+      messageBox.setFixedSize(500,200);
+    }
+
+    void noBeamFile()
+    {
+      std::cout << "Couldn't open beam file" << std::endl;
+      QMessageBox messageBox;
+      messageBox.critical(0,"Error","Couldn't open beam file");
+      messageBox.setFixedSize(500,200);
+    }
+
+    void noCoordsFile()
+    {
+      std::cout << "Couldn't open coordinate file" << std::endl;
+      QMessageBox messageBox;
+      messageBox.critical(0,"Error","Couldn't open coordinate file");
+      messageBox.setFixedSize(500,200);
+    }
 
     // getters/setters
     // progress bar setter
