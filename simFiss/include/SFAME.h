@@ -39,6 +39,10 @@ public:
     TString simFile; 
     int firstFile; 
     int numFiles; 
+    
+    // 
+    int NUM_DETECTORS; 
+
 
     // external files 
     TString DET_DIST_FILE; // detector distances
@@ -52,12 +56,23 @@ public:
     TString dEdX_FILE; // birks stopping power
     TString DET_BIRKCOEFF_FILE; // birks coeffs
 
+    //
+    TGraph* chanToCellList; 
+    TGraph* cellToChanList;
+
+    // initialization functions
+    void initializeDetectors();
+    void initializeInputFiles();
+
     // functions
     void readFromCol();
     void readFromSimFile(TString nameSim, int firstFile, int numFiles);
+    
 
     // lightoutput functions 
     int cellToChannel(int cell); 
+    int chanToCell(int chan);
+    void lightOutput();
     double birks(int channel, double energy, int typeP, int zaid);
     double findBroad(double erg);
     int cutLightOut(double height, int typeP);
@@ -65,30 +80,8 @@ public:
 
     // array of the detectors 
     DetectorClass* detectors; 
-        // array of x detectors (40 here)
-        detectors det[NUM_DETECTORS];
-        // fill all of the properties 
-        // ? I think this needed to potentially go somewhere else eventually 
-        for(int i = 0; i < NUM_DETECTORS; i++)
-        {
-            // LO_function
 
-            // distance
-
-            // time resolution 
-
-            // energy resolution 
-
-            // cell
-            //// det[i] cell ///// should this be coming from MCNP or just be i or both?
-
-            // channel
-            //// det[i] channel = cellToChannel(cell); 
-
-
-        }
-
-    //~SFAME();
+    ~sfame();
 };
 
 #endif

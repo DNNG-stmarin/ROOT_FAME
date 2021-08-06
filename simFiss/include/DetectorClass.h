@@ -23,7 +23,7 @@ public:
     int channel; 
     int cell; 
 
-}
+};
 
 #endif
 

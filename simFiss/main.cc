@@ -45,8 +45,8 @@ int main(int argc, char** argv)
   }*/
 
   sfame* simFame = new sfame();
-  simFame->readFromCol();
-  simFame->readFromSimFile(simFile, firstFile, numFiles);
+  //simFame->readFromCol();
+  //simFame->readFromSimFile(simFile, firstFile, numFiles);
   
 
   return 0;

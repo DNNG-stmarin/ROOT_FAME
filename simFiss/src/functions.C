@@ -10,15 +10,19 @@
 // converts from the cell value to the channel value
 int sfame::cellToChannel(int cell)
 {
-    int channel1 = ((cell - 1048)/100);
-    int channel2 = channel1 + (channel1/15.5);
-    return channel2;
+    int channel = (int)(cellToChanList->Eval(cell));
+    return channel; 
+}
+int sfame::chanToCell(int chan)
+{
+    int cell = (int)(chanToCellList->Eval(chan));
+    return cell; 
 }
 
 // assigns a lightoutput value
 double sfame::birks(int channel, double energy, int typeP, int zaid)
 {
-    if((energy < MIN_EXP) || (energy > MAX_EXP))
+   /* if((energy < MIN_EXP) || (energy > MAX_EXP))
     {
         lightout = 0.0;
     } 
@@ -47,21 +51,21 @@ double sfame::birks(int channel, double energy, int typeP, int zaid)
         lightout = 0.0;
     }    
     return lightout;
-
+*/
 }
 
 // broadens the energy 
 double sfame::findBroad(double erg)
 {
-    double broadening = (RESOLUTION_COEFFICIENTS[0] * erg + RESOLUTION_COEFFICIENTS[1] * sqrt(erg) + RESOLUTION_COEFFICIENTS[2]) / (2.35 * 100);
-    return broadening;
+  /*  double broadening = (RESOLUTION_COEFFICIENTS[0] * erg + RESOLUTION_COEFFICIENTS[1] * sqrt(erg) + RESOLUTION_COEFFICIENTS[2]) / (2.35 * 100);
+    return broadening;*/
 }
 
 // V cuts 
 // cuts using energy 
 int sfame::cutLightOut(double height, int typeP)
 {
-   int newType = 0;
+   /*int newType = 0;
    // cuts out the particles that have energies outside of the boundry 
    if((height < ENERGYCUT) || (height > CLIPPED))
     {
@@ -78,14 +82,14 @@ int sfame::cutLightOut(double height, int typeP)
     {
        newType = typeP;
     }
-    return newType;
+    return newType;*/
 
 }
 
 // cuts using time 
 int sfame::cutTimePsd(double times, int typeP)
 {
-    int newType = 0;
+   /* int newType = 0;
     if((typeP == NEUTRON) & (times < MINTIMEN || times > MAXTIMEN))
     {
          newType = BADNEUTRON;
@@ -99,7 +103,7 @@ int sfame::cutTimePsd(double times, int typeP)
     {
         newType = typeP;
     }
-    return newType;
+    return newType;*/
 }
 
 /* non lightoutput functions

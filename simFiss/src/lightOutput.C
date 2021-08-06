@@ -3,7 +3,6 @@
 
 #include "SFAME.h"
 #include "Constants.h"
-#include "functions.C"
 #include <sstream>
 
 void sfame::lightOutput()
