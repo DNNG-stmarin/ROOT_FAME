@@ -42,6 +42,7 @@ public:
 
     //
     int NUM_DETECTORS;
+    double SOURCE_POSITION[3];
 
     // external files
     TString DET_DIST_FILE; // detector distances
@@ -57,6 +58,13 @@ public:
     //
     TGraph* chanToCellList;
     TGraph* cellToChanList;
+    TGraph* posXList;
+    TGraph* posYList;
+    TGraph* posZList;
+    TGraph* timeResList;
+
+    TGraph** LightOutList;
+    TGraph** KinLightList;
 
     // initialization functions
     void initializeDetectors();

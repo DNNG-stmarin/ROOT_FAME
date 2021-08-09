@@ -1,7 +1,5 @@
 //
 //
-
-
 #ifndef Constants_h
 #define Constants_h
 
@@ -28,6 +26,5 @@ const double MASS_NEUTRON = 939.565;   // mass of the neutron in MeV/c^2
 
 const double N_PER_FISSION = 3.757;
 const double P_PER_FISSION = 8.29;
-
 
 #endif

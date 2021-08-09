@@ -4,6 +4,7 @@
 #include <fstream>
 #include <TGraph.h>
 #include <string.h>
+#include <TF1.h>
 
 #include "Constants.h"
 
@@ -15,13 +16,18 @@ using namespace std;
 class DetectorClass
 {
 public:
-    TGraph LO_function;
-    // double X, Y, Z;
+    TGraph* lightOutput;
+    TGraph* kinLight;
+
+    double x, y, z;
     double dist;
+
     double timeRes;
-    double energyRes;
+
+    TF1* energyRes;
+
     int channel;
-    int cell; 
+    int cell;
 };
 
 #endif

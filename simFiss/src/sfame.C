@@ -12,9 +12,10 @@ sfame::sfame()
     numFiles = 1;
     //
     NUM_DETECTORS = 40;
+    SOURCE_POSITION[0] = 0; SOURCE_POSITION[1] = 0; SOURCE_POSITION[2] = -2;
 
     // external lightoutput files
-    DET_DIST_FILE = "inputSfame/FS3_closeDists.csv";
+    DET_DIST_FILE = "inputSfame/cartesianFS3.txt";
     TIME_RESOLUTION_FILE = "inputSfame/tResFile.csv";
     CELL_NUMBERS_FILE = "inputSfame/cellNumbers.csv";
     LIGHTOUTPUT_FILE = "inputSfame/birksLO.csv";
