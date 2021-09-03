@@ -55,15 +55,6 @@ double sfame::birks(int channel, double energy, int typeP, int zaid)
 */
 }
 
-// broadens the energy
-double sfame::findBroad(double erg)
-{
-/*
-    double broadening = (RESOLUTION_COEFFICIENTS[0] * erg + RESOLUTION_COEFFICIENTS[1] * sqrt(erg) + RESOLUTION_COEFFICIENTS[2]) / (2.35 * 100);
-    return broadening;
-*/
-}
-
 // V cuts
 // cuts using energy
 int sfame::cutLightOut(double height, int typeP)
@@ -109,7 +100,7 @@ int sfame::cutTimePsd(double times, int typeP)
     {
         newType = typeP;
     }
-    
+
     return newType;
     */
 }

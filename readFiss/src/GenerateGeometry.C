@@ -10,6 +10,7 @@ using namespace std;
 void readFiss::GenerateAngles()
 {
   ifstream fin(nameCoords); // detector coordinates
+  cout << "reading coordinate file from " << nameCoords << endl;
   if(!fin.is_open())
   {
     w->noCoordsFile();

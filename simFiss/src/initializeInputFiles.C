@@ -14,11 +14,13 @@ using namespace std;
 
 void sfame::initializeInputFiles()
 {
+    cout << "Initializing input files. " << endl;
     const int MAX_DET_NUMBER = 1000;
     const int ENERGY_AXIS_LENGTH = 10000;
 
     // read the file and create a TGraph
     ifstream fileCell, filePos, fileLight, fileTimeRes;
+    ifstream fileNmeanPSD, filePmeanPSD, fileNsigmaPSD, filePsigmaPSD;
 
     // detector axis
     double detNumArray[MAX_DET_NUMBER];
@@ -35,10 +37,10 @@ void sfame::initializeInputFiles()
     int numEnergyPoints = 0;
     double energyDepArray[ENERGY_AXIS_LENGTH];
     double** lightOutputArray;
-    lightOutputArray = new double* [MAX_DET_NUMBER];
-    LightOutList = new TGraph* [MAX_DET_NUMBER];
-    KinLightList = new TGraph* [MAX_DET_NUMBER];
-    for(int Dj = 0; Dj < MAX_DET_NUMBER; Dj++)
+    lightOutputArray = new double* [NUM_DETECTORS];
+    LightOutList = new TGraph* [NUM_DETECTORS];
+    KinLightList = new TGraph* [NUM_DETECTORS];
+    for(int Dj = 0; Dj < NUM_DETECTORS; Dj++)
     {
       lightOutputArray[Dj] = new double [ENERGY_AXIS_LENGTH];
     }
@@ -48,12 +50,32 @@ void sfame::initializeInputFiles()
     // time resolution values
     double timeResArray[MAX_DET_NUMBER];
 
+    // psd parameters
+    meanNeutPSDArray = new double* [NUM_DETECTORS];
+    meanPhotPSDArray = new double* [NUM_DETECTORS];
+    sigNeutPSDArray = new double* [NUM_DETECTORS];
+    sigPhotPSDArray = new double* [NUM_DETECTORS];
+
+    for(int Dj = 0; Dj < NUM_DETECTORS; Dj++)
+    {
+      meanNeutPSDArray[Dj] = new double [NUM_PSD_PARAMS];
+      meanPhotPSDArray[Dj] = new double [NUM_PSD_PARAMS];
+      sigNeutPSDArray[Dj] = new double [NUM_PSD_PARAMS];
+      sigPhotPSDArray[Dj] = new double [NUM_PSD_PARAMS];
+    }
+
 
     // open the files
     fileCell.open(CELL_NUMBERS_FILE);
     filePos.open(DET_DIST_FILE);
     fileLight.open(LIGHTOUTPUT_FILE);
     fileTimeRes.open(TIME_RESOLUTION_FILE);
+
+    fileNmeanPSD.open(MEAN_NEUTRON_PSD_FILE);
+    filePmeanPSD.open(MEAN_PHOTON_PSD_FILE);
+    fileNsigmaPSD.open(SIGMA_NEUTRON_PSD_FILE);
+    filePsigmaPSD.open(SIGMA_PHOTON_PSD_FILE);
+
 
     // start by reading the energy axis
     getline(fileLight, line);
@@ -94,6 +116,21 @@ void sfame::initializeInputFiles()
         }
         LightOutList[i] = new TGraph(Ej, energyDepArray, lightOutputArray[i]);
         KinLightList[i] = new TGraph(Ej, lightOutputArray[i], energyDepArray);
+
+        int det;
+
+        fileNmeanPSD >> det;
+        filePmeanPSD >> det;
+        fileNsigmaPSD >> det;
+        filePsigmaPSD >> det;
+
+        for(int psdJ = 0; psdJ < NUM_PSD_PARAMS; psdJ++)
+        {
+          fileNmeanPSD >> meanNeutPSDArray[i][psdJ];
+          filePmeanPSD >> meanPhotPSDArray[i][psdJ];
+          fileNsigmaPSD >> sigNeutPSDArray[i][psdJ];
+          filePsigmaPSD >> sigPhotPSDArray[i][psdJ];
+        }
     }
 
     // create the graphs
@@ -105,10 +142,17 @@ void sfame::initializeInputFiles()
     posZList = new TGraph(NUM_DETECTORS, detNumArray, zPosArray);
     timeResList = new TGraph(NUM_DETECTORS, detNumArray, timeResArray);
 
+
+
     // close the files
     fileCell.close();
     filePos.close();
     fileLight.close();
     fileTimeRes.close();
+
+    fileNmeanPSD.close();
+    filePmeanPSD.close();
+    fileNsigmaPSD.close();
+    filePsigmaPSD.close();
 
 }

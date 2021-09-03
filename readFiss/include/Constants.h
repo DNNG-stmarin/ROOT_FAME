@@ -5,6 +5,10 @@
 const int MAX_MULT = 20;
 const int MAX_TRIGGERS = 1000;
 
+const int STANDARD_MODE = 0;
+const int SIM_MODE = 1;
+const int BEAM_MODE = 2;
+
 // Set physical constants
 const double BEAM_PATH = 2150;//cm
 const double N_MASS = 939.565; // MeV

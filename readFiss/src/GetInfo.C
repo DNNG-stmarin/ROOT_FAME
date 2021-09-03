@@ -246,6 +246,7 @@ void readFiss::Save(MainWindow* main_in)
       cout << "Couldn't open " << nameSave << " for saving" << endl;
       return;
   }
+
   Print(fout);
   fout.close();
 }
@@ -273,13 +274,14 @@ void readFiss::Load(MainWindow* main_in)
 
 void readFiss::Print(ostream &out)
 {
-    out << w->THRESHOLD_Check() << endl;
-    out << w->CLIPPING_Check() << endl;
-    out << w->MAX_TIME_N_Check() << endl;
-    out << w->THRESHOLD_DEP_Check() << endl;
-    out << w->CLIPPING_DEP_Check() << endl;
-    out << w->BACKGROUND_DELAY_Check() << endl;
-    out << w->FISS_PILEUP_TIME_Check() << endl;
+    // cout <<  w->GetNameInput() << endl;
+    out << w->THRESHOLD(-1) << endl;
+    out << w->CLIPPING(-1) << endl;
+    out << w->MAX_TIME_N(-1) << endl;
+    out << w->THRESHOLD_DEP(-1) << endl;
+    out << w->CLIPPING_DEP(-1) << endl;
+    out << w->BACKGROUND_DELAY(-1) << endl;
+    out << w->FISS_PILEUP_TIME(-1)<< endl;
 
     out << w->mode() << endl;
     out << w->NUM_RUNS() << endl;
@@ -288,21 +290,21 @@ void readFiss::Print(ostream &out)
     out << w->nameWrite() << endl;
     out << w->nameExp() << endl;
     out << w->numExpFiles() << endl;
-    if(mode == 1)
+    if(mode == SIM_MODE)
     {
         out << w->nameSim() << endl;
         out << w->numSimFiles() << endl;
     }
-    else if(mode == 2)
+    else if(mode == BEAM_MODE)
     {
         out << w->nameBeam() << endl;
     }
     out << w->nameCoords() << endl;
 
     out << w->NUM_DETECTORS() << endl;
-    out << w->THRESHOLD() << " " << w->THRESHOLD2() << endl;
-    out << w->CLIPPING() << " " << w->CLIPPING2() << endl;
-    out << w->MAX_TIME_N() << " " << w->MAX_TIME_N2() << endl;
+    // out << w->THRESHOLD() << endl;
+    // out << w->CLIPPING() <<  endl;
+    // out << w->MAX_TIME_N() << endl;
 
     out << w->NUM_TRIGGERS() << endl;
     int* saveTRIGGERS = w->TRIGGERS();
@@ -312,11 +314,11 @@ void readFiss::Print(ostream &out)
     }
     delete[] saveTRIGGERS;
     out << endl;
-    out << w->THRESHOLD_DEP() << " " << w->THRESHOLD_DEP2() << endl;
-    out << w->CLIPPING_DEP() << " " << w->CLIPPING_DEP2() << endl;
+    out << w->THRESHOLD_DEP() << endl;
+    out << w->CLIPPING_DEP() << endl;
 
-    out << w->BACKGROUND_DELAY() << " " << w->BACKGROUND_DELAY2() << endl;
-    out << w->FISS_PILEUP_TIME() << " " << w->FISS_PILEUP_TIME2() << endl;
+    out << w->BACKGROUND_DELAY() << endl;
+    out << w->FISS_PILEUP_TIME() << endl;
 
     if(w->CovEM_in())
     {
@@ -325,7 +327,7 @@ void readFiss::Print(ostream &out)
         out << w->BN() << " " << w->BP() << endl;
     }
 
-    if(w->mode() == 2)
+    if(w->mode() == BEAM_MODE)
     {
         out << w->BEAM_ERG_MIN() << " " << w->BEAM_ERG_MAX() << " ";
         out << w->BEAM_ERG_BINNUM() << endl;
@@ -340,20 +342,20 @@ void readFiss::LoadInput(istream &in)
     double dbl;
 
     // range check boxes
-    in >> integer;
-    w->THRESHOLD_Check(integer);
-    in >> integer;
-    w->CLIPPING_Check(integer);
-    in >> integer;
-    w->MAX_TIME_N_Check(integer);
-    in >> integer;
-    w->THRESHOLD_DEP_Check(integer);
-    in >> integer;
-    w->CLIPPING_DEP_Check(integer);
-    in >> integer;
-    w->BACKGROUND_DELAY_Check(integer);
-    in >> integer;
-    w->FISS_PILEUP_TIME_Check(integer);
+    in >> dbl;
+    w->THRESHOLD(dbl);
+    in >> dbl;
+    w->CLIPPING(dbl);
+    in >> dbl;
+    w->MAX_TIME_N(dbl);
+    in >> dbl;
+    w->THRESHOLD_DEP(dbl);
+    in >> dbl;
+    w->CLIPPING_DEP(dbl);
+    in >> dbl;
+    w->BACKGROUND_DELAY(dbl);
+    in >> dbl;
+    w->FISS_PILEUP_TIME(dbl);
 
     // modes
     in >> integer;
@@ -372,36 +374,39 @@ void readFiss::LoadInput(istream &in)
     w->nameExp(word);
     in >> integer;
     w->numExpFiles(integer);
-    if(w->mode() == 1)
+
+    if(w->mode() == SIM_MODE)
     {
         in >> word;
         w->nameSim(word);
         in >> integer;
         w->numSimFiles(integer);
     }
-    else if(mode == 2)
+
+    else if(w->mode() == BEAM_MODE)
     {
         in >> word;
         w->nameBeam(word);
     }
+
     in >> word;
     w->nameCoords(word);
 
     // detectors
     in >> integer;
     w->NUM_DETECTORS(integer);
-    in >> dbl;
-    w->THRESHOLD(dbl);
-    in >> dbl;
-    w->THRESHOLD2(dbl);
-    in >> dbl;
-    w->CLIPPING(dbl);
-    in >> dbl;
-    w->CLIPPING2(dbl);
-    in >> dbl;
-    w->MAX_TIME_N(dbl);
-    in >> dbl;
-    w->MAX_TIME_N2(dbl);
+    // in >> dbl;
+    // w->THRESHOLD(dbl);
+    //in >> dbl;
+    //w->THRESHOLD2(dbl);
+    // in >> dbl;
+    // w->CLIPPING(dbl);
+    //in >> dbl;
+    //w->CLIPPING2(dbl);
+    // in >> dbl;
+    // w->MAX_TIME_N(dbl);
+    //in >> dbl;
+    //w->MAX_TIME_N2(dbl);
 
     // triggers
     in >> integer;
@@ -414,22 +419,22 @@ void readFiss::LoadInput(istream &in)
     w->TRIGGERS(loadTRIGGERS);
     in >> dbl;
     w->THRESHOLD_DEP(dbl);
-    in >> dbl;
-    w->THRESHOLD_DEP2(dbl);
+    //in >> dbl;
+    //w->THRESHOLD_DEP2(dbl);
     in >> dbl;
     w->CLIPPING_DEP(dbl);
-    in >> dbl;
-    w->CLIPPING_DEP2(dbl);
+    // in >> dbl;
+    // w->CLIPPING_DEP2(dbl);
 
     // other settings for all modes
     in >> dbl;
     w->BACKGROUND_DELAY(dbl);
-    in >> dbl;
-    w->BACKGROUND_DELAY2(dbl);
+    // in >> dbl;
+    // w->BACKGROUND_DELAY2(dbl);
     in >> dbl;
     w->FISS_PILEUP_TIME(dbl);
-    in >> dbl;
-    w->FISS_PILEUP_TIME2(dbl);
+    // in >> dbl;
+    // w->FISS_PILEUP_TIME2(dbl);
 
     // CovEM settings
     if(CovEM_in)
@@ -449,7 +454,7 @@ void readFiss::LoadInput(istream &in)
     }
 
     // beam settings
-    if(mode == 2)
+    if(mode == BEAM_MODE)
     {
         in >> dbl;
         w->BEAM_ERG_MIN(dbl);

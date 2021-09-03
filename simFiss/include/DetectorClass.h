@@ -16,6 +16,10 @@ using namespace std;
 class DetectorClass
 {
 public:
+
+    DetectorClass();
+    ~DetectorClass();
+
     TGraph* lightOutput;
     TGraph* kinLight;
 
@@ -28,6 +32,11 @@ public:
 
     int channel;
     int cell;
+
+    TF1* meanNeutPSD;
+    TF1* meanPhotPSD;
+    TF1* sigNeutPSD;
+    TF1* sigPhotPSD;
 };
 
 #endif

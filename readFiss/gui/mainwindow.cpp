@@ -78,7 +78,7 @@ void MainWindow::on_Load_clicked()
       ui->centralwidget->setDisabled(false);
       return;
     }
-
+    cout << "loading from: " << endl;
     f->Load(this);
 
     ui->centralwidget->setDisabled(false);

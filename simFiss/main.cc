@@ -45,6 +45,12 @@ int main(int argc, char** argv)
   }*/
 
   sfame* simFame = new sfame();
+
+  cout << "finished constructing" << endl;
+
+  simFame->readFromCol();
+  simFame->LoopColl();
+
   // simFame->readFromCol();
   // simFame->readFromSimFile(simFile, firstFile, numFiles);
   //
