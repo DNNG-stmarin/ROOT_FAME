@@ -34,17 +34,30 @@ int main(int argc, char** argv)
   MainWindow w;
   cout << "Main Window constructed...\n" << endl;
 
-  w.show();
-  cout << "Main Window shown...\n" << endl;
+  if(argc == 2)
+  {
+    ifstream inputfile(argv[1]);
+    cout << "creating streamer" << endl;
+    w.f->SetInfo(&w);
+
+    w.f->LoadInput(inputfile);
+    cout << "loading input" << endl;
+    inputfile.close();
+
+    cout << "running fame" << endl;
+    w.f->SetInfo(&w);
+    w.f->Run();
+
+    cout << "done" << endl;
+  }
+  else
+  {
+    w.show();
+    cout << "Main Window shown...\n" << endl;
+  }
 
   a.exec();
-  cout << "\nDone.\n" << endl;
 
   return 0;
-  /*
-  readFiss* f = new readFiss(argc, argv);
-  // TBrowser* browser = new TBrowser();
 
-  delete f;
-  return 0;*/
 }

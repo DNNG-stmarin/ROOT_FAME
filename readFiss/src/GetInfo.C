@@ -340,6 +340,9 @@ void readFiss::LoadInput(istream &in)
     string word;
     int integer;
     double dbl;
+    cout << "Loading Input" << endl;
+
+    // cout << w << endl;
 
     // range check boxes
     in >> dbl;
