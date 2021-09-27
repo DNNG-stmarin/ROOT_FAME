@@ -60,6 +60,8 @@ public :
    int              numExpFiles;
    int              numSimFiles;
 
+   // neural network 
+
    Int_t            fCurrent; //!current Tree number in a TChain
 
    TFile*           writeFile;

@@ -30,6 +30,7 @@ void readFiss::LoopExp()
    Double_t currTime;
    Long64_t nbytes = 0, nb = 0;
 
+   // main loop
    for (Long64_t jentry=0; jentry<expEntries;jentry++)
    {
       // updates READ_FAME progress bar (negligible impact on runtime)
@@ -89,6 +90,9 @@ void readFiss::LoopExp()
         expTree->GetEntry(jentry);
       }
 
+      // cut section (fissions as a whole, multiplicity, time)
+
+
       // fissions passed all the tests, delete
       numFissIter++;
       // cout << numFissIter << endl;
@@ -106,7 +110,7 @@ void readFiss::LoopExp()
       int n1 = -1, n2 = -1;
       for (int i = 0; i < neutronMult; i++)
       {
-        if ((neutronLightOut[i] > THRESHOLD) && (neutronLightOut[i] < CLIPPING) && (neutronDetTimes[i] < MAX_TIME_N) )
+        if ((neutronLightOut[i] > THRESHOLD) && (neutronLightOut[i] < CLIPPING) && (neutronDetTimes[i] < MAX_TIME_N)) // add ANN cut here
         {
             nMult++;
             neutronLightOutputExp->Fill(neutronLightOut[i]);
