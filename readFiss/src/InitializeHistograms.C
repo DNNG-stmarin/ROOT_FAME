@@ -124,6 +124,10 @@ void readFiss::InitializeHistograms()
 // angular coorrelations
   neutronDoublesMat = new TH2D("neutronDoublesExp", "Neutron Doubles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
   neutronSinglesMat = new TH2D("neutronSinglesMatExp", "Neutron Singles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
+  //**********
+  photonDoublesMat = new TH2D("photonDoublesExp", "Photon Doubles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
+  neutronPhotonDoublesMat = new TH2D("neutronPhotonDoublesExp", "Neutron-Photon Doubles; Detector1; Detector2; counts", numDets, 0, numDets, numDets, 0, numDets);
+  //*********
 
 
 
