@@ -421,21 +421,21 @@ void readFiss::LoadInput(istream &in)
     }
     w->TRIGGERS(loadTRIGGERS);
     in >> dbl;
-    w->THRESHOLD_DEP(dbl);
-    //in >> dbl;
-    //w->THRESHOLD_DEP2(dbl);
-    in >> dbl;
-    w->CLIPPING_DEP(dbl);
+    // w->THRESHOLD_DEP(dbl);
+    // //in >> dbl;
+    // //w->THRESHOLD_DEP2(dbl);
     // in >> dbl;
-    // w->CLIPPING_DEP2(dbl);
-
-    // other settings for all modes
-    in >> dbl;
-    w->BACKGROUND_DELAY(dbl);
+    // w->CLIPPING_DEP(dbl);
+    // // in >> dbl;
+    // // w->CLIPPING_DEP2(dbl);
+    //
+    // // other settings for all modes
     // in >> dbl;
-    // w->BACKGROUND_DELAY2(dbl);
-    in >> dbl;
-    w->FISS_PILEUP_TIME(dbl);
+    // w->BACKGROUND_DELAY(dbl);
+    // // in >> dbl;
+    // // w->BACKGROUND_DELAY2(dbl);
+    // in >> dbl;
+    // w->FISS_PILEUP_TIME(dbl);
     // in >> dbl;
     // w->FISS_PILEUP_TIME2(dbl);
 

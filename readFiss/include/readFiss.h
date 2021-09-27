@@ -248,6 +248,15 @@ public :
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH2I* neutronScaledDoubles;
+
+   TH2D* photonDoublesMat;
+   TH2D* photonSinglesMat;
+   TH2I* photonScaledDoubles;
+
+   TH2D* neutronPhotonDoublesMat;
+   TH2D* neutronPhotonSinglesMat;
+   TH2I* neutronPhotonScaledDoubles;
+
    TGraphErrors* neutronAngleCorr;
    TGraphErrors* neutronAngleCorrAvg;
    double** angles;
