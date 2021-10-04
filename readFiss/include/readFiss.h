@@ -47,6 +47,12 @@ public :
    TChain*           expTree;   //!pointer to the analyzed TTree or TChain
    TChain*           simTree;
    // TTree*           beamTree;
+
+   //neural network
+   myANN*           crossTalkANN;
+   Double_t         thresholdANN = 0;
+   bool             ANN_mode = 0;
+
    std::string      nameExp; // String name of where to find experiment
    std::string      nameSim;
    std::string      nameBeam;
@@ -59,8 +65,6 @@ public :
 
    int              numExpFiles;
    int              numSimFiles;
-
-   // neural network 
 
    Int_t            fCurrent; //!current Tree number in a TChain
 

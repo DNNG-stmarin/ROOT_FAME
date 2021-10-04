@@ -14,6 +14,9 @@ readFiss::readFiss()
   beamFile = nullptr;
   TRIGGERS = nullptr;
   writeFile = nullptr;
+
+  //ANN
+  if (ANN_mode) crossTalkANN = new myANN();
 }
 
 void readFiss::SetInfo(MainWindow* main_in)
