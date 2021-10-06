@@ -152,9 +152,11 @@ private slots:
 
     void on_NUM_RUNS_valueChanged(int arg1);
 
+
 private:
     Ui::MainWindow *ui;
-    readFiss* f;
     std::string nameInput; // inputFile name, for saving AND loading
+public:
+    readFiss* f;
 };
 #endif // MAINWINDOW_H

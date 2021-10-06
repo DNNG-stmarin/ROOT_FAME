@@ -14,6 +14,9 @@ readFiss::readFiss()
   beamFile = nullptr;
   TRIGGERS = nullptr;
   writeFile = nullptr;
+
+  //ANN
+  if (ANN_mode) crossTalkANN = new myANN();
 }
 
 void readFiss::SetInfo(MainWindow* main_in)
@@ -340,6 +343,9 @@ void readFiss::LoadInput(istream &in)
     string word;
     int integer;
     double dbl;
+    cout << "Loading Input" << endl;
+
+    // cout << w << endl;
 
     // range check boxes
     in >> dbl;
@@ -418,21 +424,21 @@ void readFiss::LoadInput(istream &in)
     }
     w->TRIGGERS(loadTRIGGERS);
     in >> dbl;
-    w->THRESHOLD_DEP(dbl);
-    //in >> dbl;
-    //w->THRESHOLD_DEP2(dbl);
-    in >> dbl;
-    w->CLIPPING_DEP(dbl);
+    // w->THRESHOLD_DEP(dbl);
+    // //in >> dbl;
+    // //w->THRESHOLD_DEP2(dbl);
     // in >> dbl;
-    // w->CLIPPING_DEP2(dbl);
-
-    // other settings for all modes
-    in >> dbl;
-    w->BACKGROUND_DELAY(dbl);
+    // w->CLIPPING_DEP(dbl);
+    // // in >> dbl;
+    // // w->CLIPPING_DEP2(dbl);
+    //
+    // // other settings for all modes
     // in >> dbl;
-    // w->BACKGROUND_DELAY2(dbl);
-    in >> dbl;
-    w->FISS_PILEUP_TIME(dbl);
+    // w->BACKGROUND_DELAY(dbl);
+    // // in >> dbl;
+    // // w->BACKGROUND_DELAY2(dbl);
+    // in >> dbl;
+    // w->FISS_PILEUP_TIME(dbl);
     // in >> dbl;
     // w->FISS_PILEUP_TIME2(dbl);
 

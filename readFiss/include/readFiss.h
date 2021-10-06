@@ -47,6 +47,12 @@ public :
    TChain*           expTree;   //!pointer to the analyzed TTree or TChain
    TChain*           simTree;
    // TTree*           beamTree;
+
+   //neural network
+   myANN*           crossTalkANN;
+   Double_t         thresholdANN = 0.5;
+   bool             ANN_mode = 0;
+
    std::string      nameExp; // String name of where to find experiment
    std::string      nameSim;
    std::string      nameBeam;
@@ -248,6 +254,15 @@ public :
    TH2D* neutronDoublesMat;
    TH2D* neutronSinglesMat;
    TH2I* neutronScaledDoubles;
+
+   TH2D* photonDoublesMat;
+   TH2D* photonSinglesMat;
+   TH2I* photonScaledDoubles;
+
+   TH2D* neutronPhotonDoublesMat;
+   TH2D* neutronPhotonSinglesMat;
+   TH2I* neutronPhotonScaledDoubles;
+
    TGraphErrors* neutronAngleCorr;
    TGraphErrors* neutronAngleCorrAvg;
    double** angles;
