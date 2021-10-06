@@ -10,10 +10,10 @@ sfame::sfame()
     NameOutput = "SimFis.root";
 
     // read from sim
-    nameColFile = "FS3_openV5_dist_270.d";
+    nameColFile = "FS3_openV5_dist_27_source-2num";
     simFile = "sim27";
     firstFile = 0;
-    numFiles = 1;
+    numFiles = 10;
 
     //
     NUM_DETECTORS = 40;
