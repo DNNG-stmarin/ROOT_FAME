@@ -13,7 +13,7 @@ sfame::sfame()
     nameColFile = "sampleData/FS3_openV5_dist_270.d";
     simFile = "sim27";
     firstFile = 0;
-    numFiles = 1;
+    numFiles = 10;
 
     //
     NUM_DETECTORS = 40;

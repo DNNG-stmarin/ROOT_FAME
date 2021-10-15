@@ -110,7 +110,13 @@ void readFiss::LoopExp()
       int n1 = -1, n2 = -1;
       for (int i = 0; i < neutronMult; i++)
       {
-        if ((neutronLightOut[i] > THRESHOLD) && (neutronLightOut[i] < CLIPPING) && (neutronDetTimes[i] < MAX_TIME_N)) // add ANN cut here
+        if(ANN_mode) {
+          Double_t ANNFlag = crossTalkANN->Value(0, neutronDetTimes[i], neutronLightOut[i]);
+          //cout << ANNFlag << "\n";
+          if(ANNFlag < thresholdANN) continue;
+        }
+
+        if ((neutronLightOut[i] > THRESHOLD) && (neutronLightOut[i] < CLIPPING) && (neutronDetTimes[i] < MAX_TIME_N))
         {
             nMult++;
             neutronLightOutputExp->Fill(neutronLightOut[i]);
