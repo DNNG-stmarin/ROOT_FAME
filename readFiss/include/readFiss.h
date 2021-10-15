@@ -60,7 +60,7 @@ public :
    int              numExpFiles;
    int              numSimFiles;
 
-   // neural network 
+   // neural network
 
    Int_t            fCurrent; //!current Tree number in a TChain
 
@@ -85,6 +85,9 @@ public :
      TDirectory*      cd_multErg;
      TDirectory*      cd_stack;
      TDirectory*      cd_LO;
+     // **********
+     TDirectory*      cd_gammaSpecBeam;
+     // **********
    TDirectory*      cd_trigger;
 
    int NUM_TRIGGERS; // number of trigger channels
@@ -117,7 +120,7 @@ public :
   double FISS_PILEUP_TIME;
 
   double BEAM_ERG_MIN, BEAM_ERG_MAX; // range of the beam energies to be employed
-  double BEAM_ERG_BINNUM = 10;            // number of energy bins in range (default so no breaking)
+  int BEAM_ERG_BINNUM = 10;          // number of energy bins in range (default so no breaking)
 
   double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
   double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
@@ -259,8 +262,39 @@ public :
    TH2D* neutronPhotonSinglesMat;
    TH2I* neutronPhotonScaledDoubles;
 
+   TH2D* neutronBackDoublesMat;
+   TH2D* neutronBackSinglesMat;
+   TH2I* neutronBackScaledDoubles;
+
+   TH2D* photonBackDoublesMat;
+   TH2D* photonBackSinglesMat;
+   TH2I* photonBackScaledDoubles;
+
+   TH2D* neutronPhotonBackDoublesMat;
+   TH2D* neutronPhotonBackSinglesMat;
+   TH2I* neutronPhotonBackScaledDoubles;
+
    TGraphErrors* neutronAngleCorr;
    TGraphErrors* neutronAngleCorrAvg;
+
+   TGraphErrors* photonAngleCorr;
+   TGraphErrors* photonAngleCorrAvg;
+
+   TGraphErrors* neutronPhotonAngleCorr;
+   TGraphErrors* neutronPhotonAngleCorrAvg;
+
+   TGraphErrors* neutronBackAngleCorr;
+   TGraphErrors* neutronBackAngleCorrAvg;
+
+   TGraphErrors* photonBackAngleCorr;
+   TGraphErrors* photonBackAngleCorrAvg;
+
+   TGraphErrors* neutronPhotonBackAngleCorr;
+   TGraphErrors* neutronPhotonBackAngleCorrAvg;
+
+   TGraphErrors** g_gammaBeamSlope;
+   TGraphErrors** g_gammaBeamInt;
+
    double** angles;
 
    // individual correlated hists
@@ -275,12 +309,15 @@ public :
    //Projection histograms
    TH1D*** pj_pLightOutErg;
    TH1D*** pj_nLightOutErg;
+   TH1D*** pj_scaledGammaLOErg;
+   TH1D*** pj_meanGammaLOErg;
 
    // beam histograms
    TH1D** h_fisDep;
    TH1D** h_fisSubtract;
    TH2D** h2_fisDepErg;
    TH1D** h_beamTime;
+   TH1D** h_beamErg;
 
    TH2D** h2_neutronMultDep;
    TH2D** h2_gammaMultDep;
@@ -293,6 +330,7 @@ public :
    TH2D** h2_backGammaMultErg;
 
    TH2D** h2_photonLightOutErg;
+   TH2D** h2_gammaLightOutErg;
    TH2D** h2_nLightOutErg;
    TH2D** h2_nToFErg;
 
@@ -388,7 +426,8 @@ public :
    TF1** f_fisProducts;// = new TF1("f_fisProducts", "gaus", FIS_MIN, FIS_MAX);  // Define gaus fit function for after binning errors in low values of fisDep
    TF1** f_gauss;// = new TF1("f_gauss", "gaus");
    TF1** f_aveGmult; // = new TF1((TString)"f_aveGmult" + (TString)to_string(indexChannel), "pol1");
-   TF1** f_aveNmult; // = new TF1((TString)"f_aveNmult" + (TString)to_string(indexChannel), "pol1");
+   TF1** f_aveNmult; // = new TF1((TString)"f_aveNmult" + (TString)to_string(indexChannel), "pol1");meanGammaLOErgFit[eG]
+   TF1** f_meanGammaLOErg;
 
 
 
@@ -634,6 +673,7 @@ public :
    virtual void     PlotMultErg();
    virtual void     PlotStack();
    virtual void     PlotLO();
+   virtual void     PlotBeamLO();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();

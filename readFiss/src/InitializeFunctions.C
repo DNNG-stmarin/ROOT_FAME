@@ -9,6 +9,7 @@ void readFiss::InitializeFunctions()
   f_gauss = new TF1* [NUM_TRIGGERS];
   f_aveGmult = new TF1* [NUM_TRIGGERS];
   f_aveNmult = new TF1* [NUM_TRIGGERS];
+  f_meanGammaLOErg = new TF1* [NUM_TRIGGERS];
 
   for(int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
   {
@@ -18,6 +19,7 @@ void readFiss::InitializeFunctions()
     f_gauss[indexChannel]  = new TF1((TString)"f_gauss" + (TString)to_string(indexChannel), "gaus");
     f_aveNmult[indexChannel] = new TF1((TString)"f_aveNmult" + (TString)to_string(indexChannel), "pol1");
     f_aveGmult[indexChannel] = new TF1((TString)"f_aveGmult" + (TString)to_string(indexChannel), "pol1");
+    f_meanGammaLOErg[indexChannel] = new TF1((TString)"f_meanGammaLOErg" + (TString)to_string(indexChannel), "pol1");
   }
 
 }

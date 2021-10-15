@@ -155,13 +155,13 @@ void readFiss::Run()
   else if(mode == 2)
   {
     cd_beam = writeFile->mkdir("Beam");
-    //******
     cd_alphaSub = cd_beam->mkdir("AlphaSubtraction");
     cd_multRatio = cd_beam->mkdir("MultiplicityRatio");
     cd_multErg = cd_beam->mkdir("MultipicityErg");
     cd_stack = cd_beam->mkdir("FissionSpectrumDueToBeamErg");
     cd_LO = cd_beam->mkdir("LightOutput");
-    //******
+    cd_gammaSpecBeam = cd_beam->mkdir("gammaSpecBeam");
+
     cout << "Reading beam information from " << nameBeam << endl;
   }
 
@@ -222,6 +222,7 @@ void readFiss::Run()
     PlotMultErg();
     PlotStack();
     PlotLO();
+    PlotBeamLO();
   }
 
   writeFile->Close();

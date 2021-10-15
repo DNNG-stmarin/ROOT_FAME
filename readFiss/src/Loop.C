@@ -184,6 +184,7 @@ void readFiss::LoopExp()
       }
 
       // loop through gamma rays
+      int g1 = -1, g2 = -1;
       for (int i = 0; i < gammaMult; i++)
       {
         if (photonLightOut[i] > THRESHOLD && photonLightOut[i] < CLIPPING )
@@ -209,23 +210,62 @@ void readFiss::LoopExp()
 
           IndivPhotonLightOutPSDExp[indexDet]->Fill(photonLightOut[i], photonPSD[i]);
 
+          if(gMult == 1)
+          {
+            g1 = i;
+          }
+          else if(gMult == 2)
+          {
+            g2 = i;
+          }
+
           if (validBeam)
           {
             h2_photonLightOutErg[indexChannel]->Fill(beamEnergy, photonLightOut[i]);
+            h2_gammaLightOutErg[indexChannel]->Fill(beamEnergy, photonLightOut[i]);
           }
         }
       }
       photonMultExp->Fill(gMult);
       h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
+
+      if (validBeam){
+        h_beamErg[indexChannel]->Fill(beamEnergy);
+      }
+
+      if(gMult == 2)
+      {
+        if(photonDet[g1] > photonDet[g2])
+        {
+          photonDoublesMat->Fill((int)photonDet[g1], (int)photonDet[g2]);
+        }
+        else
+        {
+          photonDoublesMat->Fill((int)photonDet[g2], (int)photonDet[g1]);
+        }
+      }
+
       if(validBeam)
       {
         h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
       }
 
+      if(gMult == 1 && nMult == 1)
+      {
+        if(photonDet[g1] > neutronDet[n1])
+        {
+          neutronPhotonDoublesMat->Fill((int)photonDet[g1], (int)neutronDet[n1]);
+        }
+        else
+        {
+          neutronPhotonDoublesMat->Fill((int)neutronDet[n1], (int)photonDet[g1]);
+        }
+      }
 
       neutronGammaMultExp->Fill(nMult, gMult); // correlated plot
 
       // loop through back neutrons
+      int nB1 = -1, nB2 = -1;
       for (int i = 0; i < neutronBackMult; i++)
       {
         if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronLightOut[i] < CLIPPING ) && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N))
@@ -249,6 +289,15 @@ void readFiss::LoopExp()
             IndivNeutronEnergyBack[indexDet]->Fill(backNeutronToFErg[i]);
             IndivNeutronPSDBack[indexDet]->Fill(backNeutronPSD[i]);
 
+            if(nMultBack == 1)
+            {
+              nB1 = i;
+            }
+            else if(nMultBack == 2)
+            {
+              nB2 = i;
+            }
+
             if(validBeam)
             {
               h2_nBackToFErg[indexChannel]->Fill(beamEnergy, backNeutronToFErg[i]);
@@ -259,12 +308,26 @@ void readFiss::LoopExp()
       }
       neutronMultBack->Fill(nMultBack);
       h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
+
+      if(nMultBack == 2)
+      {
+        if(backNeutronDet[n1] > backNeutronDet[nB2])
+        {
+          neutronBackDoublesMat->Fill((int)backNeutronDet[nB1], (int)backNeutronDet[nB2]);
+        }
+        else
+        {
+          neutronBackDoublesMat->Fill((int)backNeutronDet[nB2], (int)backNeutronDet[nB1]);
+        }
+      }
+
       if(validBeam)
       {
         h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
       }
 
       // loop through back photons
+      int gB1 = -1, gB2 = -1;
       for (int i = 0; i < gammaBackMult; i++)
       {
         if (backPhotonLightOut[i] > THRESHOLD && backPhotonLightOut[i] < CLIPPING )
@@ -286,6 +349,15 @@ void readFiss::LoopExp()
           IndivPhotonTofBack[indexDet]->Fill(backPhotonDetTimes[i] + BACKGROUND_DELAY);
           IndivPhotonPSDBack[indexDet]->Fill(backPhotonPSD[i]);
 
+          if(gMultBack == 1)
+          {
+            gB1 = i;
+          }
+          else if(gMultBack == 2)
+          {
+            gB2 = i;
+          }
+
           if (validBeam)
           {
             h2_photonBackLightOutErg[indexChannel]->Fill(beamEnergy, backPhotonLightOut[i]);
@@ -295,12 +367,39 @@ void readFiss::LoopExp()
       }
       photonMultBack->Fill(gMultBack);
       h2_backGammaMultDep[indexChannel]->Fill(fisDep, gMultBack);
+
+      // photon doubles
+      if(gMultBack == 2)
+      {
+        if(backPhotonDet[gB1] > backPhotonDet[gB2])
+        {
+          photonBackDoublesMat->Fill((int)backPhotonDet[gB1], (int)backPhotonDet[gB2]);
+        }
+        else
+        {
+          photonBackDoublesMat->Fill((int)backPhotonDet[gB2], (int)backPhotonDet[gB1]);
+        }
+      }
+
       if(validBeam)
       {
         h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
       }
 
       neutronGammaMultBack->Fill(nMultBack, gMultBack);
+
+      // n-gamma correlation
+      if(gMultBack == 1 && nMultBack == 1)
+      {
+        if(backPhotonDet[gB1] > backNeutronDet[nB1])
+        {
+          neutronPhotonBackDoublesMat->Fill((int)backPhotonDet[gB1], (int)backNeutronDet[nB1]);
+        }
+        else
+        {
+          neutronPhotonBackDoublesMat->Fill((int)backNeutronDet[nB1], (int)backPhotonDet[gB1]);
+        }
+      }
    }
 
    expEntries = numFissIter;

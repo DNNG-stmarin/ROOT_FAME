@@ -2,6 +2,7 @@
 #include <TFitResultPtr.h>
 #include <Constants.h>
 #include <THStack.h>
+#include <Parameters.h>
 
 using namespace std;
 
@@ -180,7 +181,7 @@ void readFiss::BeamErgAnalysis()
     double pLOScale, nLOScale;
     TString ergRangeLow, ergRangeHigh;
 
-    for (int i = 0; i < BEAM_ERG_BINNUM/4; i++) 
+    for (int i = 0; i < BEAM_ERG_BINNUM/4; i++)
     {
       ergRangeLow = (TString)to_string(4*i);
       ergRangeHigh = (TString)to_string(4*i + 3);
@@ -246,6 +247,18 @@ void readFiss::BeamErgAnalysis()
         stack[r]->Add(h_ergSubtract);       //takes in all h_ergSubtract's to evaluate subtraction as function of incident neutron energy
       }
 
+      // Energy diffentiate gamma mult vs incident energy
+        // Take projY and scale by # of fissions
+        pj_scaledGammaLOErg[r][i] = h2_gammaLightOutErg[r]->ProjectionY("pj_scaledGammaLOErg_"+ (TString)to_string(r) + "_" + (TString)to_string(i+1),i+1,i+1);  // Start at bin 1 and i starts at 0
+        pj_scaledGammaLOErg[r][i]->Scale(1./h_beamErg[r]->GetBinContent(i+1));
+        for (int eG = 0; eG < numLObins; eG++){
+          h2_gammaLightOutErg[r]->SetBinContent(i+1,eG+1,pj_scaledGammaLOErg[r][i]->GetBinContent(eG+1));
+        }
+    }
+
+    for (int eG = 0; eG < numLObins; eG++){
+      // take projX --> creating mean graph vs incident energy
+        pj_meanGammaLOErg[r][eG] = h2_gammaLightOutErg[r]->ProjectionX("pj_meanGammaLOErg_"+ (TString)to_string(r) + "_" + (TString)to_string(eG+1),eG+1,eG+1);  // Start at bin 1 and i starts at 0
     }
 
     // Set graph names
@@ -273,6 +286,8 @@ void readFiss::FitMult(){
 
   TFitResultPtr nMultFit;
   TFitResultPtr gMultFit;
+  TFitResultPtr meanGammaLOErgFit;
+
   Int_t n = NUM_TRIGGERS;
   Double_t TriggerAxis[MAX_TRIGGERS];
 
@@ -292,6 +307,29 @@ void readFiss::FitMult(){
   Double_t nRatioSlopeIntError[MAX_TRIGGERS];
   Double_t gRatioSlopeInt[MAX_TRIGGERS];
   Double_t gRatioSlopeIntError[MAX_TRIGGERS];
+
+  Double_t** meanGammaLOErgInt;
+  Double_t** meanGammaLOErgSlope;
+  Double_t** meanGammaLOErgIntError;
+  Double_t** meanGammaLOErgSlopeError;
+  Double_t** binCentersLOErg;
+  meanGammaLOErgInt = new Double_t* [MAX_TRIGGERS];
+  meanGammaLOErgSlope = new Double_t* [MAX_TRIGGERS];
+  meanGammaLOErgIntError = new Double_t* [MAX_TRIGGERS];
+  meanGammaLOErgSlopeError = new Double_t* [MAX_TRIGGERS];
+  binCentersLOErg = new Double_t* [MAX_TRIGGERS];
+
+  for (int r = 0; r < NUM_TRIGGERS; r++)
+  {
+    meanGammaLOErgInt[r] = new Double_t[numLObins];
+    meanGammaLOErgSlope[r] = new Double_t[numLObins];
+    meanGammaLOErgIntError[r] = new Double_t[numLObins];
+    meanGammaLOErgSlopeError[r] = new Double_t[numLObins];
+    binCentersLOErg[r] = new Double_t[numLObins];
+  }
+
+  g_gammaBeamInt = new TGraphErrors* [NUM_TRIGGERS];
+  g_gammaBeamSlope = new TGraphErrors* [NUM_TRIGGERS];
 
 
   for (int r = 0; r < NUM_TRIGGERS; r++){
@@ -325,6 +363,26 @@ void readFiss::FitMult(){
     // cout << "Ratio of Error to slope value: " << gammaSlopeError/gammaSlope << endl;
     // cout << "Gamma Intercept: " << f_aveGmult[r]->GetParameter(0) << " Gamma Slope: " << gammaSlope << " +/- " << gammaSlopeError << endl;
     // cout << "Neutron Intercept: " << f_aveNmult[r]->GetParameter(0) << " Neutron Slope: " << neutronSlope << " +/- " << neutronSlopeError << endl;
+
+    // Fit mean gamma spec vs beam erg
+    for (int eG = 0; eG < numLObins; eG++){
+      meanGammaLOErgFit = pj_meanGammaLOErg[r][eG]->Fit("f_meanGammaLOErg" + s_TRIG_NUM, "SQ");
+      // Get slope and int
+      meanGammaLOErgInt[r][eG] = f_meanGammaLOErg[r]->GetParameter(0);
+      meanGammaLOErgSlope[r][eG] = f_meanGammaLOErg[r]->GetParameter(1);
+      // Get errors
+      meanGammaLOErgIntError[r][eG] = f_meanGammaLOErg[r]->GetParError(0);
+      meanGammaLOErgSlopeError[r][eG] = f_meanGammaLOErg[r]->GetParError(1);
+      // Get bin centers for graph
+      binCentersLOErg[r][eG] = h2_gammaLightOutErg[r]->ProfileY()->GetBinCenter(eG+1);
+
+    }
+    // Fill Graphs
+    g_gammaBeamSlope[r] = new TGraphErrors(numLObins, binCentersLOErg[r], meanGammaLOErgSlope[r], 0, meanGammaLOErgSlopeError[r]);
+    g_gammaBeamInt[r] = new TGraphErrors(numLObins, binCentersLOErg[r], meanGammaLOErgIntError[r], 0, meanGammaLOErgIntError[r]);
+
+    g_gammaBeamSlope[r]->SetName("g_nRatioSlopeInt" + s_TRIG_NUM);
+    g_gammaBeamInt[r]->SetName("g_gRatioSlopeInt" + s_TRIG_NUM);
   }
   g_gnRatio = new TGraphErrors(n, TriggerAxis, ratioSlope, 0, ratioSlopeError);
   g_nRatioSlopeInt = new TGraphErrors(n, TriggerAxis, nRatioSlopeInt, 0, nRatioSlopeIntError);

@@ -569,6 +569,97 @@ void readFiss::PlotN_AngleCorr()
   c_N_AngleCorr->Write();
   //c_N_AngleCorr->SaveAs("neutronAngleCorrExp.eps");
 
+  cout << "Plotting photon angular correlations." << endl;
+
+  // make photon canvas
+  TCanvas* c_P_AngleCorr = new TCanvas("cP_AngleCorr", "Cos(Theta) in Photon Doubles", 800, 400);
+  c_P_AngleCorr->cd();
+
+  photonAngleCorr->SetLineColor(kRed);
+  photonAngleCorr->Draw("A*");
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  photonAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  photonAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  photonAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  photonAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+
+  c_P_AngleCorr->Write();
+
+  cout << "Plotting neutron-photon angular correlations." << endl;
+
+  // make neutorn-photon canvas
+  TCanvas* c_NP_AngleCorr = new TCanvas("cNP_AngleCorr", "Cos(Theta) in Neutron-Photon Doubles", 800, 400);
+  c_NP_AngleCorr->cd();
+
+  neutronPhotonAngleCorr->SetLineColor(kRed);
+  neutronPhotonAngleCorr->Draw("A*");
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  neutronPhotonAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  neutronPhotonAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  neutronPhotonAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  neutronPhotonAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+
+  c_NP_AngleCorr->Write();
+
+  // Background
+  cout << "Plotting background neutron angular correlations." << endl;
+
+  // make canvas
+  TCanvas* c_NB_AngleCorr = new TCanvas("cNB_AngleCorr", "Cos(Theta) in Background Neutron Doubles", 800, 400);
+  c_NB_AngleCorr->cd();
+
+  neutronBackAngleCorr->SetLineColor(kRed);
+  neutronBackAngleCorr->Draw("A*");
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  neutronBackAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  neutronBackAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  neutronBackAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  neutronBackAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+
+  c_NB_AngleCorr->Write();
+
+  cout << "Plotting background photon angular correlations." << endl;
+
+  // make background photon canvas
+  TCanvas* c_PB_AngleCorr = new TCanvas("cPB_AngleCorr", "Cos(Theta) in Background Photon Doubles", 800, 400);
+  c_PB_AngleCorr->cd();
+
+  photonBackAngleCorr->SetLineColor(kRed);
+  photonBackAngleCorr->Draw("A*");
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  photonBackAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  photonBackAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  photonBackAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  photonBackAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+
+  c_PB_AngleCorr->Write();
+
+  cout << "Plotting background neutron-photon angular correlations." << endl;
+
+  // make background neutorn-photon canvas
+  TCanvas* c_NPB_AngleCorr = new TCanvas("cNPB_AngleCorr", "Cos(Theta) in Background Neutron-Photon Doubles", 800, 400);
+  c_NPB_AngleCorr->cd();
+
+  neutronPhotonBackAngleCorr->SetLineColor(kRed);
+  neutronPhotonBackAngleCorr->Draw("A*");
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  neutronPhotonBackAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  neutronPhotonBackAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  neutronPhotonBackAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  neutronPhotonBackAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+
+  c_NPB_AngleCorr->Write();
+
   TCanvas* C_N_AngleCorrAvg = new TCanvas("cN_AngleCorrAvg", "Average line of Cos(Theta) in Neutron Doubles", 800, 400);
   C_N_AngleCorrAvg->cd();
 
@@ -583,11 +674,112 @@ void readFiss::PlotN_AngleCorr()
   neutronAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
 
   C_N_AngleCorrAvg->Write();
+
+    // gamma-gamma
+  TCanvas* C_P_AngleCorrAvg = new TCanvas("cP_AngleCorrAvg", "Average line of Cos(Theta) in Photon Doubles", 800, 400);
+  C_P_AngleCorrAvg->cd();
+
+  photonAngleCorrAvg->SetLineColor(kBlue);
+  photonAngleCorrAvg->Draw();
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  photonAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  photonAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  photonAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  photonAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+
+  C_P_AngleCorrAvg->Write();
+
+    // n-gamma
+  TCanvas* C_NP_AngleCorrAvg = new TCanvas("cNP_AngleCorrAvg", "Average line of Cos(Theta) in Neutron-Photon Doubles", 800, 400);
+  C_NP_AngleCorrAvg->cd();
+
+  neutronPhotonAngleCorrAvg->SetLineColor(kBlue);
+  neutronPhotonAngleCorrAvg->Draw();
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  neutronPhotonAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  neutronPhotonAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  neutronPhotonAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  neutronPhotonAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+
+  C_NP_AngleCorrAvg->Write();
+
+    // n-n background
+  TCanvas* C_NB_AngleCorrAvg = new TCanvas("cNB_AngleCorrAvg", "Average line of Cos(Theta) in Background Neutron Doubles", 800, 400);
+  C_NB_AngleCorrAvg->cd();
+
+  neutronBackAngleCorrAvg->SetLineColor(kBlue);
+  neutronBackAngleCorrAvg->Draw();
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  neutronBackAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  neutronBackAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  neutronBackAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  neutronBackAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+
+  C_NB_AngleCorrAvg->Write();
+
+    // gamma-gamma background
+  TCanvas* C_PB_AngleCorrAvg = new TCanvas("cPB_AngleCorrAvg", "Average line of Cos(Theta) in Background Photon Doubles", 800, 400);
+  C_PB_AngleCorrAvg->cd();
+
+  photonBackAngleCorrAvg->SetLineColor(kBlue);
+  photonBackAngleCorrAvg->Draw();
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  photonBackAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  photonBackAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  photonBackAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  photonBackAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+
+  C_PB_AngleCorrAvg->Write();
+
+    // n-gamma background
+  TCanvas* C_NPB_AngleCorrAvg = new TCanvas("cNPB_AngleCorrAvg", "Average line of Cos(Theta) in Background Neutron-Photon Doubles", 800, 400);
+  C_NPB_AngleCorrAvg->cd();
+
+  neutronPhotonBackAngleCorrAvg->SetLineColor(kBlue);
+  neutronPhotonBackAngleCorrAvg->Draw();
+
+  // change size of axis objects - should be done on first histogram plotted
+  // in this function
+  neutronPhotonBackAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  neutronPhotonBackAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  neutronPhotonBackAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  neutronPhotonBackAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+
+  C_NPB_AngleCorrAvg->Write();
+
   //c_N_AngleCorrAvg->SaveAs("neutronAngleCorrExpAvg.eps");
 
   neutronSinglesMat->Write();
   neutronDoublesMat->Write();
   neutronScaledDoubles->Write();
+
+  photonSinglesMat->Write();
+  photonDoublesMat->Write();
+  photonScaledDoubles->Write();
+
+  neutronPhotonSinglesMat->Write();
+  neutronPhotonDoublesMat->Write();
+  neutronPhotonScaledDoubles->Write();
+
+  neutronBackSinglesMat->Write();
+  neutronBackDoublesMat->Write();
+  neutronBackScaledDoubles->Write();
+
+  photonBackSinglesMat->Write();
+  photonBackDoublesMat->Write();
+  photonBackScaledDoubles->Write();
+
+  neutronPhotonBackSinglesMat->Write();
+  neutronPhotonBackDoublesMat->Write();
+  neutronPhotonBackScaledDoubles->Write();
 }
 
 void readFiss::PlotIndiv()
