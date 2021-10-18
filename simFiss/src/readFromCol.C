@@ -13,12 +13,12 @@ void sfame::readFromCol()
   // initialize the strings that you need
   string line;
   double val; // this simply stores a value while you decide what to assign it to
+  long int numEvents = 0;
 
   // loop through the entire .d file and populate the tree
   // the first history will be 1
   for(int nJ = 0; nJ < numFiles; nJ++ )
   {
-
     cout << "Read from Col File is Running" << endl;
     cout << "Reading from " << nameColFile + to_string(nJ) + ".d" << endl;
     // TFile *outfile = TFile::Open("CollisionFile.root", "RECREATE");
@@ -52,6 +52,7 @@ void sfame::readFromCol()
           // fill the previous history
           //cout << f_history << " " << f_numLines << endl;
           collisionTree->Fill();
+          numEvents++;
 
           // reset numLines
           f_numLines = 0;
@@ -62,6 +63,7 @@ void sfame::readFromCol()
           {
               //cout << f_history << " " << f_numLines << endl;
               collisionTree->Fill();
+              numEvents++;
           }
           //f_history = historyNew;
 
@@ -99,13 +101,18 @@ void sfame::readFromCol()
     cout << "Finished looping through collision file" << endl;
 
     file.close();
-  }
 
+    cout << "Events so far: " << collisionTree->GetEntries() << endl;
+
+  }
+  
   // close out of everything
   outFile = collisionTree->GetCurrentFile();
   outFile->Write();
 
   outFile->Close();
+
+
   // cout << collisionTree << endl;
   // cout << collisionTree->LoadTree(100) << endl;
   // cout << f_history << " " << f_numLines << endl;

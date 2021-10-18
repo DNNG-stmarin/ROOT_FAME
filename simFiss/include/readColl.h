@@ -59,7 +59,7 @@ public :
    TBranch        *b_Code;   //!
    TBranch        *b_Generation;   //!
 
-   readColl(TTree *tree=0);
+   readColl(TCchain *tree=0);
    virtual ~readColl();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
@@ -109,7 +109,7 @@ Long64_t readColl::LoadTree(Long64_t entry)
    return centry;
 }
 
-void readColl::Init(TTree *tree)
+void readColl::Init(TChain *tree)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch

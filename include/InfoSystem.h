@@ -61,6 +61,8 @@ public:
   double MISC_MAX;
   int PARAM_FILES;
 
+  int SIM_FILE;
+
 
   int RANDOM_COINCIDENCE;
 
@@ -133,6 +135,8 @@ public:
     DOUBLE_DISC = 0;
     MISC_MAX = 0.005;
     PARAM_FILES = 0;
+
+    SIM_FILE = 0;
 
     RANDOM_COINCIDENCE = 0;
 
@@ -243,6 +247,10 @@ public:
       else if(tag == "<PARAM_FILES>:") {
         file >> value;
         PARAM_FILES = stoi(value);
+      }
+      else if(tag == "<SIM_FILE>:") {
+        file >> value;
+        SIM_FILE = stoi(value);
       }
       else if(tag == "<DETECTOR_PATH>:") {
         file >> value;

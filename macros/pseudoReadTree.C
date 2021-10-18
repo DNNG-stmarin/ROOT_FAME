@@ -4,24 +4,24 @@
 
   TString nameFile = "put the name of the .d file here"
   cout << "reading from " << nameFile << endl;
-	
+
   // variable used for defining lengths of histories
   const int MAX_LINES = 1000; // put a large number representing the maximum number of interactions a single history can generate (i.e. the number of lines all having the same history)
- 
+
 
   //attributes of each interaction
   int f_history; // stores the current history number
   int f_numLines; // this is a dynamic number (changes for every history) that stores the number of lines in the present history. If the history is not in the file, this number should be 0
-  
+
   // variables of the tree as such they are arrays since a single history might contain more than one interaction
   int f_type[MAX_LINES] = {0};
   double f_energy[MAX_LINES] = {0};
   //
-  // continue adding the rest of the columns of the collision file here, making sure you use the correct type (int vs double). Weight is double. 
+  // continue adding the rest of the columns of the collision file here, making sure you use the correct type (int vs double). Weight is double.
   //
 
    //initalize collisionFile.root tree
-  TFile *outfile = TFile::Open("CollisionFile.root", "RECREATE");
+  TFile *outfile = TFile::Open(nameColTree, "RECREATE");
   TTree *collisionTree = new TTree("CollisionFile", "CollisionFile");
   fissionTree->SetFileNumber(0);
   fissionTree->SetMaxTreeSize(1000000000LL);
@@ -58,9 +58,9 @@
 
     // gather the history from the line
     // if new history{
-    // fill the previous history and reset all the arrays and variables (also fill any history in between with f_numLines = 0, i.e. if the currenthistory is 20, and the prev history is 12, 
+    // fill the previous history and reset all the arrays and variables (also fill any history in between with f_numLines = 0, i.e. if the currenthistory is 20, and the prev history is 12,
     // fill 12 with the content of that history, and 13, 14, 15, 16, 17, 18, 19 with just f_numLines = 0 and f_history equal to those histories.)
-    // filling a tree is easy, you can use 
+    // filling a tree is easy, you can use
     // collisionTree->Fill();
 
     // while(ss >> val){ }

@@ -34,6 +34,7 @@ public:
 
     // readfromCol vars
     TString nameColFile;
+    TString nameCollTree;
 
     // read from sim vars
     TString simFile;
@@ -42,6 +43,9 @@ public:
 
     // output file of SFAME
     TString NameOutput;
+
+    int numCollTreeFiles;
+    int REUSE_DATA;
 
 
 
@@ -55,6 +59,7 @@ public:
 
     TFile* SfameFiss;
     TTree* coincTree;
+    TChain* rCollisionTree;
     // declatre the variables to store the fission branches
     // fission trigger
     int tMult = 0;
@@ -78,6 +83,7 @@ public:
     double totDep[MAX_MULTIPLICITY] = {0};
     int totChan[MAX_MULTIPLICITY] = {0};
     double totTail[MAX_MULTIPLICITY] = {0};
+    int totFlag[MAX_MULTIPLICITY] = {0};
 
 /*
   ___     _ _ _    _            _____
@@ -111,6 +117,7 @@ public:
     int f_scatters[MAX_LINES] = {0};
     int f_code[MAX_LINES] = {0}; // fission or another interaction
     int f_generation[MAX_LINES] = {0};
+    int f_flag[MAX_LINES] = {0};
 
     // List of branches
     TBranch        *b_History;   //!
@@ -130,6 +137,7 @@ public:
     TBranch        *b_Scatters;   //!
     TBranch        *b_Code;   //!
     TBranch        *b_Generation;   //!
+    TBranch        *b_Flag;   //!
 
     /*
     ___                         _

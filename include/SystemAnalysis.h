@@ -45,6 +45,7 @@ public :
    double        totDep[MAX_MULTIPLICITY];   //[tMult]
    double        totTail[MAX_MULTIPLICITY];   //[tMult]
    int           totChan[MAX_MULTIPLICITY];   //[tMult]
+   int           totFlag[MAX_MULTIPLICITY];   //[tMult]
 
    // List of branches
    TBranch        *b_tMult;   //!
@@ -56,6 +57,7 @@ public :
    TBranch        *b_totDep;   //!
    TBranch        *b_totTail;   //!
    TBranch        *b_totChan;   //!
+   TBranch        *b_totFlag;   //!
 
    SystemAnalysis(TChain *tree, TFile* sysFileWrite);
    virtual ~SystemAnalysis();
@@ -137,6 +139,7 @@ void SystemAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("totDep", totDep, &b_totDep);
    fChain->SetBranchAddress("totTail", totTail, &b_totTail);
    fChain->SetBranchAddress("totChan", totChan, &b_totChan);
+   if(SIM_FILE) fChain->SetBranchAddress("totFlag", totFlag, &b_totFlag);
    Notify();
 
    cout << "Tree being read in correctly." << endl;

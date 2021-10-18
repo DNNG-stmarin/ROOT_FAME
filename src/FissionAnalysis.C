@@ -74,18 +74,18 @@ void DetectorSystemClass::FissionAnalysis()
       f_beamChan = bChan;
       f_beamIndex = bIndex;
 
-      if (f_beamTime < 70)
-      {
-        f_fisType = ALPHA;
-      }
-      else if (f_beamTime < 140 && f_beamTime > 60)
-      {
-        f_fisType = PHOTON;
-      }
-      else
-      {
-        f_fisType = NEUTRON;
-      }
+      // if (f_beamTime < 70)
+      // {
+      //   f_fisType = ALPHA;
+      // }
+      // else if (f_beamTime < 140 && f_beamTime > 60)
+      // {
+      //   f_fisType = PHOTON;
+      // }
+      // else
+      // {
+      //   f_fisType = NEUTRON;
+      // }
 
     }
 
@@ -111,6 +111,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // find the number of the detector
       numDet = isDetector(totChan[j]);
+      if(SIM_FILE == 1) numDet = totChan[j];
 
       // Calculate distance to detector
       double adjX = detectors[numDet].X - triggers[numTrig].X;
@@ -122,6 +123,7 @@ void DetectorSystemClass::FissionAnalysis()
       timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
 
       engDet = totDep[j]/detectors[numDet].calibration;
+      if(SIM_FILE == 1) engDet = totDep[j];
 
       //if numdet is broken, continue and skip this detector
       bool quit = 0;
@@ -163,6 +165,7 @@ void DetectorSystemClass::FissionAnalysis()
         neutronVx[nMult] = adjX / detectors[numDet].distance*neutVelocity;
         neutronVy[nMult] = adjY / detectors[numDet].distance*neutVelocity;
         neutronVz[nMult] = adjZ / detectors[numDet].distance*neutVelocity;
+        if(SIM_FILE == 1) neutronFlag[nMult] = totFlag[j];
         nMult++;
       }
       // cuts for gammas
@@ -185,6 +188,7 @@ void DetectorSystemClass::FissionAnalysis()
         photonVx[pMult] = adjX / detectors[numDet].distance*LIGHT_C;
         photonVy[pMult] = adjY / detectors[numDet].distance*LIGHT_C;
         photonVz[pMult] = adjZ / detectors[numDet].distance*LIGHT_C;
+        if(SIM_FILE == 1) photonFlag[pMult] = totFlag[j];
         pMult++;
       }
 
@@ -308,11 +312,13 @@ void DetectorSystemClass::FissionAnalysisLoop()
        {
          // find the number of the detector
         numDet = isDetector(totChan[j]);
+        if(SIM_FILE == 1) numDet = totChan[j];
 
         // detection time corrected for delay
         timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
 
         engDet = totDep[j]/detectors[numDet].calibration;
+        if(SIM_FILE == 1) engDet =  totDep[j];
 
 
         // cuts for neutrons

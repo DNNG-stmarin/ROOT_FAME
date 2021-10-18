@@ -31,6 +31,7 @@
 // Header file for the classes stored in the TTree if any.
 
 #include "Constants.h"
+#include "myANN.h"
 
 extern QApplication* app; // pointer to application
 
@@ -50,8 +51,8 @@ public :
 
    //neural network
    myANN*           crossTalkANN;
-   Double_t         thresholdANN = 0.5;
-   bool             ANN_mode = 0;
+   Double_t         thresholdANN = 0.95;
+   bool             ANN_mode = 1;
 
    std::string      nameExp; // String name of where to find experiment
    std::string      nameSim;

@@ -1,4 +1,4 @@
-#include "/Users/isabelhz/Desktop/myANN.h"
+#include "myANN.h"
 #include <cmath>
 
 double myANN::Value(int index,double in0,double in1) {
@@ -155,4 +155,3 @@ double myANN::synapse0x7fed3ad4d8f0() {
 double myANN::synapse0x7fed3ad571f0() {
    return (neuron0x7fed3ad57070()*3.5231);
 }
-

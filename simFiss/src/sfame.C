@@ -7,13 +7,20 @@
 sfame::sfame()
 {
     // main output
-    NameOutput = "SimFis.root";
+    NameOutput = "CoincidenceTrees.root";
 
     // read from sim
-    nameColFile = "sampleData/FS3_openV5_dist_270.d";
     simFile = "sim27";
+
+    // read from collision files
+    nameColFile = "collisionFiles/FS3_openV5_dist_27_source-2num";
     firstFile = 0;
-    numFiles = 10;
+    numFiles = 20;
+
+    // read from colliosn tree
+    nameCollTree = "collTree.root";
+    REUSE_DATA = 1;
+    if(REUSE_DATA == 1) numCollTreeFiles = 1;
 
     //
     NUM_DETECTORS = 40;

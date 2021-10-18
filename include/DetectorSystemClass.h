@@ -70,6 +70,7 @@ public:
 	int DOUBLE_DISC;
 	double MISC_MAX;
 	int PARAM_FILES;
+	int SIM_FILE;
 
 	// inputs given by the fission experiment class file, made up of the data collected and where to write
 	TChain* tree;
@@ -219,6 +220,7 @@ _  _ _    _
 	double        totPSP[MAX_MULTIPLICITY];   //[tMult]
 	double        totDep[MAX_MULTIPLICITY];   //[tMult]
 	int           totChan[MAX_MULTIPLICITY];   //[tMult]
+	int           totFlag[MAX_MULTIPLICITY];   //[tMult]
 	// double        totTail[MAX_MULTIPLICITY];   //[tMult]
 
 	// List of branches
@@ -239,6 +241,7 @@ _  _ _    _
 	TBranch        *b_totPSP;   //!
 	TBranch        *b_totDep;   //!
 	TBranch        *b_totChan;   //!
+	TBranch        *b_totFlag;   //!
 
 
 	double    f_fisTime;
@@ -267,6 +270,7 @@ _  _ _    _
 	double neutronVx[MAX_MULTIPLICITY] = {0};
 	double neutronVy[MAX_MULTIPLICITY] = {0};
 	double neutronVz[MAX_MULTIPLICITY] = {0};
+	int neutronFlag[MAX_MULTIPLICITY] = {0};
 
 	double photonDetTimes[MAX_MULTIPLICITY] = {0};
 	double photonLightOut[MAX_MULTIPLICITY] = {0};
@@ -275,6 +279,7 @@ _  _ _    _
 	double photonVx[MAX_MULTIPLICITY] = {0};
 	double photonVy[MAX_MULTIPLICITY] = {0};
 	double photonVz[MAX_MULTIPLICITY] = {0};
+	int photonFlag[MAX_MULTIPLICITY] = {0};
 
 	double backNeutronDetTimes[MAX_MULTIPLICITY] = {0};
 	double backNeutronLightOut[MAX_MULTIPLICITY] = {0};

@@ -32,6 +32,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	PSD_ERG = info->PSD_ERG;
 	STEP_SIZE = info->STEP_SIZE;
 
+
 	NUM_TRIGGERS = info->NUM_TRIGGERS;
 	NUM_DETS = info->NUM_DETS;
 	NUM_EXCLUDED = info->NUM_EXCLUDED;
@@ -48,6 +49,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	DOUBLE_DISC = info->DOUBLE_DISC;
 	MISC_MAX = info->MISC_MAX;
 	PARAM_FILES = info->PARAM_FILES;
+	SIM_FILE = info->SIM_FILE;
 	//BEAM = info->BEAM;
 
 	// create the dynamically allocated array of detectors and triggers
@@ -222,6 +224,7 @@ void DetectorSystemClass::Init(TChain* treeIn)
 		 tree->SetBranchAddress("totDep", totDep, &b_totDep);
 		 tree->SetBranchAddress("totChan", totChan, &b_totChan);
 		 // tree->SetBranchAddress("totTail", totTail, &b_totTail);
+		 if(SIM_FILE) tree->SetBranchAddress("totFlag", totFlag, &b_totFlag);
 
 
 		 Notify();
@@ -266,6 +269,7 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("neutronVx", neutronVx, "neutronVx[neutronMult]/D");
 	 fissionTree->Branch("neutronVy", neutronVy, "neutronVy[neutronMult]/D");
 	 fissionTree->Branch("neutronVz", neutronVz, "neutronVz[neutronMult]/D");
+	 if(SIM_FILE) fissionTree->Branch("neutronFlag", neutronFlag, "neutronFlag[neutronMult]/I");
 
 	 // photon attributes
 	 fissionTree->Branch("photonDetTimes", photonDetTimes, "photonDetTimes[gammaMult]/D");
@@ -275,6 +279,7 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("photonVx", photonVx, "photonVx[gammaMult]/D");
 	 fissionTree->Branch("photonVy", photonVy, "photonVy[gammaMult]/D");
 	 fissionTree->Branch("photonVz", photonVz, "photonVz[gammaMult]/D");
+	 if(SIM_FILE) fissionTree->Branch("photonFlag", photonFlag, "photonFlag[gammaMult]/I");
 
 	 // background neutron attributes
 	 fissionTree->Branch("backNeutronDetTimes", backNeutronDetTimes, "backNeutronDetTimes[neutronBackMult]/D");

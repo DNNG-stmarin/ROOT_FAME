@@ -70,6 +70,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 	detFile->cd();
 	int channelDet, channelTrig;
+	double channelCalib;
 
 	if (tree == 0) return -1;
 
@@ -113,16 +114,21 @@ int DetectorSystemClass::DetectionAnalysis()
 	 {
 		 // store the channel number
 		 channelDet = isDetector(totChan[part]);
-
+		 channelCalib = detectors[channelDet].calibration;
+		 if(SIM_FILE)
+		 {
+			 channelDet = totChan[part];
+			 channelCalib = 1;
+		 }
 		 // 1D Histograms
 		 psdhists[channelDet]->Fill(totPSP[part]); // psd histogram
-		 erghists[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration); // energy histogram
+		 erghists[channelDet]->Fill(totDep[part]/channelCalib); // energy histogram
 		 tofDelPhists[channelDet][channelTrig]->Fill(totToF[part]); // tof histograms
 
 		 // 2D histograms
-		 psdErgHists[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, totPSP[part]); // energy-psd histogram
+		 psdErgHists[channelDet]->Fill(totDep[part]/channelCalib, totPSP[part]); // energy-psd histogram
 		 tofPsdHists[channelDet]->Fill(totPSP[part], totToF[part]); // psd-tof histograms
-		 tofErgHists[channelDet]->Fill(totDep[part]/detectors[channelDet].calibration, totToF[part]); // kinematic histogram
+		 tofErgHists[channelDet]->Fill(totDep[part]/channelCalib, totToF[part]); // kinematic histogram
 	 }
   }
 	cout << "Finished psd filling loop" << endl;
@@ -332,7 +338,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				double sourceDetDist = sqrt( pow(detectors[channelDet].X - triggers[tr].X, 2) +
 																		 pow(detectors[channelDet].Y - triggers[tr].Y, 2) +
 																		 pow(detectors[channelDet].Z - triggers[tr].Z, 2));
-																		
+
 				detectors[i].timeDelay[tr] = tofphotpeak_opt->Parameter(1) - sourceDetDist/LIGHT_C;
 				detectors[i].timeResolution[tr] = tofphotpeak_opt->Parameter(2);
 

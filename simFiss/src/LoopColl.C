@@ -85,11 +85,11 @@ void sfame::LoopColl()
           vertexTail = randGen->Gaus(detectors[vertexChannel].meanNeutPSD->Eval(vertexLightOut), detectors[vertexChannel].sigNeutPSD->Eval(vertexLightOut));
           if(f_scatters[l] == 0)
           {
-            vertexRR = 0;
+            vertexRR = 1;
           }
           else // neutron has scattered before
           {
-            vertexRR = 1;
+            vertexRR = 0;
           }
 
         }
@@ -97,13 +97,13 @@ void sfame::LoopColl()
         {
           vertexTail = randGen->Gaus(detectors[vertexChannel].meanPhotPSD->Eval(vertexLightOut), detectors[vertexChannel].sigPhotPSD->Eval(vertexLightOut));
 
-          if(f_scatters[l] == 1)
+          if(f_scatters[l] == 1) // yes this is correct... a bug in MCNP makes photons start at 1
           {
-            vertexRR = 0;
+            vertexRR = 1;
           }
           else // photon has scattered before
           {
-            vertexRR = 1;
+            vertexRR = 0;
           }
 
         }
@@ -174,6 +174,7 @@ void sfame::LoopColl()
           totTail[acc] = trackTail[tr];
           totPSP[acc] = trackPSP[tr];
           totToF[acc] = trackTime[tr];
+          totFlag[acc] = trackRR_flag[tr];
           acc++;
         }
       }
