@@ -29,20 +29,20 @@ void readFiss::Slice()
 
   // choose where to start and stop
   bool found = false;
-  for(int i = 1; i < neutronEnergyLOExp->GetNbinsX(); ++i)
+  for(int i = 1; i < h2_neutronEnergyLOExp->GetNbinsX(); ++i)
   {
-    for(int j = 1; j < neutronEnergyLOExp->GetNbinsY(); ++j)
+    for(int j = 1; j < h2_neutronEnergyLOExp->GetNbinsY(); ++j)
     {
-      if(!found && (neutronEnergyLOExp->GetBinContent(i, j) > 0) &&
-      (neutronEnergyLOExp->GetBinContent(i, j+1) > neutronEnergyLOExp->GetBinContent(i, j)) &&
-      (neutronEnergyLOExp->Integral(i, i, 1, neutronEnergyLOExp->GetNbinsY()) > (neutronEnergyLOExp->Integral() / 100)))
+      if(!found && (h2_neutronEnergyLOExp->GetBinContent(i, j) > 0) &&
+      (h2_neutronEnergyLOExp->GetBinContent(i, j+1) > h2_neutronEnergyLOExp->GetBinContent(i, j)) &&
+      (h2_neutronEnergyLOExp->Integral(i, i, 1, h2_neutronEnergyLOExp->GetNbinsY()) > (h2_neutronEnergyLOExp->Integral() / 100)))
       {
         startBin = i;
         found = true;
         break;
       }
     }
-    if(found && (neutronEnergyLOExp->Integral(i, i, 1, neutronEnergyLOExp->GetNbinsY()) < (neutronEnergyLOExp->Integral() / 100)))
+    if(found && (h2_neutronEnergyLOExp->Integral(i, i, 1, h2_neutronEnergyLOExp->GetNbinsY()) < (h2_neutronEnergyLOExp->Integral() / 100)))
     {
       projectionNum = i - startBin;
       break;
@@ -60,7 +60,7 @@ void readFiss::Slice()
 
   for(int i = 0; i < projectionNum; ++i)
   {
-    Projections[i] = neutronEnergyLOExp->ProjectionY((TString)"projection" + (TString)to_string(i), startBin + i, startBin + i);
+    Projections[i] = h2_neutronEnergyLOExp->ProjectionY((TString)"projection" + (TString)to_string(i), startBin + i, startBin + i);
     Projections[i]->Rebin(5);
     Derivatives[i] = new TH1D((TString)"derivative"+ (TString)to_string(i), "Derivative of Projection;Neutron Light Output [MeVee];Rate of Change",
                                       Projections[i]->GetNbinsX(), Projections[i]->GetXaxis()->GetXmin(), Projections[i]->GetXaxis()->GetXmax());
@@ -191,81 +191,81 @@ void readFiss::Slice()
 void readFiss::AngCorr()
 {
   // computing efficiency matrix
-  for(int i = 1; i <= neutronSinglesExp->GetNbinsX(); ++i)
+  for(int i = 1; i <= h_neutronSinglesExp->GetNbinsX(); ++i)
   {
     for(int j = 1; j < i; ++j)
     {
-      neutronSinglesMat->SetBinContent(i, j, (neutronSinglesExp->GetBinContent(i) * neutronSinglesExp->GetBinContent(j)) / neutronSinglesExp->Integral());
+      h2_neutronSinglesMat->SetBinContent(i, j, (h_neutronSinglesExp->GetBinContent(i) * h_neutronSinglesExp->GetBinContent(j)) / h_neutronSinglesExp->Integral());
     }
   }
 
     // gamma-gamma
-  for(int i = 1; i <= photonSinglesExp->GetNbinsX(); ++i)
+  for(int i = 1; i <= h_photonSinglesExp->GetNbinsX(); ++i)
   {
     for(int j = 1; j < i; ++j)
     {
-      photonSinglesMat->SetBinContent(i, j, (photonSinglesExp->GetBinContent(i) * photonSinglesExp->GetBinContent(j)) / photonSinglesExp->Integral());
+      h2_photonSinglesMat->SetBinContent(i, j, (h_photonSinglesExp->GetBinContent(i) * h_photonSinglesExp->GetBinContent(j)) / h_photonSinglesExp->Integral());
     }
   }
     // n-gamma
-  for(int i = 1; i <= neutronSinglesExp->GetNbinsX(); ++i)
+  for(int i = 1; i <= h_neutronSinglesExp->GetNbinsX(); ++i)
   {
     for(int j = 1; j < i; ++j)
     {
-      neutronPhotonSinglesMat->SetBinContent(i, j, (neutronSinglesExp->GetBinContent(i) * photonSinglesExp->GetBinContent(j)) / neutronSinglesExp->Integral());
+      h2_neutronPhotonSinglesMat->SetBinContent(i, j, (h_neutronSinglesExp->GetBinContent(i) * h_photonSinglesExp->GetBinContent(j)) / h_neutronSinglesExp->Integral());
     }
   }
     // n-n background
-    for(int i = 1; i <= neutronSinglesBack->GetNbinsX(); ++i)
+    for(int i = 1; i <= h_neutronSinglesBack->GetNbinsX(); ++i)
     {
       for(int j = 1; j < i; ++j)
       {
-        neutronBackSinglesMat->SetBinContent(i, j, (neutronSinglesBack->GetBinContent(i) * neutronSinglesBack->GetBinContent(j)) / neutronSinglesBack->Integral());
+        h2_neutronBackSinglesMat->SetBinContent(i, j, (h_neutronSinglesBack->GetBinContent(i) * h_neutronSinglesBack->GetBinContent(j)) / h_neutronSinglesBack->Integral());
       }
     }
     // gamma-gamma background
-  for(int i = 1; i <= photonSinglesBack->GetNbinsX(); ++i)
+  for(int i = 1; i <= h_photonSinglesBack->GetNbinsX(); ++i)
   {
     for(int j = 1; j < i; ++j)
     {
-      photonBackSinglesMat->SetBinContent(i, j, (photonSinglesBack->GetBinContent(i) * photonSinglesBack->GetBinContent(j)) / photonSinglesBack->Integral());
+      h2_photonBackSinglesMat->SetBinContent(i, j, (h_photonSinglesBack->GetBinContent(i) * h_photonSinglesBack->GetBinContent(j)) / h_photonSinglesBack->Integral());
     }
   }
     // n-gamma background
-  for(int i = 1; i <= neutronSinglesBack->GetNbinsX(); ++i)
+  for(int i = 1; i <= h_neutronSinglesBack->GetNbinsX(); ++i)
   {
     for(int j = 1; j < i; ++j)
     {
-      neutronPhotonBackSinglesMat->SetBinContent(i, j, (neutronSinglesBack->GetBinContent(i) * photonSinglesBack->GetBinContent(j)) / neutronSinglesBack->Integral());
+      h2_neutronPhotonBackSinglesMat->SetBinContent(i, j, (h_neutronSinglesBack->GetBinContent(i) * h_photonSinglesBack->GetBinContent(j)) / h_neutronSinglesBack->Integral());
     }
   }
 
 
   // scale doubles matrix by eff matrix
-  neutronScaledDoubles = (TH2I*)neutronDoublesMat->Clone();
-  neutronScaledDoubles->SetName("neutronScaledDoubles");
-  neutronScaledDoubles->Divide(neutronSinglesMat);
+  h2_neutronScaledDoubles = (TH2I*)h2_neutronDoublesMat->Clone();
+  h2_neutronScaledDoubles->SetName("h2_neutronScaledDoubles");
+  h2_neutronScaledDoubles->Divide(h2_neutronSinglesMat);
 
-  photonScaledDoubles = (TH2I*)photonDoublesMat->Clone();
-  photonScaledDoubles->SetName("photonScaledDoubles");
-  photonScaledDoubles->Divide(photonSinglesMat);
+  h2_photonScaledDoubles = (TH2I*)h2_photonDoublesMat->Clone();
+  h2_photonScaledDoubles->SetName("h2_photonScaledDoubles");
+  h2_photonScaledDoubles->Divide(h2_photonSinglesMat);
 
-  neutronPhotonScaledDoubles = (TH2I*)neutronPhotonDoublesMat->Clone();
-  neutronPhotonScaledDoubles->SetName("neutronPhotonScaledDoubles");
-  neutronPhotonScaledDoubles->Divide(neutronPhotonSinglesMat);
+  h2_neutronPhotonScaledDoubles = (TH2I*)h2_neutronPhotonDoublesMat->Clone();
+  h2_neutronPhotonScaledDoubles->SetName("h2_neutronPhotonScaledDoubles");
+  h2_neutronPhotonScaledDoubles->Divide(h2_neutronPhotonSinglesMat);
 
     // Background
-  neutronBackScaledDoubles = (TH2I*)neutronBackDoublesMat->Clone();
-  neutronBackScaledDoubles->SetName("neutronBackScaledDoubles");
-  neutronBackScaledDoubles->Divide(neutronBackSinglesMat);
+  h2_neutronBackScaledDoubles = (TH2I*)h2_neutronBackDoublesMat->Clone();
+  h2_neutronBackScaledDoubles->SetName("h2_neutronBackScaledDoubles");
+  h2_neutronBackScaledDoubles->Divide(h2_neutronBackSinglesMat);
 
-  photonBackScaledDoubles = (TH2I*)photonBackDoublesMat->Clone();
-  photonBackScaledDoubles->SetName("photonBackScaledDoubles");
-  photonBackScaledDoubles->Divide(photonBackSinglesMat);
+  h2_photonBackScaledDoubles = (TH2I*)h2_photonBackDoublesMat->Clone();
+  h2_photonBackScaledDoubles->SetName("h2_photonBackScaledDoubles");
+  h2_photonBackScaledDoubles->Divide(h2_photonBackSinglesMat);
 
-  neutronPhotonBackScaledDoubles = (TH2I*)neutronPhotonBackDoublesMat->Clone();
-  neutronPhotonBackScaledDoubles->SetName("neutronPhotonBackScaledDoubles");
-  neutronPhotonBackScaledDoubles->Divide(neutronPhotonBackSinglesMat);
+  h2_neutronPhotonBackScaledDoubles = (TH2I*)h2_neutronPhotonBackDoublesMat->Clone();
+  h2_neutronPhotonBackScaledDoubles->SetName("h2_neutronPhotonBackScaledDoubles");
+  h2_neutronPhotonBackScaledDoubles->Divide(h2_neutronPhotonBackSinglesMat);
 
   // make arrays of angles and counts
   int arraySize = pow(NUM_DETECTORS, 2);
@@ -277,14 +277,14 @@ void readFiss::AngCorr()
   {
     for(int j = 1; j < i; ++j)
     {
-      if(neutronScaledDoubles->GetBinContent(i, j) == 0)
+      if(h2_neutronScaledDoubles->GetBinContent(i, j) == 0)
       {
         continue;
       }
 
       a_angles[n_points] = angles[i-1][j-1];
-      a_counts[n_points] = neutronScaledDoubles->GetBinContent(i, j);
-      a_errors[n_points] = neutronScaledDoubles->GetBinError(i, j);
+      a_counts[n_points] = h2_neutronScaledDoubles->GetBinContent(i, j);
+      a_errors[n_points] = h2_neutronScaledDoubles->GetBinError(i, j);
       n_points++;
     }
   }
@@ -298,14 +298,14 @@ void readFiss::AngCorr()
   {
     for(int j = 1; j < i; ++j)
     {
-      if(photonScaledDoubles->GetBinContent(i, j) == 0)
+      if(h2_photonScaledDoubles->GetBinContent(i, j) == 0)
       {
         continue;
       }
 
       p_angles[p_points] = angles[i-1][j-1];
-      p_counts[p_points] = photonScaledDoubles->GetBinContent(i, j);
-      p_errors[p_points] = photonScaledDoubles->GetBinError(i, j);
+      p_counts[p_points] = h2_photonScaledDoubles->GetBinContent(i, j);
+      p_errors[p_points] = h2_photonScaledDoubles->GetBinError(i, j);
       p_points++;
     }
   }
@@ -318,14 +318,14 @@ void readFiss::AngCorr()
   {
     for(int j = 1; j < i; ++j)
     {
-      if(neutronPhotonScaledDoubles->GetBinContent(i, j) == 0)
+      if(h2_neutronPhotonScaledDoubles->GetBinContent(i, j) == 0)
       {
         continue;
       }
 
       np_angles[np_points] = angles[i-1][j-1];
-      np_counts[np_points] = neutronPhotonScaledDoubles->GetBinContent(i, j);
-      np_errors[np_points] = neutronPhotonScaledDoubles->GetBinError(i, j);
+      np_counts[np_points] = h2_neutronPhotonScaledDoubles->GetBinContent(i, j);
+      np_errors[np_points] = h2_neutronPhotonScaledDoubles->GetBinError(i, j);
       np_points++;
     }
   }
@@ -338,14 +338,14 @@ void readFiss::AngCorr()
   {
     for(int j = 1; j < i; ++j)
     {
-      if(neutronBackScaledDoubles->GetBinContent(i, j) == 0)
+      if(h2_neutronBackScaledDoubles->GetBinContent(i, j) == 0)
       {
         continue;
       }
 
       nB_angles[nB_points] = angles[i-1][j-1];
-      nB_counts[nB_points] = neutronBackScaledDoubles->GetBinContent(i, j);
-      nB_errors[nB_points] = neutronBackScaledDoubles->GetBinError(i, j);
+      nB_counts[nB_points] = h2_neutronBackScaledDoubles->GetBinContent(i, j);
+      nB_errors[nB_points] = h2_neutronBackScaledDoubles->GetBinError(i, j);
       nB_points++;
     }
   }
@@ -358,14 +358,14 @@ void readFiss::AngCorr()
   {
     for(int j = 1; j < i; ++j)
     {
-      if(photonBackScaledDoubles->GetBinContent(i, j) == 0)
+      if(h2_photonBackScaledDoubles->GetBinContent(i, j) == 0)
       {
         continue;
       }
 
       pB_angles[pB_points] = angles[i-1][j-1];
-      pB_counts[pB_points] = photonBackScaledDoubles->GetBinContent(i, j);
-      pB_errors[pB_points] = photonBackScaledDoubles->GetBinError(i, j);
+      pB_counts[pB_points] = h2_photonBackScaledDoubles->GetBinContent(i, j);
+      pB_errors[pB_points] = h2_photonBackScaledDoubles->GetBinError(i, j);
       pB_points++;
     }
   }
@@ -378,56 +378,56 @@ void readFiss::AngCorr()
   {
     for(int j = 1; j < i; ++j)
     {
-      if(neutronPhotonBackScaledDoubles->GetBinContent(i, j) == 0)
+      if(h2_neutronPhotonBackScaledDoubles->GetBinContent(i, j) == 0)
       {
         continue;
       }
 
       npB_angles[npB_points] = angles[i-1][j-1];
-      npB_counts[npB_points] = neutronPhotonBackScaledDoubles->GetBinContent(i, j);
-      npB_errors[npB_points] = neutronPhotonBackScaledDoubles->GetBinError(i, j);
+      npB_counts[npB_points] = h2_neutronPhotonBackScaledDoubles->GetBinContent(i, j);
+      npB_errors[npB_points] = h2_neutronPhotonBackScaledDoubles->GetBinError(i, j);
       npB_points++;
     }
   }
 
   // make graphs
-  neutronAngleCorr = new TGraphErrors(n_points, a_angles, a_counts, 0, a_errors);
-  neutronAngleCorr->Sort();
-  neutronAngleCorr->SetName("neutronAngleCorr");
-  neutronAngleCorr->SetTitle("Neutron Double Angle Correlations;Cos T;Counts");
-  neutronAngleCorr->GetXaxis()->SetLimits(-1, 1);
-  //neutronAngleCorr->GetYaxis()->SetRangeUser(0, ?);
+  g_neutronAngleCorr = new TGraphErrors(n_points, a_angles, a_counts, 0, a_errors);
+  g_neutronAngleCorr->Sort();
+  g_neutronAngleCorr->SetName("g_neutronAngleCorr");
+  g_neutronAngleCorr->SetTitle("Neutron Double Angle Correlations;Cos T;Counts");
+  g_neutronAngleCorr->GetXaxis()->SetLimits(-1, 1);
+  //g_neutronAngleCorr->GetYaxis()->SetRangeUser(0, ?);
 
-  photonAngleCorr = new TGraphErrors(p_points, p_angles, p_counts, 0, p_errors);
-  photonAngleCorr->Sort();
-  photonAngleCorr->SetName("photonAngleCorr");
-  photonAngleCorr->SetTitle("Photon Double Angle Correlations;Cos T;Counts");
-  photonAngleCorr->GetXaxis()->SetLimits(-1, 1);
+  g_photonAngleCorr = new TGraphErrors(p_points, p_angles, p_counts, 0, p_errors);
+  g_photonAngleCorr->Sort();
+  g_photonAngleCorr->SetName("g_photonAngleCorr");
+  g_photonAngleCorr->SetTitle("Photon Double Angle Correlations;Cos T;Counts");
+  g_photonAngleCorr->GetXaxis()->SetLimits(-1, 1);
 
-  neutronPhotonAngleCorr = new TGraphErrors(np_points, np_angles, np_counts, 0, np_errors);
-  neutronPhotonAngleCorr->Sort();
-  neutronPhotonAngleCorr->SetName("neutronPhotonAngleCorr");
-  neutronPhotonAngleCorr->SetTitle("Neutron Photon Angle Correlations;Cos T;Counts");
-  neutronPhotonAngleCorr->GetXaxis()->SetLimits(-1, 1);
+  g_neutronPhotonAngleCorr = new TGraphErrors(np_points, np_angles, np_counts, 0, np_errors);
+  g_neutronPhotonAngleCorr->Sort();
+  g_neutronPhotonAngleCorr->SetName("g_neutronPhotonAngleCorr");
+  g_neutronPhotonAngleCorr->SetTitle("Neutron Photon Angle Correlations;Cos T;Counts");
+  g_neutronPhotonAngleCorr->GetXaxis()->SetLimits(-1, 1);
 
     // Background
-  neutronBackAngleCorr = new TGraphErrors(nB_points, nB_angles, nB_counts, 0, nB_errors);
-  neutronBackAngleCorr->Sort();
-  neutronBackAngleCorr->SetName("neutronBackAngleCorr");
-  neutronBackAngleCorr->SetTitle("Background Neutron Double Angle Correlations;Cos T;Counts");
-  neutronBackAngleCorr->GetXaxis()->SetLimits(-1, 1);
+  g_neutronBackAngleCorr = new TGraphErrors(nB_points, nB_angles, nB_counts, 0, nB_errors);
+  g_neutronBackAngleCorr->Sort();
+  g_neutronBackAngleCorr->SetName("g_neutronBackAngleCorr");
+  g_neutronBackAngleCorr->SetTitle("Background Neutron Double Angle Correlations;Cos T;Counts");
+  g_neutronBackAngleCorr->GetXaxis()->SetLimits(-1, 1);
 
-  photonBackAngleCorr = new TGraphErrors(pB_points, pB_angles, pB_counts, 0, pB_errors);
-  photonBackAngleCorr->Sort();
-  photonBackAngleCorr->SetName("photonBackAngleCorr");
-  photonBackAngleCorr->SetTitle("Background Photon Double Angle Correlations;Cos T;Counts");
-  photonBackAngleCorr->GetXaxis()->SetLimits(-1, 1);
+  g_photonBackAngleCorr = new TGraphErrors(pB_points, pB_angles, pB_counts, 0, pB_errors);
+  g_photonBackAngleCorr->Sort();
+  g_photonBackAngleCorr->SetName("g_photonBackAngleCorr");
+  g_photonBackAngleCorr->SetTitle("Background Photon Double Angle Correlations;Cos T;Counts");
+  g_photonBackAngleCorr->GetXaxis()->SetLimits(-1, 1);
 
-  neutronPhotonBackAngleCorr = new TGraphErrors(npB_points, npB_angles, npB_counts, 0, npB_errors);
-  neutronPhotonBackAngleCorr->Sort();
-  neutronPhotonBackAngleCorr->SetName("neutronPhotonBackAngleCorr");
-  neutronPhotonBackAngleCorr->SetTitle("Background Neutron Photon Angle Correlations;Cos T;Counts");
-  neutronPhotonBackAngleCorr->GetXaxis()->SetLimits(-1, 1);
+  g_neutronPhotonBackAngleCorr = new TGraphErrors(npB_points, npB_angles, npB_counts, 0, npB_errors);
+  g_neutronPhotonBackAngleCorr->Sort();
+  g_neutronPhotonBackAngleCorr->SetName("g_neutronPhotonBackAngleCorr");
+  g_neutronPhotonBackAngleCorr->SetTitle("Background Neutron Photon Angle Correlations;Cos T;Counts");
+  g_neutronPhotonBackAngleCorr->GetXaxis()->SetLimits(-1, 1);
 
   // make average lines
   int numAvgBins = 20;
@@ -436,22 +436,22 @@ void readFiss::AngCorr()
   double xAvg[n_points];
   double yAvg[n_points];
 
-  neutronAngleCorrAvg = new TGraphErrors(numAvgBins);
-  photonAngleCorrAvg = new TGraphErrors(numAvgBins);
-  neutronPhotonAngleCorrAvg = new TGraphErrors(numAvgBins);
+  g_neutronAngleCorrAvg = new TGraphErrors(numAvgBins);
+  g_photonAngleCorrAvg = new TGraphErrors(numAvgBins);
+  g_neutronPhotonAngleCorrAvg = new TGraphErrors(numAvgBins);
 
-  neutronBackAngleCorrAvg = new TGraphErrors(numAvgBins);
-  photonBackAngleCorrAvg = new TGraphErrors(numAvgBins);
-  neutronPhotonBackAngleCorrAvg = new TGraphErrors(numAvgBins);
+  g_neutronBackAngleCorrAvg = new TGraphErrors(numAvgBins);
+  g_photonBackAngleCorrAvg = new TGraphErrors(numAvgBins);
+  g_neutronPhotonBackAngleCorrAvg = new TGraphErrors(numAvgBins);
 
 
   for(int i = 0; i < n_points; ++i)
   {
     double rightBound = (2.0 / numAvgBins) * (numBin + 1);
-    if(((neutronAngleCorr->GetPointX(i) + 1) >= rightBound) || i == n_points - 1)
+    if(((g_neutronAngleCorr->GetPointX(i) + 1) >= rightBound) || i == n_points - 1)
     {
-      neutronAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg), TMath::Mean(numPoints, yAvg));
-      neutronAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg), TMath::StdDev(numPoints, yAvg));
+      g_neutronAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg), TMath::Mean(numPoints, yAvg));
+      g_neutronAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg), TMath::StdDev(numPoints, yAvg));
 
       for(int j = 0; j < numPoints; ++j)
       {
@@ -461,8 +461,8 @@ void readFiss::AngCorr()
       numPoints = 0;
       ++numBin;
     }
-    xAvg[numPoints] = neutronAngleCorr->GetPointX(i);
-    yAvg[numPoints] = neutronAngleCorr->GetPointY(i);
+    xAvg[numPoints] = g_neutronAngleCorr->GetPointX(i);
+    yAvg[numPoints] = g_neutronAngleCorr->GetPointY(i);
     ++numPoints;
   }
 
@@ -474,10 +474,10 @@ void readFiss::AngCorr()
   for(int i = 0; i < p_points; ++i)
   {
     double rightBound = (2.0 / numAvgBins) * (numBin + 1);
-    if(((photonAngleCorr->GetPointX(i) + 1) >= rightBound) || i == p_points - 1)
+    if(((g_photonAngleCorr->GetPointX(i) + 1) >= rightBound) || i == p_points - 1)
     {
-      photonAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg_p), TMath::Mean(numPoints, yAvg_p));
-      photonAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg_p), TMath::StdDev(numPoints, yAvg_p));
+      g_photonAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg_p), TMath::Mean(numPoints, yAvg_p));
+      g_photonAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg_p), TMath::StdDev(numPoints, yAvg_p));
 
       for(int j = 0; j < numPoints; ++j)
       {
@@ -487,8 +487,8 @@ void readFiss::AngCorr()
       numPoints = 0;
       ++numBin;
     }
-    xAvg_p[numPoints] = photonAngleCorr->GetPointX(i);
-    yAvg_p[numPoints] = photonAngleCorr->GetPointY(i);
+    xAvg_p[numPoints] = g_photonAngleCorr->GetPointX(i);
+    yAvg_p[numPoints] = g_photonAngleCorr->GetPointY(i);
     ++numPoints;
   }
     // n-gamma
@@ -499,10 +499,10 @@ void readFiss::AngCorr()
     for(int i = 0; i < np_points; ++i)
     {
       double rightBound = (2.0 / numAvgBins) * (numBin + 1);
-      if(((neutronPhotonAngleCorr->GetPointX(i) + 1) >= rightBound) || i == np_points - 1)
+      if(((g_neutronPhotonAngleCorr->GetPointX(i) + 1) >= rightBound) || i == np_points - 1)
       {
-        neutronPhotonAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg_np), TMath::Mean(numPoints, yAvg_np));
-        neutronPhotonAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg_np), TMath::StdDev(numPoints, yAvg_np));
+        g_neutronPhotonAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg_np), TMath::Mean(numPoints, yAvg_np));
+        g_neutronPhotonAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg_np), TMath::StdDev(numPoints, yAvg_np));
 
         for(int j = 0; j < numPoints; ++j)
         {
@@ -512,8 +512,8 @@ void readFiss::AngCorr()
         numPoints = 0;
         ++numBin;
       }
-      xAvg_np[numPoints] = neutronPhotonAngleCorr->GetPointX(i);
-      yAvg_np[numPoints] = neutronPhotonAngleCorr->GetPointY(i);
+      xAvg_np[numPoints] = g_neutronPhotonAngleCorr->GetPointX(i);
+      yAvg_np[numPoints] = g_neutronPhotonAngleCorr->GetPointY(i);
       ++numPoints;
     }
     // n-n background
@@ -524,10 +524,10 @@ void readFiss::AngCorr()
     for(int i = 0; i < nB_points; ++i)
     {
       double rightBound = (2.0 / numAvgBins) * (numBin + 1);
-      if(((neutronBackAngleCorr->GetPointX(i) + 1) >= rightBound) || i == nB_points - 1)
+      if(((g_neutronBackAngleCorr->GetPointX(i) + 1) >= rightBound) || i == nB_points - 1)
       {
-        neutronBackAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg_nB), TMath::Mean(numPoints, yAvg_nB));
-        neutronBackAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg_nB), TMath::StdDev(numPoints, yAvg_nB));
+        g_neutronBackAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg_nB), TMath::Mean(numPoints, yAvg_nB));
+        g_neutronBackAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg_nB), TMath::StdDev(numPoints, yAvg_nB));
 
         for(int j = 0; j < numPoints; ++j)
         {
@@ -537,8 +537,8 @@ void readFiss::AngCorr()
         numPoints = 0;
         ++numBin;
       }
-      xAvg_nB[numPoints] = neutronBackAngleCorr->GetPointX(i);
-      yAvg_nB[numPoints] = neutronBackAngleCorr->GetPointY(i);
+      xAvg_nB[numPoints] = g_neutronBackAngleCorr->GetPointX(i);
+      yAvg_nB[numPoints] = g_neutronBackAngleCorr->GetPointY(i);
       ++numPoints;
     }
     // gamma-gamma background
@@ -549,10 +549,10 @@ void readFiss::AngCorr()
   for(int i = 0; i < pB_points; ++i)
   {
     double rightBound = (2.0 / numAvgBins) * (numBin + 1);
-    if(((photonBackAngleCorr->GetPointX(i) + 1) >= rightBound) || i == pB_points - 1)
+    if(((g_photonBackAngleCorr->GetPointX(i) + 1) >= rightBound) || i == pB_points - 1)
     {
-      photonBackAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg_pB), TMath::Mean(numPoints, yAvg_pB));
-      photonBackAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg_pB), TMath::StdDev(numPoints, yAvg_pB));
+      g_photonBackAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg_pB), TMath::Mean(numPoints, yAvg_pB));
+      g_photonBackAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg_pB), TMath::StdDev(numPoints, yAvg_pB));
 
       for(int j = 0; j < numPoints; ++j)
       {
@@ -562,8 +562,8 @@ void readFiss::AngCorr()
       numPoints = 0;
       ++numBin;
     }
-    xAvg_pB[numPoints] = photonBackAngleCorr->GetPointX(i);
-    yAvg_pB[numPoints] = photonBackAngleCorr->GetPointY(i);
+    xAvg_pB[numPoints] = g_photonBackAngleCorr->GetPointX(i);
+    yAvg_pB[numPoints] = g_photonBackAngleCorr->GetPointY(i);
     ++numPoints;
   }
     // n-gamma background
@@ -574,10 +574,10 @@ void readFiss::AngCorr()
   for(int i = 0; i < npB_points; ++i)
   {
     double rightBound = (2.0 / numAvgBins) * (numBin + 1);
-    if(((neutronPhotonBackAngleCorr->GetPointX(i) + 1) >= rightBound) || i == npB_points - 1)
+    if(((g_neutronPhotonBackAngleCorr->GetPointX(i) + 1) >= rightBound) || i == npB_points - 1)
     {
-      neutronPhotonBackAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg_npB), TMath::Mean(numPoints, yAvg_npB));
-      neutronPhotonBackAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg_npB), TMath::StdDev(numPoints, yAvg_npB));
+      g_neutronPhotonBackAngleCorrAvg->SetPoint(numBin, TMath::Mean(numPoints, xAvg_npB), TMath::Mean(numPoints, yAvg_npB));
+      g_neutronPhotonBackAngleCorrAvg->SetPointError(numBin, TMath::StdDev(numPoints, xAvg_npB), TMath::StdDev(numPoints, yAvg_npB));
 
       for(int j = 0; j < numPoints; ++j)
       {
@@ -587,8 +587,8 @@ void readFiss::AngCorr()
       numPoints = 0;
       ++numBin;
     }
-    xAvg_npB[numPoints] = neutronPhotonBackAngleCorr->GetPointX(i);
-    yAvg_npB[numPoints] = neutronPhotonBackAngleCorr->GetPointY(i);
+    xAvg_npB[numPoints] = g_neutronPhotonBackAngleCorr->GetPointX(i);
+    yAvg_npB[numPoints] = g_neutronPhotonBackAngleCorr->GetPointY(i);
     ++numPoints;
   }
 

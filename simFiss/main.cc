@@ -49,7 +49,7 @@ int main(int argc, char** argv)
   cout << "finished constructing" << endl;
 
   simFame->readFromCol();
-  // simFame->LoopColl();
+  simFame->LoopColl();
 
   // simFame->readFromCol();
   // simFame->readFromSimFile(simFile, firstFile, numFiles);

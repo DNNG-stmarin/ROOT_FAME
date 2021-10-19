@@ -24,7 +24,7 @@ void readFiss::PlotTrigger()
   writeFile->cd();
   cd_trigger->cd();
 
-  fissRej->Write();
+  h_fissRej->Write();
 
   for(int ind = 0; ind < NUM_TRIGGERS; ind++)
   {

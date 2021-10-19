@@ -67,37 +67,37 @@ void readFiss::PlotLightOut()
 
     c_LO->cd();
 
-    photonLightOutputExp->SetLineColor(kRed);
-    photonLightOutputExp->SetStats(0);
-    photonLightOutputExp->Draw();
+    h_photonLightOutputExp->SetLineColor(kRed);
+    h_photonLightOutputExp->SetStats(0);
+    h_photonLightOutputExp->Draw();
 
-    photonLightOutputBack->SetLineColor(kRed);
-    photonLightOutputBack->SetLineStyle(kDashed);
-    photonLightOutputBack->SetStats(0);
-    photonLightOutputBack->Draw("SAME");
+    h_photonLightOutputBack->SetLineColor(kRed);
+    h_photonLightOutputBack->SetLineStyle(kDashed);
+    h_photonLightOutputBack->SetStats(0);
+    h_photonLightOutputBack->Draw("SAME");
 
-    neutronLightOutputExp->SetLineColor(kBlue);
-    neutronLightOutputExp->SetStats(0);
-    neutronLightOutputExp->Draw("SAME");
+    h_neutronLightOutputExp->SetLineColor(kBlue);
+    h_neutronLightOutputExp->SetStats(0);
+    h_neutronLightOutputExp->Draw("SAME");
 
-    neutronLightOutputBack->SetLineColor(kBlue);
-    neutronLightOutputBack->SetLineStyle(kDashed);
-    neutronLightOutputBack->SetStats(0);
-    neutronLightOutputBack->Draw("SAME");
+    h_neutronLightOutputBack->SetLineColor(kBlue);
+    h_neutronLightOutputBack->SetLineStyle(kDashed);
+    h_neutronLightOutputBack->SetStats(0);
+    h_neutronLightOutputBack->Draw("SAME");
 
     TLegend *legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronLightOutputExp", "Experimental Neutron");
-    legend->AddEntry("photonLightOutputExp", "Experimental Photon");
-    legend->AddEntry("neutronLightOutputBack", "Background Neutron");
-    legend->AddEntry("photonLightOutputBack", "Background Photon");
+    legend->AddEntry("h_neutronLightOutputExp", "Experimental Neutron");
+    legend->AddEntry("h_photonLightOutputExp", "Experimental Photon");
+    legend->AddEntry("h_neutronLightOutputBack", "Background Neutron");
+    legend->AddEntry("h_photonLightOutputBack", "Background Photon");
     legend->Draw("SAME");
 
     // change size of axis objects - should be done on first histogram plotted
     // in this function
-    photonLightOutputExp->GetXaxis()->SetTitleSize(x_labelSize);
-    photonLightOutputExp->GetYaxis()->SetTitleSize(y_labelSize);
-    photonLightOutputExp->GetXaxis()->SetTickSize(x_tickSize);
-    photonLightOutputExp->GetYaxis()->SetTickSize(y_tickSize);
+    h_photonLightOutputExp->GetXaxis()->SetTitleSize(x_labelSize);
+    h_photonLightOutputExp->GetYaxis()->SetTitleSize(y_labelSize);
+    h_photonLightOutputExp->GetXaxis()->SetTickSize(x_tickSize);
+    h_photonLightOutputExp->GetYaxis()->SetTickSize(y_tickSize);
 
     c_LO->Write();
     //c_LO->SaveAs("fig/LightOutput.eps");
@@ -116,39 +116,39 @@ void readFiss::PlotTof()
 
     c_ToF->cd();
 
-    photonTofExp->SetLineColor(kRed);
-    photonTofExp->SetStats(0);
-    photonTofExp->Draw();
+    h_photonTofExp->SetLineColor(kRed);
+    h_photonTofExp->SetStats(0);
+    h_photonTofExp->Draw();
 
-    photonTofBack->SetLineColor(kRed);
-    photonTofBack->SetLineStyle(kDashed);
-    photonTofBack->SetStats(0);
-    photonTofBack->Draw("SAME");
+    h_photonTofBack->SetLineColor(kRed);
+    h_photonTofBack->SetLineStyle(kDashed);
+    h_photonTofBack->SetStats(0);
+    h_photonTofBack->Draw("SAME");
 
-    neutronTofExp->SetLineColor(kBlue);
-    neutronTofExp->SetStats(0);
-    neutronTofExp->Draw("SAME");
+    h_neutronTofExp->SetLineColor(kBlue);
+    h_neutronTofExp->SetStats(0);
+    h_neutronTofExp->Draw("SAME");
 
-    neutronTofBack->SetLineColor(kBlue);
-    neutronTofBack->SetLineStyle(kDashed);
-    neutronTofBack->SetStats(0);
-    neutronTofBack->Draw("SAME");
+    h_neutronTofBack->SetLineColor(kBlue);
+    h_neutronTofBack->SetLineStyle(kDashed);
+    h_neutronTofBack->SetStats(0);
+    h_neutronTofBack->Draw("SAME");
 
 
 
     TLegend *legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronTofExp", "Experimental Neutron");
-    legend->AddEntry("photonTofExp", "Experimental Photon");
-    legend->AddEntry("neutronTofBack", "Background Neutron");
-    legend->AddEntry("photonTofBack", "Background Photon");
+    legend->AddEntry("h_neutronTofExp", "Experimental Neutron");
+    legend->AddEntry("h_photonTofExp", "Experimental Photon");
+    legend->AddEntry("h_neutronTofBack", "Background Neutron");
+    legend->AddEntry("h_photonTofBack", "Background Photon");
     legend->Draw("SAME");
 
     // change size of axis objects - should be done on first histogram plotted
     // in this function
-    photonTofExp->GetXaxis()->SetTitleSize(x_labelSize);
-    photonTofExp->GetYaxis()->SetTitleSize(y_labelSize);
-    photonTofExp->GetXaxis()->SetTickSize(x_tickSize);
-    photonTofExp->GetYaxis()->SetTickSize(y_tickSize);
+    h_photonTofExp->GetXaxis()->SetTitleSize(x_labelSize);
+    h_photonTofExp->GetYaxis()->SetTitleSize(y_labelSize);
+    h_photonTofExp->GetXaxis()->SetTickSize(x_tickSize);
+    h_photonTofExp->GetYaxis()->SetTickSize(y_tickSize);
 
     c_ToF->Write();
     //c_ToF->SaveAs("fig/TimeOfFlight.eps");
@@ -166,27 +166,27 @@ void readFiss::PlotErg()
     // cLO->Divide(1,2);
 
     c_Erg->cd();
-    neutronEnergyExp->SetLineColor(kBlue);
-    neutronEnergyExp->SetStats(0);
-    neutronEnergyExp->Draw();
+    h_neutronEnergyExp->SetLineColor(kBlue);
+    h_neutronEnergyExp->SetStats(0);
+    h_neutronEnergyExp->Draw();
 
-    neutronEnergyBack->SetLineColor(kBlue);
-    neutronEnergyBack->SetLineStyle(kDashed);
-    neutronEnergyBack->SetStats(0);
-    neutronEnergyBack->Draw("SAME");
+    h_neutronEnergyBack->SetLineColor(kBlue);
+    h_neutronEnergyBack->SetLineStyle(kDashed);
+    h_neutronEnergyBack->SetStats(0);
+    h_neutronEnergyBack->Draw("SAME");
 
 
     TLegend *legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronEnergyExp", "Experimental Neutron");
-    legend->AddEntry("neutronEnergyBack", "Background Neutron");
+    legend->AddEntry("h_neutronEnergyExp", "Experimental Neutron");
+    legend->AddEntry("h_neutronEnergyBack", "Background Neutron");
     legend->Draw("SAME");
 
     // change size of axis objects - should be done on first histogram plotted
     // in this function
-    neutronEnergyExp->GetXaxis()->SetTitleSize(x_labelSize);
-    neutronEnergyExp->GetYaxis()->SetTitleSize(y_labelSize);
-    neutronEnergyExp->GetXaxis()->SetTickSize(x_tickSize);
-    neutronEnergyExp->GetYaxis()->SetTickSize(y_tickSize);
+    h_neutronEnergyExp->GetXaxis()->SetTitleSize(x_labelSize);
+    h_neutronEnergyExp->GetYaxis()->SetTitleSize(y_labelSize);
+    h_neutronEnergyExp->GetXaxis()->SetTickSize(x_tickSize);
+    h_neutronEnergyExp->GetYaxis()->SetTickSize(y_tickSize);
 
     c_Erg->Write();
     //c_Erg->SaveAs("fig/NeutronErg.eps");
@@ -205,37 +205,37 @@ void readFiss::PlotMult()
 
     c_Mult->cd();
 
-    photonMultExp->SetLineColor(kRed);
-    photonMultExp->SetStats(0);
-    photonMultExp->Draw();
+    h_photonMultExp->SetLineColor(kRed);
+    h_photonMultExp->SetStats(0);
+    h_photonMultExp->Draw();
 
-    photonMultBack->SetLineColor(kRed);
-    photonMultBack->SetLineStyle(kDashed);
-    photonMultBack->SetStats(0);
-    photonMultBack->Draw("SAME");
+    h_photonMultBack->SetLineColor(kRed);
+    h_photonMultBack->SetLineStyle(kDashed);
+    h_photonMultBack->SetStats(0);
+    h_photonMultBack->Draw("SAME");
 
-    neutronMultExp->SetLineColor(kBlue);
-    neutronMultExp->SetStats(0);
-    neutronMultExp->Draw("SAME");
+    h_neutronMultExp->SetLineColor(kBlue);
+    h_neutronMultExp->SetStats(0);
+    h_neutronMultExp->Draw("SAME");
 
-    neutronMultBack->SetLineColor(kBlue);
-    neutronMultBack->SetLineStyle(kDashed);
-    neutronMultBack->SetStats(0);
-    neutronMultBack->Draw("SAME");
+    h_neutronMultBack->SetLineColor(kBlue);
+    h_neutronMultBack->SetLineStyle(kDashed);
+    h_neutronMultBack->SetStats(0);
+    h_neutronMultBack->Draw("SAME");
 
     TLegend *legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronMultExp", "Experimental Neutron");
-    legend->AddEntry("photonMultExp", "Experimental Photon");
-    legend->AddEntry("neutronMultBack", "Background Neutron");
-    legend->AddEntry("photonMultBack", "Background Photon");
+    legend->AddEntry("h_neutronMultExp", "Experimental Neutron");
+    legend->AddEntry("h_photonMultExp", "Experimental Photon");
+    legend->AddEntry("h_neutronMultBack", "Background Neutron");
+    legend->AddEntry("h_photonMultBack", "Background Photon");
     legend->Draw("SAME");
 
     // change size of axis objects - should be done on first histogram plotted
     // in this function
-    photonMultExp->GetXaxis()->SetTitleSize(x_labelSize);
-    photonMultExp->GetYaxis()->SetTitleSize(y_labelSize);
-    photonMultExp->GetXaxis()->SetTickSize(x_tickSize);
-    photonMultExp->GetYaxis()->SetTickSize(y_tickSize);
+    h_photonMultExp->GetXaxis()->SetTitleSize(x_labelSize);
+    h_photonMultExp->GetYaxis()->SetTitleSize(y_labelSize);
+    h_photonMultExp->GetXaxis()->SetTickSize(x_tickSize);
+    h_photonMultExp->GetYaxis()->SetTickSize(y_tickSize);
 
     c_Mult->Write();
     //c_Mult->SaveAs("fig/Multiplicity.eps");
@@ -254,37 +254,37 @@ void readFiss::PlotPSD()
 
     c_PSD->cd();
 
-    photonPSDExp->SetLineColor(kRed);
-    photonPSDExp->SetStats(0);
-    photonPSDExp->Draw();
+    h_photonPSDExp->SetLineColor(kRed);
+    h_photonPSDExp->SetStats(0);
+    h_photonPSDExp->Draw();
 
-    photonPSDBack->SetLineColor(kRed);
-    photonPSDBack->SetLineStyle(kDashed);
-    photonPSDBack->SetStats(0);
-    photonPSDBack->Draw("SAME");
+    h_photonPSDBack->SetLineColor(kRed);
+    h_photonPSDBack->SetLineStyle(kDashed);
+    h_photonPSDBack->SetStats(0);
+    h_photonPSDBack->Draw("SAME");
 
-    neutronPSDExp->SetLineColor(kBlue);
-    neutronPSDExp->SetStats(0);
-    neutronPSDExp->Draw("SAME");
+    h_neutronPSDExp->SetLineColor(kBlue);
+    h_neutronPSDExp->SetStats(0);
+    h_neutronPSDExp->Draw("SAME");
 
-    neutronPSDBack->SetLineColor(kBlue);
-    neutronPSDBack->SetLineStyle(kDashed);
-    neutronPSDBack->SetStats(0);
-    neutronPSDBack->Draw("SAME");
+    h_neutronPSDBack->SetLineColor(kBlue);
+    h_neutronPSDBack->SetLineStyle(kDashed);
+    h_neutronPSDBack->SetStats(0);
+    h_neutronPSDBack->Draw("SAME");
 
     TLegend *legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronPSDExp", "Experimental Neutron");
-    legend->AddEntry("photonPSDExp", "Experimental Photon");
-    legend->AddEntry("neutronPSDBack", "Background Neutron");
-    legend->AddEntry("photonPSDBack", "Background Photon");
+    legend->AddEntry("h_neutronPSDExp", "Experimental Neutron");
+    legend->AddEntry("h_photonPSDExp", "Experimental Photon");
+    legend->AddEntry("h_neutronPSDBack", "Background Neutron");
+    legend->AddEntry("h_photonPSDBack", "Background Photon");
     legend->Draw("SAME");
 
     // change size of axis objects - should be done on first histogram plotted
     // in this function
-    photonPSDExp->GetXaxis()->SetTitleSize(x_labelSize);
-    photonPSDExp->GetYaxis()->SetTitleSize(y_labelSize);
-    photonPSDExp->GetXaxis()->SetTickSize(x_tickSize);
-    photonPSDExp->GetYaxis()->SetTickSize(y_tickSize);
+    h_photonPSDExp->GetXaxis()->SetTitleSize(x_labelSize);
+    h_photonPSDExp->GetYaxis()->SetTitleSize(y_labelSize);
+    h_photonPSDExp->GetXaxis()->SetTickSize(x_tickSize);
+    h_photonPSDExp->GetYaxis()->SetTickSize(y_tickSize);
 
     c_PSD->Write();
     //c_PSD->SaveAs("fig/ParticleDiscrimination.eps");
@@ -302,37 +302,37 @@ void readFiss::PlotSingles()
 
     c_Sin->cd();
 
-    photonSinglesExp->SetLineColor(kRed);
-    photonSinglesExp->SetStats(0);
-    photonSinglesExp->Draw();
+    h_photonSinglesExp->SetLineColor(kRed);
+    h_photonSinglesExp->SetStats(0);
+    h_photonSinglesExp->Draw();
 
-    photonSinglesBack->SetLineColor(kRed);
-    photonSinglesBack->SetLineStyle(kDashed);
-    photonSinglesBack->SetStats(0);
-    photonSinglesBack->Draw("SAME");
+    h_photonSinglesBack->SetLineColor(kRed);
+    h_photonSinglesBack->SetLineStyle(kDashed);
+    h_photonSinglesBack->SetStats(0);
+    h_photonSinglesBack->Draw("SAME");
 
-    neutronSinglesExp->SetLineColor(kBlue);
-    neutronSinglesExp->SetStats(0);
-    neutronSinglesExp->Draw("SAME");
+    h_neutronSinglesExp->SetLineColor(kBlue);
+    h_neutronSinglesExp->SetStats(0);
+    h_neutronSinglesExp->Draw("SAME");
 
-    neutronSinglesBack->SetLineColor(kBlue);
-    neutronSinglesBack->SetLineStyle(kDashed);
-    neutronSinglesBack->SetStats(0);
-    neutronSinglesBack->Draw("SAME");
+    h_neutronSinglesBack->SetLineColor(kBlue);
+    h_neutronSinglesBack->SetLineStyle(kDashed);
+    h_neutronSinglesBack->SetStats(0);
+    h_neutronSinglesBack->Draw("SAME");
 
     TLegend *legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronSinglesExp", "Experimental Neutron");
-    legend->AddEntry("photonSinglesExp", "Experimental Photon");
-    legend->AddEntry("neutronSinglesBack", "Background Neutron");
-    legend->AddEntry("photonSinglesBack", "Background Photon");
+    legend->AddEntry("h_neutronSinglesExp", "Experimental Neutron");
+    legend->AddEntry("h_photonSinglesExp", "Experimental Photon");
+    legend->AddEntry("h_neutronSinglesBack", "Background Neutron");
+    legend->AddEntry("h_photonSinglesBack", "Background Photon");
     legend->Draw("SAME");
 
     // change size of axis objects - should be done on first histogram plotted
     // in this function
-    photonSinglesExp->GetXaxis()->SetTitleSize(x_labelSize);
-    photonSinglesExp->GetYaxis()->SetTitleSize(y_labelSize);
-    photonSinglesExp->GetXaxis()->SetTickSize(x_tickSize);
-    photonSinglesExp->GetYaxis()->SetTickSize(y_tickSize);
+    h_photonSinglesExp->GetXaxis()->SetTitleSize(x_labelSize);
+    h_photonSinglesExp->GetYaxis()->SetTitleSize(y_labelSize);
+    h_photonSinglesExp->GetXaxis()->SetTickSize(x_tickSize);
+    h_photonSinglesExp->GetYaxis()->SetTickSize(y_tickSize);
 
     c_Sin->Write();
     //c_Sin->SaveAs("fig/Singles.eps");
@@ -349,8 +349,8 @@ void readFiss::PlotMultCorExp()
                                                                   800, 400);
   c_MultCorExp->cd();
 
-  neutronGammaMultExp->SetLineColor(kRed);
-  neutronGammaMultExp->Draw("COLZ");
+  h2_neutronGammaMultExp->SetLineColor(kRed);
+  h2_neutronGammaMultExp->Draw("COLZ");
 
   // change stat box
   c_MultCorExp->Update();
@@ -376,15 +376,15 @@ void readFiss::PlotMultCorExp()
   statsList->Remove(yline);
   statsList->Add(ylatex);
 
-  neutronGammaMultExp->SetStats(0);
+  h2_neutronGammaMultExp->SetStats(0);
   c_MultCorExp->Modified();
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronGammaMultExp->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronGammaMultExp->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronGammaMultExp->GetXaxis()->SetTickSize(x_tickSize);
-  neutronGammaMultExp->GetYaxis()->SetTickSize(y_tickSize);
+  h2_neutronGammaMultExp->GetXaxis()->SetTitleSize(x_labelSize);
+  h2_neutronGammaMultExp->GetYaxis()->SetTitleSize(y_labelSize);
+  h2_neutronGammaMultExp->GetXaxis()->SetTickSize(x_tickSize);
+  h2_neutronGammaMultExp->GetYaxis()->SetTickSize(y_tickSize);
 
   c_MultCorExp->Write();
   //c_MultCorExp->SaveAs("MultiplicityCorrelationExp.eps");
@@ -401,8 +401,8 @@ void readFiss::PlotMultCorBack()
                                                                   800, 400);
   c_MultCorBack->cd();
 
-  neutronGammaMultBack->SetLineColor(kRed);
-  neutronGammaMultBack->Draw("COLZ");
+  h2_neutronGammaMultBack->SetLineColor(kRed);
+  h2_neutronGammaMultBack->Draw("COLZ");
 
   // change stat box
   c_MultCorBack->Update();
@@ -428,15 +428,15 @@ void readFiss::PlotMultCorBack()
   statsList->Remove(yline);
   statsList->Add(ylatex);
 
-  neutronGammaMultBack->SetStats(0);
+  h2_neutronGammaMultBack->SetStats(0);
   c_MultCorBack->Modified();
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronGammaMultBack->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronGammaMultBack->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronGammaMultBack->GetXaxis()->SetTickSize(x_tickSize);
-  neutronGammaMultBack->GetYaxis()->SetTickSize(y_tickSize);
+  h2_neutronGammaMultBack->GetXaxis()->SetTitleSize(x_labelSize);
+  h2_neutronGammaMultBack->GetYaxis()->SetTitleSize(y_labelSize);
+  h2_neutronGammaMultBack->GetXaxis()->SetTickSize(x_tickSize);
+  h2_neutronGammaMultBack->GetYaxis()->SetTickSize(y_tickSize);
 
   c_MultCorBack->Write();
   //c_MultCorBack->SaveAs("MultiplicityCorrelationBack.eps");
@@ -453,16 +453,16 @@ void readFiss::PlotMultLOExp()
                                                                 800, 400);
   c_MultLOExp->cd();
 
-  neutronMultPhotonLOExp->SetLineColor(kRed);
-  neutronMultPhotonLOExp->SetStats(0);
-  neutronMultPhotonLOExp->Draw("COLZ");
+  h2_neutronMultPhotonLOExp->SetLineColor(kRed);
+  h2_neutronMultPhotonLOExp->SetStats(0);
+  h2_neutronMultPhotonLOExp->Draw("COLZ");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronMultPhotonLOExp->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronMultPhotonLOExp->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronMultPhotonLOExp->GetXaxis()->SetTickSize(x_tickSize);
-  neutronMultPhotonLOExp->GetYaxis()->SetTickSize(y_tickSize);
+  h2_neutronMultPhotonLOExp->GetXaxis()->SetTitleSize(x_labelSize);
+  h2_neutronMultPhotonLOExp->GetYaxis()->SetTitleSize(y_labelSize);
+  h2_neutronMultPhotonLOExp->GetXaxis()->SetTickSize(x_tickSize);
+  h2_neutronMultPhotonLOExp->GetYaxis()->SetTickSize(y_tickSize);
 
   c_MultLOExp->Write();
   //c_MultLOExp->SaveAs("NeutronMultiplicityPhotonLOExp.eps");
@@ -479,16 +479,16 @@ void readFiss::PlotEnergyLOExp()
                                   "Neutron Energy vs. Neutron LO", 800, 400);
   c_EnergyLOExp->cd();
 
-  neutronEnergyLOExp->SetLineColor(kRed);
-  neutronEnergyLOExp->SetStats(0);
-  neutronEnergyLOExp->Draw("COLZ");
+  h2_neutronEnergyLOExp->SetLineColor(kRed);
+  h2_neutronEnergyLOExp->SetStats(0);
+  h2_neutronEnergyLOExp->Draw("COLZ");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronEnergyLOExp->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronEnergyLOExp->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronEnergyLOExp->GetXaxis()->SetTickSize(x_tickSize);
-  neutronEnergyLOExp->GetYaxis()->SetTickSize(y_tickSize);
+  h2_neutronEnergyLOExp->GetXaxis()->SetTitleSize(x_labelSize);
+  h2_neutronEnergyLOExp->GetYaxis()->SetTitleSize(y_labelSize);
+  h2_neutronEnergyLOExp->GetXaxis()->SetTickSize(x_tickSize);
+  h2_neutronEnergyLOExp->GetYaxis()->SetTickSize(y_tickSize);
 
   c_EnergyLOExp->Write();
   //c_EnergyLOExp->SaveAs("neutronEnergyLightOut.eps");
@@ -505,19 +505,19 @@ void readFiss::PlotN_LOPSD_Exp()
                                   "Neutron LO vs. Neutron PSD", 800, 400);
   c_N_LOPSD_Exp->cd();
 
-  neutronLightOutPSDExp->SetLineColor(kRed);
-  neutronLightOutPSDExp->SetStats(0);
-  neutronLightOutPSDExp->Draw("SURF2");
+  h2_neutronLightOutPSDExp->SetLineColor(kRed);
+  h2_neutronLightOutPSDExp->SetStats(0);
+  h2_neutronLightOutPSDExp->Draw("SURF2");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronLightOutPSDExp->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronLightOutPSDExp->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronLightOutPSDExp->GetXaxis()->SetTickSize(x_tickSize);
-  neutronLightOutPSDExp->GetYaxis()->SetTickSize(y_tickSize);
+  h2_neutronLightOutPSDExp->GetXaxis()->SetTitleSize(x_labelSize);
+  h2_neutronLightOutPSDExp->GetYaxis()->SetTitleSize(y_labelSize);
+  h2_neutronLightOutPSDExp->GetXaxis()->SetTickSize(x_tickSize);
+  h2_neutronLightOutPSDExp->GetYaxis()->SetTickSize(y_tickSize);
 
   c_N_LOPSD_Exp->Write();
-  //c_N_LOPSD_Exp->SaveAs("neutronLightOutPSDExp.eps");
+  //c_N_LOPSD_Exp->SaveAs("h2_neutronLightOutPSDExp.eps");
 }
 
 void readFiss::PlotP_LOPSD_Exp()
@@ -531,19 +531,19 @@ void readFiss::PlotP_LOPSD_Exp()
                                   "Photon LO vs. Photon PSD", 800, 400);
   c_P_LOPSD_Exp->cd();
 
-  photonLightOutPSDExp->SetLineColor(kRed);
-  photonLightOutPSDExp->SetStats(0);
-  photonLightOutPSDExp->Draw("SURF2");
+  h2_photonLightOutPSDExp->SetLineColor(kRed);
+  h2_photonLightOutPSDExp->SetStats(0);
+  h2_photonLightOutPSDExp->Draw("SURF2");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  photonLightOutPSDExp->GetXaxis()->SetTitleSize(x_labelSize);
-  photonLightOutPSDExp->GetYaxis()->SetTitleSize(y_labelSize);
-  photonLightOutPSDExp->GetXaxis()->SetTickSize(x_tickSize);
-  photonLightOutPSDExp->GetYaxis()->SetTickSize(y_tickSize);
+  h2_photonLightOutPSDExp->GetXaxis()->SetTitleSize(x_labelSize);
+  h2_photonLightOutPSDExp->GetYaxis()->SetTitleSize(y_labelSize);
+  h2_photonLightOutPSDExp->GetXaxis()->SetTickSize(x_tickSize);
+  h2_photonLightOutPSDExp->GetYaxis()->SetTickSize(y_tickSize);
 
   c_P_LOPSD_Exp->Write();
-  //c_P_LOPSD_Exp->SaveAs("photonLightOutPSDExp.eps");
+  //c_P_LOPSD_Exp->SaveAs("h2_photonLightOutPSDExp.eps");
 }
 
 void readFiss::PlotN_AngleCorr()
@@ -556,18 +556,18 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* c_N_AngleCorr = new TCanvas("cN_AngleCorr", "Cos(Theta) in Neutron Doubles", 800, 400);
   c_N_AngleCorr->cd();
 
-  neutronAngleCorr->SetLineColor(kRed);
-  neutronAngleCorr->Draw("A*");
+  g_neutronAngleCorr->SetLineColor(kRed);
+  g_neutronAngleCorr->Draw("A*");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
-  neutronAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+  g_neutronAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  g_neutronAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  g_neutronAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  g_neutronAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
 
   c_N_AngleCorr->Write();
-  //c_N_AngleCorr->SaveAs("neutronAngleCorrExp.eps");
+  //c_N_AngleCorr->SaveAs("g_neutronAngleCorrExp.eps");
 
   cout << "Plotting photon angular correlations." << endl;
 
@@ -575,15 +575,15 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* c_P_AngleCorr = new TCanvas("cP_AngleCorr", "Cos(Theta) in Photon Doubles", 800, 400);
   c_P_AngleCorr->cd();
 
-  photonAngleCorr->SetLineColor(kRed);
-  photonAngleCorr->Draw("A*");
+  g_photonAngleCorr->SetLineColor(kRed);
+  g_photonAngleCorr->Draw("A*");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  photonAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
-  photonAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
-  photonAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
-  photonAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+  g_photonAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  g_photonAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  g_photonAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  g_photonAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
 
   c_P_AngleCorr->Write();
 
@@ -593,15 +593,15 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* c_NP_AngleCorr = new TCanvas("cNP_AngleCorr", "Cos(Theta) in Neutron-Photon Doubles", 800, 400);
   c_NP_AngleCorr->cd();
 
-  neutronPhotonAngleCorr->SetLineColor(kRed);
-  neutronPhotonAngleCorr->Draw("A*");
+  g_neutronPhotonAngleCorr->SetLineColor(kRed);
+  g_neutronPhotonAngleCorr->Draw("A*");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronPhotonAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronPhotonAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronPhotonAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
-  neutronPhotonAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+  g_neutronPhotonAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  g_neutronPhotonAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  g_neutronPhotonAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  g_neutronPhotonAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
 
   c_NP_AngleCorr->Write();
 
@@ -612,15 +612,15 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* c_NB_AngleCorr = new TCanvas("cNB_AngleCorr", "Cos(Theta) in Background Neutron Doubles", 800, 400);
   c_NB_AngleCorr->cd();
 
-  neutronBackAngleCorr->SetLineColor(kRed);
-  neutronBackAngleCorr->Draw("A*");
+  g_neutronBackAngleCorr->SetLineColor(kRed);
+  g_neutronBackAngleCorr->Draw("A*");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronBackAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronBackAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronBackAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
-  neutronBackAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+  g_neutronBackAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  g_neutronBackAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  g_neutronBackAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  g_neutronBackAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
 
   c_NB_AngleCorr->Write();
 
@@ -630,15 +630,15 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* c_PB_AngleCorr = new TCanvas("cPB_AngleCorr", "Cos(Theta) in Background Photon Doubles", 800, 400);
   c_PB_AngleCorr->cd();
 
-  photonBackAngleCorr->SetLineColor(kRed);
-  photonBackAngleCorr->Draw("A*");
+  g_photonBackAngleCorr->SetLineColor(kRed);
+  g_photonBackAngleCorr->Draw("A*");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  photonBackAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
-  photonBackAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
-  photonBackAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
-  photonBackAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+  g_photonBackAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  g_photonBackAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  g_photonBackAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  g_photonBackAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
 
   c_PB_AngleCorr->Write();
 
@@ -648,30 +648,30 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* c_NPB_AngleCorr = new TCanvas("cNPB_AngleCorr", "Cos(Theta) in Background Neutron-Photon Doubles", 800, 400);
   c_NPB_AngleCorr->cd();
 
-  neutronPhotonBackAngleCorr->SetLineColor(kRed);
-  neutronPhotonBackAngleCorr->Draw("A*");
+  g_neutronPhotonBackAngleCorr->SetLineColor(kRed);
+  g_neutronPhotonBackAngleCorr->Draw("A*");
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronPhotonBackAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronPhotonBackAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronPhotonBackAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
-  neutronPhotonBackAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
+  g_neutronPhotonBackAngleCorr->GetXaxis()->SetTitleSize(x_labelSize);
+  g_neutronPhotonBackAngleCorr->GetYaxis()->SetTitleSize(y_labelSize);
+  g_neutronPhotonBackAngleCorr->GetXaxis()->SetTickSize(x_tickSize);
+  g_neutronPhotonBackAngleCorr->GetYaxis()->SetTickSize(y_tickSize);
 
   c_NPB_AngleCorr->Write();
 
   TCanvas* C_N_AngleCorrAvg = new TCanvas("cN_AngleCorrAvg", "Average line of Cos(Theta) in Neutron Doubles", 800, 400);
   C_N_AngleCorrAvg->cd();
 
-  neutronAngleCorrAvg->SetLineColor(kBlue);
-  neutronAngleCorrAvg->Draw();
+  g_neutronAngleCorrAvg->SetLineColor(kBlue);
+  g_neutronAngleCorrAvg->Draw();
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
-  neutronAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+  g_neutronAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  g_neutronAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  g_neutronAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  g_neutronAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
 
   C_N_AngleCorrAvg->Write();
 
@@ -679,15 +679,15 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* C_P_AngleCorrAvg = new TCanvas("cP_AngleCorrAvg", "Average line of Cos(Theta) in Photon Doubles", 800, 400);
   C_P_AngleCorrAvg->cd();
 
-  photonAngleCorrAvg->SetLineColor(kBlue);
-  photonAngleCorrAvg->Draw();
+  g_photonAngleCorrAvg->SetLineColor(kBlue);
+  g_photonAngleCorrAvg->Draw();
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  photonAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
-  photonAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
-  photonAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
-  photonAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+  g_photonAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  g_photonAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  g_photonAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  g_photonAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
 
   C_P_AngleCorrAvg->Write();
 
@@ -695,15 +695,15 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* C_NP_AngleCorrAvg = new TCanvas("cNP_AngleCorrAvg", "Average line of Cos(Theta) in Neutron-Photon Doubles", 800, 400);
   C_NP_AngleCorrAvg->cd();
 
-  neutronPhotonAngleCorrAvg->SetLineColor(kBlue);
-  neutronPhotonAngleCorrAvg->Draw();
+  g_neutronPhotonAngleCorrAvg->SetLineColor(kBlue);
+  g_neutronPhotonAngleCorrAvg->Draw();
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronPhotonAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronPhotonAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronPhotonAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
-  neutronPhotonAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+  g_neutronPhotonAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  g_neutronPhotonAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  g_neutronPhotonAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  g_neutronPhotonAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
 
   C_NP_AngleCorrAvg->Write();
 
@@ -711,15 +711,15 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* C_NB_AngleCorrAvg = new TCanvas("cNB_AngleCorrAvg", "Average line of Cos(Theta) in Background Neutron Doubles", 800, 400);
   C_NB_AngleCorrAvg->cd();
 
-  neutronBackAngleCorrAvg->SetLineColor(kBlue);
-  neutronBackAngleCorrAvg->Draw();
+  g_neutronBackAngleCorrAvg->SetLineColor(kBlue);
+  g_neutronBackAngleCorrAvg->Draw();
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronBackAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronBackAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronBackAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
-  neutronBackAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+  g_neutronBackAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  g_neutronBackAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  g_neutronBackAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  g_neutronBackAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
 
   C_NB_AngleCorrAvg->Write();
 
@@ -727,15 +727,15 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* C_PB_AngleCorrAvg = new TCanvas("cPB_AngleCorrAvg", "Average line of Cos(Theta) in Background Photon Doubles", 800, 400);
   C_PB_AngleCorrAvg->cd();
 
-  photonBackAngleCorrAvg->SetLineColor(kBlue);
-  photonBackAngleCorrAvg->Draw();
+  g_photonBackAngleCorrAvg->SetLineColor(kBlue);
+  g_photonBackAngleCorrAvg->Draw();
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  photonBackAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
-  photonBackAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
-  photonBackAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
-  photonBackAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+  g_photonBackAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  g_photonBackAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  g_photonBackAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  g_photonBackAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
 
   C_PB_AngleCorrAvg->Write();
 
@@ -743,43 +743,43 @@ void readFiss::PlotN_AngleCorr()
   TCanvas* C_NPB_AngleCorrAvg = new TCanvas("cNPB_AngleCorrAvg", "Average line of Cos(Theta) in Background Neutron-Photon Doubles", 800, 400);
   C_NPB_AngleCorrAvg->cd();
 
-  neutronPhotonBackAngleCorrAvg->SetLineColor(kBlue);
-  neutronPhotonBackAngleCorrAvg->Draw();
+  g_neutronPhotonBackAngleCorrAvg->SetLineColor(kBlue);
+  g_neutronPhotonBackAngleCorrAvg->Draw();
 
   // change size of axis objects - should be done on first histogram plotted
   // in this function
-  neutronPhotonBackAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
-  neutronPhotonBackAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
-  neutronPhotonBackAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
-  neutronPhotonBackAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
+  g_neutronPhotonBackAngleCorrAvg->GetXaxis()->SetTitleSize(x_labelSize);
+  g_neutronPhotonBackAngleCorrAvg->GetYaxis()->SetTitleSize(y_labelSize);
+  g_neutronPhotonBackAngleCorrAvg->GetXaxis()->SetTickSize(x_tickSize);
+  g_neutronPhotonBackAngleCorrAvg->GetYaxis()->SetTickSize(y_tickSize);
 
   C_NPB_AngleCorrAvg->Write();
 
-  //c_N_AngleCorrAvg->SaveAs("neutronAngleCorrExpAvg.eps");
+  //c_N_AngleCorrAvg->SaveAs("g_neutronAngleCorrExpAvg.eps");
 
-  neutronSinglesMat->Write();
-  neutronDoublesMat->Write();
-  neutronScaledDoubles->Write();
+  h2_neutronSinglesMat->Write();
+  h2_neutronDoublesMat->Write();
+  h2_neutronScaledDoubles->Write();
 
-  photonSinglesMat->Write();
-  photonDoublesMat->Write();
-  photonScaledDoubles->Write();
+  h2_photonSinglesMat->Write();
+  h2_photonDoublesMat->Write();
+  h2_photonScaledDoubles->Write();
 
-  neutronPhotonSinglesMat->Write();
-  neutronPhotonDoublesMat->Write();
-  neutronPhotonScaledDoubles->Write();
+  h2_neutronPhotonSinglesMat->Write();
+  h2_neutronPhotonDoublesMat->Write();
+  h2_neutronPhotonScaledDoubles->Write();
 
-  neutronBackSinglesMat->Write();
-  neutronBackDoublesMat->Write();
-  neutronBackScaledDoubles->Write();
+  h2_neutronBackSinglesMat->Write();
+  h2_neutronBackDoublesMat->Write();
+  h2_neutronBackScaledDoubles->Write();
 
-  photonBackSinglesMat->Write();
-  photonBackDoublesMat->Write();
-  photonBackScaledDoubles->Write();
+  h2_photonBackSinglesMat->Write();
+  h2_photonBackDoublesMat->Write();
+  h2_photonBackScaledDoubles->Write();
 
-  neutronPhotonBackSinglesMat->Write();
-  neutronPhotonBackDoublesMat->Write();
-  neutronPhotonBackScaledDoubles->Write();
+  h2_neutronPhotonBackSinglesMat->Write();
+  h2_neutronPhotonBackDoublesMat->Write();
+  h2_neutronPhotonBackScaledDoubles->Write();
 }
 
 void readFiss::PlotIndiv()
@@ -792,9 +792,9 @@ void readFiss::PlotIndiv()
   cd_ToFExp = cd_individual->mkdir("ToFExp");
   cd_ErgExp = cd_individual->mkdir("ErgExp");
   cd_PSDExp = cd_individual->mkdir("PSDExp");
-  cd_IndivNeutronEnergyLOExp = cd_individual->mkdir("NeutronEnergyLOExp");
-  cd_IndivNeutronLightOutPSDExp = cd_individual->mkdir("NeutronLightOutPSDExp");
-  cd_IndivPhotonLightOutPSDExp = cd_individual->mkdir("PhotonLightOutPSDExp");
+  cd_IndivNeutronEnergyLOExp = cd_individual->mkdir("neutronEnergyLOExp");
+  cd_IndivNeutronLightOutPSDExp = cd_individual->mkdir("neutronLightOutPSDExp");
+  cd_IndivPhotonLightOutPSDExp = cd_individual->mkdir("photonLightOutPSDExp");
 
   cd_LightOutExp->cd();
   TCanvas** c_LightOutExp = new TCanvas*[NUM_DETECTORS];
@@ -809,13 +809,13 @@ void readFiss::PlotIndiv()
   TCanvas** c_PSDExp = new TCanvas*[NUM_DETECTORS];
 
   cd_IndivNeutronEnergyLOExp->cd();
-  TCanvas** c_IndivNeutronEnergyLOExp = new TCanvas*[NUM_DETECTORS];
+  TCanvas** c_h2_IndivNeutronEnergyLOExp = new TCanvas*[NUM_DETECTORS];
 
   cd_IndivNeutronLightOutPSDExp->cd();
-  TCanvas** c_IndivNeutronLightOutPSDExp = new TCanvas*[NUM_DETECTORS];
+  TCanvas** c_h2_IndivNeutronLightOutPSDExp = new TCanvas*[NUM_DETECTORS];
 
   cd_IndivPhotonLightOutPSDExp->cd();
-  TCanvas** c_IndivPhotonLightOutPSDExp = new TCanvas*[NUM_DETECTORS];
+  TCanvas** c_h2_IndivPhotonLightOutPSDExp = new TCanvas*[NUM_DETECTORS];
 
   for(int i = 0; i < NUM_DETECTORS; ++i)
   {
@@ -825,35 +825,35 @@ void readFiss::PlotIndiv()
     c_LightOutExp[i] = new TCanvas((TString)"LightOutExp" + (TString)to_string(i), "Light Output", 800, 400);
     c_LightOutExp[i]->cd();
 
-    IndivPhotonLightOutputExp[i]->SetLineColor(kRed);
-    IndivPhotonLightOutputExp[i]->SetStats(0);
-    IndivPhotonLightOutputExp[i]->Draw();
+    h_IndivPhotonLightOutputExp[i]->SetLineColor(kRed);
+    h_IndivPhotonLightOutputExp[i]->SetStats(0);
+    h_IndivPhotonLightOutputExp[i]->Draw();
 
-    IndivPhotonLightOutputBack[i]->SetLineColor(kRed);
-    IndivPhotonLightOutputBack[i]->SetLineStyle(kDashed);
-    IndivPhotonLightOutputBack[i]->SetStats(0);
-    IndivPhotonLightOutputBack[i]->Draw("SAME");
+    h_IndivPhotonLightOutputBack[i]->SetLineColor(kRed);
+    h_IndivPhotonLightOutputBack[i]->SetLineStyle(kDashed);
+    h_IndivPhotonLightOutputBack[i]->SetStats(0);
+    h_IndivPhotonLightOutputBack[i]->Draw("SAME");
 
-    IndivNeutronLightOutputExp[i]->SetLineColor(kBlue);
-    IndivNeutronLightOutputExp[i]->SetStats(0);
-    IndivNeutronLightOutputExp[i]->Draw("SAME");
+    h_IndivNeutronLightOutputExp[i]->SetLineColor(kBlue);
+    h_IndivNeutronLightOutputExp[i]->SetStats(0);
+    h_IndivNeutronLightOutputExp[i]->Draw("SAME");
 
-    IndivNeutronLightOutputBack[i]->SetLineColor(kBlue);
-    IndivNeutronLightOutputBack[i]->SetLineStyle(kDashed);
-    IndivNeutronLightOutputBack[i]->SetStats(0);
-    IndivNeutronLightOutputBack[i]->Draw("SAME");
+    h_IndivNeutronLightOutputBack[i]->SetLineColor(kBlue);
+    h_IndivNeutronLightOutputBack[i]->SetLineStyle(kDashed);
+    h_IndivNeutronLightOutputBack[i]->SetStats(0);
+    h_IndivNeutronLightOutputBack[i]->Draw("SAME");
 
     TLegend *legend_LightOutput = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend_LightOutput->AddEntry((TString)"IndivNeutronLightOutputExp" + index, "Experimental Neutron");
-    legend_LightOutput->AddEntry((TString)"IndivPhotonLightOutputExp" + index, "Experimental Photon");
-    legend_LightOutput->AddEntry((TString)"IndivNeutronLightOutputBack" + index, "Background Neutron");
-    legend_LightOutput->AddEntry((TString)"IndivPhotonLightOutputBack" + index, "Background Photon");
+    legend_LightOutput->AddEntry((TString)"h_IndivNeutronLightOutputExp" + index, "Experimental Neutron");
+    legend_LightOutput->AddEntry((TString)"h_IndivPhotonLightOutputExp" + index, "Experimental Photon");
+    legend_LightOutput->AddEntry((TString)"h_IndivNeutronLightOutputBack" + index, "Background Neutron");
+    legend_LightOutput->AddEntry((TString)"h_IndivPhotonLightOutputBack" + index, "Background Photon");
     legend_LightOutput->Draw("SAME");
 
-    IndivPhotonLightOutputExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
-    IndivPhotonLightOutputExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
-    IndivPhotonLightOutputExp[i]->GetXaxis()->SetTickSize(x_tickSize);
-    IndivPhotonLightOutputExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+    h_IndivPhotonLightOutputExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    h_IndivPhotonLightOutputExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    h_IndivPhotonLightOutputExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    h_IndivPhotonLightOutputExp[i]->GetYaxis()->SetTickSize(y_tickSize);
 
     c_LightOutExp[i]->Write();
 
@@ -861,35 +861,35 @@ void readFiss::PlotIndiv()
     c_ToFExp[i] = new TCanvas((TString)"ToFExp" + (TString)to_string(i), "Time of Flight", 800, 400);
     c_ToFExp[i]->cd();
 
-    IndivPhotonTofExp[i]->SetLineColor(kRed);
-    IndivPhotonTofExp[i]->SetStats(0);
-    IndivPhotonTofExp[i]->Draw();
+    h_IndivPhotonTofExp[i]->SetLineColor(kRed);
+    h_IndivPhotonTofExp[i]->SetStats(0);
+    h_IndivPhotonTofExp[i]->Draw();
 
-    IndivPhotonTofBack[i]->SetLineColor(kRed);
-    IndivPhotonTofBack[i]->SetLineStyle(kDashed);
-    IndivPhotonTofBack[i]->SetStats(0);
-    IndivPhotonTofBack[i]->Draw("SAME");
+    h_IndivPhotonTofBack[i]->SetLineColor(kRed);
+    h_IndivPhotonTofBack[i]->SetLineStyle(kDashed);
+    h_IndivPhotonTofBack[i]->SetStats(0);
+    h_IndivPhotonTofBack[i]->Draw("SAME");
 
-    IndivNeutronTofExp[i]->SetLineColor(kBlue);
-    IndivNeutronTofExp[i]->SetStats(0);
-    IndivNeutronTofExp[i]->Draw("SAME");
+    h_IndivNeutronTofExp[i]->SetLineColor(kBlue);
+    h_IndivNeutronTofExp[i]->SetStats(0);
+    h_IndivNeutronTofExp[i]->Draw("SAME");
 
-    IndivNeutronTofBack[i]->SetLineColor(kBlue);
-    IndivNeutronTofBack[i]->SetLineStyle(kDashed);
-    IndivNeutronTofBack[i]->SetStats(0);
-    IndivNeutronTofBack[i]->Draw("SAME");
+    h_IndivNeutronTofBack[i]->SetLineColor(kBlue);
+    h_IndivNeutronTofBack[i]->SetLineStyle(kDashed);
+    h_IndivNeutronTofBack[i]->SetStats(0);
+    h_IndivNeutronTofBack[i]->Draw("SAME");
 
     TLegend *legend_ToF = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend_ToF->AddEntry((TString)"IndivNeutronTofExp" + index, "Experimental Neutron");
-    legend_ToF->AddEntry((TString)"IndivPhotonTofExp" + index, "Experimental Photon");
-    legend_ToF->AddEntry((TString)"IndivNeutronTofBack" + index, "Background Neutron");
-    legend_ToF->AddEntry((TString)"IndivPhotonTofBack" + index, "Background Photon");
+    legend_ToF->AddEntry((TString)"h_IndivNeutronTofExp" + index, "Experimental Neutron");
+    legend_ToF->AddEntry((TString)"h_IndivPhotonTofExp" + index, "Experimental Photon");
+    legend_ToF->AddEntry((TString)"h_IndivNeutronTofBack" + index, "Background Neutron");
+    legend_ToF->AddEntry((TString)"h_IndivPhotonTofBack" + index, "Background Photon");
     legend_ToF->Draw("SAME");
 
-    IndivPhotonTofExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
-    IndivPhotonTofExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
-    IndivPhotonTofExp[i]->GetXaxis()->SetTickSize(x_tickSize);
-    IndivPhotonTofExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+    h_IndivPhotonTofExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    h_IndivPhotonTofExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    h_IndivPhotonTofExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    h_IndivPhotonTofExp[i]->GetYaxis()->SetTickSize(y_tickSize);
 
     c_ToFExp[i]->Write();
 
@@ -897,25 +897,25 @@ void readFiss::PlotIndiv()
     c_ErgExp[i] = new TCanvas((TString)"ErgExp" + (TString)to_string(i), "ToF Energy", 800, 400);
     c_ErgExp[i]->cd();
 
-    IndivNeutronEnergyExp[i]->SetLineColor(kBlue);
-    IndivNeutronEnergyExp[i]->SetStats(0);
-    IndivNeutronEnergyExp[i]->Draw();
+    h_IndivNeutronEnergyExp[i]->SetLineColor(kBlue);
+    h_IndivNeutronEnergyExp[i]->SetStats(0);
+    h_IndivNeutronEnergyExp[i]->Draw();
 
-    IndivNeutronEnergyBack[i]->SetLineColor(kBlue);
-    IndivNeutronEnergyBack[i]->SetLineStyle(kDashed);
-    IndivNeutronEnergyBack[i]->SetStats(0);
-    IndivNeutronEnergyBack[i]->Draw("SAME");
+    h_IndivNeutronEnergyBack[i]->SetLineColor(kBlue);
+    h_IndivNeutronEnergyBack[i]->SetLineStyle(kDashed);
+    h_IndivNeutronEnergyBack[i]->SetStats(0);
+    h_IndivNeutronEnergyBack[i]->Draw("SAME");
 
 
     TLegend *legend_Energy = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend_Energy->AddEntry((TString)"IndivNeutronEnergyExp" + index, "Experimental Neutron");
-    legend_Energy->AddEntry((TString)"IndivNeutronEnergyBack" + index, "Background Neutron");
+    legend_Energy->AddEntry((TString)"h_IndivNeutronEnergyExp" + index, "Experimental Neutron");
+    legend_Energy->AddEntry((TString)"h_IndivNeutronEnergyBack" + index, "Background Neutron");
     legend_Energy->Draw("SAME");
 
-    IndivNeutronEnergyExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
-    IndivNeutronEnergyExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
-    IndivNeutronEnergyExp[i]->GetXaxis()->SetTickSize(x_tickSize);
-    IndivNeutronEnergyExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+    h_IndivNeutronEnergyExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    h_IndivNeutronEnergyExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    h_IndivNeutronEnergyExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    h_IndivNeutronEnergyExp[i]->GetYaxis()->SetTickSize(y_tickSize);
 
     c_ErgExp[i]->Write();
 
@@ -923,82 +923,82 @@ void readFiss::PlotIndiv()
     c_PSDExp[i] = new TCanvas((TString)"PSDExp" + (TString)to_string(i), "Particle Discrimination", 800, 400);
     c_PSDExp[i]->cd();
 
-    IndivPhotonPSDExp[i]->SetLineColor(kRed);
-    IndivPhotonPSDExp[i]->SetStats(0);
-    IndivPhotonPSDExp[i]->Draw();
+    h_IndivPhotonPSDExp[i]->SetLineColor(kRed);
+    h_IndivPhotonPSDExp[i]->SetStats(0);
+    h_IndivPhotonPSDExp[i]->Draw();
 
-    IndivPhotonPSDBack[i]->SetLineColor(kRed);
-    IndivPhotonPSDBack[i]->SetLineStyle(kDashed);
-    IndivPhotonPSDBack[i]->SetStats(0);
-    IndivPhotonPSDBack[i]->Draw("SAME");
+    h_IndivPhotonPSDBack[i]->SetLineColor(kRed);
+    h_IndivPhotonPSDBack[i]->SetLineStyle(kDashed);
+    h_IndivPhotonPSDBack[i]->SetStats(0);
+    h_IndivPhotonPSDBack[i]->Draw("SAME");
 
-    IndivNeutronPSDExp[i]->SetLineColor(kBlue);
-    IndivNeutronPSDExp[i]->SetStats(0);
-    IndivNeutronPSDExp[i]->Draw("SAME");
+    h_IndivNeutronPSDExp[i]->SetLineColor(kBlue);
+    h_IndivNeutronPSDExp[i]->SetStats(0);
+    h_IndivNeutronPSDExp[i]->Draw("SAME");
 
-    IndivNeutronPSDBack[i]->SetLineColor(kBlue);
-    IndivNeutronPSDBack[i]->SetLineStyle(kDashed);
-    IndivNeutronPSDBack[i]->SetStats(0);
-    IndivNeutronPSDBack[i]->Draw("SAME");
+    h_IndivNeutronPSDBack[i]->SetLineColor(kBlue);
+    h_IndivNeutronPSDBack[i]->SetLineStyle(kDashed);
+    h_IndivNeutronPSDBack[i]->SetStats(0);
+    h_IndivNeutronPSDBack[i]->Draw("SAME");
 
     TLegend *legend_PSD = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend_PSD->AddEntry((TString)"IndivNeutronPSDExp" + index, "Experimental Neutron");
-    legend_PSD->AddEntry((TString)"IndivPhotonPSDExp" + index, "Experimental Photon");
-    legend_PSD->AddEntry((TString)"IndivNeutronPSDBack" + index, "Background Neutron");
-    legend_PSD->AddEntry((TString)"IndivPhotonPSDBack" + index, "Background Photon");
+    legend_PSD->AddEntry((TString)"h_IndivNeutronPSDExp" + index, "Experimental Neutron");
+    legend_PSD->AddEntry((TString)"h_IndivPhotonPSDExp" + index, "Experimental Photon");
+    legend_PSD->AddEntry((TString)"h_IndivNeutronPSDBack" + index, "Background Neutron");
+    legend_PSD->AddEntry((TString)"h_IndivPhotonPSDBack" + index, "Background Photon");
     legend_PSD->Draw("SAME");
 
-    IndivPhotonPSDExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
-    IndivPhotonPSDExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
-    IndivPhotonPSDExp[i]->GetXaxis()->SetTickSize(x_tickSize);
-    IndivPhotonPSDExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+    h_IndivPhotonPSDExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    h_IndivPhotonPSDExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    h_IndivPhotonPSDExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    h_IndivPhotonPSDExp[i]->GetYaxis()->SetTickSize(y_tickSize);
 
     c_PSDExp[i]->Write();
 
     cd_IndivNeutronEnergyLOExp->cd();
-    c_IndivNeutronEnergyLOExp[i] = new TCanvas((TString)"NeutronEnergyLOExp" + (TString)to_string(i), "Neutron Energy vs. LO", 800, 400);
-    c_IndivNeutronEnergyLOExp[i]->cd();
+    c_h2_IndivNeutronEnergyLOExp[i] = new TCanvas((TString)"h2_neutronEnergyLOExp" + (TString)to_string(i), "Neutron Energy vs. LO", 800, 400);
+    c_h2_IndivNeutronEnergyLOExp[i]->cd();
 
-    IndivNeutronEnergyLOExp[i]->SetLineColor(kRed);
-    IndivNeutronEnergyLOExp[i]->SetStats(0);
-    IndivNeutronEnergyLOExp[i]->Draw("COLZ");
+    h2_IndivNeutronEnergyLOExp[i]->SetLineColor(kRed);
+    h2_IndivNeutronEnergyLOExp[i]->SetStats(0);
+    h2_IndivNeutronEnergyLOExp[i]->Draw("COLZ");
 
-    IndivNeutronEnergyLOExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
-    IndivNeutronEnergyLOExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
-    IndivNeutronEnergyLOExp[i]->GetXaxis()->SetTickSize(x_tickSize);
-    IndivNeutronEnergyLOExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+    h2_IndivNeutronEnergyLOExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    h2_IndivNeutronEnergyLOExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    h2_IndivNeutronEnergyLOExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    h2_IndivNeutronEnergyLOExp[i]->GetYaxis()->SetTickSize(y_tickSize);
 
-    c_IndivNeutronEnergyLOExp[i]->Write();
+    c_h2_IndivNeutronEnergyLOExp[i]->Write();
 
     cd_IndivNeutronLightOutPSDExp->cd();
-    c_IndivNeutronLightOutPSDExp[i] = new TCanvas((TString)"NeutronLightOutPSDExp" + (TString)to_string(i), "Neutron Light Output vs. PSD", 800, 400);
-    c_IndivNeutronLightOutPSDExp[i]->cd();
+    c_h2_IndivNeutronLightOutPSDExp[i] = new TCanvas((TString)"h2_neutronLightOutPSDExp" + (TString)to_string(i), "Neutron Light Output vs. PSD", 800, 400);
+    c_h2_IndivNeutronLightOutPSDExp[i]->cd();
 
-    IndivNeutronLightOutPSDExp[i]->SetLineColor(kRed);
-    IndivNeutronLightOutPSDExp[i]->SetStats(0);
-    IndivNeutronLightOutPSDExp[i]->Draw("SURF2");
+    h2_IndivNeutronLightOutPSDExp[i]->SetLineColor(kRed);
+    h2_IndivNeutronLightOutPSDExp[i]->SetStats(0);
+    h2_IndivNeutronLightOutPSDExp[i]->Draw("SURF2");
 
-    IndivNeutronLightOutPSDExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
-    IndivNeutronLightOutPSDExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
-    IndivNeutronLightOutPSDExp[i]->GetXaxis()->SetTickSize(x_tickSize);
-    IndivNeutronLightOutPSDExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+    h2_IndivNeutronLightOutPSDExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    h2_IndivNeutronLightOutPSDExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    h2_IndivNeutronLightOutPSDExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    h2_IndivNeutronLightOutPSDExp[i]->GetYaxis()->SetTickSize(y_tickSize);
 
-    c_IndivNeutronLightOutPSDExp[i]->Write();
+    c_h2_IndivNeutronLightOutPSDExp[i]->Write();
 
     cd_IndivPhotonLightOutPSDExp->cd();
-    c_IndivPhotonLightOutPSDExp[i] = new TCanvas((TString)"PhotonLightOutPSDExp" + (TString)to_string(i), "Photon Light Output vs. PSD", 800, 400);
-    c_IndivPhotonLightOutPSDExp[i]->cd();
+    c_h2_IndivPhotonLightOutPSDExp[i] = new TCanvas((TString)"h2_photonLightOutPSDExp" + (TString)to_string(i), "Photon Light Output vs. PSD", 800, 400);
+    c_h2_IndivPhotonLightOutPSDExp[i]->cd();
 
-    IndivPhotonLightOutPSDExp[i]->SetLineColor(kRed);
-    IndivPhotonLightOutPSDExp[i]->SetStats(0);
-    IndivPhotonLightOutPSDExp[i]->Draw("SURF2");
+    h2_IndivPhotonLightOutPSDExp[i]->SetLineColor(kRed);
+    h2_IndivPhotonLightOutPSDExp[i]->SetStats(0);
+    h2_IndivPhotonLightOutPSDExp[i]->Draw("SURF2");
 
-    IndivPhotonLightOutPSDExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
-    IndivPhotonLightOutPSDExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
-    IndivPhotonLightOutPSDExp[i]->GetXaxis()->SetTickSize(x_tickSize);
-    IndivPhotonLightOutPSDExp[i]->GetYaxis()->SetTickSize(y_tickSize);
+    h2_IndivPhotonLightOutPSDExp[i]->GetXaxis()->SetTitleSize(x_labelSize);
+    h2_IndivPhotonLightOutPSDExp[i]->GetYaxis()->SetTitleSize(y_labelSize);
+    h2_IndivPhotonLightOutPSDExp[i]->GetXaxis()->SetTickSize(x_tickSize);
+    h2_IndivPhotonLightOutPSDExp[i]->GetYaxis()->SetTickSize(y_tickSize);
 
-    c_IndivPhotonLightOutPSDExp[i]->Write();
+    c_h2_IndivPhotonLightOutPSDExp[i]->Write();
   }
 }
 
@@ -1020,17 +1020,17 @@ void readFiss::CompareLightOut()
     cout << "Comparing Light Output." << endl;
 
 
-    photonLightOutputExp->SetLineColor(kRed);
+    h_photonLightOutputExp->SetLineColor(kRed);
 
-    neutronLightOutputExp->SetLineColor(kBlue);
+    h_neutronLightOutputExp->SetLineColor(kBlue);
 
-    neutronLightOutputSim->Scale((double)expEntries/(double)simEntries);
-    neutronLightOutputSim->SetLineColor(kBlue);
-    neutronLightOutputSim->SetLineStyle(kDashed);
+    h_neutronLightOutputSim->Scale((double)expEntries/(double)simEntries);
+    h_neutronLightOutputSim->SetLineColor(kBlue);
+    h_neutronLightOutputSim->SetLineStyle(kDashed);
 
-    photonLightOutputSim->Scale((double)expEntries/(double)simEntries);
-    photonLightOutputSim->SetLineColor(kRed);
-    photonLightOutputSim->SetLineStyle(kDashed);
+    h_photonLightOutputSim->Scale((double)expEntries/(double)simEntries);
+    h_photonLightOutputSim->SetLineColor(kRed);
+    h_photonLightOutputSim->SetLineStyle(kDashed);
 
 
 
@@ -1039,16 +1039,16 @@ void readFiss::CompareLightOut()
     // cLO->Divide(1,2);
     c_LOs->cd();
 
-    photonLightOutputExp->Draw();
-    neutronLightOutputExp->Draw("SAME");
-    neutronLightOutputSim->Draw("SAME");
-    photonLightOutputSim->Draw("SAME");
+    h_photonLightOutputExp->Draw();
+    h_neutronLightOutputExp->Draw("SAME");
+    h_neutronLightOutputSim->Draw("SAME");
+    h_photonLightOutputSim->Draw("SAME");
 
     TLegend *legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronLightOutputExp", "Experimental Neutron");
-    legend->AddEntry("photonLightOutputExp", "Experimental Photon");
-    legend->AddEntry("neutronLightOutputSim", "Simulated Neutron");
-    legend->AddEntry("photonLightOutputSim", "Simulated Photon");
+    legend->AddEntry("h_neutronLightOutputExp", "Experimental Neutron");
+    legend->AddEntry("h_photonLightOutputExp", "Experimental Photon");
+    legend->AddEntry("h_neutronLightOutputSim", "Simulated Neutron");
+    legend->AddEntry("h_photonLightOutputSim", "Simulated Photon");
     legend->Draw("SAME");
 
     c_LOs->Write();
@@ -1061,15 +1061,15 @@ void readFiss::CompareLightOut()
     // // cLO->Divide(1,2);
     // c_LOns->cd();
     //
-    // neutronLightOutputExp->Draw();
-    // neutronLightOutputSim->Draw("SAME");
+    // h_neutronLightOutputExp->Draw();
+    // h_neutronLightOutputSim->Draw("SAME");
     //
     // TLegend *legendN = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    // legendN->AddEntry("neutronLightOutputExp", "Experimental Neutron");
-    // legendN->AddEntry("neutronLightOutputSim", "Simulated Neutron");
+    // legendN->AddEntry("h_neutronLightOutputExp", "Experimental Neutron");
+    // legendN->AddEntry("h_neutronLightOutputSim", "Simulated Neutron");
     // legendN->Draw("SAME");
     //
-    // TRatioPlot *ratN = new TRatioPlot(neutronLightOutputSim, neutronLightOutputExp);
+    // TRatioPlot *ratN = new TRatioPlot(h_neutronLightOutputSim, h_neutronLightOutputExp);
     // ratN->Draw("SAME");
     //
     // c_LOns->Write();
@@ -1080,15 +1080,15 @@ void readFiss::CompareLightOut()
     // // cLO->Divide(1,2);
     // c_LOps->cd();
     //
-    // photonLightOutputExp->Draw();
-    // photonLightOutputSim->Draw("SAME");
+    // h_photonLightOutputExp->Draw();
+    // h_photonLightOutputSim->Draw("SAME");
     //
     // TLegend *legendP = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    // legendP->AddEntry("photonLightOutputExp", "Experimental Photon");
-    // legendP->AddEntry("photonLightOutputSim", "Simulated Photon");
+    // legendP->AddEntry("h_photonLightOutputExp", "Experimental Photon");
+    // legendP->AddEntry("h_photonLightOutputSim", "Simulated Photon");
     // legendP->Draw("SAME");
     //
-    // TRatioPlot *ratP = new TRatioPlot(photonLightOutputSim, photonLightOutputExp);
+    // TRatioPlot *ratP = new TRatioPlot(h_photonLightOutputSim, h_photonLightOutputExp);
     // ratP->Draw("SAME");
     //
     // c_LOps->Write();
@@ -1111,30 +1111,30 @@ void readFiss::CompareTof()
     c_ToFs->cd();
 
 
-    neutronTofExp->SetLineColor(kBlue);
-    neutronTofExp->Draw();
+    h_neutronTofExp->SetLineColor(kBlue);
+    h_neutronTofExp->Draw();
 
-    photonTofExp->SetLineColor(kRed);
-    photonTofExp->Draw("SAME");
+    h_photonTofExp->SetLineColor(kRed);
+    h_photonTofExp->Draw("SAME");
 
-    neutronTofSim->Scale((double)expEntries/(double)simEntries);
-    neutronTofSim->SetLineStyle(kDashed);
-    neutronTofSim->SetLineColor(kBlue);
-    neutronTofSim->Draw("SAME");
+    h_neutronTofSim->Scale((double)expEntries/(double)simEntries);
+    h_neutronTofSim->SetLineStyle(kDashed);
+    h_neutronTofSim->SetLineColor(kBlue);
+    h_neutronTofSim->Draw("SAME");
 
-    photonTofSim->Scale((double)expEntries/(double)simEntries);
-    photonTofSim->SetLineStyle(kDashed);
-    photonTofSim->SetLineColor(kRed);
-    photonTofSim->Draw("SAME");
+    h_photonTofSim->Scale((double)expEntries/(double)simEntries);
+    h_photonTofSim->SetLineStyle(kDashed);
+    h_photonTofSim->SetLineColor(kRed);
+    h_photonTofSim->Draw("SAME");
 
-    // TRatioPlot* rat = new TRatioPlot(neutronTofExp, neutronTofSim);
+    // TRatioPlot* rat = new TRatioPlot(h_neutronTofExp, h_neutronTofSim);
     // rat->Draw("SAME");
 
     TLegend* legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronTofExp", "Experimental Neutron");
-    legend->AddEntry("photonTofExp", "Experimental Photon");
-    legend->AddEntry("neutronTofSim", "Simulated Neutron");
-    legend->AddEntry("photonTofSim", "Simulated Photon");
+    legend->AddEntry("h_neutronTofExp", "Experimental Neutron");
+    legend->AddEntry("h_photonTofExp", "Experimental Photon");
+    legend->AddEntry("h_neutronTofSim", "Simulated Neutron");
+    legend->AddEntry("h_photonTofSim", "Simulated Photon");
     legend->Draw("SAME");
 
     c_ToFs->Write();
@@ -1153,17 +1153,17 @@ void readFiss::CompareErg()
     // cLO->Divide(1,2);
     c_Ergs->cd();
 
-    neutronEnergyExp->SetLineColor(kBlue);
-    neutronEnergyExp->Draw();
+    h_neutronEnergyExp->SetLineColor(kBlue);
+    h_neutronEnergyExp->Draw();
 
-    neutronEnergySim->Scale((double)expEntries/(double)simEntries);
-    neutronEnergySim->SetLineColor(kBlue);
-    neutronEnergySim->SetLineStyle(kDashed);
-    neutronEnergySim->Draw("SAME");
+    h_neutronEnergySim->Scale((double)expEntries/(double)simEntries);
+    h_neutronEnergySim->SetLineColor(kBlue);
+    h_neutronEnergySim->SetLineStyle(kDashed);
+    h_neutronEnergySim->Draw("SAME");
 
     TLegend* legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronEnergyExp", "Experimental Neutron");
-    legend->AddEntry("neutronEnergySim", "Simulated Neutron");
+    legend->AddEntry("h_neutronEnergyExp", "Experimental Neutron");
+    legend->AddEntry("h_neutronEnergySim", "Simulated Neutron");
     legend->Draw("SAME");
 
     c_Ergs->Write();
@@ -1182,27 +1182,27 @@ void readFiss::CompareMult()
 
     c_Mults->cd();
 
-    photonMultExp->SetLineColor(kRed);
-    photonMultExp->Draw();
+    h_photonMultExp->SetLineColor(kRed);
+    h_photonMultExp->Draw();
 
-    photonMultSim->Scale((double)expEntries/(double)simEntries);
-    photonMultSim->SetLineColor(kRed);
-    photonMultSim->SetLineStyle(kDashed);
-    photonMultSim->Draw("SAME");
+    h_photonMultSim->Scale((double)expEntries/(double)simEntries);
+    h_photonMultSim->SetLineColor(kRed);
+    h_photonMultSim->SetLineStyle(kDashed);
+    h_photonMultSim->Draw("SAME");
 
-    neutronMultExp->SetLineColor(kBlue);
-    neutronMultExp->Draw("SAME");
+    h_neutronMultExp->SetLineColor(kBlue);
+    h_neutronMultExp->Draw("SAME");
 
-    neutronMultSim->Scale((double)expEntries/(double)simEntries);
-    neutronMultSim->SetLineColor(kBlue);
-    neutronMultSim->SetLineStyle(kDashed);
-    neutronMultSim->Draw("SAME");
+    h_neutronMultSim->Scale((double)expEntries/(double)simEntries);
+    h_neutronMultSim->SetLineColor(kBlue);
+    h_neutronMultSim->SetLineStyle(kDashed);
+    h_neutronMultSim->Draw("SAME");
 
     TLegend *legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronMultSim", "Experimental Neutron");
-    legend->AddEntry("photonMultSim", "Experimental Photon");
-    legend->AddEntry("neutronMultSim", "Simulated Neutron");
-    legend->AddEntry("photonMultSim", "Simulated Photon");
+    legend->AddEntry("h_neutronMultSim", "Experimental Neutron");
+    legend->AddEntry("h_photonMultSim", "Experimental Photon");
+    legend->AddEntry("h_neutronMultSim", "Simulated Neutron");
+    legend->AddEntry("h_photonMultSim", "Simulated Photon");
     legend->Draw("SAME");
 
     c_Mults->Write();
@@ -1222,27 +1222,27 @@ void readFiss::ComparePSD()
 
     c_PSDs->cd();
 
-    photonPSDExp->SetLineColor(kRed);
-    photonPSDExp->Draw();
+    h_photonPSDExp->SetLineColor(kRed);
+    h_photonPSDExp->Draw();
 
-    photonPSDSim->Scale((double)expEntries/(double)simEntries);
-    photonPSDSim->SetLineColor(kRed);
-    photonPSDSim->SetLineStyle(kDashed);
-    photonPSDSim->Draw("SAME");
+    h_photonPSDSim->Scale((double)expEntries/(double)simEntries);
+    h_photonPSDSim->SetLineColor(kRed);
+    h_photonPSDSim->SetLineStyle(kDashed);
+    h_photonPSDSim->Draw("SAME");
 
-    neutronPSDExp->SetLineColor(kBlue);
-    neutronPSDExp->Draw("SAME");
+    h_neutronPSDExp->SetLineColor(kBlue);
+    h_neutronPSDExp->Draw("SAME");
 
-    neutronPSDSim->Scale((double)expEntries/(double)simEntries);
-    neutronPSDSim->SetLineColor(kBlue);
-    neutronPSDSim->SetLineStyle(kDashed);
-    neutronPSDSim->Draw("SAME");
+    h_neutronPSDSim->Scale((double)expEntries/(double)simEntries);
+    h_neutronPSDSim->SetLineColor(kBlue);
+    h_neutronPSDSim->SetLineStyle(kDashed);
+    h_neutronPSDSim->Draw("SAME");
 
     TLegend *legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronPSDExp", "Experimental Neutron");
-    legend->AddEntry("photonPSDExp", "Experimental Photon");
-    legend->AddEntry("neutronPSDSim", "Simulated Neutron");
-    legend->AddEntry("photonPSDSim", "Simulated Photon");
+    legend->AddEntry("h_neutronPSDExp", "Experimental Neutron");
+    legend->AddEntry("h_photonPSDExp", "Experimental Photon");
+    legend->AddEntry("h_neutronPSDSim", "Simulated Neutron");
+    legend->AddEntry("h_photonPSDSim", "Simulated Photon");
     legend->Draw("SAME");
 
     c_PSDs->Write();
@@ -1261,27 +1261,27 @@ void readFiss::CompareSingles()
 
     c_Sins->cd();
 
-    photonSinglesExp->SetLineColor(kRed);
-    photonSinglesExp->Draw();
+    h_photonSinglesExp->SetLineColor(kRed);
+    h_photonSinglesExp->Draw();
 
-    photonSinglesSim->Scale((double)expEntries/(double)simEntries);
-    photonSinglesSim->SetLineColor(kRed);
-    photonSinglesSim->SetLineStyle(kDashed);
-    photonSinglesSim->Draw("SAME");
+    h_photonSinglesSim->Scale((double)expEntries/(double)simEntries);
+    h_photonSinglesSim->SetLineColor(kRed);
+    h_photonSinglesSim->SetLineStyle(kDashed);
+    h_photonSinglesSim->Draw("SAME");
 
-    neutronSinglesExp->SetLineColor(kBlue);
-    neutronSinglesExp->Draw("SAME");
+    h_neutronSinglesExp->SetLineColor(kBlue);
+    h_neutronSinglesExp->Draw("SAME");
 
-    neutronSinglesSim->Scale((double)expEntries/(double)simEntries);
-    neutronSinglesSim->SetLineColor(kBlue);
-    neutronSinglesSim->SetLineStyle(kDashed);
-    neutronSinglesSim->Draw("SAME");
+    h_neutronSinglesSim->Scale((double)expEntries/(double)simEntries);
+    h_neutronSinglesSim->SetLineColor(kBlue);
+    h_neutronSinglesSim->SetLineStyle(kDashed);
+    h_neutronSinglesSim->Draw("SAME");
 
     TLegend *legend = new TLegend(legend_x1, legend_y1, legend_x2, legend_y2);
-    legend->AddEntry("neutronSinglesExp", "Experimental Neutron");
-    legend->AddEntry("photonSinglesExp", "Experimental Photon");
-    legend->AddEntry("neutronSinglesSim", "Simulated Neutron");
-    legend->AddEntry("photonSinglesSim", "Simulated Photon");
+    legend->AddEntry("h_neutronSinglesExp", "Experimental Neutron");
+    legend->AddEntry("h_photonSinglesExp", "Experimental Photon");
+    legend->AddEntry("h_neutronSinglesSim", "Simulated Neutron");
+    legend->AddEntry("h_photonSinglesSim", "Simulated Photon");
     legend->Draw("SAME");
 
     c_Sins->Write();

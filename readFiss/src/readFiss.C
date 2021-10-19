@@ -154,22 +154,49 @@ void readFiss::InitSim(TChain* tree)
     fCurrent = -1;
     simTree->SetMakeClass(1);
 
-    simTree->SetBranchAddress("neutronMult", &neutronMult, &b_neutronMultSim);//already defined no need to change
-    simTree->SetBranchAddress("gammaMult", &gammaMult, &b_gammaMultSim);
-    simTree->SetBranchAddress("neutronChannel", neutronChannel, &b_neutronChannelSim);
-    simTree->SetBranchAddress("neutronDetTimes", neutronDetTimes, &b_neutronDetTimesSim);
-    simTree->SetBranchAddress("neutronEnergy", neutronEnergy, &b_neutronEnergySim);
-    simTree->SetBranchAddress("neutronIntegral", neutronIntegral, &b_neutronIntegralSim);
-    simTree->SetBranchAddress("neutronHeight", neutronHeight, &b_neutronHeightSim);
-    simTree->SetBranchAddress("neutronPSD", neutronPSD, &b_neutronPSDSim);
-    simTree->SetBranchAddress("photonChannel", photonChannel, &b_photonChannelSim);
-    simTree->SetBranchAddress("photonDetTimes", photonDetTimes, &b_photonDetTimesSim);
-    simTree->SetBranchAddress("photonEnergy", photonEnergy, &b_photonEnergySim);
-    simTree->SetBranchAddress("photonIntegral", photonIntegral, &b_photonIntegralSim);
-    simTree->SetBranchAddress("photonHeight", photonHeight, &b_photonHeightSim);
-    simTree->SetBranchAddress("photonPSD", photonPSD, &b_photonPSDSim);
     simTree->SetBranchAddress("neutronFlag", neutronFlag, &b_neutronFlagSim);
     simTree->SetBranchAddress("photonFlag", photonFlag, &b_photonFlagSim);
+
+    simTree->SetBranchAddress("fisTime", &fisTime, &b_fisTimeSim);
+    simTree->SetBranchAddress("fisDep", &fisDep, &b_fisDepSim);
+    simTree->SetBranchAddress("fisChan", &fisChan, &b_fisChanSim);
+    simTree->SetBranchAddress("fisPSP", &fisPSP, &b_fisPSPSim);
+    simTree->SetBranchAddress("neutronMult", &neutronMult, &b_neutronMultSim);
+    simTree->SetBranchAddress("gammaMult", &gammaMult, &b_gammaMultSim);
+    simTree->SetBranchAddress("neutronBackMult", &neutronBackMult, &b_neutronBackMultSim);
+    simTree->SetBranchAddress("gammaBackMult", &gammaBackMult, &b_gammaBackMultSim);
+    simTree->SetBranchAddress("neutronDetTimes", neutronDetTimes, &b_neutronDetTimesSim);
+    simTree->SetBranchAddress("neutronLightOut", neutronLightOut, &b_neutronLightOutSim);
+    simTree->SetBranchAddress("neutronPSD", neutronPSD, &b_neutronPSDSim);
+    simTree->SetBranchAddress("neutronToFErg", neutronToFErg, &b_neutronToFErgSim);
+    simTree->SetBranchAddress("neutronDet", neutronDet, &b_neutronDetSim);
+    simTree->SetBranchAddress("neutronVx", neutronVx, &b_neutronVxSim);
+    simTree->SetBranchAddress("neutronVy", neutronVy, &b_neutronVySim);
+    simTree->SetBranchAddress("neutronVz", neutronVz, &b_neutronVzSim);
+    simTree->SetBranchAddress("photonDetTimes", photonDetTimes, &b_photonDetTimesSim);
+    simTree->SetBranchAddress("photonLightOut", photonLightOut, &b_photonLightOutSim);
+    simTree->SetBranchAddress("photonPSD", photonPSD, &b_photonPSDSim);
+    simTree->SetBranchAddress("photonDet", photonDet, &b_photonDetSim);
+    simTree->SetBranchAddress("photonVx", photonVx, &b_photonVxSim);
+    simTree->SetBranchAddress("photonVy", photonVy, &b_photonVySim);
+    simTree->SetBranchAddress("photonVz", photonVz, &b_photonVzSim);
+    simTree->SetBranchAddress("backNeutronDetTimes", backNeutronDetTimes, &b_backNeutronDetTimesSim);
+    simTree->SetBranchAddress("backNeutronLightOut", backNeutronLightOut, &b_backNeutronLightOutSim);
+    simTree->SetBranchAddress("backNeutronPSD", backNeutronPSD, &b_backNeutronPSDSim);
+    simTree->SetBranchAddress("backNeutronToFErg", backNeutronToFErg, &b_backNeutronToFErgSim);
+    simTree->SetBranchAddress("backNeutronDet", backNeutronDet, &b_backNeutronDetSim);
+    simTree->SetBranchAddress("backNeutronVx", backNeutronVx, &b_backNeutronVxSim);
+    simTree->SetBranchAddress("backNeutronVy", backNeutronVy, &b_backNeutronVySim);
+    simTree->SetBranchAddress("backNeutronVz", backNeutronVz, &b_backNeutronVzSim);
+    simTree->SetBranchAddress("backPhotonDetTimes", backPhotonDetTimes, &b_backPhotonDetTimesSim);
+    simTree->SetBranchAddress("backPhotonLightOut", backPhotonLightOut, &b_backPhotonLightOutSim);
+    simTree->SetBranchAddress("backPhotonPSD", backPhotonPSD, &b_backPhotonPSDSim);
+    simTree->SetBranchAddress("backPhotonDet", backPhotonDet, &b_backPhotonDetSim);
+    simTree->SetBranchAddress("backPhotonVx", backPhotonVx, &b_backPhotonVxSim);
+    simTree->SetBranchAddress("backPhotonVy", backPhotonVy, &b_backPhotonVySim);
+    simTree->SetBranchAddress("backPhotonVz", backPhotonVz, &b_backPhotonVzSim);
+
+
     Notify();
 }
 Bool_t readFiss::Notify()

@@ -52,7 +52,7 @@ public :
    //neural network
    myANN*           crossTalkANN;
    Double_t         thresholdANN = 0.95;
-   bool             ANN_mode = 1;
+   bool             ANN_mode = 0;
 
    std::string      nameExp; // String name of where to find experiment
    std::string      nameSim;
@@ -156,148 +156,148 @@ public :
                     |___/                    */
 
    // matrix variables
-   TH2D* arrayCorr;
-   TH2D* arraySpec;
-   TH2D* arrayDiff;
+   TH2D* h2_arrayCorr;
+   TH2D* h2_arraySpec;
+   TH2D* h2_arrayDiff;
 
    // loop histograms quality of data
-   TH1I* fissRej;
+   TH1I* h_fissRej;
 
    // trigger histograms
    TH1D** h_timeDiffTrig;
 
    // n LO
-   TH1D* neutronLightOutputSim;
-   TH1D* neutronLightOutputExp;
-   TH1D* neutronLightOutputBack;
+   TH1D* h_neutronLightOutputSim;
+   TH1D* h_neutronLightOutputExp;
+   TH1D* h_neutronLightOutputBack;
    // p LO
-   TH1D* photonLightOutputSim;
-   TH1D* photonLightOutputExp;
-   TH1D* photonLightOutputBack;
+   TH1D* h_photonLightOutputSim;
+   TH1D* h_photonLightOutputExp;
+   TH1D* h_photonLightOutputBack;
 
    // n ToF
-   TH1D* neutronTofSim;
-   TH1D* neutronTofExp;
-   TH1D* neutronTofBack;
+   TH1D* h_neutronTofSim;
+   TH1D* h_neutronTofExp;
+   TH1D* h_neutronTofBack;
 
    // p ToF
-   TH1D* photonTofSim;
-   TH1D* photonTofExp;
-   TH1D* photonTofBack;
+   TH1D* h_photonTofSim;
+   TH1D* h_photonTofExp;
+   TH1D* h_photonTofBack;
 
    // n Erg
-   TH1D* neutronEnergySim;
-   TH1D* neutronEnergyExp;
-   TH1D* neutronEnergyBack;
+   TH1D* h_neutronEnergySim;
+   TH1D* h_neutronEnergyExp;
+   TH1D* h_neutronEnergyBack;
 
    // n Mult
-   TH1I* neutronMultExp;
-   TH1I* neutronMultSim;
-   TH1I* neutronMultBack;
+   TH1I* h_neutronMultExp;
+   TH1I* h_neutronMultSim;
+   TH1I* h_neutronMultBack;
 
    // p Mult
-   TH1I* photonMultExp;
-   TH1I* photonMultSim;
-   TH1I* photonMultBack;
+   TH1I* h_photonMultExp;
+   TH1I* h_photonMultSim;
+   TH1I* h_photonMultBack;
 
    // n PSD
-   TH1D* neutronPSDExp;
-   TH1D* neutronPSDSim;
-   TH1D* neutronPSDBack;
+   TH1D* h_neutronPSDExp;
+   TH1D* h_neutronPSDSim;
+   TH1D* h_neutronPSDBack;
 
    // p PSD
-   TH1D* photonPSDExp;
-   TH1D* photonPSDSim;
-   TH1D* photonPSDBack;
+   TH1D* h_photonPSDExp;
+   TH1D* h_photonPSDSim;
+   TH1D* h_photonPSDBack;
 
    // n det
-   TH1D* neutronSinglesExp;
-   TH1D* neutronSinglesSim;
-   TH1D* neutronSinglesBack;
+   TH1D* h_neutronSinglesExp;
+   TH1D* h_neutronSinglesSim;
+   TH1D* h_neutronSinglesBack;
 
    // p det
-   TH1D* photonSinglesExp;
-   TH1D* photonSinglesSim;
-   TH1D* photonSinglesBack;
+   TH1D* h_photonSinglesExp;
+   TH1D* h_photonSinglesSim;
+   TH1D* h_photonSinglesBack;
 
    // individual basic hists
-   TH1D** IndivNeutronLightOutputSim;
-   TH1D** IndivNeutronLightOutputExp;
-   TH1D** IndivNeutronLightOutputBack;
+   TH1D** h_IndivNeutronLightOutputSim;
+   TH1D** h_IndivNeutronLightOutputExp;
+   TH1D** h_IndivNeutronLightOutputBack;
 
-   TH1D** IndivPhotonLightOutputSim;
-   TH1D** IndivPhotonLightOutputExp;
-   TH1D** IndivPhotonLightOutputBack;
+   TH1D** h_IndivPhotonLightOutputSim;
+   TH1D** h_IndivPhotonLightOutputExp;
+   TH1D** h_IndivPhotonLightOutputBack;
 
-   TH1D** IndivNeutronTofSim;
-   TH1D** IndivNeutronTofExp;
-   TH1D** IndivNeutronTofBack;
+   TH1D** h_IndivNeutronTofSim;
+   TH1D** h_IndivNeutronTofExp;
+   TH1D** h_IndivNeutronTofBack;
 
-   TH1D** IndivPhotonTofSim;
-   TH1D** IndivPhotonTofExp;
-   TH1D** IndivPhotonTofBack;
+   TH1D** h_IndivPhotonTofSim;
+   TH1D** h_IndivPhotonTofExp;
+   TH1D** h_IndivPhotonTofBack;
 
-   TH1D** IndivNeutronEnergySim;
-   TH1D** IndivNeutronEnergyExp;
-   TH1D** IndivNeutronEnergyBack;
+   TH1D** h_IndivNeutronEnergySim;
+   TH1D** h_IndivNeutronEnergyExp;
+   TH1D** h_IndivNeutronEnergyBack;
 
-   TH1D** IndivNeutronPSDExp;
-   TH1D** IndivNeutronPSDSim;
-   TH1D** IndivNeutronPSDBack;
+   TH1D** h_IndivNeutronPSDExp;
+   TH1D** h_IndivNeutronPSDSim;
+   TH1D** h_IndivNeutronPSDBack;
 
-   TH1D** IndivPhotonPSDExp;
-   TH1D** IndivPhotonPSDSim;
-   TH1D** IndivPhotonPSDBack;
+   TH1D** h_IndivPhotonPSDExp;
+   TH1D** h_IndivPhotonPSDSim;
+   TH1D** h_IndivPhotonPSDBack;
 
    // correlated histograms - add Exp to the end of these
-   TH2I* neutronGammaMultExp;
-   TH2I* neutronGammaMultBack;
-   TH2D* neutronMultPhotonLOExp;
-   TH2D* neutronEnergyLOExp;
-   TH2D* neutronLightOutPSDExp;
-   TH2D* photonLightOutPSDExp;
+   TH2I* h2_neutronGammaMultExp;
+   TH2I* h2_neutronGammaMultBack;
+   TH2D* h2_neutronMultPhotonLOExp;
+   TH2D* h2_neutronEnergyLOExp;
+   TH2D* h2_neutronLightOutPSDExp;
+   TH2D* h2_photonLightOutPSDExp;
 
-   TH2D* neutronDoublesMat;
-   TH2D* neutronSinglesMat;
-   TH2I* neutronScaledDoubles;
+   TH2D* h2_neutronDoublesMat;
+   TH2D* h2_neutronSinglesMat;
+   TH2I* h2_neutronScaledDoubles;
 
-   TH2D* photonDoublesMat;
-   TH2D* photonSinglesMat;
-   TH2I* photonScaledDoubles;
+   TH2D* h2_photonDoublesMat;
+   TH2D* h2_photonSinglesMat;
+   TH2I* h2_photonScaledDoubles;
 
-   TH2D* neutronPhotonDoublesMat;
-   TH2D* neutronPhotonSinglesMat;
-   TH2I* neutronPhotonScaledDoubles;
+   TH2D* h2_neutronPhotonDoublesMat;
+   TH2D* h2_neutronPhotonSinglesMat;
+   TH2I* h2_neutronPhotonScaledDoubles;
 
-   TH2D* neutronBackDoublesMat;
-   TH2D* neutronBackSinglesMat;
-   TH2I* neutronBackScaledDoubles;
+   TH2D* h2_neutronBackDoublesMat;
+   TH2D* h2_neutronBackSinglesMat;
+   TH2I* h2_neutronBackScaledDoubles;
 
-   TH2D* photonBackDoublesMat;
-   TH2D* photonBackSinglesMat;
-   TH2I* photonBackScaledDoubles;
+   TH2D* h2_photonBackDoublesMat;
+   TH2D* h2_photonBackSinglesMat;
+   TH2I* h2_photonBackScaledDoubles;
 
-   TH2D* neutronPhotonBackDoublesMat;
-   TH2D* neutronPhotonBackSinglesMat;
-   TH2I* neutronPhotonBackScaledDoubles;
+   TH2D* h2_neutronPhotonBackDoublesMat;
+   TH2D* h2_neutronPhotonBackSinglesMat;
+   TH2I* h2_neutronPhotonBackScaledDoubles;
 
-   TGraphErrors* neutronAngleCorr;
-   TGraphErrors* neutronAngleCorrAvg;
+   TGraphErrors* g_neutronAngleCorr;
+   TGraphErrors* g_neutronAngleCorrAvg;
 
-   TGraphErrors* photonAngleCorr;
-   TGraphErrors* photonAngleCorrAvg;
+   TGraphErrors* g_photonAngleCorr;
+   TGraphErrors* g_photonAngleCorrAvg;
 
-   TGraphErrors* neutronPhotonAngleCorr;
-   TGraphErrors* neutronPhotonAngleCorrAvg;
+   TGraphErrors* g_neutronPhotonAngleCorr;
+   TGraphErrors* g_neutronPhotonAngleCorrAvg;
 
-   TGraphErrors* neutronBackAngleCorr;
-   TGraphErrors* neutronBackAngleCorrAvg;
+   TGraphErrors* g_neutronBackAngleCorr;
+   TGraphErrors* g_neutronBackAngleCorrAvg;
 
-   TGraphErrors* photonBackAngleCorr;
-   TGraphErrors* photonBackAngleCorrAvg;
+   TGraphErrors* g_photonBackAngleCorr;
+   TGraphErrors* g_photonBackAngleCorrAvg;
 
-   TGraphErrors* neutronPhotonBackAngleCorr;
-   TGraphErrors* neutronPhotonBackAngleCorrAvg;
+   TGraphErrors* g_neutronPhotonBackAngleCorr;
+   TGraphErrors* g_neutronPhotonBackAngleCorrAvg;
 
    TGraphErrors** g_gammaBeamSlope;
    TGraphErrors** g_gammaBeamInt;
@@ -305,9 +305,9 @@ public :
    double** angles;
 
    // individual correlated hists
-   TH2D** IndivNeutronEnergyLOExp;
-   TH2D** IndivNeutronLightOutPSDExp;
-   TH2D** IndivPhotonLightOutPSDExp;
+   TH2D** h2_IndivNeutronEnergyLOExp;
+   TH2D** h2_IndivNeutronLightOutPSDExp;
+   TH2D** h2_IndivPhotonLightOutPSDExp;
 
    // alphaFile histograms
    TH1D** h_alphaDep;
@@ -547,37 +547,50 @@ public :
  (_-< | '  \| || '_/ -_) -_) | _ \ '_/ _` | ' \/ _| ' \/ -_|_-<
  /__/_|_|_|_|_||_| \___\___| |___/_| \__,_|_||_\__|_||_\___/__/ */
  // Declaration of leaf types
-   Double_t        neutronHeight[MAX_MULT];   //[neutronMult] not defined
-   Double_t        photonHeight[MAX_MULT];   //[gammaMult]
    Int_t           neutronFlag[MAX_MULT];   //[neutronMult] not defined
    Int_t           photonFlag[MAX_MULT];   //[gammaMult]   not defined
 
-   Int_t           neutronChannel[MAX_MULT];   //[neutronMult], different name neutronDet
-   Double_t        neutronEnergy[MAX_MULT];   //[neutronMult] different name neutronToFErg
-   Double_t        neutronIntegral[MAX_MULT];   //[neutronMult] different name neutronLightOut
-   Int_t           photonChannel[MAX_MULT];   //[gammaMult]
-   Double_t        photonEnergy[MAX_MULT];   //[gammaMult]
-   Double_t        photonIntegral[MAX_MULT];   //[gammaMult]
-
-
-
    // List of branches ADD EXP OR SIM AT THE END
-   TBranch *b_neutronMultSim;   //!
-   TBranch *b_gammaMultSim;   //!
-   TBranch *b_neutronChannelSim;   //!
-   TBranch *b_neutronDetTimesSim;   //!
-   TBranch *b_neutronEnergySim;   //!
-   TBranch *b_neutronIntegralSim;   //!
-   TBranch *b_neutronHeightSim;   //!
-   TBranch *b_neutronPSDSim;   //!
-   TBranch *b_photonChannelSim;   //!
-   TBranch *b_photonDetTimesSim;   //!
-   TBranch *b_photonEnergySim;   //!
-   TBranch *b_photonIntegralSim;   //!
-   TBranch *b_photonHeightSim;   //!
-   TBranch *b_photonPSDSim;   //!
-   TBranch *b_neutronFlagSim;   //!
-   TBranch *b_photonFlagSim;   //!
+   TBranch        *b_neutronFlagSim;   //!
+   TBranch        *b_photonFlagSim;   //!
+   TBranch        *b_fisTimeSim;   //!
+   TBranch        *b_fisDepSim;   //!
+   TBranch        *b_fisChanSim;   //!
+   TBranch        *b_fisPSPSim;   //!
+   TBranch        *b_neutronMultSim;   //!
+   TBranch        *b_gammaMultSim;   //!
+   TBranch        *b_neutronBackMultSim;   //!
+   TBranch        *b_gammaBackMultSim;   //!
+   TBranch        *b_neutronDetTimesSim;   //!
+   TBranch        *b_neutronLightOutSim;   //!
+   TBranch        *b_neutronPSDSim;   //!
+   TBranch        *b_neutronToFErgSim;   //!
+   TBranch        *b_neutronDetSim;   //!
+   TBranch        *b_neutronVxSim;   //!
+   TBranch        *b_neutronVySim;   //!
+   TBranch        *b_neutronVzSim;   //!
+   TBranch        *b_photonDetTimesSim;   //!
+   TBranch        *b_photonLightOutSim;   //!
+   TBranch        *b_photonPSDSim;   //!
+   TBranch        *b_photonDetSim;   //!
+   TBranch        *b_photonVxSim;   //!
+   TBranch        *b_photonVySim;   //!
+   TBranch        *b_photonVzSim;   //!
+   TBranch        *b_backNeutronDetTimesSim;   //!
+   TBranch        *b_backNeutronLightOutSim;   //!
+   TBranch        *b_backNeutronPSDSim;   //!
+   TBranch        *b_backNeutronToFErgSim;   //!
+   TBranch        *b_backNeutronDetSim;   //!
+   TBranch        *b_backNeutronVxSim;   //!
+   TBranch        *b_backNeutronVySim;   //!
+   TBranch        *b_backNeutronVzSim;   //!
+   TBranch        *b_backPhotonDetTimesSim;   //!
+   TBranch        *b_backPhotonLightOutSim;   //!
+   TBranch        *b_backPhotonPSDSim;   //!
+   TBranch        *b_backPhotonDetSim;   //!
+   TBranch        *b_backPhotonVxSim;   //!
+   TBranch        *b_backPhotonVySim;   //!
+   TBranch        *b_backPhotonVzSim;   //!
 
 /*
   __  __     _   _            _

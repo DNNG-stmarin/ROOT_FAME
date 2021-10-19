@@ -11,10 +11,10 @@ void sfame::LoopColl()
    SfameFiss->cd();
 
    cout << "Looping through collision file. " << endl;
-   if (collisionTree == 0) return;
+   if (rCollisionTree == 0) return;
 
-   cout << collisionTree << endl;
-   Long64_t nentries = collisionTree->GetEntries();
+   cout << rCollisionTree << endl;
+   Long64_t nentries = rCollisionTree->GetEntries();
    cout << "Processing " << nentries << " events" << endl;
 
    // vertex properties
@@ -46,7 +46,7 @@ void sfame::LoopColl()
    {
       Long64_t ientry = LoadCollTree(jentry);
       if (ientry < 0) break;
-      nb = collisionTree->GetEntry(jentry);   nbytes += nb;
+      nb = rCollisionTree->GetEntry(jentry);   nbytes += nb;
 
       // reset track
       for(int tr = 0; tr < numTracks; tr++)

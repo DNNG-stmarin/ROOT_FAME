@@ -13,9 +13,9 @@ sfame::sfame()
     simFile = "sim27";
 
     // read from collision files
-    nameColFile = "collisionFiles/FS3_openV5_dist_27_source-2num";
+    nameColFile = "cn";
     firstFile = 0;
-    numFiles = 20;
+    numFiles = 1;
 
     // read from colliosn tree
     nameCollTree = "collTree.root";
@@ -23,8 +23,8 @@ sfame::sfame()
     if(REUSE_DATA == 1) numCollTreeFiles = 1;
 
     //
-    NUM_DETECTORS = 40;
-    TRIGGER_CHANNEL = 46;
+    NUM_DETECTORS = 54;
+    TRIGGER_CHANNEL = 8;
     SOURCE_POSITION[0] = 0; SOURCE_POSITION[1] = 0; SOURCE_POSITION[2] = -2;
 
     ACCEPT_PSP = 0.1;
@@ -35,16 +35,16 @@ sfame::sfame()
     PULSE_GENERATION_WINDOW = 10; // ns
 
     // external lightoutput files
-    DET_DIST_FILE = "inputSfame/cartesianFS3.txt";
-    TIME_RESOLUTION_FILE = "inputSfame/tResFile_FS3.csv";
-    CELL_NUMBERS_FILE = "inputSfame/cellNumbers.csv";
-    LIGHTOUTPUT_FILE = "inputSfame/birksLO.csv";
+    DET_DIST_FILE = "inputSfame/cartesianChiNu.txt";        //Converted to Chi-Nu
+    TIME_RESOLUTION_FILE = "inputSfame/tResFile_ChiNu.csv"; //Converted to Chi-Nu
+    CELL_NUMBERS_FILE = "inputSfame/cellNumbersChiNu.csv";       //Converted to Chi-Nu
+    LIGHTOUTPUT_FILE = "inputSfame/LOexpFitsChiNu.csv";          //Converted to Chi-Nu
     RESOLUTION_COEFFICIENTS[0] = 10.61; RESOLUTION_COEFFICIENTS[1] = 0.355; RESOLUTION_COEFFICIENTS[2] = 3.923;
     // * could be an energy resolution file
-    MEAN_NEUTRON_PSD_FILE = "inputSfame/meanNeutParams";
-    SIGMA_NEUTRON_PSD_FILE = "inputSfame/sigNeutParams";
-    MEAN_PHOTON_PSD_FILE = "inputSfame/meanPhotParams";
-    SIGMA_PHOTON_PSD_FILE = "inputSfame/sigPhotParams";
+    MEAN_NEUTRON_PSD_FILE = "inputSfame/meanNeutParamsChiNu";//Converted to Chi-Nu
+    SIGMA_NEUTRON_PSD_FILE = "inputSfame/sigNeutParamsChiNu";//Converted to Chi-Nu
+    MEAN_PHOTON_PSD_FILE = "inputSfame/meanPhotParamsChiNu";//Converted to Chi-Nu
+    SIGMA_PHOTON_PSD_FILE = "inputSfame/sigPhotParamsChiNu";//Converted to Chi-Nu
 
     // supplamental files
     dEdX_FILE = "inputSfame/stilbene_dEdX.csv";

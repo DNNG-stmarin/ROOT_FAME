@@ -11,7 +11,10 @@ void sfame::readCollisionTree()
 
   rCollisionTree = new TChain("CollisionFile");
   rCollisionTree->Add("collTree.root");
+
   cout << "added collTree.root" << endl;
+
+
   for(int i = 1; i < numCollTreeFiles; i++)
   {
     rCollisionTree->Add("collTree_" + (TString)to_string(i) + ".root");
@@ -20,8 +23,9 @@ void sfame::readCollisionTree()
   cout << rCollisionTree->GetEntries() << endl;
 
 
+
   fCurrent = -1;
-  rCollisionTree->SetMakeClass(1);
+  // rCollisionTree->SetMakeClass(1);
 
   rCollisionTree->SetBranchAddress("History", &f_history, &b_History);
   rCollisionTree->SetBranchAddress("NumLines", &f_numLines, &b_NumLines);

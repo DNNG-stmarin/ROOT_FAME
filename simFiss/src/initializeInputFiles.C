@@ -78,7 +78,9 @@ void sfame::initializeInputFiles()
 
 
     // start by reading the energy axis
+    // cout << 0 << endl;
     getline(fileLight, line);
+    // cout << line << endl;
     stringstream ss(line);
     bool readLineLight = true;
     int Ej = 0;
@@ -87,7 +89,7 @@ void sfame::initializeInputFiles()
       if(ss.peek() == ',') ss.ignore();
       ss >> val;
 
-      if(val > 8.0)
+      if(val > 6.0)
       {
         readLineLight = false;
         break;
@@ -97,10 +99,11 @@ void sfame::initializeInputFiles()
       // cout << Ej << " " << energyDepArray[Ej] << endl;
       Ej++;
     }
-
+    // cout << 0 << endl;
     // loop through the files
     for(int i = 0; i < NUM_DETECTORS; i++)
     {
+        // cout << i << endl;
         detNumArray[i] = i;
         fileCell >> chanArray[i];
         filePos >> xPosArray[i] >> yPosArray[i] >> zPosArray[i];
@@ -138,7 +141,6 @@ void sfame::initializeInputFiles()
     cellToChanList = new TGraph(NUM_DETECTORS, chanArray, detNumArray);
     posXList = new TGraph(NUM_DETECTORS, detNumArray, xPosArray);
     posYList = new TGraph(NUM_DETECTORS, detNumArray, yPosArray);
-    posZList = new TGraph(NUM_DETECTORS, detNumArray, zPosArray);
     posZList = new TGraph(NUM_DETECTORS, detNumArray, zPosArray);
     timeResList = new TGraph(NUM_DETECTORS, detNumArray, timeResArray);
 

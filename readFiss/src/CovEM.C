@@ -17,8 +17,8 @@ void readFiss::CovEM()
    cout << "Beginning the great CovEM loop" << endl;
    // place to store all the result
 
-   arrayCorr = new TH2D("CovMat", "Covariance Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
-   arraySpec = new TH2D("SpecMat", "Spectrum Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
+   h2_arrayCorr = new TH2D("CovMat", "Covariance Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
+   h2_arraySpec = new TH2D("SpecMat", "Spectrum Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
 
    // make sure tree is open
    if (expTree == 0) return;
@@ -171,8 +171,8 @@ void readFiss::CovEM()
      {
       for(int eP = 0; eP < BP; eP ++)
        {
-        arrayCorr->SetBinContent(eN+1, eP+1, emMode[eN][eP]->GetCovariance());
-        arraySpec->SetBinContent(eN+1, eP+1, (emMode[eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2)));
+        h2_arrayCorr->SetBinContent(eN+1, eP+1, emMode[eN][eP]->GetCovariance());
+        h2_arraySpec->SetBinContent(eN+1, eP+1, (emMode[eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2)));
 
        }
      }
@@ -206,8 +206,8 @@ void readFiss::CovEM()
 
              }
 
-             arrayCorr->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listCov)/sqrt(NUM_CHUNKS-1) );
-             arraySpec->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listSpec)/sqrt(NUM_CHUNKS-1) );
+             h2_arrayCorr->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listCov)/sqrt(NUM_CHUNKS-1) );
+             h2_arraySpec->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listSpec)/sqrt(NUM_CHUNKS-1) );
            }
          }
      }
@@ -222,10 +222,10 @@ void readFiss::WriteCovEM()
   cd_FAME->cd();
 
   // save the matrices to the root file
-  arrayCorr->SetOption("COLZ");
-  arraySpec->SetOption("COLZ");
-  arrayCorr->Write();
-  arraySpec->Write();
+  h2_arrayCorr->SetOption("COLZ");
+  h2_arraySpec->SetOption("COLZ");
+  h2_arrayCorr->Write();
+  h2_arraySpec->Write();
 
   // print the content of the matrices
   ofstream covMatFire;
@@ -241,8 +241,8 @@ void readFiss::WriteCovEM()
   {
    for(int eP = 0; eP < BP; eP ++)
     {
-       covMatFire << arrayCorr->GetBinContent(eN+1, eP+1);
-       specMatFire << arraySpec->GetBinContent(eN+1, eP+1);
+       covMatFire << h2_arrayCorr->GetBinContent(eN+1, eP+1);
+       specMatFire << h2_arraySpec->GetBinContent(eN+1, eP+1);
 
        if(eP < BP - 1)
        {
@@ -290,8 +290,8 @@ void readFiss::analyseCovEM()
 
      //    for(int eP = 0; eP < BP; eP ++)
      //     {
-     //      covNmarg[eN] += arrayCorr[eN][eP];
-     //      specN[eN] += arraySpec[eN][eP];
+     //      covNmarg[eN] += h2_arrayCorr[eN][eP];
+     //      specN[eN] += h2_arraySpec[eN][eP];
      //     }
 
      //     covFire << covNmarg[eN] << "," << specN[eN] << endl;
@@ -304,8 +304,8 @@ void readFiss::analyseCovEM()
 
      //    for(int eN = 0; eN < BN; eN++)
      //     {
-     //      covPmarg[eP] += arrayCorr[eN][eP];
-     //      specP[eP] += arraySpec[eN][eP];
+     //      covPmarg[eP] += h2_arrayCorr[eN][eP];
+     //      specP[eP] += h2_arraySpec[eN][eP];
      //     }
      //     covFire << covPmarg[eP] << "," << specP[eP] << endl;
      //   }
@@ -366,7 +366,7 @@ void readFiss::analyseCovEM()
      //   g_normN->Write();
      //   g_normP->Write();
 
-     //   //arrayCorr.Write();
+     //   //h2_arrayCorr.Write();
 
      //   fileCorr->Write();
      //   fileCorr->Close();
