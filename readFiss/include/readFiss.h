@@ -117,8 +117,14 @@ public :
   int runNum;                   // what run READ_FAME is on
   bool CovEM_in;                // whether or not this run uses CovEM
 
-  int BN;                       // CovEM setting
-  int BP;                       // CovEM setting
+  int BN;                       // CovEM setting (number of neutron bins)
+  int BP;                       // CovEM setting (number of photon bins)
+  int BA;                       // number of angular bins
+  // int BTH = 8;                   // CovEM setting (number of Lab theta bins)
+  // int BPH = 8;                   // CovEM setting (number of Lab theta bins)
+  // int BA = 20;                   // CovEM setting (number of Lab theta bins)
+
+  // int BP = 8;                   // CovEM setting (number of phi bins)
   double MAX_TIME_N;
   double THRESHOLD, CLIPPING;
   double THRESHOLD_DEP, CLIPPING_DEP;
@@ -131,6 +137,9 @@ public :
 
   double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
   double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
+  double sizeNerg, sizePerg, sizeNgAng;
+  int iN1, iN2, iD1, iD2, iE1, iE2, iTot;
+
 
   TString rootEnding = ".root";
   TString nameExpTree = "Fiss";
@@ -155,10 +164,19 @@ public :
  |_||_|_/__/\__\___/\__, |_| \__,_|_|_|_/__/
                     |___/                    */
 
+   // cov em matrices
+   int* arrayExp;
+   int* arrayBack;
+
    // matrix variables
    TH2D* h2_arrayCorr;
    TH2D* h2_arraySpec;
-   TH2D* h2_arrayDiff;
+
+   int*** arrayCorrExp;
+   int*** arraySpecExp;
+   int*** arrayCorrBack;
+   int*** arraySpecBack;
+   //TH2D* h2_arrayDiff;
 
    // loop histograms quality of data
    TH1I* h_fissRej;
@@ -641,7 +659,8 @@ public :
    virtual void     SetBNBP(int BN, int BP); // set the number of bins for the covariance analysis
    virtual void     CovEM(); // number of energy bins in neutron and photon energies
    virtual void     WriteCovEM();
-   virtual void     analyseCovEM(); // number of
+   virtual void     AnalyseCovEM();
+   virtual void     ExtractCov();
 
    // perform beam analysis
    virtual void     BeamDepAnalysis();
@@ -657,6 +676,7 @@ public :
    // initialization functions
    virtual void     GenerateAngles();
    virtual void     InitializeHistograms();
+   virtual void     InitializeCovHistograms();
    virtual void     InitializeFunctions();
    virtual int      isTrigger(int triggerNumber);
    virtual int      isDetector(int detectorNumber);

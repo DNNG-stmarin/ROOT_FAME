@@ -8,6 +8,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "Parameters.h"
+
 using namespace std;
 
 
@@ -19,6 +21,7 @@ void readFiss::LoopExp()
    if (expTree == 0) return;
 
    expEntries = expTree->GetEntries();
+   expEntries = 1000000;
    if(expEntries == 0)
    {
      w->noExpFile();
@@ -30,6 +33,19 @@ void readFiss::LoopExp()
    Double_t currTime;
    Long64_t nbytes = 0, nb = 0;
 
+   int encN, encP;
+   short* shortListErgN;
+   short* shortListErgP;
+
+   if(CovEM_in)
+   {
+     cout << "initilaizing cov EM short lists" << endl;
+     shortListErgN = new short [NUM_DETECTORS*(NUM_DIFF_N)];
+     shortListErgP = new short [NUM_DETECTORS*(NUM_DIFF_P)];
+   }
+
+
+   cout << "beginning loop" << endl;
    // main loop
    for (Long64_t jentry=0; jentry<expEntries;jentry++)
    {
@@ -110,14 +126,19 @@ void readFiss::LoopExp()
       int n1 = -1, n2 = -1; // For nn angular correlations
       for (int i = 0; i < neutronMult; i++)
       {
+        // ann mode cut neutrons
         if(ANN_mode) {
           Double_t ANNFlag = crossTalkANN->Value(0, neutronDetTimes[i], neutronLightOut[i]);
           //cout << ANNFlag << "\n";
           if(ANNFlag < thresholdANN) continue;
         }
 
+
+
+
         if ((neutronLightOut[i] > THRESHOLD) && (neutronLightOut[i] < CLIPPING) && (neutronDetTimes[i] < MAX_TIME_N))
         {
+
             nMult++;
             h_neutronLightOutputExp->Fill(neutronLightOut[i]);
             h_neutronTofExp->Fill(neutronDetTimes[i]);
@@ -142,36 +163,46 @@ void readFiss::LoopExp()
             h2_IndivNeutronEnergyLOExp[indexDet]->Fill(neutronToFErg[i], neutronLightOut[i]);
             h2_IndivNeutronLightOutPSDExp[indexDet]->Fill(neutronLightOut[i], neutronPSD[i]);
 
-            if(nMult == 1)
-            {
-              n1 = i;
-            }
-            else if(nMult == 2)
-            {
-              n2 = i;
-            }
-
             if (validBeam)
             {
               h2_nLightOutErg[indexChannel]->Fill(beamEnergy, neutronLightOut[i]);
               h2_nToFErg[indexChannel]->Fill(beamEnergy, neutronToFErg[i]);
             }
+
+            if(CovEM_in)
+            {
+              encN = int((neutronToFErg[i] - MIN_N_ERG)/sizeNerg);
+              if(encN >= BN)
+              {
+                encN = BN-1;
+              }
+              else if(encN < 0)
+              {
+                encN = 0;
+              }
+              //cout << NUM_DIFF_N*(nMult-1)<< endl;
+              shortListErgN[NUM_DIFF_N*(nMult-1)] = neutronDet[i];
+              shortListErgN[NUM_DIFF_N*(nMult-1) + 1] = encN;
+            }
+
+        }
+
+        // double neutrons
+        if(nMult == 1)
+        {
+          n1 = i;
+        }
+        else if(nMult == 2)
+        {
+          n2 = i;
         }
       }
+
+
       h_neutronMultExp->Fill(nMult);
       h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
       if(nMult == 2)
       {
-        // double dot = (neutronVx[n1] * neutronVx[n2]) +
-        //              (neutronVy[n1] * neutronVy[n2]) +
-        //              (neutronVz[n1] * neutronVz[n2]); // dot product
-        // double Mn1 = sqrt(pow(neutronVx[n1], 2) +
-        //                   pow(neutronVy[n1], 2) +
-        //                   pow(neutronVz[n1], 2)); // magnitude of n1
-        // double Mn2 = sqrt(pow(neutronVx[n2], 2) +
-        //                   pow(neutronVy[n2], 2) +
-        //                   pow(neutronVz[n2], 2)); // magnitude of n2
-        // g_neutronAngleCorr->Fill(dot / (Mn1 * Mn2));
         if(neutronDet[n1] > neutronDet[n2])
         {
           h2_neutronDoublesMat->Fill((int)neutronDet[n1], (int)neutronDet[n2]);
@@ -193,6 +224,7 @@ void readFiss::LoopExp()
       int g1 = -1, g2 = -1;
       for (int i = 0; i < gammaMult; i++)
       {
+        //cout << "a" << endl;
         if (photonLightOut[i] > THRESHOLD && photonLightOut[i] < CLIPPING )
         {
           gMult++;
@@ -216,28 +248,41 @@ void readFiss::LoopExp()
 
           h2_IndivPhotonLightOutPSDExp[indexDet]->Fill(photonLightOut[i], photonPSD[i]);
 
-          if(gMult == 1)
-          {
-            g1 = i;
-          }
-          else if(gMult == 2)
-          {
-            g2 = i;
-          }
-
           if (validBeam)
           {
             h2_photonLightOutErg[indexChannel]->Fill(beamEnergy, photonLightOut[i]);
             h2_gammaLightOutErg[indexChannel]->Fill(beamEnergy, photonLightOut[i]);
           }
+
+          if(CovEM_in)
+          {
+            encP = int((photonLightOut[i] - MIN_P_ERG)/sizePerg);
+            if(encP >= BP)
+            {
+              encN = BP-1;
+            }
+            else if(encP < 0)
+            {
+              encP = 0;
+            }
+            shortListErgP[NUM_DIFF_P*(gMult-1)] = photonDet[i];
+            shortListErgP[NUM_DIFF_P*(gMult-1)+1] = encP;
+          }
         }
+
+        if(gMult == 1)
+        {
+          g1 = i;
+        }
+        else if(gMult == 2)
+        {
+          g2 = i;
+        }
+
       }
       h_photonMultExp->Fill(gMult);
       h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
 
-      if (validBeam){
-        h_beamErg[indexChannel]->Fill(beamEnergy);
-      }
 
       if(gMult == 2)
       {
@@ -251,10 +296,7 @@ void readFiss::LoopExp()
         }
       }
 
-      if(validBeam)
-      {
-        h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
-      }
+
 
       if(gMult == 1 && nMult == 1)
       {
@@ -269,6 +311,12 @@ void readFiss::LoopExp()
       }
 
       h2_neutronGammaMultExp->Fill(nMult, gMult); // correlated plot
+
+      if(validBeam)
+      {
+        h_beamErg[indexChannel]->Fill(beamEnergy);
+        h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
+      }
 
       // loop through back neutrons
       int nB1 = -1, nB2 = -1;
@@ -406,6 +454,87 @@ void readFiss::LoopExp()
           h2_neutronPhotonBackDoublesMat->Fill((int)backNeutronDet[nB1], (int)backPhotonDet[gB1]);
         }
       }
+
+      // covEM filling
+      if(CovEM_in)
+      {
+        int detN, ergN, detP, ergP;
+        bool crossingPoint = false;
+        for(int iN = 0; iN < nMult; iN ++)
+        {
+          detN = shortListErgN[iN*NUM_DIFF_N];
+          ergN = shortListErgN[iN*NUM_DIFF_N + 1];
+          // cout << detN << " " << ergN << endl;
+
+          for(int ldetP = 0; ldetP < NUM_DETECTORS; ldetP++)
+          {
+            for(int lergP = 0; lergP < BP; lergP++)
+            {
+              for(int iP = 0; iP < gMult; iP++)
+              {
+                detP = shortListErgP[iP*NUM_DIFF_P];
+                ergP = shortListErgP[iP*NUM_DIFF_P+1];
+
+                if((detP == ldetP) & (ergP == lergP))
+                {
+                  crossingPoint = true;
+                  arrayExp[iD1*detN + iD2*detP + iE1*ergN + iE2*ergP + 1*iN1 + 1*iN2]++;
+                  continue;
+                }
+              }
+              if(crossingPoint)
+              {
+                // already filled this combination
+                crossingPoint = false;
+                continue;
+              }
+              else
+              {
+                arrayExp[iD1*detN + iD2*detP + iE1*ergN + iE2*ergP + 1*iN1 + 0*iN2]++;
+              }
+
+            }
+          }
+        }
+
+        for(int iP = 0; iP < gMult; iP ++)
+        {
+          detP = shortListErgP[iP*NUM_DIFF_P];
+          ergP = shortListErgP[iP*NUM_DIFF_P+1];
+
+          for(int ldetN = 0; ldetN < NUM_DETECTORS; ldetN++)
+          {
+            for(int lergN = 0; lergN < BN; lergN++)
+            {
+              for(int iN = 0; iN < nMult; iN++)
+              {
+                detN = shortListErgN[iN*NUM_DIFF_N];
+                ergN = shortListErgN[iN*NUM_DIFF_N+1];
+
+                if((detN == ldetN) & (ergN == lergN))
+                {
+                  crossingPoint = true;
+                  // arrayExp[iD1*detN + iD2*detP + iE1*ergN + iE2*ergP + 1*iN1 + 1*iN2]++;
+                  continue;
+                }
+              }
+              if(crossingPoint)
+              {
+                // already filled this combination
+                crossingPoint = false;
+                continue;
+              }
+              else
+              {
+                arrayExp[iD1*detN + iD2*detP + iE1*ergN + iE2*ergP + 0*iN1 + 1*iN2]++;
+              }
+
+            }
+          }
+        }
+
+      }
+
    }
 
    expEntries = numFissIter;
@@ -413,7 +542,6 @@ void readFiss::LoopExp()
 
    h_fissRej->Draw();
 }
-
 
 void readFiss::LoopSim()
 {

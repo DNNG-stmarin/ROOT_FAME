@@ -695,7 +695,7 @@
      </layout>
     </item>
     <item row="17" column="2">
-     <layout class="QHBoxLayout" name="BN_BP">
+     <layout class="QHBoxLayout" name="BN_BP_BA">
       <item>
        <widget class="QLineEdit" name="BN">
         <property name="enabled">
@@ -713,6 +713,16 @@
         </property>
         <property name="text">
          <string>50</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="BA">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>20</string>
         </property>
        </widget>
       </item>
@@ -1171,6 +1181,22 @@
    <sender>CovEM_in</sender>
    <signal>toggled(bool)</signal>
    <receiver>BP</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>89</x>
+     <y>330</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>789</x>
+     <y>523</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CovEM_in</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>BA</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

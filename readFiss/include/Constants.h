@@ -22,4 +22,10 @@ const int CUT_PILEUP = 3;
 
 const int NUM_CHUNKS = 10;
 
+const double MIN_THETA = -1;
+const double MAX_THETA = 1;
+
+const double MIN_PHI = -1*TMath::Pi();
+const double MAX_PHI = 1*TMath::Pi();
+
 #endif

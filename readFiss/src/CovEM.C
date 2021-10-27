@@ -9,6 +9,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "Parameters.h"
+
 using namespace std;
 
 void readFiss::CovEM()
@@ -22,10 +24,6 @@ void readFiss::CovEM()
 
    // make sure tree is open
    if (expTree == 0) return;
-
-   // and sizes
-   double sizeNerg = (MAX_N_ERG - MIN_N_ERG)/(double)BN;
-   double sizePerg = (MAX_P_ERG - MIN_P_ERG)/(double)BP;
 
    // updated event-by-event history
    int* listNerg;
@@ -72,6 +70,7 @@ void readFiss::CovEM()
    int encN, encP;
    // read the entries
    Long64_t nentries = expTree->GetEntriesFast();
+   nentries = 1000000;
    Long64_t nbytes = 0, nb = 0;
 
    for (Long64_t jentry=0; jentry<nentries;jentry++)
@@ -237,12 +236,18 @@ void readFiss::WriteCovEM()
   specMatFire.open(fileSpecFire);
 
   // print the covariance at each point
+  double totCovCheck = 0;
+  double totSpecCheck = 0;
+
   for(int eN = 0; eN < BN; eN ++)
   {
    for(int eP = 0; eP < BP; eP ++)
     {
        covMatFire << h2_arrayCorr->GetBinContent(eN+1, eP+1);
        specMatFire << h2_arraySpec->GetBinContent(eN+1, eP+1);
+
+       totCovCheck +=  h2_arrayCorr->GetBinContent(eN+1, eP+1);
+       totSpecCheck += h2_arraySpec->GetBinContent(eN+1, eP+1);
 
        if(eP < BP - 1)
        {
@@ -257,14 +262,92 @@ void readFiss::WriteCovEM()
     }
   }
 
+  cout << "slow" << endl;
+  cout << "tot cov check: " << totCovCheck << endl;
+  cout << "tot spec check: " << totSpecCheck << endl;
+
 
 }
 
-void readFiss::analyseCovEM()
+void readFiss::ExtractCov()
 {
+  cout << "extracting cov " << endl;
 
+  arrayCorrExp = new int** [BA];
+  arraySpecExp = new int** [BA];
+  for(int ba = 0; ba < BA; ba++)
+  {
+    arrayCorrExp[ba] = new int* [BN];
+    arraySpecExp[ba] = new int* [BN];
+    for(int bn = 0; bn < BN; bn++)
+    {
+      arrayCorrExp[ba][bn] = new int [BP];
+      arraySpecExp[ba][bn] = new int [BP];
 
+      for(int bp = 0; bp < BP; bp++)
+      {
+        arrayCorrExp[ba][bn][bp] = 0;
+        arraySpecExp[ba][bn][bp] = 0;
+      }
+    }
+  }
 
+  double covVal, specValN, specValP, specVal;
+  int ngEnc;
+  double totCovCheck = 0;
+  double totSpecCheck = 0;
+  for(int d1 = 0; d1 < NUM_DETECTORS; d1++)
+  {
+    for(int d2 = 0; d2 < NUM_DETECTORS; d2++)
+    {
+
+      ngEnc = int (angles[d1][d2] - MIN_THETA)/sizeNgAng;
+      if(ngEnc >= BA) ngEnc = BA-1;
+      else if(ngEnc < 0) ngEnc = 0;
+
+      for(int e1 = 0; e1 < BN; e1++)
+      {
+        for(int e2 = 0; e2 < BP; e2++)
+        {
+          covVal = 0;
+          specValN = 0;
+          specValP = 0;
+          specVal = 0;
+
+          for(int n1 = 0; n1 < MAX_MULT_DET; n1++)
+          {
+            for(int n2 = 0; n2 < MAX_MULT_DET; n2++)
+            {
+              int multPos = arrayExp[d1*iD1 + d2*iD2 + e1*iE1 + e2*iE2 + n1*iN1 + n2*iN2];
+              covVal += multPos*n1*n2;
+              specValN += multPos*n1;
+              specValP += multPos*n2;
+              cout << multPos << " ";
+            }
+            cout << endl;
+          }
+
+          covVal = (covVal - specValN*specValP)/expEntries;
+          specVal = (specValN*specValP)/expEntries;
+
+          cout << covVal << endl;
+
+          arrayCorrExp[ngEnc][e1][e2] = covVal;
+          arraySpecExp[ngEnc][e1][e2] = specVal;
+          totCovCheck += covVal;
+          totSpecCheck += specVal;
+        }
+      }
+    }
+  }
+
+    cout << "fast" << endl;
+    cout << "tot cov check: " << totCovCheck << endl;
+    cout << "tot spec check: " << totSpecCheck << endl;
+}
+
+void readFiss::AnalyseCovEM()
+{
 
      //  //open file
      // ofstream covFire;
