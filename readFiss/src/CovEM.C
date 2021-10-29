@@ -11,283 +11,235 @@
 
 #include "Parameters.h"
 
+#include <sys/stat.h>
+#include <sys/types.h>
+
+// #include <filesystem>
+//
+//
+// namespace fs = std::filesystem;
 using namespace std;
 
 void readFiss::CovEM()
 {
-
-   cout << "Beginning the great CovEM loop" << endl;
-   // place to store all the result
-
-   h2_arrayCorr = new TH2D("CovMat", "Covariance Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
-   h2_arraySpec = new TH2D("SpecMat", "Spectrum Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
-
-   // make sure tree is open
-   if (expTree == 0) return;
-
-   // updated event-by-event history
-   int* listNerg;
-   int* listPerg;
-   listNerg = new int[BN];
-   listPerg = new int[BP];
-
-   // initialize the EM histograms
-   TString t_nameH;
-   TString t_rootName = "em_";
-   TString titleH = "EnergyMode Correlations";
-
-   TH2I*** emMode;
-   emMode = new TH2I** [BN];
-   for(int eN = 0; eN < BN; eN++)
-   {
-   	emMode[eN] = new TH2I* [BP];
-
-      for(int eP = 0; eP < BP; eP++)
-      {
-         t_nameH = t_rootName + to_string(eN) + " " + to_string(eP);
-         emMode[eN][eP] = new TH2I(t_nameH, titleH, 10,0,10, 10,0,10);
-      }
-   }
-
-   TH2I**** emModeChunks;
-   emModeChunks = new TH2I*** [NUM_CHUNKS];
-   for(int chunk = 0; chunk < NUM_CHUNKS; chunk++)
-   {
-     emModeChunks[chunk] = new TH2I** [BN];
-     for(int eN = 0; eN < BN; eN++)
-     {
-     	emModeChunks[chunk][eN] = new TH2I* [BP];
-
-        for(int eP = 0; eP < BP; eP++)
-        {
-           t_nameH = t_rootName + to_string(eN) + " " + to_string(eP) + " " + to_string(chunk);
-           emModeChunks[chunk][eN][eP] = new TH2I(t_nameH, titleH, 10,0,10, 10,0,10);
-        }
-     }
-   }
-
-
-   int encN, encP;
-   // read the entries
-   Long64_t nentries = expTree->GetEntriesFast();
-   nentries = 1000000;
-   Long64_t nbytes = 0, nb = 0;
-
-   for (Long64_t jentry=0; jentry<nentries;jentry++)
-   {
-
-      if(jentry%1000000 == 0)
-      {
-        cout << jentry << " entries done. " << endl;
-      }
-
-
-
-   	  // load the new entry
-      Long64_t ientry = LoadExpTree(jentry);
-      if (ientry < 0) break;
-      nb = expTree->GetEntry(jentry);   nbytes += nb;
-
-     // cout << "loaded the new entry " << endl;
-
-     // reset the event-by-event list to 0
-     for(int eN = 0; eN < BN; eN ++)
-     {
-      listNerg[eN] = 0;
-     }
-     for(int eP = 0; eP < BP; eP ++)
-     {
-      listPerg[eP] = 0;
-     }
-
-     // cout << "resetted lists" << endl;
-
-
-     // Neutron event-by-event spectrum
-     for(int nN = 0; nN < neutronMult; nN++)
-     {
-
-       if(neutronLightOut[nN] > THRESHOLD && neutronDetTimes[nN] < MAX_TIME_N)
-       {
-         encN = int((neutronToFErg[nN] - MIN_N_ERG)/sizeNerg);
-
-         if(encN >= BN)
-         {
-           encN = BN-1;
-         }
-         else if(encN < 0)
-         {
-           encN = 0;
-         }
-
-         listNerg[encN] += 1;
-       }
-
-     }
-
-     // cout << "encoded neutrons" << endl;
-
-     // Photon event-by-event spectrum
-     for(int nP = 0; nP < gammaMult; nP++)
-     {
-       encP = int((photonLightOut[nP] - MIN_P_ERG)/sizePerg);
-
-       if(encP >= BP)
-       {
-         encP = BP-1;
-       }
-       else if(encP < 0)
-       {
-         encP = 0;
-       }
-
-       listPerg[encP] += 1;
-     }
-
-     // cout << "encoded gammas" << endl;
-
-
-     // populate the em histograms
-     for(int eN = 0; eN < BN; eN ++)
-     {
-      for(int eP = 0; eP < BP; eP ++)
-       {
-        emMode[eN][eP]->Fill(listNerg[eN], listPerg[eP]);
-
-        if(SELF_ERROR)
-        {
-          emModeChunks[jentry%NUM_CHUNKS][eN][eP]->Fill(listNerg[eN], listPerg[eP]);
-        }
-       }
-     }
-
-     // cout << "filled EM histograms" << endl;
-
-    }
-
-   // find the covariance and spec at each point
-     for(int eN = 0; eN < BN; eN ++)
-     {
-      for(int eP = 0; eP < BP; eP ++)
-       {
-        h2_arrayCorr->SetBinContent(eN+1, eP+1, emMode[eN][eP]->GetCovariance());
-        h2_arraySpec->SetBinContent(eN+1, eP+1, (emMode[eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2)));
-
-       }
-     }
-
-     cout << "finished setting EM matrices " << endl;
-
-
-
-
-     if(SELF_ERROR)
-     {
-       double listCov[NUM_CHUNKS] = {0};
-       double listSpec[NUM_CHUNKS] = {0};
-
-       double totCov = 0;
-       double totSpec = 0;
-
-       cout << "computing self error from data fluctuations" << endl;
-       // find the covariance at each point
-         for(int eN = 0; eN < BN; eN ++)
-         {
-          for(int eP = 0; eP < BP; eP ++)
-           {
-             for(int chunk = 0; chunk < NUM_CHUNKS; chunk++)
-             {
-               double thisCov = emModeChunks[chunk][eN][eP]->GetCovariance();
-               double thisSpec = (emModeChunks[chunk][eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2));
-
-               listCov[chunk] = thisCov;
-               listSpec[chunk] = thisSpec;
-
-             }
-
-             h2_arrayCorr->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listCov)/sqrt(NUM_CHUNKS-1) );
-             h2_arraySpec->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listSpec)/sqrt(NUM_CHUNKS-1) );
-           }
-         }
-     }
-
-
-}
-
-// write the content of the matrices
-void readFiss::WriteCovEM()
-{
-  writeFile->cd();
-  cd_FAME->cd();
-
-  // save the matrices to the root file
-  h2_arrayCorr->SetOption("COLZ");
-  h2_arraySpec->SetOption("COLZ");
-  h2_arrayCorr->Write();
-  h2_arraySpec->Write();
-
-  // print the content of the matrices
-  ofstream covMatFire;
-  string fileMatFire = "covEM" + to_string(BN) + "_" + to_string(BP) + ".csv";
-  covMatFire.open(fileMatFire);
-
-  ofstream specMatFire;
-  string fileSpecFire = "specEM" + to_string(BN) + "_" + to_string(BP) +  ".csv";
-  specMatFire.open(fileSpecFire);
-
-  // print the covariance at each point
-  double totCovCheck = 0;
-  double totSpecCheck = 0;
-
-  for(int eN = 0; eN < BN; eN ++)
-  {
-   for(int eP = 0; eP < BP; eP ++)
-    {
-       covMatFire << h2_arrayCorr->GetBinContent(eN+1, eP+1);
-       specMatFire << h2_arraySpec->GetBinContent(eN+1, eP+1);
-
-       totCovCheck +=  h2_arrayCorr->GetBinContent(eN+1, eP+1);
-       totSpecCheck += h2_arraySpec->GetBinContent(eN+1, eP+1);
-
-       if(eP < BP - 1)
-       {
-         covMatFire << ",";
-         specMatFire << ",";
-       }
-       else if(eP == BP - 1)
-       {
-         covMatFire << "\n";
-         specMatFire << "\n";
-       }
-    }
-  }
-
-  cout << "slow" << endl;
-  cout << "tot cov check: " << totCovCheck << endl;
-  cout << "tot spec check: " << totSpecCheck << endl;
-
-
+//
+//    cout << "Beginning the great CovEM loop" << endl;
+//    // place to store all the result
+//
+//    h2_arrayCorr = new TH2D("CovMat", "Covariance Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
+//    h2_arraySpec = new TH2D("SpecMat", "Spectrum Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
+//
+//    // make sure tree is open
+//    if (expTree == 0) return;
+//
+//    // updated event-by-event history
+//    int* listNerg;
+//    int* listPerg;
+//    listNerg = new int[BN];
+//    listPerg = new int[BP];
+//
+//    // initialize the EM histograms
+//    TString t_nameH;
+//    TString t_rootName = "em_";
+//    TString titleH = "EnergyMode Correlations";
+//
+//    TH2I*** emMode;
+//    emMode = new TH2I** [BN];
+//    for(int eN = 0; eN < BN; eN++)
+//    {
+//    	emMode[eN] = new TH2I* [BP];
+//
+//       for(int eP = 0; eP < BP; eP++)
+//       {
+//          t_nameH = t_rootName + to_string(eN) + " " + to_string(eP);
+//          emMode[eN][eP] = new TH2I(t_nameH, titleH, 10,0,10, 10,0,10);
+//       }
+//    }
+//
+//    TH2I**** emModeChunks;
+//    emModeChunks = new TH2I*** [NUM_CHUNKS];
+//    for(int chunk = 0; chunk < NUM_CHUNKS; chunk++)
+//    {
+//      emModeChunks[chunk] = new TH2I** [BN];
+//      for(int eN = 0; eN < BN; eN++)
+//      {
+//      	emModeChunks[chunk][eN] = new TH2I* [BP];
+//
+//         for(int eP = 0; eP < BP; eP++)
+//         {
+//            t_nameH = t_rootName + to_string(eN) + " " + to_string(eP) + " " + to_string(chunk);
+//            emModeChunks[chunk][eN][eP] = new TH2I(t_nameH, titleH, 10,0,10, 10,0,10);
+//         }
+//      }
+//    }
+//
+//
+//    int encN, encP;
+//    // read the entries
+//    Long64_t nentries = expTree->GetEntriesFast();
+//    nentries = 1000000;
+//    Long64_t nbytes = 0, nb = 0;
+//
+//    for (Long64_t jentry=0; jentry<nentries;jentry++)
+//    {
+//
+//       if(jentry%1000000 == 0)
+//       {
+//         cout << jentry << " entries done. " << endl;
+//       }
+//
+//
+//
+//    	  // load the new entry
+//       Long64_t ientry = LoadExpTree(jentry);
+//       if (ientry < 0) break;
+//       nb = expTree->GetEntry(jentry);   nbytes += nb;
+//
+//      // cout << "loaded the new entry " << endl;
+//
+//      // reset the event-by-event list to 0
+//      for(int eN = 0; eN < BN; eN ++)
+//      {
+//       listNerg[eN] = 0;
+//      }
+//      for(int eP = 0; eP < BP; eP ++)
+//      {
+//       listPerg[eP] = 0;
+//      }
+//
+//      // cout << "resetted lists" << endl;
+//
+//
+//      // Neutron event-by-event spectrum
+//      for(int nN = 0; nN < neutronMult; nN++)
+//      {
+//
+//        if(neutronLightOut[nN] > THRESHOLD && neutronDetTimes[nN] < MAX_TIME_N)
+//        {
+//          encN = int((neutronToFErg[nN] - MIN_N_ERG)/sizeNerg);
+//
+//          if(encN >= BN)
+//          {
+//            encN = BN-1;
+//          }
+//          else if(encN < 0)
+//          {
+//            encN = 0;
+//          }
+//
+//          listNerg[encN] += 1;
+//        }
+//
+//      }
+//
+//      // cout << "encoded neutrons" << endl;
+//
+//      // Photon event-by-event spectrum
+//      for(int nP = 0; nP < gammaMult; nP++)
+//      {
+//        encP = int((photonLightOut[nP] - MIN_P_ERG)/sizePerg);
+//
+//        if(encP >= BP)
+//        {
+//          encP = BP-1;
+//        }
+//        else if(encP < 0)
+//        {
+//          encP = 0;
+//        }
+//
+//        listPerg[encP] += 1;
+//      }
+//
+//      // cout << "encoded gammas" << endl;
+//
+//
+//      // populate the em histograms
+//      for(int eN = 0; eN < BN; eN ++)
+//      {
+//       for(int eP = 0; eP < BP; eP ++)
+//        {
+//         emMode[eN][eP]->Fill(listNerg[eN], listPerg[eP]);
+//
+//         if(SELF_ERROR)
+//         {
+//           emModeChunks[jentry%NUM_CHUNKS][eN][eP]->Fill(listNerg[eN], listPerg[eP]);
+//         }
+//        }
+//      }
+//
+//      // cout << "filled EM histograms" << endl;
+//
+//     }
+//
+//    // find the covariance and spec at each point
+//      for(int eN = 0; eN < BN; eN ++)
+//      {
+//       for(int eP = 0; eP < BP; eP ++)
+//        {
+//         h2_arrayCorr->SetBinContent(eN+1, eP+1, emMode[eN][eP]->GetCovariance());
+//         h2_arraySpec->SetBinContent(eN+1, eP+1, (emMode[eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2)));
+//
+//        }
+//      }
+//
+//      cout << "finished setting EM matrices " << endl;
+//
+//
+//
+//
+//      if(SELF_ERROR)
+//      {
+//        double listCov[NUM_CHUNKS] = {0};
+//        double listSpec[NUM_CHUNKS] = {0};
+//
+//        double totCov = 0;
+//        double totSpec = 0;
+//
+//        cout << "computing self error from data fluctuations" << endl;
+//        // find the covariance at each point
+//          for(int eN = 0; eN < BN; eN ++)
+//          {
+//           for(int eP = 0; eP < BP; eP ++)
+//            {
+//              for(int chunk = 0; chunk < NUM_CHUNKS; chunk++)
+//              {
+//                double thisCov = emModeChunks[chunk][eN][eP]->GetCovariance();
+//                double thisSpec = (emModeChunks[chunk][eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2));
+//
+//                listCov[chunk] = thisCov;
+//                listSpec[chunk] = thisSpec;
+//
+//              }
+//
+//              h2_arrayCorr->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listCov)/sqrt(NUM_CHUNKS-1) );
+//              h2_arraySpec->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listSpec)/sqrt(NUM_CHUNKS-1) );
+//            }
+//          }
+//      }
+//
+//
 }
 
 void readFiss::ExtractCov()
 {
   cout << "extracting cov " << endl;
 
-  arrayCorrExp = new int** [BA];
-  arraySpecExp = new int** [BA];
+  arrayCorrExp = new double** [BA];
+  arraySpecExp = new double** [BA];
   for(int ba = 0; ba < BA; ba++)
   {
-    arrayCorrExp[ba] = new int* [BN];
-    arraySpecExp[ba] = new int* [BN];
+    arrayCorrExp[ba] = new double* [BN];
+    arraySpecExp[ba] = new double* [BN];
     for(int bn = 0; bn < BN; bn++)
     {
-      arrayCorrExp[ba][bn] = new int [BP];
-      arraySpecExp[ba][bn] = new int [BP];
+      arrayCorrExp[ba][bn] = new double [BP];
+      arraySpecExp[ba][bn] = new double [BP];
 
       for(int bp = 0; bp < BP; bp++)
       {
-        arrayCorrExp[ba][bn][bp] = 0;
-        arraySpecExp[ba][bn][bp] = 0;
+        arrayCorrExp[ba][bn][bp] = 0.;
+        arraySpecExp[ba][bn][bp] = 0.;
       }
     }
   }
@@ -300,8 +252,11 @@ void readFiss::ExtractCov()
   {
     for(int d2 = 0; d2 < NUM_DETECTORS; d2++)
     {
+      if(d1 == d2) continue;
+      ngEnc = int ((angles[d1][d2] - MIN_THETA)/sizeNgAng);
+      // cout << MIN_THETA << " " << sizeNgAng << endl;
+      // cout << angles[d1][d2] << ": " << ngEnc << endl;
 
-      ngEnc = int (angles[d1][d2] - MIN_THETA)/sizeNgAng;
       if(ngEnc >= BA) ngEnc = BA-1;
       else if(ngEnc < 0) ngEnc = 0;
 
@@ -318,32 +273,95 @@ void readFiss::ExtractCov()
           {
             for(int n2 = 0; n2 < MAX_MULT_DET; n2++)
             {
-              int multPos = arrayExp[d1*iD1 + d2*iD2 + e1*iE1 + e2*iE2 + n1*iN1 + n2*iN2];
+              int multPos = arrayExp[d1][d2][e1][e2][n1][n2];
               covVal += multPos*n1*n2;
               specValN += multPos*n1;
               specValP += multPos*n2;
-              cout << multPos << " ";
+              //cout << multPos << " ";
             }
-            cout << endl;
+            //cout << endl;
           }
 
-          covVal = (covVal - specValN*specValP)/expEntries;
-          specVal = (specValN*specValP)/expEntries;
+          covVal /= expEntries;
+          specValN /= expEntries;
+          specValP /= expEntries;
 
-          cout << covVal << endl;
+          covVal = (covVal - specValN*specValP);
+          specVal = (specValN*specValP);
 
-          arrayCorrExp[ngEnc][e1][e2] = covVal;
-          arraySpecExp[ngEnc][e1][e2] = specVal;
+          //cout << covVal << endl;
+
+          arrayCorrExp[ngEnc][e1][e2] += covVal;
+          arraySpecExp[ngEnc][e1][e2] += specVal;
           totCovCheck += covVal;
           totSpecCheck += specVal;
+
+          // cout << arrayCorrExp[ngEnc][e1][e2] << endl;
         }
       }
     }
   }
 
-    cout << "fast" << endl;
-    cout << "tot cov check: " << totCovCheck << endl;
-    cout << "tot spec check: " << totSpecCheck << endl;
+  cout << "Cov macro checks:" << endl;
+  cout << "cov = "<< totCovCheck << ", spec =  " << totSpecCheck << endl;
+  cout << "corrected ratio: " << totCovCheck/totSpecCheck << endl;
+}
+
+
+// write the content of the matrices
+void readFiss::WriteCovEM()
+{
+  writeFile->cd();
+  cd_FAME->cd();
+
+  cout << "Writing CovEM results" << endl;
+
+  mkdir("covResults", 0777);
+  cout << "creating" << endl;
+
+  // print the content of the matrices
+  ofstream covMatFire;
+  ofstream specMatFire;
+  string fileCovFire;
+  string fileSpecFire;
+
+  for(int eA = 0; eA < BA; eA++)
+  {
+    fileCovFire = "covResults/covEM_" + to_string(eA) + ".csv";
+    covMatFire.open(fileCovFire);
+
+    fileSpecFire = "covResults/specEM_" + to_string(eA) + ".csv";
+    specMatFire.open(fileSpecFire);
+
+    // cout << eA << endl;
+
+    for(int eN = 0; eN < BN; eN ++)
+    {
+     for(int eP = 0; eP < BP; eP ++)
+      {
+         covMatFire << arrayCorrExp[eA][eN][eP];
+         specMatFire << arraySpecExp[eA][eN][eP];
+
+         if(eP < BP - 1)
+         {
+           covMatFire << ",";
+           specMatFire << ",";
+         }
+         else if(eP == BP - 1)
+         {
+           covMatFire << "\n";
+           specMatFire << "\n";
+         }
+      }
+    }
+
+    covMatFire.close();
+    specMatFire.close();
+
+  }
+
+
+
 }
 
 void readFiss::AnalyseCovEM()

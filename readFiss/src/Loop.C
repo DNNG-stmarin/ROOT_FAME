@@ -21,7 +21,8 @@ void readFiss::LoopExp()
    if (expTree == 0) return;
 
    expEntries = expTree->GetEntries();
-   expEntries = 1000000;
+   expEntries = 10000000;
+   Long64_t firstEvent = 30000000;
    if(expEntries == 0)
    {
      w->noExpFile();
@@ -34,20 +35,29 @@ void readFiss::LoopExp()
    Long64_t nbytes = 0, nb = 0;
 
    int encN, encP;
-   short* shortListErgN;
-   short* shortListErgP;
+   short** shortListErgN;
+   short** shortListErgP;
 
    if(CovEM_in)
    {
      cout << "initilaizing cov EM short lists" << endl;
-     shortListErgN = new short [NUM_DETECTORS*(NUM_DIFF_N)];
-     shortListErgP = new short [NUM_DETECTORS*(NUM_DIFF_P)];
+     shortListErgN = new short* [NUM_DETECTORS];
+     shortListErgP = new short* [NUM_DETECTORS];
+     for(int d = 0; d < NUM_DETECTORS; d++)
+     {
+       shortListErgN[d] = new short [NUM_DIFF_N];
+       shortListErgP[d] = new short [NUM_DIFF_P];
+     }
+
+     cout << "BN: " << BN << ", BP: " << BP << ", BA: " << BA << endl;
+     cout << "ranges, N: " << MIN_N_ERG <<"-" <<MAX_N_ERG <<  ", P: " << MIN_P_ERG << "-" << MAX_P_ERG << endl;
    }
 
 
    cout << "beginning loop" << endl;
    // main loop
-   for (Long64_t jentry=0; jentry<expEntries;jentry++)
+
+   for (Long64_t jentry=firstEvent; jentry<expEntries + firstEvent; jentry++)
    {
       // updates READ_FAME progress bar (negligible impact on runtime)
       w->setProgress((int)(((double)runNum * (100.0 / (double)NUM_RUNS)) + 100.0 * (((double)jentry / (double)expEntries) / (double)NUM_RUNS)));
@@ -115,7 +125,7 @@ void readFiss::LoopExp()
       h_fissRej->Fill(ACCEPTED_SIGNAL);
       if(numFissIter%1000000 == 0)
       {
-        cout << "finished processing " << numFissIter << " valid fissions, " << (int)jentry + 1 << " total" << endl;
+        cout << "finished processing " << numFissIter << " valid fissions, " << (int)jentry + 1 << " entry number" << endl;
       }
       nMult = 0;
       gMult = 0;
@@ -127,14 +137,12 @@ void readFiss::LoopExp()
       for (int i = 0; i < neutronMult; i++)
       {
         // ann mode cut neutrons
-        if(ANN_mode) {
+        if(ANN_mode)
+        {
           Double_t ANNFlag = crossTalkANN->Value(0, neutronDetTimes[i], neutronLightOut[i]);
           //cout << ANNFlag << "\n";
           if(ANNFlag < thresholdANN) continue;
         }
-
-
-
 
         if ((neutronLightOut[i] > THRESHOLD) && (neutronLightOut[i] < CLIPPING) && (neutronDetTimes[i] < MAX_TIME_N))
         {
@@ -181,8 +189,8 @@ void readFiss::LoopExp()
                 encN = 0;
               }
               //cout << NUM_DIFF_N*(nMult-1)<< endl;
-              shortListErgN[NUM_DIFF_N*(nMult-1)] = neutronDet[i];
-              shortListErgN[NUM_DIFF_N*(nMult-1) + 1] = encN;
+              shortListErgN[nMult-1][0] = neutronDet[i];
+              shortListErgN[nMult-1][1] = encN;
             }
 
         }
@@ -265,8 +273,8 @@ void readFiss::LoopExp()
             {
               encP = 0;
             }
-            shortListErgP[NUM_DIFF_P*(gMult-1)] = photonDet[i];
-            shortListErgP[NUM_DIFF_P*(gMult-1)+1] = encP;
+            shortListErgP[gMult-1][0] = photonDet[i];
+            shortListErgP[gMult-1][1] = encP;
           }
         }
 
@@ -462,9 +470,8 @@ void readFiss::LoopExp()
         bool crossingPoint = false;
         for(int iN = 0; iN < nMult; iN ++)
         {
-          detN = shortListErgN[iN*NUM_DIFF_N];
-          ergN = shortListErgN[iN*NUM_DIFF_N + 1];
-          // cout << detN << " " << ergN << endl;
+          detN = shortListErgN[iN][0];
+          ergN = shortListErgN[iN][1];
 
           for(int ldetP = 0; ldetP < NUM_DETECTORS; ldetP++)
           {
@@ -472,13 +479,14 @@ void readFiss::LoopExp()
             {
               for(int iP = 0; iP < gMult; iP++)
               {
-                detP = shortListErgP[iP*NUM_DIFF_P];
-                ergP = shortListErgP[iP*NUM_DIFF_P+1];
+                detP = shortListErgP[iP][0];
+                ergP = shortListErgP[iP][1];
 
                 if((detP == ldetP) & (ergP == lergP))
                 {
                   crossingPoint = true;
-                  arrayExp[iD1*detN + iD2*detP + iE1*ergN + iE2*ergP + 1*iN1 + 1*iN2]++;
+                  arrayExp[detN][detP][ergN][ergP][1][1]++;
+                  //cout << "coinc" << endl;
                   continue;
                 }
               }
@@ -490,7 +498,7 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayExp[iD1*detN + iD2*detP + iE1*ergN + iE2*ergP + 1*iN1 + 0*iN2]++;
+                arrayExp[detN][ldetP][ergN][lergP][1][0]++;
               }
 
             }
@@ -499,8 +507,8 @@ void readFiss::LoopExp()
 
         for(int iP = 0; iP < gMult; iP ++)
         {
-          detP = shortListErgP[iP*NUM_DIFF_P];
-          ergP = shortListErgP[iP*NUM_DIFF_P+1];
+          detP = shortListErgP[iP][0];
+          ergP = shortListErgP[iP][1];
 
           for(int ldetN = 0; ldetN < NUM_DETECTORS; ldetN++)
           {
@@ -508,13 +516,12 @@ void readFiss::LoopExp()
             {
               for(int iN = 0; iN < nMult; iN++)
               {
-                detN = shortListErgN[iN*NUM_DIFF_N];
-                ergN = shortListErgN[iN*NUM_DIFF_N+1];
+                detN = shortListErgN[iN][0];
+                ergN = shortListErgN[iN][1];
 
                 if((detN == ldetN) & (ergN == lergN))
                 {
                   crossingPoint = true;
-                  // arrayExp[iD1*detN + iD2*detP + iE1*ergN + iE2*ergP + 1*iN1 + 1*iN2]++;
                   continue;
                 }
               }
@@ -526,7 +533,7 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayExp[iD1*detN + iD2*detP + iE1*ergN + iE2*ergP + 0*iN1 + 1*iN2]++;
+                arrayExp[ldetN][detP][lergN][ergP][0][1]++;
               }
 
             }
@@ -634,109 +641,110 @@ void readFiss::LoopSim()
 
 void readFiss::LoopBeam()
 {
-    cout << "Now looping through beam. " << endl;
-
-    if (expTree == 0) return;
-    //CHANGE BACK TO SIM TREE
-    expEntries = expTree->GetEntries();
-    cout << "Analyzing (again)" << expEntries << " experimental events \n ";
-
-    int nMult, gMult, nMultBack, gMultBack, indexChannel;
-    Long64_t nbytes = 0, nb = 0;
-    for (Long64_t jentry = 0; jentry < expEntries; jentry++)
-    {
-        Long64_t ientry = LoadExpTree(jentry);
-        if (ientry < 0) break;
-        nb = expTree->GetEntry(jentry);   nbytes += nb;
-        // if (Cut(ientry) < 0) continue;
-        indexChannel = isTrigger(fisChan); // this should be a function of fisChan
-
-        if(indexChannel < 0)
-        {
-          cout << "Trigger number " << fisChan << " not recognized." << endl;
-          exit(10);
-        }
-
-        // skip if the energy of the beam is outside the range
-        // nathan remove
-
-        if(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX)
-        {
-          h_fisDep[indexChannel]->Fill(fisDep);
-          h_beamTime[indexChannel]->Fill(beamTime);
-          h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
-
-        }
-        else
-        {
-          // cout << "energy not recognized: " << beamEnergy << endl;
-          continue;
-        }
-
-        nMult = 0;
-        gMult = 0;
-        nMultBack = 0;
-        gMultBack = 0;
-
-        // loop through neutrons
-        for (int i = 0; i < neutronMult; i++)
-        {
-          if ((neutronLightOut[i] > THRESHOLD) && (neutronDetTimes[i] < MAX_TIME_N) )
-          {
-            nMult++;
-          }
-        }
-        h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
-
-        if (fisDep > THRESHOLD_DEP)
-        {
-          h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
-        }
-
-        // loop through gamma rays
-        for (int i = 0; i < gammaMult; i++)
-        {
-          if (photonLightOut[i] > THRESHOLD)
-          {
-            gMult++;
-          }
-        }
-        h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
-
-        if (fisDep > THRESHOLD_DEP)
-        {
-          h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
-        }
-
-        // loop through back neutrons
-        for (int i = 0; i < neutronBackMult; i++)
-        {
-          if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N))
-          {
-            nMultBack++;
-          }
-        }
-        h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
-
-        if (fisDep > THRESHOLD_DEP)
-        {
-          h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
-        }
-
-
-        // loop through back photons
-        for (int i = 0; i < gammaBackMult; i++)
-        {
-          if (backPhotonLightOut[i] > THRESHOLD)
-          {
-            gMultBack++;
-          }
-        }
-        h2_backGammaMultDep[indexChannel]->Fill(fisDep, gMultBack);
-
-        if (fisDep > THRESHOLD_DEP)
-        {
-          h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
-        }
-    }
+    // cout << "Now looping through beam. " << endl;
+    //
+    // if (expTree == 0) return;
+    // //CHANGE BACK TO SIM TREE
+    // expEntries = expTree->GetEntries();
+    //
+    // cout << "Analyzing (again)" << expEntries << " experimental events \n ";
+    //
+    // int nMult, gMult, nMultBack, gMultBack, indexChannel;
+    // Long64_t nbytes = 0, nb = 0;
+    // for (Long64_t jentry = 0; jentry < expEntries; jentry++)
+    // {
+    //     Long64_t ientry = LoadExpTree(jentry);
+    //     if (ientry < 0) break;
+    //     nb = expTree->GetEntry(jentry);   nbytes += nb;
+    //     // if (Cut(ientry) < 0) continue;
+    //     indexChannel = isTrigger(fisChan); // this should be a function of fisChan
+    //
+    //     if(indexChannel < 0)
+    //     {
+    //       cout << "Trigger number " << fisChan << " not recognized." << endl;
+    //       exit(10);
+    //     }
+    //
+    //     // skip if the energy of the beam is outside the range
+    //     // nathan remove
+    //
+    //     if(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX)
+    //     {
+    //       h_fisDep[indexChannel]->Fill(fisDep);
+    //       h_beamTime[indexChannel]->Fill(beamTime);
+    //       h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
+    //
+    //     }
+    //     else
+    //     {
+    //       // cout << "energy not recognized: " << beamEnergy << endl;
+    //       continue;
+    //     }
+    //
+    //     nMult = 0;
+    //     gMult = 0;
+    //     nMultBack = 0;
+    //     gMultBack = 0;
+    //
+    //     // loop through neutrons
+    //     for (int i = 0; i < neutronMult; i++)
+    //     {
+    //       if ((neutronLightOut[i] > THRESHOLD) && (neutronDetTimes[i] < MAX_TIME_N) )
+    //       {
+    //         nMult++;
+    //       }
+    //     }
+    //     h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
+    //
+    //     if (fisDep > THRESHOLD_DEP)
+    //     {
+    //       h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
+    //     }
+    //
+    //     // loop through gamma rays
+    //     for (int i = 0; i < gammaMult; i++)
+    //     {
+    //       if (photonLightOut[i] > THRESHOLD)
+    //       {
+    //         gMult++;
+    //       }
+    //     }
+    //     h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
+    //
+    //     if (fisDep > THRESHOLD_DEP)
+    //     {
+    //       h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
+    //     }
+    //
+    //     // loop through back neutrons
+    //     for (int i = 0; i < neutronBackMult; i++)
+    //     {
+    //       if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N))
+    //       {
+    //         nMultBack++;
+    //       }
+    //     }
+    //     h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
+    //
+    //     if (fisDep > THRESHOLD_DEP)
+    //     {
+    //       h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
+    //     }
+    //
+    //
+    //     // loop through back photons
+    //     for (int i = 0; i < gammaBackMult; i++)
+    //     {
+    //       if (backPhotonLightOut[i] > THRESHOLD)
+    //       {
+    //         gMultBack++;
+    //       }
+    //     }
+    //     h2_backGammaMultDep[indexChannel]->Fill(fisDep, gMultBack);
+    //
+    //     if (fisDep > THRESHOLD_DEP)
+    //     {
+    //       h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
+    //     }
+    // }
 }

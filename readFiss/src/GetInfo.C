@@ -39,15 +39,15 @@ void readFiss::SetInfo(MainWindow* main_in)
 
   // paths
   nameExp = w->nameExp();
-  if(mode == 1)
+  if(mode == SIM_MODE)
       nameSim = w->nameSim();
-  else if(mode == 2)
+  else if(mode == BEAM_MODE)
       nameBeam = w->nameBeam();
   nameCoords = w->nameCoords();
   nameWrite = w->nameWrite();
 
   numExpFiles = w->numExpFiles();
-  if(mode == 1)
+  if(mode == SIM_MODE)
       numSimFiles = w->numSimFiles();
 
   // detectors
@@ -71,7 +71,7 @@ void readFiss::SetInfo(MainWindow* main_in)
   FISS_PILEUP_TIME = w->FISS_PILEUP_TIME() + (((w->FISS_PILEUP_TIME2() - w->FISS_PILEUP_TIME()) / (NUM_RUNS - 1 + compensator)) * runNum);
 
   // beam settings
-  if(mode == 2)
+  if(mode == BEAM_MODE)
   {
       BEAM_ERG_MIN = w->BEAM_ERG_MIN();
       BEAM_ERG_MAX = w->BEAM_ERG_MAX();
@@ -90,7 +90,7 @@ void readFiss::SetInfo(MainWindow* main_in)
       BA = w->BA();
 
       sizeNerg = (MAX_N_ERG-MIN_N_ERG)/BN;
-      sizePerg = (MAX_N_ERG-MIN_N_ERG)/BP;
+      sizePerg = (MAX_P_ERG-MIN_P_ERG)/BP;
       sizeNgAng = (MAX_THETA-MIN_THETA)/BA;
   }
 }
@@ -137,7 +137,7 @@ void readFiss::Run()
   InitExp(expChain);
 
   // if in simulation mode, initialize simulation tree
-  if(mode == 1)
+  if(mode == SIM_MODE)
   {
     cd_simComparison = writeFile->mkdir("SimComparison");
 
@@ -160,7 +160,7 @@ void readFiss::Run()
   }
 
   // if in beam mode, prep directories
-  else if(mode == 2)
+  else if(mode == BEAM_MODE)
   {
     cd_beam = writeFile->mkdir("Beam");
     cd_alphaSub = cd_beam->mkdir("AlphaSubtraction");
@@ -195,11 +195,11 @@ void readFiss::Run()
 
   // loop through
   LoopExp();
-  if(mode == 1)
+  if(mode == SIM_MODE)
   {
     LoopSim();
   }
-  if(mode == 2)
+  if(mode == BEAM_MODE)
   {
     ReadBeamInfo();
     BeamDepAnalysis();
@@ -213,19 +213,19 @@ void readFiss::Run()
   // run CovEM if user wanted to
   if(CovEM_in){
     // covEM plot
-    CovEM();
-    WriteCovEM();
+    // CovEM();
     ExtractCov();
+    WriteCovEM();
   }
 
   // plotting sections
   PlotAll();
-  if(mode == 1)
+  if(mode == SIM_MODE)
   {
     CompareAll();
   }
 
-  if(mode == 2)
+  if(mode == BEAM_MODE)
   {
     PlotDepSubtraction();
     PlotRatioMult();
@@ -409,19 +409,6 @@ void readFiss::LoadInput(istream &in)
     // detectors
     in >> integer;
     w->NUM_DETECTORS(integer);
-    // in >> dbl;
-    // w->THRESHOLD(dbl);
-    //in >> dbl;
-    //w->THRESHOLD2(dbl);
-    // in >> dbl;
-    // w->CLIPPING(dbl);
-    //in >> dbl;
-    //w->CLIPPING2(dbl);
-    // in >> dbl;
-    // w->MAX_TIME_N(dbl);
-    //in >> dbl;
-    //w->MAX_TIME_N2(dbl);
-
     // triggers
     in >> integer;
     w->NUM_TRIGGERS(integer);
@@ -431,27 +418,9 @@ void readFiss::LoadInput(istream &in)
       in >> loadTRIGGERS[i];
     }
     w->TRIGGERS(loadTRIGGERS);
-    in >> dbl;
-    // w->THRESHOLD_DEP(dbl);
-    // //in >> dbl;
-    // //w->THRESHOLD_DEP2(dbl);
-    // in >> dbl;
-    // w->CLIPPING_DEP(dbl);
-    // // in >> dbl;
-    // // w->CLIPPING_DEP2(dbl);
-    //
-    // // other settings for all modes
-    // in >> dbl;
-    // w->BACKGROUND_DELAY(dbl);
-    // // in >> dbl;
-    // // w->BACKGROUND_DELAY2(dbl);
-    // in >> dbl;
-    // w->FISS_PILEUP_TIME(dbl);
-    // in >> dbl;
-    // w->FISS_PILEUP_TIME2(dbl);
 
     // CovEM settings
-    if(CovEM_in)
+    if(w->CovEM_in() == 1)
     {
         in >> dbl;
         w->MIN_N_ERG(dbl);
@@ -467,6 +436,8 @@ void readFiss::LoadInput(istream &in)
         w->BP(integer);
         in >> integer;
         w->BA(integer);
+
+        //cout << w->BN() << " " << w->BP() << " " << w->BA() << endl;
     }
 
     // beam settings

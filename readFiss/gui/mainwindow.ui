@@ -9,9 +9,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>792</height>
+    <width>884</width>
+    <height>886</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="palette">
    <palette>
@@ -40,6 +46,15 @@
         <red>230</red>
         <green>232</green>
         <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Highlight">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>65</red>
+        <green>90</green>
+        <blue>252</blue>
        </color>
       </brush>
      </colorrole>
@@ -81,6 +96,15 @@
        </color>
       </brush>
      </colorrole>
+     <colorrole role="Highlight">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>65</red>
+        <green>90</green>
+        <blue>252</blue>
+       </color>
+      </brush>
+     </colorrole>
      <colorrole role="AlternateBase">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
@@ -119,6 +143,15 @@
        </color>
       </brush>
      </colorrole>
+     <colorrole role="Highlight">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>220</red>
+        <green>220</green>
+        <blue>220</blue>
+       </color>
+      </brush>
+     </colorrole>
      <colorrole role="AlternateBase">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
@@ -143,622 +176,10 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="16" column="1">
-     <widget class="QLabel" name="label_20">
-      <property name="text">
-       <string>Coordinate File path</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Max Neutron Time [ns]</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="NUM_TRIGGERS">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QLabel" name="label_9">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Threshold [V us]</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string>Detectors</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="12" column="2">
-     <widget class="QLabel" name="label_25">
-      <property name="text">
-       <string>Min/Max neutron erg [MeV]</string>
-      </property>
-     </widget>
-    </item>
-    <item row="11" column="0">
-     <widget class="QCheckBox" name="simMode">
-      <property name="text">
-       <string>SimMode</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Number</string>
-      </property>
-     </widget>
-    </item>
-    <item row="21" column="1">
-     <widget class="QLineEdit" name="numSimFiles">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="19" column="1">
-     <layout class="QHBoxLayout" name="Sim">
-      <item>
-       <widget class="QLineEdit" name="nameSim">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="simFinder">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="20" column="2">
-     <widget class="QLabel" name="label_28">
-      <property name="text">
-       <string>Min/Max beam erg [MeV]</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Threshold [MeVee]</string>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="2">
-     <widget class="QLabel" name="label_24">
-      <property name="text">
-       <string>CovEM Settings</string>
-      </property>
-     </widget>
-    </item>
-    <item row="18" column="1">
-     <widget class="QLabel" name="label_21">
-      <property name="text">
-       <string>simFile path (without .root)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLineEdit" name="NUM_DETECTORS">
-      <property name="text">
-       <string>40</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLabel" name="label_8">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Trigger numbers</string>
-      </property>
-     </widget>
-    </item>
-    <item row="15" column="2">
-     <layout class="QHBoxLayout" name="P_ERG">
-      <item>
-       <widget class="QLineEdit" name="MIN_P_ERG">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>0.0</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="MAX_P_ERG">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>4.0</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="21" column="2">
-     <layout class="QHBoxLayout" name="BEAM_ERG">
-      <item>
-       <widget class="QLineEdit" name="BEAM_ERG_MIN">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>2</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="BEAM_ERG_MAX">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>16</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="12" column="0">
-     <widget class="QCheckBox" name="beamMode">
-      <property name="text">
-       <string>BeamMode</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="2">
-     <widget class="QLabel" name="label_16">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string>Settings</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1">
-     <widget class="QLabel" name="label_10">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Clipping [V us]</string>
-      </property>
-     </widget>
-    </item>
-    <item row="15" column="1">
-     <widget class="QLineEdit" name="numExpFiles">
-      <property name="text">
-       <string>1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="1">
-     <widget class="QLabel" name="label_15">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string>Paths</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLabel" name="label_7">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Number</string>
-      </property>
-     </widget>
-    </item>
-    <item row="24" column="0">
-     <widget class="QPushButton" name="Run">
-      <property name="text">
-       <string>Run</string>
-      </property>
-     </widget>
-    </item>
-    <item row="22" column="1">
-     <widget class="QLabel" name="label_22">
-      <property name="text">
-       <string>beamFile path</string>
-      </property>
-     </widget>
-    </item>
-    <item row="14" column="2">
-     <widget class="QLabel" name="label_26">
-      <property name="text">
-       <string>Min/Max photon erg [MeV]</string>
-      </property>
-     </widget>
-    </item>
-    <item row="23" column="0">
-     <widget class="QPushButton" name="openBrowser">
-      <property name="text">
-       <string>Open Browser (WIP)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="0">
-     <widget class="QLabel" name="label_14">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string>Modes</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="label_6">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string>Triggers</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="14" column="1">
-     <widget class="QLabel" name="label_19">
-      <property name="text">
-       <string>Number of expFiles</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="label_12">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Background Delay [ns]</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Clipping [MeVee]</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <widget class="QLabel" name="label_13">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Separation Time of pileup fissions [ns]</string>
-      </property>
-     </widget>
-    </item>
-    <item row="13" column="1">
-     <layout class="QHBoxLayout" name="Exp">
-      <item>
-       <widget class="QLineEdit" name="nameExp"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="expFinder">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="23" column="1">
-     <layout class="QHBoxLayout" name="Beam">
-      <item>
-       <widget class="QLineEdit" name="nameBeam">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="beamFinder">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="17" column="1">
-     <layout class="QHBoxLayout" name="Coords">
-      <item>
-       <widget class="QLineEdit" name="nameCoords"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="coordFinder">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="24" column="1">
-     <widget class="QPushButton" name="Save">
-      <property name="text">
-       <string>Save...</string>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="0">
-     <widget class="QCheckBox" name="CovEM_in">
-      <property name="text">
-       <string>CovEM</string>
-      </property>
-     </widget>
-    </item>
-    <item row="18" column="2">
-     <widget class="QLabel" name="label_29">
-      <property name="text">
-       <string>Beam settings</string>
-      </property>
-     </widget>
-    </item>
-    <item row="23" column="2">
-     <widget class="QLineEdit" name="BEAM_ERG_BINNUM">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>40</string>
-      </property>
-     </widget>
-    </item>
-    <item row="16" column="2">
-     <widget class="QLabel" name="label_27">
-      <property name="text">
-       <string>BN/BP</string>
-      </property>
-     </widget>
-    </item>
-    <item row="22" column="2">
-     <widget class="QLabel" name="label_30">
-      <property name="text">
-       <string># of energy bins</string>
-      </property>
-     </widget>
-    </item>
-    <item row="24" column="2">
-     <widget class="QPushButton" name="Load">
-      <property name="text">
-       <string>Load...</string>
-      </property>
-     </widget>
-    </item>
-    <item row="20" column="1">
-     <widget class="QLabel" name="label_23">
-      <property name="text">
-       <string>Number of simFiles</string>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="1">
-     <widget class="QLabel" name="label_17">
-      <property name="text">
-       <string>writeFile path (without .root)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="label_11">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string>Other</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="13" column="2">
-     <layout class="QHBoxLayout" name="N_ERG">
-      <item>
-       <widget class="QLineEdit" name="MIN_N_ERG">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>0.0</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="MAX_N_ERG">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>10.0</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="17" column="2">
-     <layout class="QHBoxLayout" name="BN_BP_BA">
-      <item>
-       <widget class="QLineEdit" name="BN">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>10</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="BP">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>50</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="BA">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>20</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="12" column="1">
-     <widget class="QLabel" name="label_18">
-      <property name="text">
-       <string>expFile path (without .root)</string>
-      </property>
-     </widget>
-    </item>
     <item row="4" column="1">
      <widget class="QLineEdit" name="TRIGGERS">
       <property name="text">
        <string>46</string>
-      </property>
-     </widget>
-    </item>
-    <item row="14" column="0">
-     <widget class="QSpinBox" name="NUM_RUNS">
-      <property name="suffix">
-       <string/>
-      </property>
-      <property name="minimum">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <number>10000</number>
-      </property>
-     </widget>
-    </item>
-    <item row="13" column="0">
-     <widget class="QLabel" name="label_31">
-      <property name="text">
-       <string>Number of Runs (&gt;1 enables ranges)</string>
       </property>
      </widget>
     </item>
@@ -793,36 +214,30 @@
       </item>
      </layout>
     </item>
-    <item row="6" column="0">
-     <layout class="QHBoxLayout" name="CLIPPING_Range">
-      <item>
-       <widget class="QLineEdit" name="CLIPPING">
-        <property name="text">
-         <string>2</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="CLIPPING2">
-        <property name="visible">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>2</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="CLIPPING_Check">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Range</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_6">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Triggers</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLineEdit" name="NUM_DETECTORS">
+      <property name="text">
+       <string>40</string>
+      </property>
+     </widget>
     </item>
     <item row="8" column="0">
      <layout class="QHBoxLayout" name="MAX_TIME_N_Range">
@@ -855,32 +270,607 @@
       </item>
      </layout>
     </item>
-    <item row="6" column="1">
-     <layout class="QHBoxLayout" name="THRESHOLD_DEP_Range">
+    <item row="10" column="0">
+     <widget class="QCheckBox" name="CovEM_in">
+      <property name="text">
+       <string>CovEM</string>
+      </property>
+     </widget>
+    </item>
+    <item row="20" column="1">
+     <widget class="QLabel" name="label_23">
+      <property name="text">
+       <string>Number of simFiles</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="3">
+     <widget class="QLabel" name="label_12">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Background Delay [ns]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="1">
+     <layout class="QHBoxLayout" name="Write">
       <item>
-       <widget class="QLineEdit" name="THRESHOLD_DEP">
+       <widget class="QLineEdit" name="nameWrite">
         <property name="text">
-         <string>0.005</string>
+         <string>out</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="THRESHOLD_DEP2">
+       <widget class="QPushButton" name="writeFinder">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="7" column="3">
+     <widget class="QLabel" name="label_32">
+      <property name="text">
+       <string>Cross-Talk Confidence Rejection (%)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="3">
+     <layout class="QHBoxLayout" name="N_ERG">
+      <item>
+       <widget class="QLineEdit" name="MIN_N_ERG">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>0.0</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="MAX_N_ERG">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>10.0</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="7" column="1">
+     <widget class="QLabel" name="label_10">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Clipping [V us]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Threshold [MeVee]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="20" column="3">
+     <widget class="QLabel" name="label_28">
+      <property name="text">
+       <string>Min/Max beam erg [MeV]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLabel" name="label_14">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Modes</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Clipping [MeVee]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="23" column="3">
+     <widget class="QLineEdit" name="BEAM_ERG_BINNUM">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>40</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="1">
+     <widget class="QLabel" name="label_17">
+      <property name="text">
+       <string>writeFile path (without .root)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Detectors</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="3">
+     <widget class="QCheckBox" name="ANN_ON">
+      <property name="text">
+       <string>Artificial Neural Network</string>
+      </property>
+     </widget>
+    </item>
+    <item row="15" column="1">
+     <widget class="QLineEdit" name="numExpFiles">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="25" column="3">
+     <widget class="QPushButton" name="Load">
+      <property name="text">
+       <string>Load...</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="3">
+     <layout class="QHBoxLayout" name="BACKGROUND_DELAY_Range">
+      <item>
+       <widget class="QLineEdit" name="BACKGROUND_DELAY">
+        <property name="text">
+         <string>62</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="BACKGROUND_DELAY2">
         <property name="visible">
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>0.005</string>
+         <string>62</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="THRESHOLD_DEP_Check">
+       <widget class="QCheckBox" name="BACKGROUND_DELAY_Check">
         <property name="enabled">
          <bool>false</bool>
         </property>
         <property name="text">
          <string>Range</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="14" column="0">
+     <widget class="QSpinBox" name="NUM_RUNS">
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>10000</number>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QLabel" name="label_11">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Other</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="25" column="0">
+     <widget class="QPushButton" name="Run">
+      <property name="text">
+       <string>Run</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="1">
+     <widget class="QLabel" name="label_15">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Paths</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="21" column="1">
+     <widget class="QLineEdit" name="numSimFiles">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="21" column="3">
+     <layout class="QHBoxLayout" name="BEAM_ERG">
+      <item>
+       <widget class="QLineEdit" name="BEAM_ERG_MIN">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>2</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="BEAM_ERG_MAX">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>16</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="19" column="3">
+     <widget class="QLabel" name="label_29">
+      <property name="text">
+       <string>Beam settings</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="3">
+     <layout class="QHBoxLayout" name="FISS_PILEUP_TIME_Range">
+      <item>
+       <widget class="QLineEdit" name="FISS_PILEUP_TIME">
+        <property name="text">
+         <string>200</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="FISS_PILEUP_TIME2">
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>200</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="FISS_PILEUP_TIME_Check">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Range</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Max Neutron Time [ns]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Number</string>
+      </property>
+     </widget>
+    </item>
+    <item row="16" column="3">
+     <widget class="QLabel" name="label_27">
+      <property name="text">
+       <string>Number of kinematic bins: neutron/gamma/angle</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="0">
+     <widget class="QCheckBox" name="simMode">
+      <property name="text">
+       <string>SimMode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="11" column="3">
+     <widget class="QLabel" name="label_16">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Cov Settings</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="22" column="3">
+     <widget class="QLabel" name="label_30">
+      <property name="text">
+       <string># of energy bins</string>
+      </property>
+     </widget>
+    </item>
+    <item row="25" column="1">
+     <widget class="QPushButton" name="Save">
+      <property name="text">
+       <string>Save...</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="0">
+     <widget class="QLabel" name="label_31">
+      <property name="text">
+       <string>Number of Runs (&gt;1 enables ranges)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="23" column="1">
+     <layout class="QHBoxLayout" name="Beam">
+      <item>
+       <widget class="QLineEdit" name="nameBeam">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="beamFinder">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="12" column="3">
+     <widget class="QLabel" name="label_25">
+      <property name="text">
+       <string>Min/Max neutron Energy [MeV]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="2" colspan="2">
+     <widget class="QSlider" name="ANN_confidence">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>70</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="tickPosition">
+       <enum>QSlider::TicksAbove</enum>
+      </property>
+      <property name="tickInterval">
+       <number>10</number>
+      </property>
+     </widget>
+    </item>
+    <item row="17" column="1">
+     <layout class="QHBoxLayout" name="Coords">
+      <item>
+       <widget class="QLineEdit" name="nameCoords"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="coordFinder">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_7">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Number</string>
+      </property>
+     </widget>
+    </item>
+    <item row="14" column="3">
+     <widget class="QLabel" name="label_26">
+      <property name="text">
+       <string>Min/Max photon Energy [MeV]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="1">
+     <layout class="QHBoxLayout" name="Exp">
+      <item>
+       <widget class="QLineEdit" name="nameExp"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="expFinder">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="18" column="1">
+     <widget class="QLabel" name="label_21">
+      <property name="text">
+       <string>simFile path (without .root)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="15" column="3">
+     <layout class="QHBoxLayout" name="P_ERG">
+      <item>
+       <widget class="QLineEdit" name="MIN_P_ERG">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>0.0</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="MAX_P_ERG">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>4.0</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLabel" name="label_9">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Threshold [V us]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="NUM_TRIGGERS">
+      <property name="text">
+       <string>1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="16" column="1">
+     <widget class="QLabel" name="label_20">
+      <property name="text">
+       <string>Coordinate File path</string>
+      </property>
+     </widget>
+    </item>
+    <item row="19" column="1">
+     <layout class="QHBoxLayout" name="Sim">
+      <item>
+       <widget class="QLineEdit" name="nameSim">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="simFinder">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>...</string>
         </property>
        </widget>
       </item>
@@ -917,27 +907,53 @@
       </item>
      </layout>
     </item>
-    <item row="2" column="2">
-     <layout class="QHBoxLayout" name="BACKGROUND_DELAY_Range">
+    <item row="12" column="0">
+     <widget class="QCheckBox" name="beamMode">
+      <property name="text">
+       <string>BeamMode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="14" column="1">
+     <widget class="QLabel" name="label_19">
+      <property name="text">
+       <string>Number of expFiles</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLabel" name="label_8">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Trigger numbers</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <layout class="QHBoxLayout" name="CLIPPING_Range">
       <item>
-       <widget class="QLineEdit" name="BACKGROUND_DELAY">
+       <widget class="QLineEdit" name="CLIPPING">
         <property name="text">
-         <string>62</string>
+         <string>2</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="BACKGROUND_DELAY2">
+       <widget class="QLineEdit" name="CLIPPING2">
         <property name="visible">
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>62</string>
+         <string>2</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="BACKGROUND_DELAY_Check">
+       <widget class="QCheckBox" name="CLIPPING_Check">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -948,27 +964,75 @@
       </item>
      </layout>
     </item>
-    <item row="4" column="2">
-     <layout class="QHBoxLayout" name="FISS_PILEUP_TIME_Range">
+    <item row="17" column="3">
+     <layout class="QHBoxLayout" name="BN_BP_BA">
       <item>
-       <widget class="QLineEdit" name="FISS_PILEUP_TIME">
+       <widget class="QLineEdit" name="BN">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
-         <string>200</string>
+         <string>10</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="FISS_PILEUP_TIME2">
+       <widget class="QLineEdit" name="BP">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>50</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="BA">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>20</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="22" column="1">
+     <widget class="QLabel" name="label_22">
+      <property name="text">
+       <string>beamFile path</string>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="1">
+     <widget class="QLabel" name="label_18">
+      <property name="text">
+       <string>expFile path (without .root)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <layout class="QHBoxLayout" name="THRESHOLD_DEP_Range">
+      <item>
+       <widget class="QLineEdit" name="THRESHOLD_DEP">
+        <property name="text">
+         <string>0.005</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="THRESHOLD_DEP2">
         <property name="visible">
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>200</string>
+         <string>0.005</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="FISS_PILEUP_TIME_Check">
+       <widget class="QCheckBox" name="THRESHOLD_DEP_Check">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -979,23 +1043,24 @@
       </item>
      </layout>
     </item>
-    <item row="11" column="1">
-     <layout class="QHBoxLayout" name="Write">
-      <item>
-       <widget class="QLineEdit" name="nameWrite">
-        <property name="text">
-         <string>out</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="writeFinder">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <item row="3" column="3">
+     <widget class="QLabel" name="label_13">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Separation Time of pileup fissions [ns]</string>
+      </property>
+     </widget>
+    </item>
+    <item row="23" column="0">
+     <widget class="QPushButton" name="openBrowser">
+      <property name="text">
+       <string>Open Browser (WIP)</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -1004,8 +1069,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>22</height>
+     <width>884</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>
@@ -1386,6 +1451,22 @@
    </hints>
   </connection>
   <connection>
+   <sender>FISS_PILEUP_TIME_Check</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>FISS_PILEUP_TIME2</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>753</x>
+     <y>153</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>684</x>
+     <y>153</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>BACKGROUND_DELAY_Check</sender>
    <signal>toggled(bool)</signal>
    <receiver>BACKGROUND_DELAY2</receiver>
@@ -1402,18 +1483,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>FISS_PILEUP_TIME_Check</sender>
+   <sender>ANN_ON</sender>
    <signal>toggled(bool)</signal>
-   <receiver>FISS_PILEUP_TIME2</receiver>
-   <slot>setVisible(bool)</slot>
+   <receiver>ANN_confidence</receiver>
+   <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>753</x>
-     <y>153</y>
+     <x>621</x>
+     <y>229</y>
     </hint>
     <hint type="destinationlabel">
-     <x>684</x>
-     <y>153</y>
+     <x>611</x>
+     <y>295</y>
     </hint>
    </hints>
   </connection>

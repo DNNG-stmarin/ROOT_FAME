@@ -12,13 +12,40 @@ void readFiss::InitializeCovHistograms()
   iD1 = iD2*NUM_DETECTORS;
   iTot = iD1*NUM_DETECTORS;
 
-  arrayExp = new int [iTot];
-  for(int i = 0; i < iTot; i++) arrayExp[i] = 0;
+  arrayExp  = new int***** [NUM_DETECTORS];
+  arrayBack = new int***** [NUM_DETECTORS];
 
-  arrayBack = new int [iTot];
-  for(int i = 0; i < iTot; i++) arrayBack[i] = 0;
+  for(int d1 = 0; d1 < NUM_DETECTORS; d1++)
+  {
+    arrayExp[d1] = new int **** [NUM_DETECTORS];
+    arrayBack[d1] = new int **** [NUM_DETECTORS];
 
+    for(int d2 = 0; d2 < NUM_DETECTORS; d2++)
+    {
+      arrayExp[d1][d2] = new int *** [BN];
+      arrayBack[d1][d2] = new int *** [BN];
+      for(int e1 = 0; e1 < BN; e1++)
+      {
+        arrayExp[d1][d2][e1] = new int ** [BP];
+        arrayBack[d1][d2][e1] = new int ** [BP];
+        for(int e2 = 0; e2 < BP; e2++)
+        {
+          arrayExp[d1][d2][e1][e2] = new int * [MAX_MULT_DET];
+          arrayBack[d1][d2][e1][e2] = new int * [MAX_MULT_DET];
+          for(int n1 = 0; n1 < MAX_MULT_DET; n1++)
+          {
+            arrayExp[d1][d2][e1][e2][n1] = new int  [MAX_MULT_DET];
+            arrayBack[d1][d2][e1][e2][n1] = new int  [MAX_MULT_DET];
+            for(int n2 = 0; n2 < MAX_MULT_DET; n2++)
+            {
+              arrayExp[d1][d2][e1][e2][n1][n2] = 0;
+              arrayBack[d1][d2][e1][e2][n1][n2] = 0;
+            }
+          }
+        }
+      }
 
-
+    }
+  }
 
 }

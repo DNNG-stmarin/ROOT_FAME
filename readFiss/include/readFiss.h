@@ -51,8 +51,8 @@ public :
 
    //neural network
    myANN*           crossTalkANN;
-   Double_t         thresholdANN = 0.95;
-   bool             ANN_mode = 0;
+   Double_t         thresholdANN = 0.80;
+   bool             ANN_mode = 1;
 
    std::string      nameExp; // String name of where to find experiment
    std::string      nameSim;
@@ -165,17 +165,17 @@ public :
                     |___/                    */
 
    // cov em matrices
-   int* arrayExp;
-   int* arrayBack;
+   int****** arrayExp;
+   int****** arrayBack;
 
    // matrix variables
    TH2D* h2_arrayCorr;
    TH2D* h2_arraySpec;
 
-   int*** arrayCorrExp;
-   int*** arraySpecExp;
-   int*** arrayCorrBack;
-   int*** arraySpecBack;
+   double*** arrayCorrExp;
+   double*** arraySpecExp;
+   double*** arrayCorrBack;
+   double*** arraySpecBack;
    //TH2D* h2_arrayDiff;
 
    // loop histograms quality of data
