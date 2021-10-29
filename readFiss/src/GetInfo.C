@@ -441,7 +441,7 @@ void readFiss::LoadInput(istream &in)
     }
 
     // beam settings
-    if(mode == BEAM_MODE)
+    if(w->mode() == BEAM_MODE)
     {
         in >> dbl;
         w->BEAM_ERG_MIN(dbl);
