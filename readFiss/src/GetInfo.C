@@ -424,7 +424,7 @@ void readFiss::LoadInput(istream &in)
       in >> loadTRIGGERS[i];
     }
     w->TRIGGERS(loadTRIGGERS);
-    in >> dbl;
+    // in >> dbl;
     // w->THRESHOLD_DEP(dbl);
     // //in >> dbl;
     // //w->THRESHOLD_DEP2(dbl);
@@ -461,7 +461,7 @@ void readFiss::LoadInput(istream &in)
     }
 
     // beam settings
-    if(mode == BEAM_MODE)
+    if(w->mode() == BEAM_MODE)
     {
         in >> dbl;
         w->BEAM_ERG_MIN(dbl);
