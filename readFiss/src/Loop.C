@@ -26,8 +26,8 @@ void readFiss::LoopExp()
    }
 
    expEntries = expTree->GetEntries();
-   expEntries = 10000000;
-   Long64_t firstEvent = 30000000;
+   // expEntries = 10000000;
+   Long64_t firstEvent = 0;
    if(expEntries == 0)
    {
      w->noExpFile();
