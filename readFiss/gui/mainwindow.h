@@ -129,6 +129,7 @@ public:
     double MAX_P_ERG(double set = -1);
     int BN(int set = -1);
     int BP(int set = -1);
+    int BA(int set = -1);
 
 private slots:
 

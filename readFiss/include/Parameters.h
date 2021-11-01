@@ -34,4 +34,13 @@ const int numDeltaT = 200;
 const double minDeltaT = 0;
 const double maxDeltaT = 10000;
 
+// cov EM parameters
+// const double sizeTheta = (MAX_THETA - MIN_THETA)/BTH;
+// const double sizePhi = (MAX_PHI - MIN_PHI)/BPH;
+
+const int MAX_MULT_DET = 2; // counting 0
+
+const int NUM_DIFF_N = 2; // detN, BN (no degeneracy)
+const int NUM_DIFF_P = 2; // detP, BP (no degeneracy)
+
 #endif
