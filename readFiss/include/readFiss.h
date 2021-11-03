@@ -52,7 +52,7 @@ public :
    //neural network
    myANN*           crossTalkANN;
    Double_t         thresholdANN = 0.80;
-   bool             ANN_mode = 1;
+   bool             ANN_mode = 0;
 
    std::string      nameExp; // String name of where to find experiment
    std::string      nameSim;

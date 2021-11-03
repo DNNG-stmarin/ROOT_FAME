@@ -20,9 +20,14 @@ void readFiss::LoopExp()
    cout << "ANN mode set to: " << ANN_mode << endl;
    if (expTree == 0) return;
 
+   if(mode == 2)
+   {
+     cout << "beam acceptance between " << BEAM_ERG_MIN << " and " << BEAM_ERG_MAX << " MeV, with " << BEAM_ERG_BINNUM << " bins. " << endl;
+   }
+
    expEntries = expTree->GetEntries();
-   expEntries = 10000000;
-   Long64_t firstEvent = 30000000;
+   // expEntries = 10000000;
+   Long64_t firstEvent = 0;
    if(expEntries == 0)
    {
      w->noExpFile();
@@ -98,7 +103,7 @@ void readFiss::LoopExp()
       }
 
        // beam coincidence cut
-      bool validBeam = (mode == 2) &&
+      bool validBeam = (mode == BEAM_MODE) &&
                        (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX);
       if((mode == 2) && !(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX))
       {

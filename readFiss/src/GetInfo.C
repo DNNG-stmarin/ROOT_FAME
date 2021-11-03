@@ -326,12 +326,7 @@ void readFiss::Print(ostream &out)
     }
     delete[] saveTRIGGERS;
     out << endl;
-    out << w->THRESHOLD_DEP() << endl;
-    out << w->CLIPPING_DEP() << endl;
-
-    out << w->BACKGROUND_DELAY() << endl;
-    out << w->FISS_PILEUP_TIME() << endl;
-
+    
     if(w->CovEM_in())
     {
         out << w->MIN_N_ERG() << " " << w->MAX_N_ERG() << " ";
