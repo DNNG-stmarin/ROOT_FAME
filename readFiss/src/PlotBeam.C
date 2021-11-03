@@ -335,22 +335,35 @@ void readFiss::PlotBeamLO()
       TString s_TRIG_NUM = (TString)to_string(r);
 
       c_LOvsBeamErg[r] = new TCanvas("LOScaledBeam_Channel_" + s_TRIG_NUM, "photonLO vs beamEnergy for Channel " + s_TRIG_NUM, 2000, 1000);
-      c_LOvsBeamErg[r]->Divide(3,1);
+      //c_LOvsBeamErg[r]->Divide(3,1);
 
       c_LOvsBeamErg[r]->cd(1);
 
       h2_gammaLightOutErg[r]->Draw("COLZ");
 
-      c_LOvsBeamErg[r]->cd(2);
-      g_gammaBeamSlope[r]->Draw();
+      // c_LOvsBeamErg[r]->cd(2);
+      // g_gammaBeamSlope[r]->Draw();
+      //
+      // c_LOvsBeamErg[r]->cd(3);
+      // g_gammaBeamInt[r]->Draw();
+      //
+      // c_LOvsBeamErg[r]->Write();
 
-      c_LOvsBeamErg[r]->cd(3);
-      g_gammaBeamInt[r]->Draw();
+    }
 
-      c_LOvsBeamErg[r]->Write();
+    cout << "Plotting Beam vs NeutronEn" << endl;
 
+    TCanvas** c_EnvsBeamErg =  new TCanvas* [NUM_TRIGGERS];
+    for (int r = 0; r < NUM_TRIGGERS; r++)
+  	{
+      TString s_TRIG_NUM = (TString)to_string(r);
 
+      c_LOvsBeamErg[r] = new TCanvas("EnScaledBeam_Channel_" + s_TRIG_NUM, "Neutron Energy vs beamEnergy for Channel " + s_TRIG_NUM, 2000, 1000);
+      // c_LOvsBeamErg[r]->Divide(3,1);
 
+      c_LOvsBeamErg[r]->cd(1);
 
+      h2_nToFErg[r]->Draw("COLZ");
+      
     }
 }

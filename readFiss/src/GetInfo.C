@@ -76,6 +76,7 @@ void readFiss::SetInfo(MainWindow* main_in)
       BEAM_ERG_MIN = w->BEAM_ERG_MIN();
       BEAM_ERG_MAX = w->BEAM_ERG_MAX();
       BEAM_ERG_BINNUM = w->BEAM_ERG_BINNUM();
+      sizeBerg = (BEAM_ERG_MAX - BEAM_ERG_MIN)/BEAM_ERG_BINNUM;
   }
 
   // CovEM settings
