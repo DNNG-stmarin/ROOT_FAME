@@ -138,6 +138,7 @@ public :
   double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
   double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
   double sizeNerg, sizePerg, sizeNgAng;
+  double sizeBerg;
   int iN1, iN2, iD1, iD2, iE1, iE2, iTot;
 
 
@@ -167,6 +168,10 @@ public :
    // cov em matrices
    int****** arrayExp;
    int****** arrayBack;
+
+   // differentiated lists
+   int ******* arrayExpBeam;
+   int ******* arrayBackBeam;
 
    // matrix variables
    TH2D* h2_arrayCorr;
@@ -336,6 +341,8 @@ public :
    TH1D*** pj_nLightOutErg;
    TH1D*** pj_scaledGammaLOErg;
    TH1D*** pj_meanGammaLOErg;
+   TH1D*** pj_scaledNeutronEnErg;
+   TH1D*** pj_meanNeutronEnErg;
 
    // beam histograms
    TH1D** h_fisDep;

@@ -39,26 +39,40 @@ void readFiss::LoopExp()
    Double_t currTime;
    Long64_t nbytes = 0, nb = 0;
 
-   int encN, encP;
+   int encN, encP, encBeamErg;
    short** shortListErgN;
    short** shortListErgP;
+   short** shortListErgBackN;
+   short** shortListErgBackP;
 
    if(CovEM_in)
    {
      cout << "initilaizing cov EM short lists" << endl;
      shortListErgN = new short* [NUM_DETECTORS];
      shortListErgP = new short* [NUM_DETECTORS];
+     shortListErgBackN = new short* [NUM_DETECTORS];
+     shortListErgBackP = new short* [NUM_DETECTORS];
      for(int d = 0; d < NUM_DETECTORS; d++)
      {
        shortListErgN[d] = new short [NUM_DIFF_N];
        shortListErgP[d] = new short [NUM_DIFF_P];
+       shortListErgBackN[d] = new short [NUM_DIFF_N];
+       shortListErgBackP[d] = new short [NUM_DIFF_P];
      }
 
      cout << "BN: " << BN << ", BP: " << BP << ", BA: " << BA << endl;
      cout << "ranges, N: " << MIN_N_ERG <<"-" <<MAX_N_ERG <<  ", P: " << MIN_P_ERG << "-" << MAX_P_ERG << endl;
    }
-
-
+/*
+ __  __       _         _
+|  \/  |     (_)       | |
+| \  / | __ _ _ _ __   | |     ___   ___  _ __
+| |\/| |/ _` | | '_ \  | |    / _ \ / _ \| '_ \
+| |  | | (_| | | | | | | |___| (_) | (_) | |_) |
+|_|  |_|\__,_|_|_| |_| |______\___/ \___/| .__/
+                                        | |
+                                        |_|
+*/
    cout << "beginning loop" << endl;
    // main loop
 
@@ -74,8 +88,13 @@ void readFiss::LoopExp()
 
       indexChannel = isTrigger(fisChan); // this should be a function of fisChan
 
+      /*
+        ___     _
+       / __|  _| |_ ___
+      | (_| || |  _(_-<
+      \___\_,_|\__/__/
 
-
+      */
       // broken channel cut
       if(indexChannel < 0)
       {
@@ -121,9 +140,15 @@ void readFiss::LoopExp()
         expTree->GetEntry(jentry);
       }
 
-      // cut section (fissions as a whole, multiplicity, time)
 
 
+      /*
+       ___      _
+      / __| ___| |_ _  _ _ __
+      \__ \/ -_)  _| || | '_ \
+      |___/\___|\__|\_,_| .__/
+                       |_|
+      */
       // fissions passed all the tests, delete
       numFissIter++;
       // cout << numFissIter << endl;
@@ -137,6 +162,21 @@ void readFiss::LoopExp()
       nMultBack = 0;
       gMultBack = 0;
 
+      if(mode == BEAM_MODE)
+      {
+        encBeamErg = (beamEnergy - BEAM_ERG_MIN)/sizeBerg;
+        if(encBeamErg >= BEAM_ERG_BINNUM) encBeamErg = BEAM_ERG_BINNUM-1;
+        else if(encBeamErg < 0) encBeamErg = 0;
+      }
+
+
+      /*
+                    _
+      _ _  ___ _  _| |_ _ _ ___ _ _
+      | ' \/ -_) || |  _| '_/ _ \ ' \
+      |_||_\___|\_,_|\__|_| \___/_||_|
+
+      */
       // loop through neutrons
       int n1 = -1, n2 = -1; // For nn angular correlations
       for (int i = 0; i < neutronMult; i++)
@@ -214,6 +254,9 @@ void readFiss::LoopExp()
 
       h_neutronMultExp->Fill(nMult);
       h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
+
+
+      // angular correlations
       if(nMult == 2)
       {
         if(neutronDet[n1] > neutronDet[n2])
@@ -228,11 +271,13 @@ void readFiss::LoopExp()
         }
       }
 
-      if(validBeam)
-      {
-        h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
-      }
+      /*
+        ___
+      / __|__ _ _ __  _ __  __ _
+      | (_ / _` | '  \| '  \/ _` |
+      \___\__,_|_|_|_|_|_|_\__,_|
 
+      */
       // loop through gamma rays
       int g1 = -1, g2 = -1;
       for (int i = 0; i < gammaMult; i++)
@@ -323,14 +368,28 @@ void readFiss::LoopExp()
         }
       }
 
-      h2_neutronGammaMultExp->Fill(nMult, gMult); // correlated plot
-
+      /*
+       _                                     _   _    _
+      | |__  ___ __ _ _ __    _ __  __ _ _ _| |_(_)__| |___
+      | '_ \/ -_) _` | '  \  | '_ \/ _` | '_|  _| / _| / -_)
+      |_.__/\___\__,_|_|_|_| | .__/\__,_|_|  \__|_\__|_\___|
+                            |_|
+      */
       if(validBeam)
       {
         h_beamErg[indexChannel]->Fill(beamEnergy);
+        h2_neutronMultErg[indexChannel]->Fill(beamEnergy, nMult);
         h2_gammaMultErg[indexChannel]->Fill(beamEnergy, gMult);
       }
 
+
+      /*
+       _             _                   _
+      | |__  __ _ __| |__  _ _  ___ _  _| |_ _ _ ___ _ _  ___
+      | '_ \/ _` / _| / / | ' \/ -_) || |  _| '_/ _ \ ' \(_-<
+      |_.__/\__,_\__|_\_\ |_||_\___|\_,_|\__|_| \___/_||_/__/
+
+      */
       // loop through back neutrons
       int nB1 = -1, nB2 = -1;
       for (int i = 0; i < neutronBackMult; i++)
@@ -371,6 +430,22 @@ void readFiss::LoopExp()
               h2_nBackLightOutErg[indexChannel]->Fill(beamEnergy, backNeutronLightOut[i]);
               //get LO background
             }
+
+            if(CovEM_in)
+            {
+              encN = int((backNeutronToFErg[i] - MIN_N_ERG)/sizeNerg);
+              if(encN >= BN)
+              {
+                encN = BN-1;
+              }
+              else if(encN < 0)
+              {
+                encN = 0;
+              }
+              //cout << NUM_DIFF_N*(nMult-1)<< endl;
+              shortListErgBackN[nMultBack-1][0] = backNeutronDet[i];
+              shortListErgBackN[nMultBack-1][1] = encN;
+            }
         }
       }
       h_neutronMultBack->Fill(nMultBack);
@@ -388,11 +463,13 @@ void readFiss::LoopExp()
         }
       }
 
-      if(validBeam)
-      {
-        h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
-      }
-
+      /*
+       _             _
+      | |__  __ _ __| |__  __ _ __ _ _ __  _ __  __ _
+      | '_ \/ _` / _| / / / _` / _` | '  \| '  \/ _` |
+      |_.__/\__,_\__|_\_\ \__, \__,_|_|_|_|_|_|_\__,_|
+                          |___/
+      */
       // loop through back photons
       int gB1 = -1, gB2 = -1;
       for (int i = 0; i < gammaBackMult; i++)
@@ -429,7 +506,23 @@ void readFiss::LoopExp()
           {
             h2_photonBackLightOutErg[indexChannel]->Fill(beamEnergy, backPhotonLightOut[i]);
           }
-          //get background
+
+          if(CovEM_in)
+          {
+            encP = int((backPhotonLightOut[i] - MIN_P_ERG)/sizePerg);
+            if(encP >= BP)
+            {
+              encN = BP-1;
+            }
+            else if(encP < 0)
+            {
+              encP = 0;
+            }
+            //cout << NUM_DIFF_N*(nMult-1)<< endl;
+            shortListErgBackP[gMultBack-1][0] = backPhotonDet[i];
+            shortListErgBackP[gMultBack-1][1] = encP;
+          }
+
         }
       }
       h_photonMultBack->Fill(gMultBack);
@@ -451,11 +544,12 @@ void readFiss::LoopExp()
       if(validBeam)
       {
         h2_backGammaMultErg[indexChannel]->Fill(beamEnergy, gMultBack);
+        h2_backNeutronMultErg[indexChannel]->Fill(beamEnergy, nMultBack);
       }
 
-      h2_neutronGammaMultBack->Fill(nMultBack, gMultBack);
 
-      // n-gamma correlation
+
+      // n-gamma doubles
       if(gMultBack == 1 && nMultBack == 1)
       {
         if(backPhotonDet[gB1] > backNeutronDet[nB1])
@@ -468,11 +562,30 @@ void readFiss::LoopExp()
         }
       }
 
+      /*
+                     _   _    _                        _   _    _
+      _ __  __ _ _ _| |_(_)__| |___ ___ _ __  __ _ _ _| |_(_)__| |___
+      | '_ \/ _` | '_|  _| / _| / -_)___| '_ \/ _` | '_|  _| / _| / -_)
+      | .__/\__,_|_|  \__|_\__|_\___|   | .__/\__,_|_|  \__|_\__|_\___|
+      |_|                               |_|
+      */
+      h2_neutronGammaMultExp->Fill(nMult, gMult);
+      h2_neutronGammaMultBack->Fill(nMultBack, gMultBack);
+
+      /*
+                  ___ __  __
+       __ _____ _| __|  \/  |
+      / _/ _ \ V / _|| |\/| |
+      \__\___/\_/|___|_|  |_|
+
+      */
       // covEM filling
       if(CovEM_in)
       {
         int detN, ergN, detP, ergP;
         bool crossingPoint = false;
+
+        // exp
         for(int iN = 0; iN < nMult; iN ++)
         {
           detN = shortListErgN[iN][0];
@@ -491,6 +604,7 @@ void readFiss::LoopExp()
                 {
                   crossingPoint = true;
                   arrayExp[detN][detP][ergN][ergP][1][1]++;
+                  arrayExpBeam[encBeamErg][detN][detP][ergN][ergP][1][1]++;
                   //cout << "coinc" << endl;
                   continue;
                 }
@@ -503,7 +617,7 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayExp[detN][ldetP][ergN][lergP][1][0]++;
+                arrayExpBeam[encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
               }
 
             }
@@ -538,12 +652,86 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayExp[ldetN][detP][lergN][ergP][0][1]++;
+                arrayExpBeam[encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
               }
 
             }
           }
         }
+
+        // back
+        for(int iN = 0; iN < nMultBack; iN ++)
+        {
+          detN = shortListErgBackN[iN][0];
+          ergN = shortListErgBackN[iN][1];
+
+          for(int ldetP = 0; ldetP < NUM_DETECTORS; ldetP++)
+          {
+            for(int lergP = 0; lergP < BP; lergP++)
+            {
+              for(int iP = 0; iP < gMultBack; iP++)
+              {
+                detP = shortListErgBackP[iP][0];
+                ergP = shortListErgBackP[iP][1];
+
+                if((detP == ldetP) & (ergP == lergP))
+                {
+                  crossingPoint = true;
+                  arrayBackBeam[encBeamErg][detN][detP][ergN][ergP][1][1]++;
+                  //cout << "coinc" << endl;
+                  continue;
+                }
+              }
+              if(crossingPoint)
+              {
+                // already filled this combination
+                crossingPoint = false;
+                continue;
+              }
+              else
+              {
+                arrayBackBeam[encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
+              }
+
+            }
+          }
+        }
+
+        for(int iP = 0; iP < gMultBack; iP ++)
+        {
+          detP = shortListErgBackP[iP][0];
+          ergP = shortListErgBackP[iP][1];
+
+          for(int ldetN = 0; ldetN < NUM_DETECTORS; ldetN++)
+          {
+            for(int lergN = 0; lergN < BN; lergN++)
+            {
+              for(int iN = 0; iN < nMultBack; iN++)
+              {
+                detN = shortListErgBackN[iN][0];
+                ergN = shortListErgBackN[iN][1];
+
+                if((detN == ldetN) & (ergN == lergN))
+                {
+                  crossingPoint = true;
+                  continue;
+                }
+              }
+              if(crossingPoint)
+              {
+                // already filled this combination
+                crossingPoint = false;
+                continue;
+              }
+              else
+              {
+                arrayBackBeam[encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
+              }
+
+            }
+          }
+        }
+
 
       }
 
