@@ -105,19 +105,23 @@ void readFiss::LoopExp()
        // beam coincidence cut
       bool validBeam = (mode == BEAM_MODE) &&
                        (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX);
-      if((mode == 2) && !(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX))
+      if((mode == BEAM_MODE) && !(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX))
       {
         h_fissRej->Fill(CUT_BEAM);
         continue;
       }
 
+
+
       // store values for histograms
-      h_fisDep[indexChannel]->Fill(fisDep);
-      if(mode == 2)
+
+      if(mode == BEAM_MODE)
       {
+        h_fisDep[indexChannel]->Fill(fisDep);
         h_beamTime[indexChannel]->Fill(beamTime);
         h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
       }
+
 
       // trigger threshold cut
       if(!(fisDep > THRESHOLD_DEP && fisDep < CLIPPING_DEP))
@@ -125,6 +129,8 @@ void readFiss::LoopExp()
         h_fissRej->Fill(CUT_DEP);
         continue;
       }
+
+
 
       // fission pile-up test
       currTime = fisTime;
@@ -168,6 +174,7 @@ void readFiss::LoopExp()
         if(encBeamErg >= BEAM_ERG_BINNUM) encBeamErg = BEAM_ERG_BINNUM-1;
         else if(encBeamErg < 0) encBeamErg = 0;
       }
+
 
 
       /*
@@ -222,6 +229,8 @@ void readFiss::LoopExp()
               h2_nToFErg[indexChannel]->Fill(beamEnergy, neutronToFErg[i]);
             }
 
+
+
             if(CovEM_in)
             {
               encN = int((neutronToFErg[i] - MIN_N_ERG)/sizeNerg);
@@ -240,6 +249,8 @@ void readFiss::LoopExp()
 
         }
 
+
+
         // double neutrons
         if(nMult == 1)
         {
@@ -251,10 +262,9 @@ void readFiss::LoopExp()
         }
       }
 
-
       h_neutronMultExp->Fill(nMult);
-      h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
 
+      if(validBeam) h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
 
       // angular correlations
       if(nMult == 2)
@@ -270,6 +280,7 @@ void readFiss::LoopExp()
           // g_neutronAngleCorr->Fill(angles[(int)neutronDet[n2]][(int)neutronDet[n1]]);
         }
       }
+
 
       /*
         ___
@@ -339,7 +350,7 @@ void readFiss::LoopExp()
 
       }
       h_photonMultExp->Fill(gMult);
-      h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
+      if(validBeam) h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
 
 
       if(gMult == 2)
@@ -449,7 +460,7 @@ void readFiss::LoopExp()
         }
       }
       h_neutronMultBack->Fill(nMultBack);
-      h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
+      if(validBeam) h2_backNeutronMultDep[indexChannel]->Fill(fisDep, nMultBack);
 
       if(nMultBack == 2)
       {
@@ -526,7 +537,7 @@ void readFiss::LoopExp()
         }
       }
       h_photonMultBack->Fill(gMultBack);
-      h2_backGammaMultDep[indexChannel]->Fill(fisDep, gMultBack);
+      if(validBeam) h2_backGammaMultDep[indexChannel]->Fill(fisDep, gMultBack);
 
       // photon doubles
       if(gMultBack == 2)
@@ -604,7 +615,7 @@ void readFiss::LoopExp()
                 {
                   crossingPoint = true;
                   arrayExp[detN][detP][ergN][ergP][1][1]++;
-                  arrayExpBeam[encBeamErg][detN][detP][ergN][ergP][1][1]++;
+                  if(validBeam) arrayExpBeam[encBeamErg][detN][detP][ergN][ergP][1][1]++;
                   //cout << "coinc" << endl;
                   continue;
                 }
@@ -617,7 +628,8 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayExpBeam[encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
+                arrayExp[detN][ldetP][ergN][lergP][1][0]++;
+                if(validBeam) arrayExpBeam[encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
               }
 
             }
@@ -652,7 +664,8 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayExpBeam[encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
+                arrayExp[ldetN][detP][lergN][ergP][0][1]++;
+                if(validBeam)arrayExpBeam[encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
               }
 
             }
@@ -677,7 +690,8 @@ void readFiss::LoopExp()
                 if((detP == ldetP) & (ergP == lergP))
                 {
                   crossingPoint = true;
-                  arrayBackBeam[encBeamErg][detN][detP][ergN][ergP][1][1]++;
+                  arrayBack[detN][detP][ergN][ergP][1][1]++;
+                  if(validBeam) arrayBackBeam[encBeamErg][detN][detP][ergN][ergP][1][1]++;
                   //cout << "coinc" << endl;
                   continue;
                 }
@@ -690,7 +704,8 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayBackBeam[encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
+                arrayBack[detN][ldetP][ergN][lergP][1][0]++;
+                if(validBeam) arrayBackBeam[encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
               }
 
             }
@@ -725,7 +740,8 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayBackBeam[encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
+                arrayBack[ldetN][detP][lergN][ergP][0][1]++;
+                if(validBeam) arrayBackBeam[encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
               }
 
             }
