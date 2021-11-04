@@ -244,20 +244,23 @@ void readFiss::InitializeHistograms()
  |___/\___\__,_|_|_|_|
 
  */
+
  cout << "initializing beam" << endl;
+
+ if(mode == BEAM_MODE)
+ {
   // alphaFile histograms
   h_alphaDep = new TH1D* [NUM_TRIGGERS];
 
   //Projection histograms
-  if(mode == BEAM_MODE)
-  {
-    pj_pLightOutErg = new TH1D** [(int)BEAM_ERG_BINNUM];
-    pj_nLightOutErg = new TH1D** [(int)BEAM_ERG_BINNUM];
-    pj_scaledGammaLOErg = new TH1D** [(int)NUM_TRIGGERS];
-    pj_meanGammaLOErg = new TH1D** [(int)BEAM_ERG_BINNUM];
-    pj_scaledNeutronEnErg = new TH1D** [(int)NUM_TRIGGERS];
-    pj_meanNeutronEnErg = new TH1D** [(int)BEAM_ERG_BINNUM];
-  }
+
+  pj_pLightOutErg = new TH1D** [(int)BEAM_ERG_BINNUM];
+  pj_nLightOutErg = new TH1D** [(int)BEAM_ERG_BINNUM];
+  pj_scaledGammaLOErg = new TH1D** [(int)NUM_TRIGGERS];
+  pj_meanGammaLOErg = new TH1D** [(int)BEAM_ERG_BINNUM];
+  pj_scaledNeutronEnErg = new TH1D** [(int)NUM_TRIGGERS];
+  pj_meanNeutronEnErg = new TH1D** [(int)BEAM_ERG_BINNUM];
+
 
 
   // beam histograms
@@ -325,6 +328,7 @@ void readFiss::InitializeHistograms()
     h2_nBackLightOutErg[indexChannel] = new TH2D((TString)"h2_nBackLightOutErg"+ (TString)to_string(indexChannel), "Incident Energy Dependent Background Neutron Light Output; Incident Neutron Energy (MeV); Background Neutron Light Output", BEAM_ERG_BINNUM, BEAM_ERG_MIN, BEAM_ERG_MAX, numLObins, minLO, maxLO);
 
   }
+}
 
   //beam stack
   stack = new THStack* [NUM_TRIGGERS];
