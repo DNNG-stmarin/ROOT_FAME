@@ -326,7 +326,7 @@ void readFiss::Print(ostream &out)
     }
     delete[] saveTRIGGERS;
     out << endl;
-    
+
     if(w->CovEM_in())
     {
         out << w->MIN_N_ERG() << " " << w->MAX_N_ERG() << " ";
@@ -395,6 +395,7 @@ void readFiss::LoadInput(istream &in)
 
     else if(w->mode() == BEAM_MODE)
     {
+        cout << "Beam mode on" << endl;
         in >> word;
         w->nameBeam(word);
     }
