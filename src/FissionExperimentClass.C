@@ -176,6 +176,9 @@ int FissionExperimentClass::CreateDetectionAnalysis()
 {
 
 	cout << "Analyzing " << coincTreeChain->GetEntries() << " events." << endl;
+	cout << "tree: " << coincTreeChain << endl;
+	cout << "detFile: " << detFile << endl;
+	cout << "info: " << info << endl;
 	detectorData = new DetectorSystemClass(coincTreeChain, detFile, info);
 
 	cout << "Creating the functions to analyze the data. " << endl;

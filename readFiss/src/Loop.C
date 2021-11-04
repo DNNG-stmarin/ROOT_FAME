@@ -20,7 +20,7 @@ void readFiss::LoopExp()
    cout << "ANN mode set to: " << ANN_mode << endl;
    if (expTree == 0) return;
 
-   if(mode == 2)
+   if(mode == BEAM_MODE)
    {
      cout << "beam acceptance between " << BEAM_ERG_MIN << " and " << BEAM_ERG_MAX << " MeV, with " << BEAM_ERG_BINNUM << " bins. " << endl;
    }
