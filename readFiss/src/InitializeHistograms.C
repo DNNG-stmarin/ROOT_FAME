@@ -246,10 +246,9 @@ void readFiss::InitializeHistograms()
  */
 
 
-
  if(mode == BEAM_MODE)
  {
-  cout << "initializing beam" << endl;
+   cout << "initializing beam" << endl;
   // alphaFile histograms
   h_alphaDep = new TH1D* [NUM_TRIGGERS];
 
@@ -261,7 +260,6 @@ void readFiss::InitializeHistograms()
   pj_meanGammaLOErg = new TH1D** [(int)BEAM_ERG_BINNUM];
   pj_scaledNeutronEnErg = new TH1D** [(int)NUM_TRIGGERS];
   pj_meanNeutronEnErg = new TH1D** [(int)BEAM_ERG_BINNUM];
-
 
 
   // beam histograms

@@ -12,6 +12,7 @@ void readFiss::InitializeCovHistograms()
   iD1 = iD2*NUM_DETECTORS;
   iTot = iD1*NUM_DETECTORS;
 
+  cout << "initializing covariance arrays" << endl;
 
   // neutron gamma correlations
   arrayExp  = new int***** [NUM_DETECTORS];
