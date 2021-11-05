@@ -245,10 +245,11 @@ void readFiss::InitializeHistograms()
 
  */
 
- cout << "initializing beam" << endl;
+
 
  if(mode == BEAM_MODE)
  {
+  cout << "initializing beam" << endl;
   // alphaFile histograms
   h_alphaDep = new TH1D* [NUM_TRIGGERS];
 
