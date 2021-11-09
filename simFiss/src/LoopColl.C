@@ -20,6 +20,7 @@ void sfame::LoopColl()
    // vertex properties
    int vertexChannel;
    int vertexID;
+   int vertexType;
    double vertexLightOut;
    double vertexTail;
    double vertexTime;
@@ -34,6 +35,7 @@ void sfame::LoopColl()
    double trackTail[MAX_TRACKS] = {0};
    double trackPSP[MAX_TRACKS] = {0};
    double trackTime[MAX_TRACKS] = {0};
+   double trackType[MAX_TRACKS] = {0};
 
    // track flags
    double trackRR_flag[MAX_TRACKS] = {0};
@@ -58,6 +60,7 @@ void sfame::LoopColl()
         trackTail[tr] = 0;
         trackPSP[tr] = 0;
         trackTime[tr] = 0;
+        trackType[tr] = 0;
 
         trackRR_flag[tr] = 0;
         trackPU_flag[tr] = 0;
@@ -68,7 +71,7 @@ void sfame::LoopColl()
       tPSP = ACCEPT_PSP;
       tDep = ACCEPT_TRIG;
       tChan = TRIGGER_CHANNEL;
-
+      tType = ACCEPT_TYPE;
 
 
       for(int l = 0; l < f_numLines; l++)
@@ -76,12 +79,26 @@ void sfame::LoopColl()
         // important properties of the vertex
         vertexChannel = cellToChannel(f_cell[l]);
         vertexID = f_particle[l];
-        vertexLightOut = detectors[vertexChannel].lightOutput->Eval(f_energyDep[l]);
+        vertexType = f_type[l];
+        // vertexLightOut = detectors[vertexChannel].lightOutput->Eval(f_energyDep[l]); // Does this ever check the particle type? (giha)
         vertexTime = f_time[l]*10.0; // shakes to ns conversion
 
         // psd simulation
-        if(f_type[l] == NEUTRONS)
+        if(vertexType == NEUTRONS)
         {
+          if(f_zaid[l] == HYDROGEN)
+          {
+            vertexLightOut = detectors[vertexChannel].lightOutput->Eval(f_energyDep[l]);
+          }
+          else if(f_zaid[l] == CARBON)
+          {
+            vertexLightOut = 0.02 * f_energyDep[l];
+          }
+          else
+          {
+            // cout << "Not carbon or hydrogen!" << endl;
+            // vertexLightOut = -99;
+          }
           vertexTail = randGen->Gaus(detectors[vertexChannel].meanNeutPSD->Eval(vertexLightOut), detectors[vertexChannel].sigNeutPSD->Eval(vertexLightOut));
           if(f_scatters[l] == 0)
           {
@@ -93,8 +110,9 @@ void sfame::LoopColl()
           }
 
         }
-        else if(f_type[l] == PHOTONS)
+        else if(vertexType == PHOTONS)
         {
+          vertexLightOut = f_energyDep[l];
           vertexTail = randGen->Gaus(detectors[vertexChannel].meanPhotPSD->Eval(vertexLightOut), detectors[vertexChannel].sigPhotPSD->Eval(vertexLightOut));
 
           if(f_scatters[l] == 1) // yes this is correct... a bug in MCNP makes photons start at 1
@@ -111,11 +129,15 @@ void sfame::LoopColl()
 
 
         // check if the history is new
-        if( (numTracks == 0) || (vertexChannel != trackChannel[numTracks - 1]) || (vertexID != trackID[numTracks - 1]))
+        if( (numTracks == 0) ||
+            (vertexChannel != trackChannel[numTracks - 1]) ||
+            (vertexID != trackID[numTracks - 1]) ||
+            (vertexType != trackType[numTracks - 1]) ) // new history if current track has a different type, since vertexID may be corrupted
         {
           numTracks++;
 
           trackChannel[numTracks-1] = vertexChannel;
+          trackType[numTracks-1] = vertexType; // Put particle type in CoincTree
           trackID[numTracks-1] = vertexID;
           trackRR_flag[numTracks-1] = vertexRR;
           numVertices[numTracks-1] = 1;
@@ -127,7 +149,7 @@ void sfame::LoopColl()
         // add to history
         else
         {
-          if(abs(vertexTime - trackTime[numTracks-1]*trackLightOut[numTracks-1]) < PULSE_GENERATION_WINDOW)
+          if(abs(vertexTime - trackTime[numTracks-1]/trackLightOut[numTracks-1]) < PULSE_GENERATION_WINDOW)
           {
             numVertices[numTracks-1]++;
             trackLightOut[numTracks-1] += vertexLightOut;
@@ -169,6 +191,7 @@ void sfame::LoopColl()
       {
         if((trackLightOut[tr] > THRESHOLD) & (trackTime[tr] < COINCIDENCE_WINDOW))
         {
+          totType[acc] = trackType[tr]; // What is totType? What if there are many different particles?
           totChan[acc] = trackChannel[tr];
           totDep[acc] = trackLightOut[tr];
           totTail[acc] = trackTail[tr];

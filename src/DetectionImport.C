@@ -80,7 +80,7 @@ for(int trig = 0; trig < NUM_TRIGGERS; trig++)
   }
 }
 
-cout << "importing  detectors" << endl;
+cout << "importing detectors" << endl;
 
 
 
@@ -126,7 +126,7 @@ for(int det = 0; det < NUM_DETS; ++det){
     //sets the canvas equal to the psdErg one for that detector
     c_psdErg = (TCanvas*)detFile->Get(fileNamePsd);
     f_psdDisc = (TF1*)c_psdErg->GetPrimitive("expLinPsd");
-  
+
     detectors[det].discPSD = (TF1*)f_psdDisc->Clone();
     // DOUBLE DISCRIM
     if(DOUBLE_DISC == 1)
@@ -145,10 +145,10 @@ for(int det = 0; det < NUM_DETS; ++det){
         TGraph* f_psdDiscNeut;
         TGraph* f_psdDiscPhot;
         //neutron line
-        f_psdDiscNeut = (TGraph*)c_psdErg->GetPrimitive("expLinPsd");
+        f_psdDiscNeut = (TGraph*)c_psdErg->GetPrimitive("discLines");
         detectors[det].discPSDNeut = (TGraph*)f_psdDiscNeut->Clone();
         //photon line
-        f_psdDiscPhot = (TGraph*)c_psdErg->GetPrimitive("expLinPsd");
+        f_psdDiscPhot = (TGraph*)c_psdErg->GetPrimitive("discLines");
         detectors[det].discPSDPhot = (TGraph*)f_psdDiscPhot->Clone();
 
         cout << detectors[det].discPSDNeut->Eval(0.8) << endl;

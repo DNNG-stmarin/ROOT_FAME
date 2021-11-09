@@ -29,6 +29,7 @@ void sfame::initializeCoincTree()
 	coincTree->Branch("tChan", &tChan, "fissionChan/I");
 	coincTree->Branch("tPSP", &tPSP, "fissionPSP/D");
 	coincTree->Branch("tTail", &tTail, "fissionTail/D");
+	coincTree->Branch("tType", &tType, "fissionType/I");
 
 	// // beam variables
 	// if(NUM_BEAMS > 0)
@@ -43,6 +44,7 @@ void sfame::initializeCoincTree()
 
 	// list variables
 	coincTree->Branch("totToF", totToF, "totToF[tMult]/D");
+	coincTree->Branch("totType", totType, "totType[tMult]/I");
 
 	coincTree->Branch("totPSP", totPSP, "totPSP[tMult]/D");
 	coincTree->Branch("totDep", totDep, "totDep[tMult]/D");

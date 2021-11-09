@@ -121,6 +121,7 @@ void DetectorSystemClass::FissionAnalysis()
 
       // detection time corrected for delay
       timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
+      if(SIM_FILE == 1) timeDet = totToF[j];
 
       engDet = totDep[j]/detectors[numDet].calibration;
       if(SIM_FILE == 1) engDet = totDep[j];

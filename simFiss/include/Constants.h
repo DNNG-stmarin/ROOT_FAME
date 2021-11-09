@@ -12,13 +12,18 @@ const int MAX_LINES = 1000; // put a large number representing the maximum numbe
 const int NUM_ROWS = 16;
 const int MAX_TRACKS = 200;
 
-// partilce types
+// particle types
 const int NEUTRONS = 1;
 const int PHOTONS = 2;
 const int BADNEUTRON = 11;
 const int BADPHOTON = 12;
 const int CUTNEUTRON = 21;
 const int CUTPHOTON = 22;
+
+// fission types (ARE THESE CONSISTENT W PREVIOUS?)
+const int SPONTANEOUS = 0;
+const int INDUCED_N = 1;
+const int INDUCED_ION = 2;
 
 // zaid values
 const int HYDROGEN = 1001;

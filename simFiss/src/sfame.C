@@ -29,6 +29,8 @@ sfame::sfame()
 
     ACCEPT_PSP = 0.1;
     ACCEPT_TRIG = 0.01; // V us
+    ACCEPT_TYPE = SPONTANEOUS; // Spontaneous fission (?)
+
 
     THRESHOLD = 0.01; // MeVee
     COINCIDENCE_WINDOW = 200; // ns
@@ -38,7 +40,7 @@ sfame::sfame()
     DET_DIST_FILE = "inputSfame/cartesianChiNu.txt";        //Converted to Chi-Nu
     TIME_RESOLUTION_FILE = "inputSfame/tResFile_ChiNu.csv"; //Converted to Chi-Nu
     CELL_NUMBERS_FILE = "inputSfame/cellNumbersChiNu.csv";       //Converted to Chi-Nu
-    LIGHTOUTPUT_FILE = "inputSfame/LOexpFitsChiNu.csv";          //Converted to Chi-Nu
+    LIGHTOUTPUT_FILE = "inputSfame/LOexpFitsChiNuUniform.csv";          //Converted to Chi-Nu
     RESOLUTION_COEFFICIENTS[0] = 10.61; RESOLUTION_COEFFICIENTS[1] = 0.355; RESOLUTION_COEFFICIENTS[2] = 3.923;
     // * could be an energy resolution file
     MEAN_NEUTRON_PSD_FILE = "inputSfame/meanNeutParamsChiNu";//Converted to Chi-Nu

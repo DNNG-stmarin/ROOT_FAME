@@ -68,6 +68,7 @@ public:
     int tChan = 0;
     double tPSP = 0;
     double tTail = 0;
+    int tType = 0;
 
     // // fission beam
     // double bTime = 0;
@@ -84,6 +85,7 @@ public:
     int totChan[MAX_MULTIPLICITY] = {0};
     double totTail[MAX_MULTIPLICITY] = {0};
     int totFlag[MAX_MULTIPLICITY] = {0};
+    int totType[MAX_MULTIPLICITY] = {0};
 
 /*
   ___     _ _ _    _            _____
@@ -158,6 +160,7 @@ public:
     // parameters to accept the trigger in every case
     double ACCEPT_PSP;
     double ACCEPT_TRIG;
+    int ACCEPT_TYPE;
 
 
     // external files
