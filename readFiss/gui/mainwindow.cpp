@@ -751,3 +751,16 @@ int MainWindow::BP(int set)
     return -1;
   }
 }
+
+int MainWindow::BA(int set)
+{
+  if(set == -1)
+  {
+    return ui->BA->displayText().toInt();
+  }
+  else
+  {
+    ui->BA->setText(QString::number(set));
+    return -1;
+  }
+}

@@ -67,7 +67,7 @@ int DetectorSystemClass::DetectionAnalysis()
 	 |_|  |_\__,_|_|_||_| |____\___/\___/ .__/
 	                                    |_|
 	*/
-
+	cout << "opening det file " << endl;
 	detFile->cd();
 	int channelDet, channelTrig;
 	double channelCalib;
@@ -77,6 +77,8 @@ int DetectorSystemClass::DetectionAnalysis()
 	Long64_t nentries = tree->GetEntriesFast();
 	// nentries = 10000000;
 	Long64_t nbytes = 0, nb = 0;
+
+	cout << "beginnning loop det " << endl;
 
 	// loop through and compute delays and properties
 	for (Long64_t jentry=0; jentry<nentries;jentry++)
