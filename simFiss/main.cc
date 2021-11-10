@@ -23,8 +23,16 @@ int main(int argc, char** argv)
   cout << "\n Welcome to SIM_FAME \n" << endl;
 
   TString simFile;
+  TString dataFileName;
   int firstFile;
   int numFiles;
+
+  if(argc == 1) {
+    cout << "ERROR: data file not given\n";
+    return 0;
+  }
+
+  dataFileName = TString(argv[1]);
 
   /*if(argc == 1)
   {
@@ -45,6 +53,7 @@ int main(int argc, char** argv)
   }*/
 
   sfame* simFame = new sfame();
+  simFame.nameColFile = dataFileName;
 
   cout << "finished constructing" << endl;
 

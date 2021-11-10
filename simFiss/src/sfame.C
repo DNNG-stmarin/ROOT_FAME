@@ -13,7 +13,7 @@ sfame::sfame()
     simFile = "sim27";
 
     // read from collision files
-    nameColFile = "cn";
+    // nameColFile = "cn";
     firstFile = 0;
     numFiles = 1;
 
@@ -25,7 +25,7 @@ sfame::sfame()
     //
     NUM_DETECTORS = 54;
     TRIGGER_CHANNEL = 8;
-    SOURCE_POSITION[0] = 0; SOURCE_POSITION[1] = 0; SOURCE_POSITION[2] = -2;
+    SOURCE_POSITION[0] = 0; SOURCE_POSITION[1] = 0; SOURCE_POSITION[2] = 0;
 
     ACCEPT_PSP = 0.1;
     ACCEPT_TRIG = 0.01; // V us
@@ -37,20 +37,20 @@ sfame::sfame()
     PULSE_GENERATION_WINDOW = 10; // ns
 
     // external lightoutput files
-    DET_DIST_FILE = "inputSfame/cartesianChiNu.txt";        //Converted to Chi-Nu
-    TIME_RESOLUTION_FILE = "inputSfame/tResFile_ChiNu.csv"; //Converted to Chi-Nu
-    CELL_NUMBERS_FILE = "inputSfame/cellNumbersChiNu.csv";       //Converted to Chi-Nu
-    LIGHTOUTPUT_FILE = "inputSfame/LOexpFitsChiNuUniform.csv";          //Converted to Chi-Nu
+    DET_DIST_FILE = "../inputSfame/cartesianChiNu.txt";        //Converted to Chi-Nu
+    TIME_RESOLUTION_FILE = "../inputSfame/tResFile_ChiNu.csv"; //Converted to Chi-Nu
+    CELL_NUMBERS_FILE = "../inputSfame/cellNumbersChiNu.csv";       //Converted to Chi-Nu
+    LIGHTOUTPUT_FILE = "../inputSfame/LOexpFitsChiNuUniform.csv";          //Converted to Chi-Nu
     RESOLUTION_COEFFICIENTS[0] = 10.61; RESOLUTION_COEFFICIENTS[1] = 0.355; RESOLUTION_COEFFICIENTS[2] = 3.923;
     // * could be an energy resolution file
-    MEAN_NEUTRON_PSD_FILE = "inputSfame/meanNeutParamsChiNu";//Converted to Chi-Nu
-    SIGMA_NEUTRON_PSD_FILE = "inputSfame/sigNeutParamsChiNu";//Converted to Chi-Nu
-    MEAN_PHOTON_PSD_FILE = "inputSfame/meanPhotParamsChiNu";//Converted to Chi-Nu
-    SIGMA_PHOTON_PSD_FILE = "inputSfame/sigPhotParamsChiNu";//Converted to Chi-Nu
+    MEAN_NEUTRON_PSD_FILE = "../inputSfame/meanNeutParamsChiNu";//Converted to Chi-Nu
+    SIGMA_NEUTRON_PSD_FILE = "../inputSfame/sigNeutParamsChiNu";//Converted to Chi-Nu
+    MEAN_PHOTON_PSD_FILE = "../inputSfame/meanPhotParamsChiNu";//Converted to Chi-Nu
+    SIGMA_PHOTON_PSD_FILE = "../inputSfame/sigPhotParamsChiNu";//Converted to Chi-Nu
 
     // supplamental files
-    dEdX_FILE = "inputSfame/stilbene_dEdX.csv";
-    DET_BIRKCOEFF_FILE = "inputSfame/BirkCoeff.csv";
+    dEdX_FILE = "../inputSfame/stilbene_dEdX.csv";
+    DET_BIRKCOEFF_FILE = "../inputSfame/BirkCoeff.csv";
 
     initializeInputFiles();
     initializeDetectors();
