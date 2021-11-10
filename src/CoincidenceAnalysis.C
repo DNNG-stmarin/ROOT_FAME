@@ -820,6 +820,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			beamIndex = qFission.getBeamIndex();
 			beamTail = qFission.getBeamTail();
 
+			// cout << FissionBuffer.size() << endl;
+
 			// look at the detection events
 			for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
 			{

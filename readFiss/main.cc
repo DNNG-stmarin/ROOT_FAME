@@ -49,6 +49,7 @@ int main(int argc, char** argv)
     w.f->Run();
 
     cout << "done" << endl;
+    return 0;
   }
   else
   {
