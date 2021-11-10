@@ -32,6 +32,11 @@ void readFiss::PlotAll()
   PlotPSD();
   PlotSingles();
 
+  PlotIndiv();
+}
+
+void readFiss::PlotCorr()
+{
   PlotMultCorExp();
   PlotMultCorBack();
   PlotMultLOExp();
@@ -39,8 +44,6 @@ void readFiss::PlotAll()
   PlotN_LOPSD_Exp();
   PlotP_LOPSD_Exp();
   PlotN_AngleCorr();
-
-  PlotIndiv();
 }
 
 void readFiss::CompareAll()

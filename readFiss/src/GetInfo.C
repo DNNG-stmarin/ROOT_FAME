@@ -209,7 +209,7 @@ void readFiss::Run()
   }
 
   // correlated analysis
-  CorrAnalysis();
+  //************************************ CorrAnalysis();
 
   // run CovEM if user wanted to
   if(CovEM_in){
@@ -221,6 +221,7 @@ void readFiss::Run()
 
   // plotting sections
   PlotAll();
+  // *********************************** PlotCorr();
   if(mode == SIM_MODE)
   {
     CompareAll();

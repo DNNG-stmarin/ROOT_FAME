@@ -353,7 +353,7 @@ void readFiss::PlotBeamLO()
       // c_LOvsBeamErg[r]->Divide(3,1);
 
       c_EnvsBeamErg[r]->cd(1);
-
+      cout << "before " << h2_nToFErg[r] << endl;
       h2_nToFErg[r]->Draw("COLZ");
 
     }

@@ -14,6 +14,7 @@
 #include <TF1.h>
 #include <TH1.h>
 #include <TH2.h>
+#include <TH3.h>
 #include <TString.h>
 #include <TMatrixD.h>
 #include <TProfile.h>
@@ -52,7 +53,7 @@ public :
    //neural network
    myANN*           crossTalkANN;
    Double_t         thresholdANN = 0.80;
-   bool             ANN_mode = 1;
+   bool             ANN_mode = 0;
 
    std::string      nameExp; // String name of where to find experiment
    std::string      nameSim;
@@ -174,13 +175,27 @@ public :
    int ******* arrayBackBeam;
 
    // matrix variables
-   TH2D* h2_arrayCorr;
-   TH2D* h2_arraySpec;
+   // *********************
+   TH3D* h3_arrayCorrExp;
+   TH3D* h3_arraySpecExp;
+   TH3D* h3_arrayCorrBack;
+   TH3D* h3_arraySpecBack;
+
+   TH3D** h3_arrayCorrExpBeam;
+   TH3D** h3_arraySpecExpBeam;
+   TH3D** h3_arrayCorrBackBeam;
+   TH3D** h3_arraySpecBackBeam;
 
    double*** arrayCorrExp;
    double*** arraySpecExp;
    double*** arrayCorrBack;
    double*** arraySpecBack;
+   // ************************
+   double**** arrayCorrExpBeam;
+   double**** arraySpecExpBeam;
+   double**** arrayCorrBackBeam;
+   double**** arraySpecBackBeam;
+   // ***********************
    //TH2D* h2_arrayDiff;
 
    // loop histograms quality of data
@@ -690,6 +705,7 @@ public :
 
    // callable functions
    virtual void     PlotAll();
+   virtual void     PlotCorr();
    virtual void     CompareAll();
 
    // plot the trigger properties
