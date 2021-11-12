@@ -24,11 +24,14 @@ void readFiss::GenerateAngles()
   for(int i = 0; i < NUM_DETECTORS; ++i)
   {
     getline(fin, line);
-    replace(line.begin(), line.end(), ',', ' ');
-    replace(line.begin(), line.end(), '{', ' ');
-    replace(line.begin(), line.end(), '}', ' ');
+    // replace(line.begin(), line.end(), ',', ' ');
+    // replace(line.begin(), line.end(), '{', ' ');
+    // replace(line.begin(), line.end(), '}', ' ');
     stringstream in(line);
     in >> x[i] >> y[i] >> z[i];
+    // **************
+    cout << x[i] << " " << y[i] << " " <<  z[i] << endl;
+    // ******************
   }
 
   angles = new double*[NUM_DETECTORS];
