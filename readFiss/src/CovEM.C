@@ -414,8 +414,8 @@ void readFiss::WriteCovEM()
 
   h3_arrayCorrExp = new TH3D("h3_arrayCorrExp", "Experimental Corr Matrix; Neutron-Gamma Angle; Neutron Energy; Gamma Light Out; Counts", BA, MIN_THETA, MAX_THETA, BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
   h3_arraySpecExp = new TH3D("h3_arraySpecExp", "Experimental Spec Matrix; Neutron-Gamma Angle; Neutron Energy; Gamma Light Out; Counts", BA, MIN_THETA, MAX_THETA, BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
-  h3_arrayCorrExpBack = new TH3D("h3_arrayCorrExpBack", "Experimental Corr Matrix Background; Neutron-Gamma Angle; Neutron Energy; Gamma Light Out; Counts", BA, MIN_THETA, MAX_THETA, BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
-  h3_arraySpecExpBack = new TH3D("h3_arraySpecExpBack", "Experimental Spec Matrix Background; Neutron-Gamma Angle; Neutron Energy; Gamma Light Out; Counts", BA, MIN_THETA, MAX_THETA, BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
+  h3_arrayCorrBack = new TH3D("h3_arrayCorrBack", "Background Corr Matrix Background; Neutron-Gamma Angle; Neutron Energy; Gamma Light Out; Counts", BA, MIN_THETA, MAX_THETA, BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
+  h3_arraySpecBack = new TH3D("h3_arraySpecBack", "Background Spec Matrix Background; Neutron-Gamma Angle; Neutron Energy; Gamma Light Out; Counts", BA, MIN_THETA, MAX_THETA, BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
 
   // ***********************
   cout << "Writing CovEM results to .csv" << endl;

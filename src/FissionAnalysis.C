@@ -118,6 +118,7 @@ void DetectorSystemClass::FissionAnalysis()
       double adjY = detectors[numDet].Y - triggers[numTrig].Y;
       double adjZ = detectors[numDet].Z - triggers[numTrig].Z;
       detectors[numDet].distance = sqrt(pow(adjX, 2.) + pow(adjY, 2.) + pow(adjZ, 2.));
+      double detDist = detectors[numDet].distance;
 
       // detection time corrected for delay
       timeDet = totToF[j] -  detectors[numDet].timeDelay[numTrig];
@@ -159,13 +160,13 @@ void DetectorSystemClass::FissionAnalysis()
         neutronDetTimes[nMult] = timeDet;
         neutronLightOut[nMult] = engDet;
         neutronPSD[nMult] = totPSP[j];
-        neutVelocity = (1.0/LIGHT_C)*detectors[numDet].distance/timeDet;
+        neutVelocity = (1.0/LIGHT_C)*detDist/timeDet;
         //cout << numDet << " " << detectors[numDet].distance << endl;
         neutronToFErg[nMult] = (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2);
         neutronDet[nMult] = numDet;
-        neutronVx[nMult] = adjX / detectors[numDet].distance*neutVelocity;
-        neutronVy[nMult] = adjY / detectors[numDet].distance*neutVelocity;
-        neutronVz[nMult] = adjZ / detectors[numDet].distance*neutVelocity;
+        neutronVx[nMult] = adjX / detDist*neutVelocity;
+        neutronVy[nMult] = adjY / detDist*neutVelocity;
+        neutronVz[nMult] = adjZ / detDist*neutVelocity;
         if(SIM_FILE == 1) neutronFlag[nMult] = totFlag[j];
         nMult++;
       }
@@ -186,9 +187,9 @@ void DetectorSystemClass::FissionAnalysis()
         photonLightOut[pMult] = engDet;
         photonPSD[pMult] = totPSP[j];
         photonDet[pMult] = numDet;
-        photonVx[pMult] = adjX / detectors[numDet].distance*LIGHT_C;
-        photonVy[pMult] = adjY / detectors[numDet].distance*LIGHT_C;
-        photonVz[pMult] = adjZ / detectors[numDet].distance*LIGHT_C;
+        photonVx[pMult] = adjX / detDist*LIGHT_C;
+        photonVy[pMult] = adjY / detDist*LIGHT_C;
+        photonVz[pMult] = adjZ / detDist*LIGHT_C;
         if(SIM_FILE == 1) photonFlag[pMult] = totFlag[j];
         pMult++;
       }
@@ -209,12 +210,12 @@ void DetectorSystemClass::FissionAnalysis()
         backNeutronDetTimes[nBackMult] = timeDet;
         backNeutronLightOut[nBackMult] = engDet;
         backNeutronPSD[nBackMult] = totPSP[j];
-        neutVelocity = (1.0/LIGHT_C)*detectors[numDet].distance/(timeDet + BACKGROUND_SHIFT);
+        neutVelocity = (1.0/LIGHT_C)*detDist/(timeDet + BACKGROUND_SHIFT);
         backNeutronToFErg[nBackMult] = (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2);
         backNeutronDet[nBackMult] = numDet;
-        backNeutronVx[nBackMult] = adjX/detectors[numDet].distance*neutVelocity;
-        backNeutronVy[nBackMult] = adjY/detectors[numDet].distance*neutVelocity;
-        backNeutronVz[nBackMult] = adjZ/detectors[numDet].distance*neutVelocity;
+        backNeutronVx[nBackMult] = adjX/detDist*neutVelocity;
+        backNeutronVy[nBackMult] = adjY/detDist*neutVelocity;
+        backNeutronVz[nBackMult] = adjZ/detDist*neutVelocity;
         nBackMult++;
       }
 
@@ -235,9 +236,9 @@ void DetectorSystemClass::FissionAnalysis()
         backPhotonLightOut[pBackMult] = engDet;
         backPhotonPSD[pBackMult] = totPSP[j];
         backPhotonDet[pBackMult] = numDet;
-        backPhotonVx[pBackMult] = adjX/detectors[numDet].distance*LIGHT_C;
-        backPhotonVy[pBackMult] = adjY/detectors[numDet].distance*LIGHT_C;
-        backPhotonVz[pBackMult] = adjZ/detectors[numDet].distance*LIGHT_C;
+        backPhotonVx[pBackMult] = adjX/detDist*LIGHT_C;
+        backPhotonVy[pBackMult] = adjY/detDist*LIGHT_C;
+        backPhotonVz[pBackMult] = adjZ/detDist*LIGHT_C;
         pBackMult++;
       }
       // else
