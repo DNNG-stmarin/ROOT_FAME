@@ -35,7 +35,7 @@ void readFiss::GenerateAngles()
   for(int i = 0; i < NUM_DETECTORS; ++i)
   {
     angles[i] = new double[NUM_DETECTORS];
-    for(int j = 0; j < i; ++j)
+    for(int j = 0; j < NUM_DETECTORS; ++j)
     {
       angles[i][j] = ((x[i] * x[j]) + (y[i] * y[j]) + (z[i] * z[j])) / (sqrt(pow(x[i], 2) + pow(y[i], 2) + pow(z[i], 2)) * sqrt(pow(x[j], 2) + pow(y[j], 2) + pow(z[j], 2)));
     }

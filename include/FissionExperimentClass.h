@@ -38,13 +38,15 @@ private:
 	int REUSE_DATA;
 	int REUSE_DETECTOR;
 	int DEBUG;
-	int FISSION_MODE; 
+	int FISSION_MODE;
 	int PARAM_FILES;
 
 	int RANDOM_COINCIDENCE;
 
 	int FILE_LIST_MODE;
 	int* FILE_LIST;
+
+	int NUM_BEAMS;
 
 	TString nameExpFile = "fiss";
 	TString extExpFile = ".root";
