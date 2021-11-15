@@ -51,6 +51,10 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	REUSE_DETECTOR = info->REUSE_DETECTOR;
 	FISSION_MODE = info->FISSION_MODE;
 	DEBUG = info->DEBUG;
+
+	NUM_BEAMS = info->NUM_BEAMS;
+
+
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
 	if(REUSE_DATA == 0) {
@@ -73,7 +77,10 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	}
 	else{
 	}
-  beamFile = new TFile(beamFileT, "RECREATE");
+	if(NUM_BEAMS > 0)
+	{
+		beamFile = new TFile(beamFileT, "RECREATE");
+	}
 
   // create the chain with all the entries to analyze for the raw coincidence mode
 	rawTreeChain = new TChain();
