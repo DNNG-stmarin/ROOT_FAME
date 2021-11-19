@@ -209,7 +209,7 @@ void readFiss::Run()
   }
 
   // correlated analysis
-  CorrAnalysis();
+  // CorrAnalysis();
 
   // run CovEM if user wanted to
   if(CovEM_in){
@@ -237,9 +237,11 @@ void readFiss::Run()
     PlotBeamLO();
   }
 
-  writeFile->Close();
+  cout << "finished" << endl;
 
-  ++runNum;
+  // cout << writeFile << endl;
+
+  // ++runNum;
 }
 
 void readFiss::Save(MainWindow* main_in)

@@ -43,7 +43,7 @@ void readFiss::PlotCorr()
   PlotEnergyLOExp();
   PlotN_LOPSD_Exp();
   PlotP_LOPSD_Exp();
-  PlotN_AngleCorr();
+  // PlotN_AngleCorr(); // buggy
 }
 
 void readFiss::CompareAll()
@@ -530,9 +530,10 @@ void readFiss::PlotP_LOPSD_Exp()
   cout << "Plotting correlated photon LO/PSD" << endl;
 
   //make canvas
-  TCanvas* c_P_LOPSD_Exp = new TCanvas("cP_LOPSD_Exp",
-                                  "Photon LO vs. Photon PSD", 800, 400);
+  TCanvas* c_P_LOPSD_Exp = new TCanvas("cP_LOPSD_Exp", "Photon LO vs. Photon PSD", 800, 400);
   c_P_LOPSD_Exp->cd();
+
+  cout << h2_photonLightOutPSDExp << endl;
 
   h2_photonLightOutPSDExp->SetLineColor(kRed);
   h2_photonLightOutPSDExp->SetStats(0);
@@ -544,7 +545,7 @@ void readFiss::PlotP_LOPSD_Exp()
   h2_photonLightOutPSDExp->GetYaxis()->SetTitleSize(y_labelSize);
   h2_photonLightOutPSDExp->GetXaxis()->SetTickSize(x_tickSize);
   h2_photonLightOutPSDExp->GetYaxis()->SetTickSize(y_tickSize);
-
+  
   c_P_LOPSD_Exp->Write();
   //c_P_LOPSD_Exp->SaveAs("h2_photonLightOutPSDExp.eps");
 }
@@ -552,7 +553,7 @@ void readFiss::PlotP_LOPSD_Exp()
 void readFiss::PlotN_AngleCorr()
 {
   writeFile->cd();
-  cd_AngleCorr->cd();
+  cd_correlated->cd();
   cout << "Plotting neutron angular correlations." << endl;
 
   // make canvas
