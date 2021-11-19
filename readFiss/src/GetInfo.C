@@ -209,7 +209,7 @@ void readFiss::Run()
   }
 
   // correlated analysis
-  CorrAnalysis();
+  // CorrAnalysis();
 
   // run CovEM if user wanted to
   if(CovEM_in){

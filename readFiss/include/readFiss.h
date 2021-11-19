@@ -175,7 +175,6 @@ public :
    int ******* arrayBackBeam;
 
    // matrix variables
-   // *********************
    TH3D* h3_arrayCorrExp;
    TH3D* h3_arraySpecExp;
    TH3D* h3_arrayCorrBack;

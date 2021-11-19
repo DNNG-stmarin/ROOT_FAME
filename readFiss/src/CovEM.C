@@ -295,6 +295,7 @@ void readFiss::ExtractCov()
   double totCovCheck = 0;
   double totSpecCheck = 0;
   // ************************
+  double covValBack, specValNBack, specValPBack, specValBack;
   int* multPosBeam;
   double* covValBeam;
   double* specValNBeam;
@@ -315,7 +316,7 @@ void readFiss::ExtractCov()
       if(d1 == d2) continue;
       ngEnc = int ((angles[d1][d2] - MIN_THETA)/sizeNgAng);
       // ***********
-      h_Angles->Fill(angles[d1][d2]); // Check angles (there is a bias towards 0 that needs fixing)
+      h_Angles->Fill(angles[d1][d2]);
       // *****************
       // cout << MIN_THETA << " " << sizeNgAng << endl;
       // cout << angles[d1][d2] << ": " << ngEnc << endl;
@@ -331,6 +332,12 @@ void readFiss::ExtractCov()
           specValN = 0;
           specValP = 0;
           specVal = 0;
+// ********************
+          covValBack = 0;
+          specValNBack = 0;
+          specValPBack = 0;
+          specValBack = 0;
+// ********************
 
           for(int n1 = 0; n1 < MAX_MULT_DET; n1++)
           {
@@ -343,6 +350,10 @@ void readFiss::ExtractCov()
               //cout << multPos << " ";
               // ***********************
               // define backgrond here?
+              int multPosBack = arrayBack[d1][d2][e1][e2][n1][n2];
+              covValBack += multPosBack*n1*n2;
+              specValNBack += multPosBack*n1;
+              specValPBack += multPosBack*n2;
 
               // arrayBack[detN][detP][ergN][ergP][1][1]
               if (mode == BEAM_MODE)
@@ -398,6 +409,24 @@ void readFiss::ExtractCov()
               // totSpecCheck += specVal;
             }
           }
+
+          // Background
+          covValBack /= expEntries;
+          specValNBack /= expEntries;
+          specValPBack /= expEntries;
+
+          covValBack = (covValBack - specValNBack*specValPBack);
+          specValBack = (specValNBack*specValPBack);
+
+          //cout << covVal << endl;
+
+          arrayCorrExp[ngEnc][e1][e2] += covVal;
+          arraySpecExp[ngEnc][e1][e2] += specVal;
+          // totCovCheck += covVal;
+          // totSpecCheck += specVal;
+
+          // Correlation histogram? Ratio of cov/spec
+          
           // ******************
 
           // cout << arrayCorrExp[ngEnc][e1][e2] << endl;
@@ -423,20 +452,23 @@ void readFiss::WriteCovEM()
   // ************************
   cout <<  "wirting covEM resutls to root"  << endl;
 
-  TCanvas* c_test =  new TCanvas("c_test", "arrayCorr and arraySpec", 800, 1000);
+  TCanvas* c_CovExp =  new TCanvas("c_CovExp", "arrayCorr and arraySpec", 800, 1000);
+  TCanvas* c_CovBack =  new TCanvas("c_CovBack", "arrayCorrBack and arraySpecBack", 800, 1000);
 
-  c_test->Divide(1,2);
-  c_test->cd(1);
+  c_CovExp->Divide(1,2);
+  c_CovBack->Divide(1,2);
+  c_CovBack->cd(1);
+  c_CovExp->cd(1);
 
   if (mode == BEAM_MODE)
   {
 
   }
 
-  h3_arrayCorrExp = new TH3D("h3_arrayCorrExp", "Experimental Corr Matrix; Neutron Energy; Gamma Light Out; Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-  h3_arraySpecExp = new TH3D("h3_arraySpecExp", "Experimental Spec Matrix; Neutron Energy; Gamma Light Out; Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-  h3_arrayCorrBack = new TH3D("h3_arrayCorrBack", "Background Corr Matrix; Neutron Energy; Gamma Light Out; Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-  h3_arraySpecBack = new TH3D("h3_arraySpecBack", "Background Spec Matrix; Neutron Energy; Gamma Light Out; Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+  h3_arrayCorrExp = new TH3D("h3_arrayCorrExp", "Experimental Corr Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+  h3_arraySpecExp = new TH3D("h3_arraySpecExp", "Experimental Spec Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+  h3_arrayCorrBack = new TH3D("h3_arrayCorrBack", "Background Corr Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+  h3_arraySpecBack = new TH3D("h3_arraySpecBack", "Background Spec Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
 
   if (mode == BEAM_MODE)
   {
@@ -447,10 +479,10 @@ void readFiss::WriteCovEM()
 
     for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
     {
-      h3_arrayCorrExpBeam[eB] = new TH3D("h3_arrayCorrExpBeam", "Experimental Corr Matrix with Beam Energy MeV; Neutron Energy; Gamma Light Out; Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-      h3_arraySpecExpBeam[eB] = new TH3D("h3_arraySpecExpBeam", "Experimental Spec Matrix with Beam Energy MeV; Neutron Energy; Gamma Light Out; Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-      h3_arrayCorrBackBeam[eB] = new TH3D("h3_arrayCorrBackBeam", "Background Corr Matrix with Beam Energy MeV; Neutron Energy; Gamma Light Out; Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-      h3_arraySpecBackBeam[eB] = new TH3D("h3_arraySpecBackBeam", "Background Spec Matrix with Beam Energy MeV; Neutron Energy; Gamma Light Out; Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+      h3_arrayCorrExpBeam[eB] = new TH3D("h3_arrayCorrExpBeam", "Experimental Corr Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+      h3_arraySpecExpBeam[eB] = new TH3D("h3_arraySpecExpBeam", "Experimental Spec Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+      h3_arrayCorrBackBeam[eB] = new TH3D("h3_arrayCorrBackBeam", "Background Corr Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+      h3_arraySpecBackBeam[eB] = new TH3D("h3_arraySpecBackBeam", "Background Spec Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
     }
   }
 
@@ -463,15 +495,15 @@ void readFiss::WriteCovEM()
       {
         h3_arrayCorrExp->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrExp[ngAng][bN][bP]);  // neutrons = x-axis , photons = y-axis ; n-p angle = z-axis
         h3_arraySpecExp->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecExp[ngAng][bN][bP]);
-        // h3_arrayCorrBack->SetBinContent(bN,bP,ngAng,arrayCorrBack[ngAng][bN][bP]);
-        // h3_arraySpecBack->SetBinContent(bN,bP,ngAng,arraySpecBack[ngAng][bN][bP]);
+        h3_arrayCorrBack->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrBack[ngAng][bN][bP]);
+        h3_arraySpecBack->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecBack[ngAng][bN][bP]);
         if (mode == BEAM_MODE){
           for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
           {
             h3_arrayCorrExpBeam[eB]->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrExpBeam[eB][ngAng][bN][bP]);
             h3_arraySpecExpBeam[eB]->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecExpBeam[eB][ngAng][bN][bP]);
-            // h3_arrayCorrBackBeam[eB]->SetBinContent(bN,bP,ngAng,arrayCorrBackBeam[eB][ngAng][bN][bP]);
-            // h3_arraySpecBackBeam[eB]->SetBinContent(bN,bP,ngAng,arraySpecBackBeam[eB][ngAng][bN][bP]);
+            h3_arrayCorrBackBeam[eB]->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrBackBeam[eB][ngAng][bN][bP]);
+            h3_arraySpecBackBeam[eB]->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecBackBeam[eB][ngAng][bN][bP]);
           }
         }
       }
@@ -481,30 +513,58 @@ void readFiss::WriteCovEM()
   h3_arrayCorrExp->SetTitle("Experiment Covariance Matrix");
   // h3_arrayCorrExp->SetTitle("
   // h3_arrayCorrExp->Write();
-  c_test->cd(2);
+  c_CovExp->cd(2);
   h3_arraySpecExp->Draw("LEGO2");
   h3_arraySpecExp->SetTitle("Experiment Spectrum");
-  c_test->Write();
+  c_CovExp->Write();
+
+  c_CovBack->cd(1);
+  h3_arraySpecBack->Draw("LEGO2");
+  h3_arraySpecBack->SetTitle("Background Spectrum");
+
+  c_CovBack->cd(2);
+  h3_arrayCorrBack->Draw("LEGO2");
+  h3_arrayCorrBack->SetTitle("Background Covariance Matrix");
+  c_CovBack->Write();
+
 
   if (mode == BEAM_MODE)
   {
     TCanvas** c_corrSpecBeam =  new TCanvas* [BEAM_ERG_BINNUM];
+    TCanvas** c_corrSpecBeamBack =  new TCanvas* [BEAM_ERG_BINNUM];
     for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
   	{
       TString s_BEAM_Erg_Low = (TString)to_string(eB+2);
       TString s_BEAM_Erg_High = (TString)to_string(eB+3);
 
+      // Experiment
       c_corrSpecBeam[eB] = new TCanvas("c_corrSpecBeam_" + s_BEAM_Erg_Low, "arrayCorr and arraySpec for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High, 800, 1000);
       c_corrSpecBeam[eB]->Divide(1,2);
 
       c_corrSpecBeam[eB]->cd(1);
       h3_arrayCorrExpBeam[eB]->Draw("LEGO2");
+
       c_corrSpecBeam[eB]->cd(2);
       h3_arraySpecExpBeam[eB]->Draw("LEGO2");
       h3_arrayCorrExpBeam[eB]->SetTitle("Experiment Covariance Matrix for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
       h3_arraySpecExpBeam[eB]->SetTitle("Experiment Spectrum for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
 
       c_corrSpecBeam[eB]->Write();
+
+      // Background
+      c_corrSpecBeamBack[eB] = new TCanvas("c_corrSpecBeamBack_" + s_BEAM_Erg_Low, "arrayCorrBack and arraySpecBack for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High, 800, 1000);
+      c_corrSpecBeamBack[eB]->Divide(1,2);
+
+      c_corrSpecBeamBack[eB]->cd(1);
+      h3_arrayCorrBackBeam[eB]->Draw("LEGO2");
+
+      c_corrSpecBeamBack[eB]->cd(2);
+      h3_arraySpecBackBeam[eB]->Draw("LEGO2");
+      h3_arrayCorrBackBeam[eB]->SetTitle("Background Covariance Matrix for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
+      h3_arraySpecBackBeam[eB]->SetTitle("Background Spectrum for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
+
+      c_corrSpecBeamBack[eB]->Write();
+
     }
   }
 
