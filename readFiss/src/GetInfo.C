@@ -237,9 +237,11 @@ void readFiss::Run()
     PlotBeamLO();
   }
 
-  writeFile->Close();
+  cout << "finished" << endl;
 
-  ++runNum;
+  // cout << writeFile << endl;
+
+  // ++runNum;
 }
 
 void readFiss::Save(MainWindow* main_in)
