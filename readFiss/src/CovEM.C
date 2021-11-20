@@ -229,15 +229,21 @@ void readFiss::ExtractCov()
   arrayCorrExp = new double** [BA];
   arraySpecExp = new double** [BA];
   // *****************
+  arrayCorrBack = new double** [BA];
+  arraySpecBack = new double** [BA];
 
   if (mode == BEAM_MODE)
   {
     arrayCorrExpBeam = new double*** [BEAM_ERG_BINNUM];
     arraySpecExpBeam = new double*** [BEAM_ERG_BINNUM];
+    arrayCorrBackBeam = new double*** [BEAM_ERG_BINNUM];
+    arraySpecBackBeam = new double*** [BEAM_ERG_BINNUM];
     for (int bb = 0; bb < BEAM_ERG_BINNUM; bb++)
     {
       arrayCorrExpBeam[bb] = new double** [BA];
       arraySpecExpBeam[bb] = new double** [BA];
+      arrayCorrBackBeam[bb] = new double** [BA];
+      arraySpecBackBeam[bb] = new double** [BA];
     }
   }
   // *******************
@@ -245,6 +251,8 @@ void readFiss::ExtractCov()
   {
     arrayCorrExp[ba] = new double* [BN];
     arraySpecExp[ba] = new double* [BN];
+    arrayCorrBack[ba] = new double* [BN];
+    arraySpecBack[ba] = new double* [BN];
 
     // *******************
     if (mode == BEAM_MODE)
@@ -253,6 +261,8 @@ void readFiss::ExtractCov()
       {
         arrayCorrExpBeam[bb][ba] = new double* [BN];
         arraySpecExpBeam[bb][ba] = new double* [BN];
+        arrayCorrBackBeam[bb][ba] = new double* [BN];
+        arraySpecBackBeam[bb][ba] = new double* [BN];
       }
     }
     // *********************
@@ -260,6 +270,8 @@ void readFiss::ExtractCov()
     {
       arrayCorrExp[ba][bn] = new double [BP];
       arraySpecExp[ba][bn] = new double [BP];
+      arrayCorrBack[ba][bn] = new double [BP];
+      arraySpecBack[ba][bn] = new double [BP];
 
       // *********************
       if (mode == BEAM_MODE)
@@ -268,6 +280,8 @@ void readFiss::ExtractCov()
         {
         arrayCorrExpBeam[bb][ba][bn] = new double [BP];
         arraySpecExpBeam[bb][ba][bn] = new double [BP];
+        arrayCorrBackBeam[bb][ba][bn] = new double [BP];
+        arraySpecBackBeam[bb][ba][bn] = new double [BP];
         }
       }
       // *********************
@@ -275,6 +289,8 @@ void readFiss::ExtractCov()
       {
         arrayCorrExp[ba][bn][bp] = 0.;
         arraySpecExp[ba][bn][bp] = 0.;
+        arrayCorrBack[ba][bn][bp] = 0.;
+        arraySpecBack[ba][bn][bp] = 0.;
 
         // *********************
         if (mode == BEAM_MODE)
@@ -283,6 +299,8 @@ void readFiss::ExtractCov()
           {
           arrayCorrExpBeam[bb][ba][bn][bp] = 0.;
           arraySpecExpBeam[bb][ba][bn][bp] = 0.;
+          arrayCorrBackBeam[bb][ba][bn][bp] = 0.;
+          arraySpecBackBeam[bb][ba][bn][bp] = 0.;
           }
         }
         // *********************
@@ -301,6 +319,11 @@ void readFiss::ExtractCov()
   double* specValNBeam;
   double* specValPBeam;
   double* specValBeam;
+  int* multPosBeamBack;
+  double* covValBeamBack;
+  double* specValNBeamBack;
+  double* specValPBeamBack;
+  double* specValBeamBack;
   // int* listPerg;
   //    listNerg = new int[BN];
   multPosBeam = new int[BEAM_ERG_BINNUM];
@@ -308,6 +331,11 @@ void readFiss::ExtractCov()
   specValNBeam = new double[BEAM_ERG_BINNUM];
   specValPBeam = new double[BEAM_ERG_BINNUM];
   specValBeam = new double[BEAM_ERG_BINNUM];
+  multPosBeamBack = new int[BEAM_ERG_BINNUM];
+  covValBeamBack = new double[BEAM_ERG_BINNUM];
+  specValNBeamBack = new double[BEAM_ERG_BINNUM];
+  specValPBeamBack = new double[BEAM_ERG_BINNUM];
+  specValBeamBack = new double[BEAM_ERG_BINNUM];
   // **************************
   for(int d1 = 0; d1 < NUM_DETECTORS; d1++)
   {
@@ -349,7 +377,7 @@ void readFiss::ExtractCov()
               specValP += multPos*n2;
               //cout << multPos << " ";
               // ***********************
-              // define backgrond here?
+              // background
               int multPosBack = arrayBack[d1][d2][e1][e2][n1][n2];
               covValBack += multPosBack*n1*n2;
               specValNBack += multPosBack*n1;
@@ -364,13 +392,19 @@ void readFiss::ExtractCov()
                   covValBeam[eB] += multPosBeam[eB]*n1*n2;
                   specValNBeam[eB] += multPosBeam[eB]*n1;
                   specValPBeam[eB] += multPosBeam[eB]*n2;
+
+                  // Background
+                  multPosBeamBack[eB] = arrayBackBeam[eB][d1][d2][e1][e2][n1][n2];
+                  covValBeamBack[eB] += multPosBeamBack[eB]*n1*n2;
+                  specValNBeamBack[eB] += multPosBeamBack[eB]*n1;
+                  specValPBeamBack[eB] += multPosBeamBack[eB]*n2;
+
                 }
               }
               // ***********************
             }
             //cout << endl;
           }
-
           covVal /= expEntries;
           specValN /= expEntries;
           specValP /= expEntries;
@@ -384,6 +418,21 @@ void readFiss::ExtractCov()
           arraySpecExp[ngEnc][e1][e2] += specVal;
           totCovCheck += covVal;
           totSpecCheck += specVal;
+
+          // Background
+          covValBack /= expEntries;
+          specValNBack /= expEntries;
+          specValPBack /= expEntries;
+
+          covValBack = (covValBack - specValNBack*specValPBack);
+          specValBack = (specValNBack*specValPBack);
+
+
+          arrayCorrBack[ngEnc][e1][e2] += covValBack;
+          arraySpecBack[ngEnc][e1][e2] += specValBack;
+          // totCovCheck += covVal;
+          // totSpecCheck += specVal;
+
 
           // *********************
           if (mode == BEAM_MODE)
@@ -407,26 +456,24 @@ void readFiss::ExtractCov()
               arraySpecExpBeam[eB][ngEnc][e1][e2] += specValBeam[eB];
               // totCovCheck += covVal;
               // totSpecCheck += specVal;
+
+              // Background
+              covValBeamBack[eB] /= beamExpEntries;
+              specValNBeamBack[eB] /= beamExpEntries;
+              specValPBeamBack[eB] /= beamExpEntries;
+
+              covValBeamBack[eB] = (covValBeamBack[eB] - specValNBeamBack[eB]*specValPBeamBack[eB]);
+              specValBeamBack[eB] = (specValNBeamBack[eB]*specValPBeamBack[eB]);
+              arrayCorrBackBeam[eB][ngEnc][e1][e2] += covValBeamBack[eB];
+              arraySpecBackBeam[eB][ngEnc][e1][e2] += specValBeamBack[eB];
+              // totCovBackCheck += covValBack;
+              // totSpecBackCheck += specValBack;
             }
           }
 
-          // Background
-          covValBack /= expEntries;
-          specValNBack /= expEntries;
-          specValPBack /= expEntries;
-
-          covValBack = (covValBack - specValNBack*specValPBack);
-          specValBack = (specValNBack*specValPBack);
-
-          //cout << covVal << endl;
-
-          arrayCorrExp[ngEnc][e1][e2] += covVal;
-          arraySpecExp[ngEnc][e1][e2] += specVal;
-          // totCovCheck += covVal;
-          // totSpecCheck += specVal;
 
           // Correlation histogram? Ratio of cov/spec
-          
+
           // ******************
 
           // cout << arrayCorrExp[ngEnc][e1][e2] << endl;
@@ -454,16 +501,10 @@ void readFiss::WriteCovEM()
 
   TCanvas* c_CovExp =  new TCanvas("c_CovExp", "arrayCorr and arraySpec", 800, 1000);
   TCanvas* c_CovBack =  new TCanvas("c_CovBack", "arrayCorrBack and arraySpecBack", 800, 1000);
-
   c_CovExp->Divide(1,2);
   c_CovBack->Divide(1,2);
   c_CovBack->cd(1);
   c_CovExp->cd(1);
-
-  if (mode == BEAM_MODE)
-  {
-
-  }
 
   h3_arrayCorrExp = new TH3D("h3_arrayCorrExp", "Experimental Corr Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
   h3_arraySpecExp = new TH3D("h3_arraySpecExp", "Experimental Spec Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
@@ -511,20 +552,19 @@ void readFiss::WriteCovEM()
   }
   h3_arrayCorrExp->Draw("LEGO2");
   h3_arrayCorrExp->SetTitle("Experiment Covariance Matrix");
-  // h3_arrayCorrExp->SetTitle("
-  // h3_arrayCorrExp->Write();
+
   c_CovExp->cd(2);
   h3_arraySpecExp->Draw("LEGO2");
   h3_arraySpecExp->SetTitle("Experiment Spectrum");
   c_CovExp->Write();
 
   c_CovBack->cd(1);
-  h3_arraySpecBack->Draw("LEGO2");
-  h3_arraySpecBack->SetTitle("Background Spectrum");
-
-  c_CovBack->cd(2);
   h3_arrayCorrBack->Draw("LEGO2");
   h3_arrayCorrBack->SetTitle("Background Covariance Matrix");
+
+  c_CovBack->cd(2);
+  h3_arraySpecBack->Draw("LEGO2");
+  h3_arraySpecBack->SetTitle("Background Spectrum");
   c_CovBack->Write();
 
 
@@ -557,10 +597,10 @@ void readFiss::WriteCovEM()
 
       c_corrSpecBeamBack[eB]->cd(1);
       h3_arrayCorrBackBeam[eB]->Draw("LEGO2");
+      h3_arrayCorrBackBeam[eB]->SetTitle("Background Covariance Matrix for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
 
       c_corrSpecBeamBack[eB]->cd(2);
       h3_arraySpecBackBeam[eB]->Draw("LEGO2");
-      h3_arrayCorrBackBeam[eB]->SetTitle("Background Covariance Matrix for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
       h3_arraySpecBackBeam[eB]->SetTitle("Background Spectrum for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
 
       c_corrSpecBeamBack[eB]->Write();
@@ -580,6 +620,11 @@ void readFiss::WriteCovEM()
   string fileCovFire;
   string fileSpecFire;
 
+  ofstream covMatFireBack;
+  ofstream specMatFireBack;
+  string fileCovFireBack;
+  string fileSpecFireBack;
+
   for(int eA = 0; eA < BA; eA++)
   {
     fileCovFire = "covResults/covEM_" + to_string(eA) + ".csv";
@@ -587,6 +632,12 @@ void readFiss::WriteCovEM()
 
     fileSpecFire = "covResults/specEM_" + to_string(eA) + ".csv";
     specMatFire.open(fileSpecFire);
+
+    fileCovFireBack = "covResults/covEMBack_" + to_string(eA) + ".csv";
+    covMatFireBack.open(fileCovFireBack);
+
+    fileSpecFireBack = "covResults/specEMBack_" + to_string(eA) + ".csv";
+    specMatFireBack.open(fileSpecFireBack);
 
     // cout << eA << endl;
 
@@ -596,22 +647,30 @@ void readFiss::WriteCovEM()
       {
          covMatFire << arrayCorrExp[eA][eN][eP];
          specMatFire << arraySpecExp[eA][eN][eP];
+         covMatFireBack << arrayCorrBack[eA][eN][eP];
+         specMatFireBack << arraySpecBack[eA][eN][eP];
 
          if(eP < BP - 1)
          {
            covMatFire << ",";
            specMatFire << ",";
+           covMatFireBack << ",";
+           specMatFireBack << ",";
          }
          else if(eP == BP - 1)
          {
            covMatFire << "\n";
            specMatFire << "\n";
+           covMatFireBack << "\n";
+           specMatFireBack << "\n";
          }
       }
     }
 
     covMatFire.close();
     specMatFire.close();
+    covMatFireBack.close();
+    specMatFireBack.close();
 
   }
 
@@ -622,6 +681,12 @@ void readFiss::WriteCovEM()
     ofstream specMatBeamFire;
     string fileCovBeamFire;
     string fileSpecBeamFire;
+
+    ofstream covMatBeamFireBack;
+    ofstream specMatBeamFireBack;
+    string fileCovBeamFireBack;
+    string fileSpecBeamFireBack;
+
     string beamFolderName;
 
     for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
@@ -638,27 +703,41 @@ void readFiss::WriteCovEM()
       fileSpecBeamFire = beamFolderName + "/specEMbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
       specMatBeamFire.open(fileSpecBeamFire);
 
+      fileCovBeamFireBack = beamFolderName + "/covEMBackbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
+      covMatBeamFireBack.open(fileCovBeamFireBack);
+
+      fileSpecBeamFireBack = beamFolderName + "/specEMBackbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
+      specMatBeamFireBack.open(fileSpecBeamFireBack);
+
         for(int eN = 0; eN < BN; eN ++)
         {
          for(int eP = 0; eP < BP; eP ++)
           {
              covMatBeamFire << arrayCorrExpBeam[eB][eA][eN][eP];
              specMatBeamFire << arraySpecExpBeam[eB][eA][eN][eP];
+             covMatBeamFireBack << arrayCorrBackBeam[eB][eA][eN][eP];
+             specMatBeamFireBack << arraySpecBackBeam[eB][eA][eN][eP];
 
              if(eP < BP - 1)
              {
                covMatBeamFire << ",";
                specMatBeamFire << ",";
+               covMatBeamFireBack << ",";
+               specMatBeamFireBack << ",";
              }
              else if(eP == BP - 1)
              {
                covMatBeamFire << "\n";
                specMatBeamFire << "\n";
+               covMatBeamFireBack << "\n";
+               specMatBeamFireBack << "\n";
              }
           }
         }
         covMatBeamFire.close();
         specMatBeamFire.close();
+        covMatBeamFireBack.close();
+        specMatBeamFireBack.close();
       }
     }
   }
