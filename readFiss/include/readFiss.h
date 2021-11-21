@@ -167,33 +167,33 @@ public :
                     |___/                    */
 
    // cov em matrices
-   int****** arrayExp;
-   int****** arrayBack;
+   int******* arrayExp;
+   int******* arrayBack;
 
    // differentiated lists
-   int ******* arrayExpBeam;
-   int ******* arrayBackBeam;
+   int ******** arrayExpBeam;
+   int ******** arrayBackBeam;
 
    // matrix variables
-   TH3D* h3_arrayCorrExp;
-   TH3D* h3_arraySpecExp;
-   TH3D* h3_arrayCorrBack;
-   TH3D* h3_arraySpecBack;
+   TH3D** h3_arrayCorrExp;
+   TH3D** h3_arraySpecExp;
+   TH3D** h3_arrayCorrBack;
+   TH3D** h3_arraySpecBack;
 
-   TH3D** h3_arrayCorrExpBeam;
-   TH3D** h3_arraySpecExpBeam;
-   TH3D** h3_arrayCorrBackBeam;
-   TH3D** h3_arraySpecBackBeam;
+   TH3D*** h3_arrayCorrExpBeam;
+   TH3D*** h3_arraySpecExpBeam;
+   TH3D*** h3_arrayCorrBackBeam;
+   TH3D*** h3_arraySpecBackBeam;
 
-   double*** arrayCorrExp;
-   double*** arraySpecExp;
-   double*** arrayCorrBack;
-   double*** arraySpecBack;
+   double**** arrayCorrExp;
+   double**** arraySpecExp;
+   double**** arrayCorrBack;
+   double**** arraySpecBack;
    // ************************
-   double**** arrayCorrExpBeam;
-   double**** arraySpecExpBeam;
-   double**** arrayCorrBackBeam;
-   double**** arraySpecBackBeam;
+   double***** arrayCorrExpBeam;
+   double***** arraySpecExpBeam;
+   double***** arrayCorrBackBeam;
+   double***** arraySpecBackBeam;
    // ***********************
    //TH2D* h2_arrayDiff;
 

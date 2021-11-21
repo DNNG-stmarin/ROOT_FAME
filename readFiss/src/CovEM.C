@@ -226,87 +226,109 @@ void readFiss::ExtractCov()
   TH1D* h_Angles = new TH1D("Angles","angles between detectors",BA,MIN_THETA,MAX_THETA);
   cout << "extracting cov " << endl;
 
-  arrayCorrExp = new double** [BA];
-  arraySpecExp = new double** [BA];
-  // *****************
-  arrayCorrBack = new double** [BA];
-  arraySpecBack = new double** [BA];
+  arrayCorrExp = new double*** [NUM_TRIGGERS];
+  arraySpecExp = new double*** [NUM_TRIGGERS];
+  arrayCorrBack = new double*** [NUM_TRIGGERS];
+  arraySpecBack = new double*** [NUM_TRIGGERS];
 
   if (mode == BEAM_MODE)
   {
-    arrayCorrExpBeam = new double*** [BEAM_ERG_BINNUM];
-    arraySpecExpBeam = new double*** [BEAM_ERG_BINNUM];
-    arrayCorrBackBeam = new double*** [BEAM_ERG_BINNUM];
-    arraySpecBackBeam = new double*** [BEAM_ERG_BINNUM];
-    for (int bb = 0; bb < BEAM_ERG_BINNUM; bb++)
-    {
-      arrayCorrExpBeam[bb] = new double** [BA];
-      arraySpecExpBeam[bb] = new double** [BA];
-      arrayCorrBackBeam[bb] = new double** [BA];
-      arraySpecBackBeam[bb] = new double** [BA];
-    }
+    arrayCorrExpBeam = new double**** [NUM_TRIGGERS];
+    arraySpecExpBeam = new double**** [NUM_TRIGGERS];
+    arrayCorrBackBeam = new double**** [NUM_TRIGGERS];
+    arraySpecBackBeam = new double**** [NUM_TRIGGERS];
   }
-  // *******************
-  for(int ba = 0; ba < BA; ba++)
-  {
-    arrayCorrExp[ba] = new double* [BN];
-    arraySpecExp[ba] = new double* [BN];
-    arrayCorrBack[ba] = new double* [BN];
-    arraySpecBack[ba] = new double* [BN];
 
-    // *******************
+  for (int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
+  {
+    arrayCorrExp[indexChannel] = new double** [BA];
+    // cout << "break 2" << endl;
+    arraySpecExp[indexChannel] = new double** [BA];
+    // cout << "break 1" << endl;
+    arrayCorrBack[indexChannel] = new double** [BA];
+    // cout << "break 3" << endl;
+    arraySpecBack[indexChannel] = new double** [BA];
+    // cout << "Check index" << endl;
     if (mode == BEAM_MODE)
     {
+      cout << "Check beam index" << endl;
+      arrayCorrExpBeam[indexChannel] = new double*** [BEAM_ERG_BINNUM];
+      arraySpecExpBeam[indexChannel] = new double*** [BEAM_ERG_BINNUM];
+      arrayCorrBackBeam[indexChannel] = new double*** [BEAM_ERG_BINNUM];
+      arraySpecBackBeam[indexChannel] = new double*** [BEAM_ERG_BINNUM];
       for (int bb = 0; bb < BEAM_ERG_BINNUM; bb++)
       {
-        arrayCorrExpBeam[bb][ba] = new double* [BN];
-        arraySpecExpBeam[bb][ba] = new double* [BN];
-        arrayCorrBackBeam[bb][ba] = new double* [BN];
-        arraySpecBackBeam[bb][ba] = new double* [BN];
+        cout << "Check beam erg index" << endl;
+        arrayCorrExpBeam[indexChannel][bb] = new double** [BA];
+        arraySpecExpBeam[indexChannel][bb] = new double** [BA];
+        arrayCorrBackBeam[indexChannel][bb] = new double** [BA];
+        arraySpecBackBeam[indexChannel][bb] = new double** [BA];
       }
     }
-    // *********************
-    for(int bn = 0; bn < BN; bn++)
+    // *******************
+    for(int ba = 0; ba < BA; ba++)
     {
-      arrayCorrExp[ba][bn] = new double [BP];
-      arraySpecExp[ba][bn] = new double [BP];
-      arrayCorrBack[ba][bn] = new double [BP];
-      arraySpecBack[ba][bn] = new double [BP];
+      cout << "Check angle" << endl;
+      arrayCorrExp[indexChannel][ba] = new double* [BN];
+      arraySpecExp[indexChannel][ba] = new double* [BN];
+      arrayCorrBack[indexChannel][ba] = new double* [BN];
+      arraySpecBack[indexChannel][ba] = new double* [BN];
 
-      // *********************
+      // *******************
       if (mode == BEAM_MODE)
       {
         for (int bb = 0; bb < BEAM_ERG_BINNUM; bb++)
         {
-        arrayCorrExpBeam[bb][ba][bn] = new double [BP];
-        arraySpecExpBeam[bb][ba][bn] = new double [BP];
-        arrayCorrBackBeam[bb][ba][bn] = new double [BP];
-        arraySpecBackBeam[bb][ba][bn] = new double [BP];
+          arrayCorrExpBeam[indexChannel][bb][ba] = new double* [BN];
+          arraySpecExpBeam[indexChannel][bb][ba] = new double* [BN];
+          arrayCorrBackBeam[indexChannel][bb][ba] = new double* [BN];
+          arraySpecBackBeam[indexChannel][bb][ba] = new double* [BN];
         }
       }
       // *********************
-      for(int bp = 0; bp < BP; bp++)
+      for(int bn = 0; bn < BN; bn++)
       {
-        arrayCorrExp[ba][bn][bp] = 0.;
-        arraySpecExp[ba][bn][bp] = 0.;
-        arrayCorrBack[ba][bn][bp] = 0.;
-        arraySpecBack[ba][bn][bp] = 0.;
+        arrayCorrExp[indexChannel][ba][bn] = new double [BP];
+        arraySpecExp[indexChannel][ba][bn] = new double [BP];
+        arrayCorrBack[indexChannel][ba][bn] = new double [BP];
+        arraySpecBack[indexChannel][ba][bn] = new double [BP];
 
         // *********************
         if (mode == BEAM_MODE)
         {
           for (int bb = 0; bb < BEAM_ERG_BINNUM; bb++)
           {
-          arrayCorrExpBeam[bb][ba][bn][bp] = 0.;
-          arraySpecExpBeam[bb][ba][bn][bp] = 0.;
-          arrayCorrBackBeam[bb][ba][bn][bp] = 0.;
-          arraySpecBackBeam[bb][ba][bn][bp] = 0.;
+          arrayCorrExpBeam[indexChannel][bb][ba][bn] = new double [BP];
+          arraySpecExpBeam[indexChannel][bb][ba][bn] = new double [BP];
+          arrayCorrBackBeam[indexChannel][bb][ba][bn] = new double [BP];
+          arraySpecBackBeam[indexChannel][bb][ba][bn] = new double [BP];
           }
         }
         // *********************
+        for(int bp = 0; bp < BP; bp++)
+        {
+          arrayCorrExp[indexChannel][ba][bn][bp] = 0.;
+          arraySpecExp[indexChannel][ba][bn][bp] = 0.;
+          arrayCorrBack[indexChannel][ba][bn][bp] = 0.;
+          arraySpecBack[indexChannel][ba][bn][bp] = 0.;
+
+          // *********************
+          if (mode == BEAM_MODE)
+          {
+            for (int bb = 0; bb < BEAM_ERG_BINNUM; bb++)
+            {
+            arrayCorrExpBeam[indexChannel][bb][ba][bn][bp] = 0.;
+            arraySpecExpBeam[indexChannel][bb][ba][bn][bp] = 0.;
+            arrayCorrBackBeam[indexChannel][bb][ba][bn][bp] = 0.;
+            arraySpecBackBeam[indexChannel][bb][ba][bn][bp] = 0.;
+            }
+          }
+          // *********************
+        }
       }
     }
   }
+  cout << "check 1" << endl;
 
   double covVal, specValN, specValP, specVal;
   int ngEnc;
@@ -337,146 +359,156 @@ void readFiss::ExtractCov()
   specValPBeamBack = new double[BEAM_ERG_BINNUM];
   specValBeamBack = new double[BEAM_ERG_BINNUM];
   // **************************
-  for(int d1 = 0; d1 < NUM_DETECTORS; d1++)
+  for (int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
   {
-    for(int d2 = 0; d2 < NUM_DETECTORS; d2++)
+    for(int d1 = 0; d1 < NUM_DETECTORS; d1++)
     {
-      if(d1 == d2) continue;
-      ngEnc = int ((angles[d1][d2] - MIN_THETA)/sizeNgAng);
-      // ***********
-      h_Angles->Fill(angles[d1][d2]);
-      // *****************
-      // cout << MIN_THETA << " " << sizeNgAng << endl;
-      // cout << angles[d1][d2] << ": " << ngEnc << endl;
-
-      if(ngEnc >= BA) ngEnc = BA-1;
-      else if(ngEnc < 0) ngEnc = 0;
-
-      for(int e1 = 0; e1 < BN; e1++)
+      for(int d2 = 0; d2 < NUM_DETECTORS; d2++)
       {
-        for(int e2 = 0; e2 < BP; e2++)
+        if(d1 == d2) continue;
+        cout << "check 2" << endl;
+
+        ngEnc = int ((angles[d1][d2] - MIN_THETA)/sizeNgAng);
+        // ***********
+        cout << "check 3" << endl;
+
+        h_Angles->Fill(angles[d1][d2]);
+        // *****************
+        // cout << MIN_THETA << " " << sizeNgAng << endl;
+        // cout << angles[d1][d2] << ": " << ngEnc << endl;
+
+        if(ngEnc >= BA) ngEnc = BA-1;
+        else if(ngEnc < 0) ngEnc = 0;
+
+        for(int e1 = 0; e1 < BN; e1++)
         {
-          covVal = 0;
-          specValN = 0;
-          specValP = 0;
-          specVal = 0;
-// ********************
-          covValBack = 0;
-          specValNBack = 0;
-          specValPBack = 0;
-          specValBack = 0;
-// ********************
-
-          for(int n1 = 0; n1 < MAX_MULT_DET; n1++)
+          for(int e2 = 0; e2 < BP; e2++)
           {
-            for(int n2 = 0; n2 < MAX_MULT_DET; n2++)
-            {
-              int multPos = arrayExp[d1][d2][e1][e2][n1][n2];
-              covVal += multPos*n1*n2;
-              specValN += multPos*n1;
-              specValP += multPos*n2;
-              //cout << multPos << " ";
-              // ***********************
-              // background
-              int multPosBack = arrayBack[d1][d2][e1][e2][n1][n2];
-              covValBack += multPosBack*n1*n2;
-              specValNBack += multPosBack*n1;
-              specValPBack += multPosBack*n2;
+            covVal = 0;
+            specValN = 0;
+            specValP = 0;
+            specVal = 0;
+  // ********************
+            covValBack = 0;
+            specValNBack = 0;
+            specValPBack = 0;
+            specValBack = 0;
+  // ********************
 
-              // arrayBack[detN][detP][ergN][ergP][1][1]
-              if (mode == BEAM_MODE)
+            for(int n1 = 0; n1 < MAX_MULT_DET; n1++)
+            {
+              for(int n2 = 0; n2 < MAX_MULT_DET; n2++)
               {
-                for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
+                cout << "before" << endl;
+                int multPos = arrayExp[indexChannel][d1][d2][e1][e2][n1][n2];
+                cout << "after" << endl;
+                covVal += multPos*n1*n2;
+                specValN += multPos*n1;
+                specValP += multPos*n2;
+                //cout << multPos << " ";
+                // ***********************
+                // background
+                int multPosBack = arrayBack[indexChannel][d1][d2][e1][e2][n1][n2];
+                covValBack += multPosBack*n1*n2;
+                specValNBack += multPosBack*n1;
+                specValPBack += multPosBack*n2;
+
+                // arrayBack[detN][detP][ergN][ergP][1][1]
+                if (mode == BEAM_MODE)
                 {
-                  multPosBeam[eB] = arrayExpBeam[eB][d1][d2][e1][e2][n1][n2];
-                  covValBeam[eB] += multPosBeam[eB]*n1*n2;
-                  specValNBeam[eB] += multPosBeam[eB]*n1;
-                  specValPBeam[eB] += multPosBeam[eB]*n2;
+                  for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
+                  {
+                    multPosBeam[eB] = arrayExpBeam[indexChannel][eB][d1][d2][e1][e2][n1][n2];
+                    covValBeam[eB] += multPosBeam[eB]*n1*n2;
+                    specValNBeam[eB] += multPosBeam[eB]*n1;
+                    specValPBeam[eB] += multPosBeam[eB]*n2;
 
-                  // Background
-                  multPosBeamBack[eB] = arrayBackBeam[eB][d1][d2][e1][e2][n1][n2];
-                  covValBeamBack[eB] += multPosBeamBack[eB]*n1*n2;
-                  specValNBeamBack[eB] += multPosBeamBack[eB]*n1;
-                  specValPBeamBack[eB] += multPosBeamBack[eB]*n2;
+                    // Background
+                    multPosBeamBack[eB] = arrayBackBeam[indexChannel][eB][d1][d2][e1][e2][n1][n2];
+                    covValBeamBack[eB] += multPosBeamBack[eB]*n1*n2;
+                    specValNBeamBack[eB] += multPosBeamBack[eB]*n1;
+                    specValPBeamBack[eB] += multPosBeamBack[eB]*n2;
 
+                  }
                 }
+                // ***********************
               }
-              // ***********************
+              //cout << endl;
             }
-            //cout << endl;
-          }
-          covVal /= expEntries;
-          specValN /= expEntries;
-          specValP /= expEntries;
+            covVal /= expEntries;
+            specValN /= expEntries;
+            specValP /= expEntries;
 
-          covVal = (covVal - specValN*specValP);
-          specVal = (specValN*specValP);
+            covVal = (covVal - specValN*specValP);
+            specVal = (specValN*specValP);
 
-          //cout << covVal << endl;
+            //cout << covVal << endl;
+            cout << "before" << endl;
+            arrayCorrExp[indexChannel][ngEnc][e1][e2] += covVal;
+            cout << "after" << endl;
+            arraySpecExp[indexChannel][ngEnc][e1][e2] += specVal;
+            totCovCheck += covVal;
+            totSpecCheck += specVal;
 
-          arrayCorrExp[ngEnc][e1][e2] += covVal;
-          arraySpecExp[ngEnc][e1][e2] += specVal;
-          totCovCheck += covVal;
-          totSpecCheck += specVal;
+            // Background
+            covValBack /= expEntries;
+            specValNBack /= expEntries;
+            specValPBack /= expEntries;
 
-          // Background
-          covValBack /= expEntries;
-          specValNBack /= expEntries;
-          specValPBack /= expEntries;
-
-          covValBack = (covValBack - specValNBack*specValPBack);
-          specValBack = (specValNBack*specValPBack);
-
-
-          arrayCorrBack[ngEnc][e1][e2] += covValBack;
-          arraySpecBack[ngEnc][e1][e2] += specValBack;
-          // totCovCheck += covVal;
-          // totSpecCheck += specVal;
+            covValBack = (covValBack - specValNBack*specValPBack);
+            specValBack = (specValNBack*specValPBack);
 
 
-          // *********************
-          if (mode == BEAM_MODE)
-          {
-            double beamExpEntries;
-            for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
+            arrayCorrBack[indexChannel][ngEnc][e1][e2] += covValBack;
+            arraySpecBack[indexChannel][ngEnc][e1][e2] += specValBack;
+            // totCovCheck += covVal;
+            // totSpecCheck += specVal;
+
+
+            // *********************
+            if (mode == BEAM_MODE)
             {
-              beamExpEntries = 0;
-              for (int chan = 0; chan < NUM_TRIGGERS; chan++)
+              double beamExpEntries;
+              for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
               {
-                beamExpEntries += h_beamErg[chan]->GetBinContent(eB+1);
+                beamExpEntries = 0;
+                // for (int chan = 0; chan < NUM_TRIGGERS; chan++)
+                // {
+                  beamExpEntries += h_beamErg[indexChannel]->GetBinContent(eB+1);
+                // }
+                covValBeam[eB] /= beamExpEntries;
+                specValNBeam[eB] /= beamExpEntries;
+                specValPBeam[eB] /= beamExpEntries;
+
+                covValBeam[eB] = (covValBeam[eB] - specValNBeam[eB]*specValPBeam[eB]);
+                specValBeam[eB] = (specValNBeam[eB]*specValPBeam[eB]);
+
+                arrayCorrExpBeam[indexChannel][eB][ngEnc][e1][e2] += covValBeam[eB];
+                arraySpecExpBeam[indexChannel][eB][ngEnc][e1][e2] += specValBeam[eB];
+                // totCovCheck += covVal;
+                // totSpecCheck += specVal;
+
+                // Background
+                covValBeamBack[eB] /= beamExpEntries;
+                specValNBeamBack[eB] /= beamExpEntries;
+                specValPBeamBack[eB] /= beamExpEntries;
+
+                covValBeamBack[eB] = (covValBeamBack[eB] - specValNBeamBack[eB]*specValPBeamBack[eB]);
+                specValBeamBack[eB] = (specValNBeamBack[eB]*specValPBeamBack[eB]);
+                arrayCorrBackBeam[indexChannel][eB][ngEnc][e1][e2] += covValBeamBack[eB];
+                arraySpecBackBeam[indexChannel][eB][ngEnc][e1][e2] += specValBeamBack[eB];
+                // totCovBackCheck += covValBack;
+                // totSpecBackCheck += specValBack;
               }
-              covValBeam[eB] /= beamExpEntries;
-              specValNBeam[eB] /= beamExpEntries;
-              specValPBeam[eB] /= beamExpEntries;
-
-              covValBeam[eB] = (covValBeam[eB] - specValNBeam[eB]*specValPBeam[eB]);
-              specValBeam[eB] = (specValNBeam[eB]*specValPBeam[eB]);
-
-              arrayCorrExpBeam[eB][ngEnc][e1][e2] += covValBeam[eB];
-              arraySpecExpBeam[eB][ngEnc][e1][e2] += specValBeam[eB];
-              // totCovCheck += covVal;
-              // totSpecCheck += specVal;
-
-              // Background
-              covValBeamBack[eB] /= beamExpEntries;
-              specValNBeamBack[eB] /= beamExpEntries;
-              specValPBeamBack[eB] /= beamExpEntries;
-
-              covValBeamBack[eB] = (covValBeamBack[eB] - specValNBeamBack[eB]*specValPBeamBack[eB]);
-              specValBeamBack[eB] = (specValNBeamBack[eB]*specValPBeamBack[eB]);
-              arrayCorrBackBeam[eB][ngEnc][e1][e2] += covValBeamBack[eB];
-              arraySpecBackBeam[eB][ngEnc][e1][e2] += specValBeamBack[eB];
-              // totCovBackCheck += covValBack;
-              // totSpecBackCheck += specValBack;
             }
+
+
+            // Correlation histogram? Ratio of cov/spec
+
+            // ******************
+
+            // cout << arrayCorrExp[ngEnc][e1][e2] << endl;
           }
-
-
-          // Correlation histogram? Ratio of cov/spec
-
-          // ******************
-
-          // cout << arrayCorrExp[ngEnc][e1][e2] << endl;
         }
       }
     }
@@ -499,112 +531,134 @@ void readFiss::WriteCovEM()
   // ************************
   cout <<  "wirting covEM resutls to root"  << endl;
 
-  TCanvas* c_CovExp =  new TCanvas("c_CovExp", "arrayCorr and arraySpec", 800, 1000);
-  TCanvas* c_CovBack =  new TCanvas("c_CovBack", "arrayCorrBack and arraySpecBack", 800, 1000);
-  c_CovExp->Divide(1,2);
-  c_CovBack->Divide(1,2);
-  c_CovBack->cd(1);
-  c_CovExp->cd(1);
-
-  h3_arrayCorrExp = new TH3D("h3_arrayCorrExp", "Experimental Corr Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-  h3_arraySpecExp = new TH3D("h3_arraySpecExp", "Experimental Spec Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-  h3_arrayCorrBack = new TH3D("h3_arrayCorrBack", "Background Corr Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-  h3_arraySpecBack = new TH3D("h3_arraySpecBack", "Background Spec Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+  TCanvas** c_CovExp = new TCanvas* [NUM_TRIGGERS];
+  TCanvas** c_CovBack = new TCanvas* [NUM_TRIGGERS];
+  h3_arrayCorrExp = new TH3D* [NUM_TRIGGERS];
+  h3_arraySpecExp = new TH3D* [NUM_TRIGGERS];
+  h3_arrayCorrBack = new TH3D* [NUM_TRIGGERS];
+  h3_arraySpecBack = new TH3D* [NUM_TRIGGERS];
 
   if (mode == BEAM_MODE)
   {
-    h3_arrayCorrExpBeam = new TH3D*[BEAM_ERG_BINNUM];
-    h3_arraySpecExpBeam = new TH3D*[BEAM_ERG_BINNUM];
-    h3_arrayCorrBackBeam = new TH3D*[BEAM_ERG_BINNUM];
-    h3_arraySpecBackBeam = new TH3D*[BEAM_ERG_BINNUM];
-
-    for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
-    {
-      h3_arrayCorrExpBeam[eB] = new TH3D("h3_arrayCorrExpBeam", "Experimental Corr Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-      h3_arraySpecExpBeam[eB] = new TH3D("h3_arraySpecExpBeam", "Experimental Spec Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-      h3_arrayCorrBackBeam[eB] = new TH3D("h3_arrayCorrBackBeam", "Background Corr Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-      h3_arraySpecBackBeam[eB] = new TH3D("h3_arraySpecBackBeam", "Background Spec Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-    }
+    h3_arrayCorrExpBeam = new TH3D**[NUM_TRIGGERS];
+    h3_arraySpecExpBeam = new TH3D**[NUM_TRIGGERS];
+    h3_arrayCorrBackBeam = new TH3D**[NUM_TRIGGERS];
+    h3_arraySpecBackBeam = new TH3D**[NUM_TRIGGERS];
   }
 
-  // Fill TH3Ds with respective matrixices and set proper histogram titles when drawing to canvas
-  for (int ngAng = 0; ngAng < BA; ngAng++)
+  for (int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
   {
-    for (int bN = 0; bN < BN; bN++)
+    c_CovExp[indexChannel] = new TCanvas("c_CovExp_" + (TString)to_string((int)indexChannel), "arrayCorr and arraySpec", 800, 1000);
+    c_CovBack[indexChannel] = new TCanvas("c_CovBack_" + (TString)to_string((int)indexChannel), "arrayCorrBack and arraySpecBack", 800, 1000);
+    c_CovExp[indexChannel]->Divide(1,2);
+    c_CovBack[indexChannel]->Divide(1,2);
+    c_CovBack[indexChannel]->cd(1);
+    c_CovExp[indexChannel]->cd(1);
+
+
+    h3_arrayCorrExp[indexChannel] = new TH3D("h3_arrayCorrExp_" + (TString)to_string(indexChannel), "Experimental Corr Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+    h3_arraySpecExp[indexChannel] = new TH3D("h3_arraySpecExp_" + (TString)to_string(indexChannel), "Experimental Spec Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+    h3_arrayCorrBack[indexChannel] = new TH3D("h3_arrayCorrBack_" + (TString)to_string(indexChannel), "Background Corr Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+    h3_arraySpecBack[indexChannel] = new TH3D("h3_arraySpecBack_" + (TString)to_string(indexChannel), "Background Spec Matrix; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+
+    if (mode == BEAM_MODE)
     {
-      for (int bP = 0; bP < BP; bP++)
+      h3_arrayCorrExpBeam[indexChannel] = new TH3D*[BEAM_ERG_BINNUM];
+      h3_arraySpecExpBeam[indexChannel] = new TH3D*[BEAM_ERG_BINNUM];
+      h3_arrayCorrBackBeam[indexChannel] = new TH3D*[BEAM_ERG_BINNUM];
+      h3_arraySpecBackBeam[indexChannel] = new TH3D*[BEAM_ERG_BINNUM];
+
+      for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
       {
-        h3_arrayCorrExp->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrExp[ngAng][bN][bP]);  // neutrons = x-axis , photons = y-axis ; n-p angle = z-axis
-        h3_arraySpecExp->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecExp[ngAng][bN][bP]);
-        h3_arrayCorrBack->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrBack[ngAng][bN][bP]);
-        h3_arraySpecBack->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecBack[ngAng][bN][bP]);
-        if (mode == BEAM_MODE){
-          for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
-          {
-            h3_arrayCorrExpBeam[eB]->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrExpBeam[eB][ngAng][bN][bP]);
-            h3_arraySpecExpBeam[eB]->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecExpBeam[eB][ngAng][bN][bP]);
-            h3_arrayCorrBackBeam[eB]->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrBackBeam[eB][ngAng][bN][bP]);
-            h3_arraySpecBackBeam[eB]->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecBackBeam[eB][ngAng][bN][bP]);
+        h3_arrayCorrExpBeam[indexChannel][eB] = new TH3D("h3_arrayCorrExpBeam_" + (TString)to_string(indexChannel), "Experimental Corr Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+        h3_arraySpecExpBeam[indexChannel][eB] = new TH3D("h3_arraySpecExpBeam_" + (TString)to_string(indexChannel), "Experimental Spec Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+        h3_arrayCorrBackBeam[indexChannel][eB] = new TH3D("h3_arrayCorrBackBeam_" + (TString)to_string(indexChannel), "Background Corr Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+        h3_arraySpecBackBeam[indexChannel][eB] = new TH3D("h3_arraySpecBackBeam_" + (TString)to_string(indexChannel), "Background Spec Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
+      }
+    }
+
+    // Fill TH3Ds with respective matrixices and set proper histogram titles when drawing to canvas
+    for (int ngAng = 0; ngAng < BA; ngAng++)
+    {
+      for (int bN = 0; bN < BN; bN++)
+      {
+        for (int bP = 0; bP < BP; bP++)
+        {
+          h3_arrayCorrExp[indexChannel]->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrExp[indexChannel][ngAng][bN][bP]);  // neutrons = x-axis , photons = y-axis ; n-p angle = z-axis
+          h3_arraySpecExp[indexChannel]->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecExp[indexChannel][ngAng][bN][bP]);
+          h3_arrayCorrBack[indexChannel]->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrBack[indexChannel][ngAng][bN][bP]);
+          h3_arraySpecBack[indexChannel]->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecBack[indexChannel][ngAng][bN][bP]);
+          if (mode == BEAM_MODE){
+            for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
+            {
+              h3_arrayCorrExpBeam[indexChannel][eB]->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrExpBeam[indexChannel][eB][ngAng][bN][bP]);
+              h3_arraySpecExpBeam[indexChannel][eB]->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecExpBeam[indexChannel][eB][ngAng][bN][bP]);
+              h3_arrayCorrBackBeam[indexChannel][eB]->SetBinContent(bN+1,bP+1,ngAng+1,arrayCorrBackBeam[indexChannel][eB][ngAng][bN][bP]);
+              h3_arraySpecBackBeam[indexChannel][eB]->SetBinContent(bN+1,bP+1,ngAng+1,arraySpecBackBeam[indexChannel][eB][ngAng][bN][bP]);
+            }
           }
         }
       }
     }
-  }
-  h3_arrayCorrExp->Draw("LEGO2");
-  h3_arrayCorrExp->SetTitle("Experiment Covariance Matrix");
+    h3_arrayCorrExp[indexChannel]->Draw("LEGO2");
+    h3_arrayCorrExp[indexChannel]->SetTitle("Experiment Covariance Matrix");
 
-  c_CovExp->cd(2);
-  h3_arraySpecExp->Draw("LEGO2");
-  h3_arraySpecExp->SetTitle("Experiment Spectrum");
-  c_CovExp->Write();
+    c_CovExp[indexChannel]->cd(2);
+    h3_arraySpecExp[indexChannel]->Draw("LEGO2");
+    h3_arraySpecExp[indexChannel]->SetTitle("Experiment Spectrum");
+    c_CovExp[indexChannel]->Write();
 
-  c_CovBack->cd(1);
-  h3_arrayCorrBack->Draw("LEGO2");
-  h3_arrayCorrBack->SetTitle("Background Covariance Matrix");
+    c_CovBack[indexChannel]->cd(1);
+    h3_arrayCorrBack[indexChannel]->Draw("LEGO2");
+    h3_arrayCorrBack[indexChannel]->SetTitle("Background Covariance Matrix");
 
-  c_CovBack->cd(2);
-  h3_arraySpecBack->Draw("LEGO2");
-  h3_arraySpecBack->SetTitle("Background Spectrum");
-  c_CovBack->Write();
+    c_CovBack[indexChannel]->cd(2);
+    h3_arraySpecBack[indexChannel]->Draw("LEGO2");
+    h3_arraySpecBack[indexChannel]->SetTitle("Background Spectrum");
+    c_CovBack[indexChannel]->Write();
 
 
-  if (mode == BEAM_MODE)
-  {
-    TCanvas** c_corrSpecBeam =  new TCanvas* [BEAM_ERG_BINNUM];
-    TCanvas** c_corrSpecBeamBack =  new TCanvas* [BEAM_ERG_BINNUM];
-    for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
-  	{
-      TString s_BEAM_Erg_Low = (TString)to_string(eB+2);
-      TString s_BEAM_Erg_High = (TString)to_string(eB+3);
+    if (mode == BEAM_MODE)
+    {
+      TCanvas*** c_corrSpecBeam =  new TCanvas** [NUM_TRIGGERS];
+      TCanvas*** c_corrSpecBeamBack = new TCanvas** [NUM_TRIGGERS];
 
-      // Experiment
-      c_corrSpecBeam[eB] = new TCanvas("c_corrSpecBeam_" + s_BEAM_Erg_Low, "arrayCorr and arraySpec for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High, 800, 1000);
-      c_corrSpecBeam[eB]->Divide(1,2);
+      c_corrSpecBeam[indexChannel] = new TCanvas* [BEAM_ERG_BINNUM];
+      c_corrSpecBeamBack[indexChannel] = new TCanvas* [BEAM_ERG_BINNUM];
+      for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
+    	{
+        TString s_BEAM_Erg_Low = (TString)to_string(eB + BEAM_ERG_MIN);
+        TString s_BEAM_Erg_High = (TString)to_string(eB + BEAM_ERG_MIN + 1);
 
-      c_corrSpecBeam[eB]->cd(1);
-      h3_arrayCorrExpBeam[eB]->Draw("LEGO2");
+        // Experiment
+        c_corrSpecBeam[indexChannel][eB] = new TCanvas("c_corrSpecBeam_" + (TString)to_string((int)indexChannel) + "_" + s_BEAM_Erg_Low, "arrayCorr and arraySpec for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High, 800, 1000);
+        c_corrSpecBeam[indexChannel][eB]->Divide(1,2);
 
-      c_corrSpecBeam[eB]->cd(2);
-      h3_arraySpecExpBeam[eB]->Draw("LEGO2");
-      h3_arrayCorrExpBeam[eB]->SetTitle("Experiment Covariance Matrix for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
-      h3_arraySpecExpBeam[eB]->SetTitle("Experiment Spectrum for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
+        c_corrSpecBeam[indexChannel][eB]->cd(1);
+        h3_arrayCorrExpBeam[indexChannel][eB]->Draw("LEGO2");
 
-      c_corrSpecBeam[eB]->Write();
+        c_corrSpecBeam[indexChannel][eB]->cd(2);
+        h3_arraySpecExpBeam[indexChannel][eB]->Draw("LEGO2");
+        h3_arrayCorrExpBeam[indexChannel][eB]->SetTitle("Experiment Covariance Matrix for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
+        h3_arraySpecExpBeam[indexChannel][eB]->SetTitle("Experiment Spectrum for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
 
-      // Background
-      c_corrSpecBeamBack[eB] = new TCanvas("c_corrSpecBeamBack_" + s_BEAM_Erg_Low, "arrayCorrBack and arraySpecBack for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High, 800, 1000);
-      c_corrSpecBeamBack[eB]->Divide(1,2);
+        c_corrSpecBeam[indexChannel][eB]->Write();
 
-      c_corrSpecBeamBack[eB]->cd(1);
-      h3_arrayCorrBackBeam[eB]->Draw("LEGO2");
-      h3_arrayCorrBackBeam[eB]->SetTitle("Background Covariance Matrix for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
+        // Background
+        c_corrSpecBeamBack[indexChannel][eB] = new TCanvas("c_corrSpecBeamBack_" + (TString)to_string((int)indexChannel) + "_" + s_BEAM_Erg_Low, "arrayCorrBack and arraySpecBack for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High, 800, 1000);
+        c_corrSpecBeamBack[indexChannel][eB]->Divide(1,2);
 
-      c_corrSpecBeamBack[eB]->cd(2);
-      h3_arraySpecBackBeam[eB]->Draw("LEGO2");
-      h3_arraySpecBackBeam[eB]->SetTitle("Background Spectrum for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
+        c_corrSpecBeamBack[indexChannel][eB]->cd(1);
+        h3_arrayCorrBackBeam[indexChannel][eB]->Draw("LEGO2");
+        h3_arrayCorrBackBeam[indexChannel][eB]->SetTitle("Background Covariance Matrix for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
 
-      c_corrSpecBeamBack[eB]->Write();
+        c_corrSpecBeamBack[indexChannel][eB]->cd(2);
+        h3_arraySpecBackBeam[indexChannel][eB]->Draw("LEGO2");
+        h3_arraySpecBackBeam[indexChannel][eB]->SetTitle("Background Spectrum for BeamErg " + s_BEAM_Erg_Low + "-" + s_BEAM_Erg_High + " MeV");
 
+        c_corrSpecBeamBack[indexChannel][eB]->Write();
+
+      }
     }
   }
 
@@ -617,130 +671,134 @@ void readFiss::WriteCovEM()
   // print the content of the matrices
   ofstream covMatFire;
   ofstream specMatFire;
-  string fileCovFire;
-  string fileSpecFire;
+  string* fileCovFire = new string[NUM_TRIGGERS];
+  string* fileSpecFire = new string[NUM_TRIGGERS];
 
   ofstream covMatFireBack;
   ofstream specMatFireBack;
-  string fileCovFireBack;
-  string fileSpecFireBack;
+  string* fileCovFireBack = new string[NUM_TRIGGERS];
+  string* fileSpecFireBack = new string[NUM_TRIGGERS];
 
-  for(int eA = 0; eA < BA; eA++)
+  for (int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
   {
-    fileCovFire = "covResults/covEM_" + to_string(eA) + ".csv";
-    covMatFire.open(fileCovFire);
-
-    fileSpecFire = "covResults/specEM_" + to_string(eA) + ".csv";
-    specMatFire.open(fileSpecFire);
-
-    fileCovFireBack = "covResults/covEMBack_" + to_string(eA) + ".csv";
-    covMatFireBack.open(fileCovFireBack);
-
-    fileSpecFireBack = "covResults/specEMBack_" + to_string(eA) + ".csv";
-    specMatFireBack.open(fileSpecFireBack);
-
-    // cout << eA << endl;
-
-    for(int eN = 0; eN < BN; eN ++)
+    for(int eA = 0; eA < BA; eA++)
     {
-     for(int eP = 0; eP < BP; eP ++)
+      fileCovFire[indexChannel] = "covResults/covEM_" + to_string(indexChannel) + "_" + to_string(eA) + ".csv";
+      covMatFire.open(fileCovFire[indexChannel]);
+
+      fileSpecFire[indexChannel] = "covResults/specEM_" + to_string(indexChannel) + "_" + to_string(eA) + ".csv";
+      specMatFire.open(fileSpecFire[indexChannel]);
+
+      fileCovFireBack[indexChannel] = "covResults/covEMBack_" + to_string(indexChannel) + "_" + to_string(eA) + ".csv";
+      covMatFireBack.open(fileCovFireBack[indexChannel]);
+
+      fileSpecFireBack[indexChannel] = "covResults/specEMBack_" + to_string(indexChannel) + "_" + to_string(eA) + ".csv";
+      specMatFireBack.open(fileSpecFireBack[indexChannel]);
+
+      // cout << eA << endl;
+
+      for(int eN = 0; eN < BN; eN ++)
       {
-         covMatFire << arrayCorrExp[eA][eN][eP];
-         specMatFire << arraySpecExp[eA][eN][eP];
-         covMatFireBack << arrayCorrBack[eA][eN][eP];
-         specMatFireBack << arraySpecBack[eA][eN][eP];
-
-         if(eP < BP - 1)
-         {
-           covMatFire << ",";
-           specMatFire << ",";
-           covMatFireBack << ",";
-           specMatFireBack << ",";
-         }
-         else if(eP == BP - 1)
-         {
-           covMatFire << "\n";
-           specMatFire << "\n";
-           covMatFireBack << "\n";
-           specMatFireBack << "\n";
-         }
-      }
-    }
-
-    covMatFire.close();
-    specMatFire.close();
-    covMatFireBack.close();
-    specMatFireBack.close();
-
-  }
-
-  // *********************
-  if (mode == BEAM_MODE)
-  {
-    ofstream covMatBeamFire;
-    ofstream specMatBeamFire;
-    string fileCovBeamFire;
-    string fileSpecBeamFire;
-
-    ofstream covMatBeamFireBack;
-    ofstream specMatBeamFireBack;
-    string fileCovBeamFireBack;
-    string fileSpecBeamFireBack;
-
-    string beamFolderName;
-
-    for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
-    {
-      beamFolderName = "covResultsBeam" + to_string(eB);
-      mkdir(beamFolderName.c_str(), 0777);
-
-      for(int eA = 0; eA < BA; eA++)
-      {
-
-      fileCovBeamFire = beamFolderName + "/covEMbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
-      covMatBeamFire.open(fileCovBeamFire);
-
-      fileSpecBeamFire = beamFolderName + "/specEMbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
-      specMatBeamFire.open(fileSpecBeamFire);
-
-      fileCovBeamFireBack = beamFolderName + "/covEMBackbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
-      covMatBeamFireBack.open(fileCovBeamFireBack);
-
-      fileSpecBeamFireBack = beamFolderName + "/specEMBackbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
-      specMatBeamFireBack.open(fileSpecBeamFireBack);
-
-        for(int eN = 0; eN < BN; eN ++)
+       for(int eP = 0; eP < BP; eP ++)
         {
-         for(int eP = 0; eP < BP; eP ++)
-          {
-             covMatBeamFire << arrayCorrExpBeam[eB][eA][eN][eP];
-             specMatBeamFire << arraySpecExpBeam[eB][eA][eN][eP];
-             covMatBeamFireBack << arrayCorrBackBeam[eB][eA][eN][eP];
-             specMatBeamFireBack << arraySpecBackBeam[eB][eA][eN][eP];
+           covMatFire << arrayCorrExp[indexChannel][eA][eN][eP];
+           specMatFire << arraySpecExp[indexChannel][eA][eN][eP];
+           covMatFireBack << arrayCorrBack[indexChannel][eA][eN][eP];
+           specMatFireBack << arraySpecBack[indexChannel][eA][eN][eP];
 
-             if(eP < BP - 1)
-             {
-               covMatBeamFire << ",";
-               specMatBeamFire << ",";
-               covMatBeamFireBack << ",";
-               specMatBeamFireBack << ",";
-             }
-             else if(eP == BP - 1)
-             {
-               covMatBeamFire << "\n";
-               specMatBeamFire << "\n";
-               covMatBeamFireBack << "\n";
-               specMatBeamFireBack << "\n";
-             }
-          }
+           if(eP < BP - 1)
+           {
+             covMatFire << ",";
+             specMatFire << ",";
+             covMatFireBack << ",";
+             specMatFireBack << ",";
+           }
+           else if(eP == BP - 1)
+           {
+             covMatFire << "\n";
+             specMatFire << "\n";
+             covMatFireBack << "\n";
+             specMatFireBack << "\n";
+           }
         }
-        covMatBeamFire.close();
-        specMatBeamFire.close();
-        covMatBeamFireBack.close();
-        specMatBeamFireBack.close();
+      }
+
+      covMatFire.close();
+      specMatFire.close();
+      covMatFireBack.close();
+      specMatFireBack.close();
+
+    }
+
+    // *********************
+    if (mode == BEAM_MODE)
+    {
+      ofstream covMatBeamFire;
+      ofstream specMatBeamFire;
+      string* fileCovBeamFire = new string[NUM_TRIGGERS];
+      string* fileSpecBeamFire = new string[NUM_TRIGGERS];
+
+      ofstream covMatBeamFireBack;
+      ofstream specMatBeamFireBack;
+      string* fileCovBeamFireBack = new string[NUM_TRIGGERS];
+      string* fileSpecBeamFireBack = new string[NUM_TRIGGERS];
+
+      string beamFolderName;
+
+      for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
+      {
+        beamFolderName = "covResultsBeam_" + to_string(indexChannel) + "_" + to_string(eB);
+        mkdir(beamFolderName.c_str(), 0777);
+
+        for(int eA = 0; eA < BA; eA++)
+        {
+
+        fileCovBeamFire[indexChannel] = beamFolderName + "/covEMbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
+        covMatBeamFire.open(fileCovBeamFire[indexChannel]);
+
+        fileSpecBeamFire[indexChannel] = beamFolderName + "/specEMbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
+        specMatBeamFire.open(fileSpecBeamFire[indexChannel]);
+
+        fileCovBeamFireBack[indexChannel] = beamFolderName + "/covEMBackbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
+        covMatBeamFireBack.open(fileCovBeamFireBack[indexChannel]);
+
+        fileSpecBeamFireBack[indexChannel] = beamFolderName + "/specEMBackbeam_" + to_string(eA) + "_" + to_string(eB) + ".csv";
+        specMatBeamFireBack.open(fileSpecBeamFireBack[indexChannel]);
+
+          for(int eN = 0; eN < BN; eN ++)
+          {
+           for(int eP = 0; eP < BP; eP ++)
+            {
+               covMatBeamFire << arrayCorrExpBeam[indexChannel][eB][eA][eN][eP];
+               specMatBeamFire << arraySpecExpBeam[indexChannel][eB][eA][eN][eP];
+               covMatBeamFireBack << arrayCorrBackBeam[indexChannel][eB][eA][eN][eP];
+               specMatBeamFireBack << arraySpecBackBeam[indexChannel][eB][eA][eN][eP];
+
+               if(eP < BP - 1)
+               {
+                 covMatBeamFire << ",";
+                 specMatBeamFire << ",";
+                 covMatBeamFireBack << ",";
+                 specMatBeamFireBack << ",";
+               }
+               else if(eP == BP - 1)
+               {
+                 covMatBeamFire << "\n";
+                 specMatBeamFire << "\n";
+                 covMatBeamFireBack << "\n";
+                 specMatBeamFireBack << "\n";
+               }
+            }
+          }
+          covMatBeamFire.close();
+          specMatBeamFire.close();
+          covMatBeamFireBack.close();
+          specMatBeamFireBack.close();
+        }
       }
     }
   }
+
   // *********************
 
 
