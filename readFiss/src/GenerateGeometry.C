@@ -30,7 +30,7 @@ void readFiss::GenerateAngles()
     stringstream in(line);
     in >> x[i] >> y[i] >> z[i];
     // **************
-    cout << x[i] << " " << y[i] << " " <<  z[i] << endl;
+    // cout << x[i] << " " << y[i] << " " <<  z[i] << endl;
     // ******************
   }
 

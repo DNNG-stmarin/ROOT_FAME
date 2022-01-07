@@ -614,8 +614,8 @@ void readFiss::LoopExp()
                 if((detP == ldetP) & (ergP == lergP))
                 {
                   crossingPoint = true;
-                  arrayExp[detN][detP][ergN][ergP][1][1]++;
-                  if(validBeam) arrayExpBeam[encBeamErg][detN][detP][ergN][ergP][1][1]++;
+                  arrayExp[indexChannel][detN][detP][ergN][ergP][1][1]++;
+                  if(validBeam) arrayExpBeam[indexChannel][encBeamErg][detN][detP][ergN][ergP][1][1]++;
                   //cout << "coinc" << endl;
                   continue;
                 }
@@ -628,8 +628,8 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayExp[detN][ldetP][ergN][lergP][1][0]++;
-                if(validBeam) arrayExpBeam[encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
+                arrayExp[indexChannel][detN][ldetP][ergN][lergP][1][0]++;
+                if(validBeam) arrayExpBeam[indexChannel][encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
               }
 
             }
@@ -664,8 +664,8 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayExp[ldetN][detP][lergN][ergP][0][1]++;
-                if(validBeam)arrayExpBeam[encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
+                arrayExp[indexChannel][ldetN][detP][lergN][ergP][0][1]++;
+                if(validBeam)arrayExpBeam[indexChannel][encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
               }
 
             }
@@ -690,8 +690,8 @@ void readFiss::LoopExp()
                 if((detP == ldetP) & (ergP == lergP))
                 {
                   crossingPoint = true;
-                  arrayBack[detN][detP][ergN][ergP][1][1]++;
-                  if(validBeam) arrayBackBeam[encBeamErg][detN][detP][ergN][ergP][1][1]++;
+                  arrayBack[indexChannel][detN][detP][ergN][ergP][1][1]++;
+                  if(validBeam) arrayBackBeam[indexChannel][encBeamErg][detN][detP][ergN][ergP][1][1]++;
                   //cout << "coinc" << endl;
                   continue;
                 }
@@ -704,8 +704,8 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayBack[detN][ldetP][ergN][lergP][1][0]++;
-                if(validBeam) arrayBackBeam[encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
+                arrayBack[indexChannel][detN][ldetP][ergN][lergP][1][0]++;
+                if(validBeam) arrayBackBeam[indexChannel][encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
               }
 
             }
@@ -740,8 +740,8 @@ void readFiss::LoopExp()
               }
               else
               {
-                arrayBack[ldetN][detP][lergN][ergP][0][1]++;
-                if(validBeam) arrayBackBeam[encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
+                arrayBack[indexChannel][ldetN][detP][lergN][ergP][0][1]++;
+                if(validBeam) arrayBackBeam[indexChannel][encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
               }
 
             }
