@@ -173,6 +173,9 @@ public :
    // differentiated lists
    int ******** arrayExpBeam;
    int ******** arrayBackBeam;
+   // *****************
+   int **** arrayExpErg;
+   // *****************
 
    // matrix variables
    TH3D** h3_arrayCorrExp;
@@ -184,17 +187,20 @@ public :
    TH3D*** h3_arraySpecExpBeam;
    TH3D*** h3_arrayCorrBackBeam;
    TH3D*** h3_arraySpecBackBeam;
+   // **********************
+   TH2I*** h2_arrayMultErg;
+   // **********************
 
    double**** arrayCorrExp;
    double**** arraySpecExp;
    double**** arrayCorrBack;
    double**** arraySpecBack;
-   // ************************
+
    double***** arrayCorrExpBeam;
    double***** arraySpecExpBeam;
    double***** arrayCorrBackBeam;
    double***** arraySpecBackBeam;
-   // ***********************
+
    //TH2D* h2_arrayDiff;
 
    // loop histograms quality of data

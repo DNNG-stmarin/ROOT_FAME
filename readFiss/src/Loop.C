@@ -26,7 +26,7 @@ void readFiss::LoopExp()
    }
 
    expEntries = expTree->GetEntries();
-   // expEntries = 1000000;
+   // expEntries = 10000000;
    Long64_t firstEvent = 0;
    if(expEntries == 0)
    {
@@ -38,12 +38,20 @@ void readFiss::LoopExp()
    int nMult, gMult, nMultBack, gMultBack, indexChannel, indexDet;
    Double_t currTime;
    Long64_t nbytes = 0, nb = 0;
+   // *************
+   // int ergCheck, ergFlag, ergCount, ergNum;
+   // int i,j,k,y,d;
+   // ***************
 
    int encN, encP, encBeamErg;
    short** shortListErgN;
    short** shortListErgP;
    short** shortListErgBackN;
    short** shortListErgBackP;
+   // *****************
+   int** ergMultListN;
+   int** ergMultListP;
+   // ****************
 
    if(CovEM_in)
    {
@@ -52,6 +60,11 @@ void readFiss::LoopExp()
      shortListErgP = new short* [NUM_DETECTORS];
      shortListErgBackN = new short* [NUM_DETECTORS];
      shortListErgBackP = new short* [NUM_DETECTORS];
+    // ************
+    ergMultListN = new int* [NUM_DETECTORS];
+    ergMultListP = new int* [NUM_DETECTORS];
+    // *************
+
      for(int d = 0; d < NUM_DETECTORS; d++)
      {
        shortListErgN[d] = new short [NUM_DIFF_N];
@@ -59,6 +72,21 @@ void readFiss::LoopExp()
        shortListErgBackN[d] = new short [NUM_DIFF_N];
        shortListErgBackP[d] = new short [NUM_DIFF_P];
      }
+
+     // *****************
+     for (int m = 0; m < NUM_DETECTORS; m++)
+     {
+       ergMultListN[m] = new int [2];
+       ergMultListN[m][0] = 0;                      // energy
+       ergMultListN[m][1] = 0;                      // mult
+     }
+     for (int p = 0; p < NUM_DETECTORS; p++)
+     {
+       ergMultListP[p] = new int [2];
+       ergMultListP[p][0] = 0;                      // energy
+       ergMultListP[p][1] = 0;                      // mult
+     }
+     // ****************
 
      cout << "BN: " << BN << ", BP: " << BP << ", BA: " << BA << endl;
      cout << "ranges, N: " << MIN_N_ERG <<"-" <<MAX_N_ERG <<  ", P: " << MIN_P_ERG << "-" << MAX_P_ERG << endl;
@@ -593,6 +621,10 @@ void readFiss::LoopExp()
       // covEM filling
       if(CovEM_in)
       {
+        // ****************
+        int ergCheck, ergFlag, ergCount, ergNum;
+        int i,j,k,y,d;
+        // *************
         int detN, ergN, detP, ergP;
         bool crossingPoint = false;
 
@@ -615,7 +647,14 @@ void readFiss::LoopExp()
                 {
                   crossingPoint = true;
                   arrayExp[indexChannel][detN][detP][ergN][ergP][1][1]++;
-                  if(validBeam) arrayExpBeam[indexChannel][encBeamErg][detN][detP][ergN][ergP][1][1]++;
+                  // arrayExpErg[ergN][ergP][1][1]++;
+                  if(validBeam)
+                  {
+                    arrayExpBeam[indexChannel][encBeamErg][detN][detP][ergN][ergP][1][1]++;
+                    // *******************
+                    // arrayExpErg[indexChannel][encBeamErg][ergN][ergP][1][1]++;
+                    // *********************
+                  }
                   //cout << "coinc" << endl;
                   continue;
                 }
@@ -629,7 +668,13 @@ void readFiss::LoopExp()
               else
               {
                 arrayExp[indexChannel][detN][ldetP][ergN][lergP][1][0]++;
-                if(validBeam) arrayExpBeam[indexChannel][encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
+                if(validBeam)
+                {
+                  arrayExpBeam[indexChannel][encBeamErg][detN][ldetP][ergN][lergP][1][0]++;
+                  // *******************
+                  // arrayExpErg[indexChannel][encBeamErg][ergN][lergP]++;
+                  // *********************
+                }
               }
 
             }
@@ -665,7 +710,13 @@ void readFiss::LoopExp()
               else
               {
                 arrayExp[indexChannel][ldetN][detP][lergN][ergP][0][1]++;
-                if(validBeam)arrayExpBeam[indexChannel][encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
+                if(validBeam)
+                {
+                  arrayExpBeam[indexChannel][encBeamErg][ldetN][detP][lergN][ergP][0][1]++;
+                  // *******************
+                  // arrayExpErg[indexChannel][encBeamErg][lergN][ergP][0][1]++;
+                  // *********************
+                }
               }
 
             }
@@ -748,9 +799,130 @@ void readFiss::LoopExp()
           }
         }
 
+        // Sorting shortListErgN into energy multiplicty matrix
+      //*******************************
+          ergNum = 0;
+          for (int i = 0; i < nMult; i++)
+          {
+            ergCheck = 0;
+            ergFlag = 0;
+            ergCount = 1;
+            ergCheck = shortListErgN[i][1];
+
+            // Check if repeat energy
+            for (int k = 1; k <= i; k++)
+            {
+              if (ergCheck == shortListErgN[i-k][1])
+              {
+                // cout << ergCheck << " is a repeat energy" << endl;
+                ergFlag++;
+              }
+            }
+            if (ergFlag > 0)
+            {
+              continue;
+            }
+
+            // determine multiplicity of energy
+            for (int j = i+1; j < nMult; j++)
+            {
+              if (ergCheck == shortListErgN[j][1])
+              {
+                ergCount++;
+                // cout << ergCheck << " has multiplicity " << ergCount << endl;
+              }
+            }
+
+            // Assign energy and mult
+            ergMultListN[ergNum][0] = shortListErgN[i][1];  // energy
+            ergMultListN[ergNum][1] = ergCount;             // mult
+
+            // Iterate next entry number
+            ergNum++;
+          }
+
+          int lengthErgListN = ergNum;
+          // cout << "lengthErgListN = " << lengthErgListN << endl;
+
+          // Sorting Gammas
+          ergNum = 0;
+          for (int i = 0; i < gMult; i++)
+          {
+            ergCheck = 0;
+            ergFlag = 0;
+            ergCount = 1;
+            ergCheck = shortListErgP[i][1];
+
+            // Check if repeat energy
+            for (int k = 1; k <= i; k++)
+            {
+              if (ergCheck == shortListErgP[i-k][1])
+              {
+                // cout << ergCheck << " is a repeat energy" << endl;
+                ergFlag++;
+              }
+            }
+            if (ergFlag > 0)
+            {
+              continue;
+            }
+
+            // determine multiplicity of energy
+            for (int j = i+1; j < gMult; j++)
+            {
+              if (ergCheck == shortListErgP[j][1])
+              {
+                ergCount++;
+                // cout << ergCheck << " has multiplicity " << ergCount << endl;
+              }
+            }
+
+            // Assign energy and mult
+            ergMultListP[ergNum][0] = shortListErgP[i][1];  // energy
+            ergMultListP[ergNum][1] = ergCount;             // mult
+
+            // Iterate next entry number
+            ergNum++;
+          }
+
+          int lengthErgListP = ergNum;
+          // cout << "lengthErgListP = " << lengthErgListP << endl;
+
+          // Fill arrayExpErg
+          int nMultE = 0;
+          int gMultE= 0;
+
+          for (int nErg = 0; nErg < BN; nErg++)
+          {
+            // Check in neutron lists energy and mult
+            nMultE = 0;
+            for (int i = 0; i < lengthErgListN; i++)
+            {
+              if (nErg == ergMultListN[i][0])
+              {
+                nMultE = ergMultListN[i][1];
+              }
+            }
+
+            // Check in gamma lists energy and mult
+            for (int gErg = 0; gErg < BP; gErg++)
+            {
+              // Check in neutron lists energy and mult
+              gMultE = 0;
+              for (int i = 0; i < lengthErgListP; i++)
+              {
+                if (gErg == ergMultListP[i][0])
+                {
+                  gMultE = ergMultListP[i][1];
+                }
+              }
+              arrayExpErg[nErg][gErg][nMultE][gMultE]++;
+            }
+          }
+          // cout << "made it" << endl;
+// ***************************
 
       }
-
    }
 
    expEntries = numFissIter;

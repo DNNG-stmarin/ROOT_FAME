@@ -54,49 +54,96 @@ void readFiss::InitializeCovHistograms()
       }
     }
   }
+  // ********************
+  arrayExpErg = new int*** [BN];
+  for (int e1 = 0; e1 < BN; e1++)
+  {
+    arrayExpErg[e1] = new int** [BP];
+    for (int e2 = 0; e2 < BP; e2++)
+    {
+      arrayExpErg[e1][e2] = new int* [MAX_MULT];
+      for (int n1 = 0; n1 < MAX_MULT; n1++)
+      {
+        arrayExpErg[e1][e2][n1] = new int [MAX_MULT];
+        for (int n2 = 0; n2 < MAX_MULT; n2++)
+        {
+          arrayExpErg[e1][e2][n1][n2] = 0;
+        }
+      }
+    }
+  }
+  // *******************
 
 
   // neutron-gamma-beam events
   if(mode == BEAM_MODE)
   {
-    // ***************************
     arrayExpBeam = new int******* [NUM_TRIGGERS];
     arrayBackBeam = new int******* [NUM_TRIGGERS];
+    // *************
+    // arrayExpErg = new int*** [BN];
+    // **************
     for (int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
     {
       arrayExpBeam[indexChannel] = new int****** [BEAM_ERG_BINNUM];
       arrayBackBeam[indexChannel] = new int****** [BEAM_ERG_BINNUM];
+      // *************
+      // arrayExpErg[indexChannel] = new int**** [BEAM_ERG_BINNUM];
+      // **************
 
       for(int b = 0; b < BEAM_ERG_BINNUM; b++)
       {
         arrayExpBeam[indexChannel][b] = new int***** [NUM_DETECTORS];
         arrayBackBeam[indexChannel][b] = new int***** [NUM_DETECTORS];
+        // *************
+        // arrayExpErg[indexChannel][b] = new int*** [BN];
+        // **************
 
         for(int d1 = 0; d1 < NUM_DETECTORS; d1++)
         {
-          arrayExpBeam[indexChannel][b][d1] = new int **** [NUM_DETECTORS];
-          arrayBackBeam[indexChannel][b][d1] = new int **** [NUM_DETECTORS];
+          arrayExpBeam[indexChannel][b][d1] = new int**** [NUM_DETECTORS];
+          arrayBackBeam[indexChannel][b][d1] = new int**** [NUM_DETECTORS];
 
           for(int d2 = 0; d2 < NUM_DETECTORS; d2++)
           {
-            arrayExpBeam[indexChannel][b][d1][d2] = new int *** [BN];
-            arrayBackBeam[indexChannel][b][d1][d2] = new int *** [BN];
+            arrayExpBeam[indexChannel][b][d1][d2] = new int*** [BN];
+            arrayBackBeam[indexChannel][b][d1][d2] = new int*** [BN];
+
             for(int e1 = 0; e1 < BN; e1++)
             {
-              arrayExpBeam[indexChannel][b][d1][d2][e1] = new int ** [BP];
-              arrayBackBeam[indexChannel][b][d1][d2][e1] = new int ** [BP];
+              arrayExpBeam[indexChannel][b][d1][d2][e1] = new int** [BP];
+              arrayBackBeam[indexChannel][b][d1][d2][e1] = new int** [BP];
+              // *************
+              // arrayExpErg[e1] = new int** [BP];
+              // arrayExpErg[indexChannel][b][e1] = new int** [BP];
+              // **************
+
               for(int e2 = 0; e2 < BP; e2++)
               {
-                arrayExpBeam[indexChannel][b][d1][d2][e1][e2] = new int * [MAX_MULT_DET];
-                arrayBackBeam[indexChannel][b][d1][d2][e1][e2] = new int * [MAX_MULT_DET];
+                arrayExpBeam[indexChannel][b][d1][d2][e1][e2] = new int* [MAX_MULT_DET];
+                arrayBackBeam[indexChannel][b][d1][d2][e1][e2] = new int* [MAX_MULT_DET];
+                // *************
+                // arrayExpErg[e1][e2] = new int* [MAX_MULT_DET];
+                // arrayExpErg[indexChannel][b][e1][e2] = new int* [MAX_MULT_DET];
+                // **************
+
                 for(int n1 = 0; n1 < MAX_MULT_DET; n1++)
                 {
-                  arrayExpBeam[indexChannel][b][d1][d2][e1][e2][n1] = new int  [MAX_MULT_DET];
-                  arrayBackBeam[indexChannel][b][d1][d2][e1][e2][n1] = new int  [MAX_MULT_DET];
+                  arrayExpBeam[indexChannel][b][d1][d2][e1][e2][n1] = new int [MAX_MULT_DET];
+                  arrayBackBeam[indexChannel][b][d1][d2][e1][e2][n1] = new int [MAX_MULT_DET];
+                  // *************
+                  // arrayExpErg[e1][e2][n1] = new int [MAX_MULT_DET];
+                  // arrayExpErg[indexChannel][b][e1][e2][n1] = new int [MAX_MULT_DET];
+                  // **************
+
                   for(int n2 = 0; n2 < MAX_MULT_DET; n2++)
                   {
                     arrayExpBeam[indexChannel][b][d1][d2][e1][e2][n1][n2] = 0;
                     arrayBackBeam[indexChannel][b][d1][d2][e1][e2][n1][n2] = 0;
+                    // *************
+                    // arrayExpErg[e1][e2][n1][n2] = 0;
+                    // arrayExpErg[indexChannel][b][e1][e2][n1][n2] = 0;
+                    // **************
                   }
                 }
               }
@@ -106,7 +153,7 @@ void readFiss::InitializeCovHistograms()
       }
     }
   }
-  // *****************************
+
 
 
 
