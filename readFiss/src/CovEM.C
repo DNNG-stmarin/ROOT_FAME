@@ -523,9 +523,6 @@ void readFiss::WriteCovEM()
     h3_arraySpecExpBeam = new TH3D**[NUM_TRIGGERS];
     h3_arrayCorrBackBeam = new TH3D**[NUM_TRIGGERS];
     h3_arraySpecBackBeam = new TH3D**[NUM_TRIGGERS];
-    // ******************
-    // h2_arrayMultBeam = new TH2D**[NUM_TRIGGERS];
-    // ******************
   }
 
   for (int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
@@ -549,9 +546,6 @@ void readFiss::WriteCovEM()
       h3_arraySpecExpBeam[indexChannel] = new TH3D*[BEAM_ERG_BINNUM];
       h3_arrayCorrBackBeam[indexChannel] = new TH3D*[BEAM_ERG_BINNUM];
       h3_arraySpecBackBeam[indexChannel] = new TH3D*[BEAM_ERG_BINNUM];
-      // ******************
-      // h2_arrayMultBeam[indexChannel] = new TH2D*[BEAM_ERG_BINNUM];
-      // ******************
 
       for (int eB = 0; eB < BEAM_ERG_BINNUM; eB++)
       {
@@ -559,9 +553,6 @@ void readFiss::WriteCovEM()
         h3_arraySpecExpBeam[indexChannel][eB] = new TH3D("h3_arraySpecExpBeam_" + (TString)to_string(indexChannel), "Experimental Spec Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
         h3_arrayCorrBackBeam[indexChannel][eB] = new TH3D("h3_arrayCorrBackBeam_" + (TString)to_string(indexChannel), "Background Corr Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
         h3_arraySpecBackBeam[indexChannel][eB] = new TH3D("h3_arraySpecBackBeam_" + (TString)to_string(indexChannel), "Background Spec Matrix with Beam Energy MeV; Neutron Energy (MeV); Gamma Light Out (MeVee); Neutron-Gamma Angle", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG, BA, MIN_THETA, MAX_THETA);
-        // ******************
-        // h2_arrayMultBeam[indexChannel][eB] = new TH2D("h2_arrayMultBeam_"+ (TString)to_string(indexChannel), "Multiplicity Matrix with Respect to Beam Energy (MeV); Neutron Multiplicity; Gamma Multiplicity", MAX_MULT, 0, MAX_MULT_DET, MAX_MULT, 0, MAX_MULT_DET);
-        // ******************
       }
     }
 
@@ -590,13 +581,9 @@ void readFiss::WriteCovEM()
       }
     }
     // *****************
-    // if (mode == BEAM_MODE){
-    //   h2_arrayMultBeam[indexChannel][eB]->SetBinContent(bN+1,bP+1,arrayExpErg[indexChannel][bN][bP][])
-    //
-    // }
-    for (int nN = 0; nN < MAX_MULT; nN++)
+    for (int nN = 0; nN < NUM_DETECTORS; nN++)
     {
-      for (int nP = 0; nP < MAX_MULT; nP++)
+      for (int nP = 0; nP < NUM_DETECTORS; nP++)
       {
         for (int bP = 0; bP < BP; bP++)
         {
@@ -711,6 +698,42 @@ void readFiss::WriteCovEM()
   ofstream specMatFireBack;
   string* fileCovFireBack = new string[NUM_TRIGGERS];
   string* fileSpecFireBack = new string[NUM_TRIGGERS];
+
+  // ********************
+  ofstream multMatFire;
+  string fileMultArray;
+  mkdir("covResults/MultArrays", 0777);
+
+  for(int eN = 0; eN < BN; eN ++)
+  {
+   for(int eP = 0; eP < BP; eP ++)
+    {
+        // create new files
+      fileMultArray = "covResults/MultArrays/MultErg_" + to_string(eN) + "_" + to_string(eP) + ".csv";
+      multMatFire.open(fileMultArray);
+
+        // loop through multiplicities
+      for(int nN = 0; nN < NUM_DETECTORS; nN++)
+      {
+       for(int nP = 0; nP < NUM_DETECTORS; nP++)
+        {
+           multMatFire << arrayExpErg[eN][eP][nN][nP];
+
+           if(eP < BP - 1)
+           {
+             multMatFire << ",";
+
+           }
+           else if(eP == BP - 1)
+           {
+             multMatFire << "\n";
+           }
+        }
+      }
+      multMatFire.close();
+    }
+  }
+  // ********************
 
   for (int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
   {

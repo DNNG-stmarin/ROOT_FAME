@@ -61,11 +61,11 @@ void readFiss::InitializeCovHistograms()
     arrayExpErg[e1] = new int** [BP];
     for (int e2 = 0; e2 < BP; e2++)
     {
-      arrayExpErg[e1][e2] = new int* [MAX_MULT];
-      for (int n1 = 0; n1 < MAX_MULT; n1++)
+      arrayExpErg[e1][e2] = new int* [NUM_DETECTORS];
+      for (int n1 = 0; n1 < NUM_DETECTORS; n1++)
       {
-        arrayExpErg[e1][e2][n1] = new int [MAX_MULT];
-        for (int n2 = 0; n2 < MAX_MULT; n2++)
+        arrayExpErg[e1][e2][n1] = new int [NUM_DETECTORS];
+        for (int n2 = 0; n2 < NUM_DETECTORS; n2++)
         {
           arrayExpErg[e1][e2][n1][n2] = 0;
         }
