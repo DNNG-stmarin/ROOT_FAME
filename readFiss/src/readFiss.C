@@ -18,17 +18,19 @@ using namespace std;
 //Destructor
 readFiss::~readFiss()
 {
+
+
     if (expFile != nullptr)
     {
       delete expFile;
     }
 
-    if(mode == 1 && simFile != nullptr)
+    if(mode == SIM_MODE && simFile != nullptr)
     {
       delete simFile;
     }
 
-    if(mode == 2 && beamFile != nullptr)
+    if(mode == BEAM_MODE && beamFile != nullptr)
     {
       delete beamFile;
     }
@@ -42,6 +44,8 @@ readFiss::~readFiss()
     {
       delete[] TRIGGERS;
     }
+
+    writeFile->Close();
 }
 
 //Get entry at integer <entry>

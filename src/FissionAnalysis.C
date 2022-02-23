@@ -161,7 +161,9 @@ void DetectorSystemClass::FissionAnalysis()
         neutronLightOut[nMult] = engDet;
         neutronPSD[nMult] = totPSP[j];
         neutVelocity = (1.0/LIGHT_C)*detDist/timeDet;
-        //cout << numDet << " " << detectors[numDet].distance << endl;
+        cout << "";
+        // cout << numDet << " " << detectors[numDet].distance << endl;
+        // cout << (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2) << endl;
         neutronToFErg[nMult] = (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2);
         neutronDet[nMult] = numDet;
         neutronVx[nMult] = adjX / detDist*neutVelocity;

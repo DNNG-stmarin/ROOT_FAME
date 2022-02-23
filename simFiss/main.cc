@@ -53,7 +53,7 @@ int main(int argc, char** argv)
   }*/
 
   sfame* simFame = new sfame();
-  simFame.nameColFile = dataFileName;
+  simFame->nameColFile = dataFileName;
 
   cout << "finished constructing" << endl;
 
