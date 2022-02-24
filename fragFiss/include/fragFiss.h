@@ -36,6 +36,9 @@ public :
    TGraph* g_Ang1;
    TGraph* g_Ang2;
 
+   TF1* f_att1;
+   TF1* f_att2;
+
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
@@ -84,8 +87,12 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init();
+
+
    virtual void     AngleAnalysis();
+   virtual void     ELossCorrection();
    virtual void     FillFragTree();
+
 
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);

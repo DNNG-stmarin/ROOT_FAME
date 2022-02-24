@@ -5,6 +5,8 @@
 
 void fragFiss::FillFragTree()
 {
+
+  cout << "Creating fragment tree " << endl;
   // initialize fragment tree
   fragTree = new TTree("FragmentTree", "Tree of Fragments");
   fragTree->SetFileNumber(0);
@@ -32,23 +34,35 @@ void fragFiss::FillFragTree()
      if (ientry < 0) break;
      eventChain->GetEntry(jentry);
 
-     fKEL = aph[0];
-     fKEH = aph[1];
+     // rejection region
 
-     if(g_Ang1->Eval(aph[0]))
+
+     // angle filling
+     if(g_Ang1->Eval(aph[0]) > 0)
      {
        fThetaL  = (gph[0]/aph[0])/g_Ang1->Eval(aph[0]);
      }
      else fThetaL  = -1;
 
-     if(g_Ang2->Eval(aph[0]))
+     if(g_Ang2->Eval(aph[0]) > 0)
      {
      fThetaH  = (gph[1]/aph[1])/g_Ang2->Eval(aph[1]);
      }
      else fThetaH  = -1;
 
+
+     // kinetic energy
+     fKEL = aph[0];
+     fKEH = aph[1];
+
+
+     fKEL += f_att1->Eval(1.0/fThetaL) - f_att2->Eval(0);
+     fKEH += f_att2->Eval(1.0/fThetaL) - f_att2->Eval(0);
+
      fragTree->Fill();
   }
+
+
 
   fragFile->cd();
   fragTree->Write();

@@ -40,6 +40,9 @@ fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
    }
    Init();
 
+   nentries = eventChain->GetEntries();
+   cout << "Analyzing " << nentries << " events" << endl;
+
 }
 
 fragFiss::~fragFiss()

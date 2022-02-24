@@ -23,9 +23,6 @@ void fragFiss::AngleAnalysis()
               |___/                                  |_|
   */
 
-   nentries = eventChain->GetEntries();
-   cout << "Analyzing " << nentries << " events" << endl;
-
    Long64_t nbytes = 0, nb = 0;
    cout << "Filling angle histograms" << endl;
    for (Long64_t jentry=0; jentry<nentries;jentry++)
