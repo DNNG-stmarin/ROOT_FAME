@@ -14,6 +14,13 @@ const int MIN_ENTRIES_PROJ = 400;
 
 const double MAX_INV_ANG_FIT = 3.0;
 
+const int RECORD_LENGTH = 1280;
+const int NUM_WAVES = 100;
+
+
+const int TIME_SAMPLE_CONVERSION = 2.0;
+
+
 
 
 

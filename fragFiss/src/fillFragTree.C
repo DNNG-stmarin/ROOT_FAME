@@ -41,6 +41,9 @@ void fragFiss::FillFragTree()
      if (ientry < 0) break;
      eventChain->GetEntry(jentry);
 
+     // import the time
+     fT = ct;
+
      // angle filling
      if(g_Ang1->Eval(aph[0]) > 0)
      {

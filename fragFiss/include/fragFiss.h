@@ -89,11 +89,13 @@ public :
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init();
 
+   virtual void     PlotWaves();
+
 
    virtual void     AngleAnalysis();
    virtual void     ELossCorrection();
-   virtual void     FillFragTree();
    virtual void     GainMatching();
+   virtual void     FillFragTree();
 
 
    virtual Bool_t   Notify();
