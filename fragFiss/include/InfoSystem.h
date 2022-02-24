@@ -27,12 +27,14 @@ public:
   int NUM_FILES;
   int* FILE_LIST;
   TString SAWTOOTH_FILENAME;
+  TString BIND_ERG_FILENAME;
 
   InfoSystem()
   {
     NUM_FILES = 1;
     FILE_LIST = NULL;
     SAWTOOTH_FILENAME = "cf252sawtooth.csv";
+    BIND_ERG_FILENAME = "L";
   }
 
   void ReadInput(TString inputFile)
@@ -68,6 +70,11 @@ public:
       {
         file >> value;
         SAWTOOTH_FILENAME = value;
+      }
+      else if(tag == "<BIND_ERG_FILENAME>:")
+      {
+        file >> value;
+        BIND_ERG_FILENAME = value;
       }
 
     }

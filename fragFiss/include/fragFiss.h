@@ -27,8 +27,8 @@ public :
 
    InfoSystem*     infoSystem;
 
-   TString         s_sawtoothFile;
    TGraph*         g_sawtooth;
+   TGraph*         g_bindErg;
 
    Int_t           fCurrent; //!current Tree number in a TChain
    TString         inputTreeName = "et";
