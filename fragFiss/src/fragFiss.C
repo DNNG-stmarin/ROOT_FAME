@@ -58,6 +58,8 @@ fragFiss::~fragFiss()
 
    delete infoSystem;
 
+   cout << "Finished deleting" << endl;
+
 }
 
 Int_t fragFiss::GetEntry(Long64_t entry)

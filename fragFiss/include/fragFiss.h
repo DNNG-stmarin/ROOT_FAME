@@ -92,6 +92,7 @@ public :
    virtual void     AngleAnalysis();
    virtual void     ELossCorrection();
    virtual void     FillFragTree();
+   virtual void     GainMatching();
 
 
    virtual Bool_t   Notify();

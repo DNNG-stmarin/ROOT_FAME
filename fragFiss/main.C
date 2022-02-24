@@ -40,7 +40,7 @@ int main(int argc, char** argv)
   fragFiss* frag = new fragFiss(info, fileName);
   frag->AngleAnalysis();
   frag->ELossCorrection();
-
+  frag->GainMatching();
 
   frag->FillFragTree();
 

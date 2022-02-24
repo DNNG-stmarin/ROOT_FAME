@@ -63,6 +63,8 @@ void fragFiss::FillFragTree()
   }
 
 
+  cout << "finished filling tree" << endl;
+
 
   fragFile->cd();
   fragTree->Write();
