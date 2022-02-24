@@ -38,6 +38,7 @@ int main(int argc, char** argv)
   info->ReadInput(inputFileName);
 
   fragFiss* frag = new fragFiss(info, fileName);
+  frag->PlotWaves();
   frag->AngleAnalysis();
   frag->ELossCorrection();
   frag->GainMatching();

@@ -44,11 +44,11 @@ void fragFiss::PlotWaves()
 
      for(int tS = 0; tS < RECORD_LENGTH; tS++)
 	  {
-	  	cathodeSignal[jentry][tS] = cwf[ts];
-      anode1Signal[jentry][tS] = a0wf[ts];
-      anode2Signal[jentry][tS] = a1wf[ts];
-      grid1Signal[jentry][tS] = g0wf[ts];
-      grid2Signal[jentry][tS] = g1wf[ts];
+	  	cathodeSignal[jentry][tS] = cwf[tS];
+      anode1Signal[jentry][tS] = a0wf[tS];
+      anode2Signal[jentry][tS] = a1wf[tS];
+      grid1Signal[jentry][tS] = g0wf[tS];
+      grid2Signal[jentry][tS] = g1wf[tS];
 	  }
 
    }
@@ -113,6 +113,9 @@ void fragFiss::PlotWaves()
 	   if(nB == 0) g_grid2->Draw();
 	   else g_grid2->Draw("SAME");
 	}
+
+  fragFile->cd();
+  c_waves->Write();
 
 
 }
