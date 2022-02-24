@@ -26,6 +26,10 @@ public :
    TFile*          fragFile;
 
    InfoSystem*     infoSystem;
+
+   TString         s_sawtoothFile;
+   TGraph*         g_sawtooth;
+
    Int_t           fCurrent; //!current Tree number in a TChain
    TString         inputTreeName = "et";
    TString         eventFilename = "default";

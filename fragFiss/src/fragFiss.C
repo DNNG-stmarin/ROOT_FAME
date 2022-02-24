@@ -43,6 +43,9 @@ fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
    nentries = eventChain->GetEntries();
    cout << "Analyzing " << nentries << " events" << endl;
 
+   // Initialize sawtooth pointer
+   g_sawtooth = new TGraph(infoIn->SAWTOOTH_FILENAME);
+
 }
 
 fragFiss::~fragFiss()
