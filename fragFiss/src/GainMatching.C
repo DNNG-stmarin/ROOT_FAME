@@ -78,7 +78,7 @@ void fragFiss::GainMatching()
    f_gaussYield1->SetParameters(ampGuess*0.8, meanGuess*0.8, sigGuess, ampGuess, meanGuess*1.2, sigGuess);
    // f_gaussYield1->SetParLimits(1, 0, ampGuess);
    // f_gaussYield1->SetParLimits(4, ampGuess, MAX_APH);
-    h1_uncalibratedA1->Fit(f_gaussYield1, "N", "", 0, MAX_APH);
+    h1_uncalibratedA1->Fit(f_gaussYield1, "N Q", "", 0, MAX_APH);
 
    ampGuess = h1_uncalibratedA2->GetMaximum();
    meanGuess = h1_uncalibratedA2->GetMean();
@@ -89,7 +89,7 @@ void fragFiss::GainMatching()
    // f_gaussYield2->SetParLimits(4, ampGuess, MAX_APH);
 
 
-   h1_uncalibratedA2->Fit(f_gaussYield2, "N", "", 0, MAX_APH);
+   h1_uncalibratedA2->Fit(f_gaussYield2, "N Q", "", 0, MAX_APH);
 
    double centroids1[2];
    double centroids2[2];
@@ -103,7 +103,7 @@ void fragFiss::GainMatching()
    cout << centroids1[0] << " " << centroids1[1] << endl;
    cout << centroids2[0] << " " << centroids2[1] << endl;
 
-   TGraph* g_gainMatch = new TGraph(2, centroids1, centroids2);
+   g_gainMatch = new TGraph(2, centroids2, centroids1);
    g_gainMatch->SetName("g_gainMatch");
 
 

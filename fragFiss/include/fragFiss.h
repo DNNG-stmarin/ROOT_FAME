@@ -31,13 +31,14 @@ public :
    TString         eventFilename = "default";
    TString         extEventfile = ".root";
 
-
    // detection analysis
    TGraph* g_Ang1;
    TGraph* g_Ang2;
 
    TF1* f_att1;
    TF1* f_att2;
+
+   TGraph* g_gainMatch;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 

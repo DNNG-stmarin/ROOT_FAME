@@ -12,6 +12,8 @@ void fragFiss::FillFragTree()
   fragTree->SetFileNumber(0);
   fragTree->SetMaxTreeSize(1000000000LL);
 
+
+  // fragment assigned quantities
   double fT;
   double fAL, fAH;
   double fKEL, fKEH;
@@ -27,6 +29,11 @@ void fragFiss::FillFragTree()
   fragTree->Branch("fThetaH", &fThetaH, "fThetaH/D");
   fragTree->Branch("fEX", &fEX, "fEX/D");
 
+  // fragment agnostic quantities
+  double fA1, fA2;
+  double fKE1, fKE2;
+  double fTheta1, fTheta2;
+
   // fill frag tree
   for (Long64_t jentry=0; jentry<nentries;jentry++)
   {
@@ -34,32 +41,56 @@ void fragFiss::FillFragTree()
      if (ientry < 0) break;
      eventChain->GetEntry(jentry);
 
-     // rejection region
-
-
      // angle filling
      if(g_Ang1->Eval(aph[0]) > 0)
      {
-       fThetaL  = (gph[0]/aph[0])/g_Ang1->Eval(aph[0]);
+       fTheta1  = (gph[0]/aph[0])/g_Ang1->Eval(aph[0]);
      }
-     else fThetaL  = -1;
+     else fTheta1 = -1;
 
      if(g_Ang2->Eval(aph[0]) > 0)
      {
-     fThetaH  = (gph[1]/aph[1])/g_Ang2->Eval(aph[1]);
+     fTheta2  = (gph[1]/aph[1])/g_Ang2->Eval(aph[1]);
      }
-     else fThetaH  = -1;
+     else fTheta2  = -1;
 
 
      // kinetic energy
-     fKEL = aph[0];
-     fKEH = aph[1];
+     fKE1 = aph[0];
+     fKE2 = aph[1];
+     // attenutation correction
+     fKE1 += f_att1->Eval(1.0/fThetaL) - f_att2->Eval(0);
+     fKE2 += f_att2->Eval(1.0/fThetaL) - f_att2->Eval(0);
+     // gain matching
+     fKE2 = g_gainMatch->Eval(fKE2);
+
+     if(fKE1 > fKE2)
+     {
+       fKEL = fKE1;
+       fThetaL = fTheta1;
+       fKEH = fKE2;
+       fThetaH = fTheta2;
+     }
+     else
+     {
+       fKEL = fKE2;
+       fThetaL = fTheta2;
+       fKEH = fKE1;
+       fThetaH = fTheta1;
+     }
 
 
-     fKEL += f_att1->Eval(1.0/fThetaL) - f_att2->Eval(0);
-     fKEH += f_att2->Eval(1.0/fThetaL) - f_att2->Eval(0);
+     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     // NATHAN put mass calculations here
+     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-     fragTree->Fill();
+
+     // rejection
+     if( (fKE1 > MIN_ANODE1) && (fKE2 > MIN_ANODE2) && (fTheta1 > MIN_ANG1) && (fTheta2 > MIN_ANG2))
+     {
+       fragTree->Fill();
+     }
+
   }
 
 
