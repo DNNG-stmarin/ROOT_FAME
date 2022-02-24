@@ -20,6 +20,7 @@ class fragFiss {
 public :
    TChain*         eventChain;
    TFile*          eventFile;
+   Long64_t        nentries;
 
    TTree*          fragTree;
    TFile*          fragFile;
@@ -29,6 +30,11 @@ public :
    TString         inputTreeName = "et";
    TString         eventFilename = "default";
    TString         extEventfile = ".root";
+
+
+   // detection analysis
+   TGraph* g_Ang1;
+   TGraph* g_Ang2;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
@@ -78,7 +84,9 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init();
-   virtual void     ReadEventTree();
+   virtual void     AngleAnalysis();
+   virtual void     FillFragTree();
+
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };

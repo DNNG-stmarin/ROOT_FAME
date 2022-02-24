@@ -38,25 +38,10 @@ int main(int argc, char** argv)
   info->ReadInput(inputFileName);
 
   fragFiss* frag = new fragFiss(info, fileName);
-  frag->ReadEventTree();
+  frag->AngleAnalysis();
 
 
-
-
-  // FissionExperimentClass experiment = FissionExperimentClass(inputFileName);
-  //
-  // cout << "\nForming Coincidences" << endl;
-  // experiment.CreateCoincidenceTree(fileName, experiment.expFile, -1);
-  // cout << "Done CreateCoincidenceTree";
-  //
-  // cout << "\n";
-  //
-  // cout << "Performing detector analysis" << endl;
-  // experiment.CreateDetectionAnalysis();
-  // cout << "Finished DetectionAnalysis\n" << endl;
-  //
-  // cout << "Saving the results" << endl;
-  // experiment.saveAll();
+  frag->FillFragTree();
 
 
 
