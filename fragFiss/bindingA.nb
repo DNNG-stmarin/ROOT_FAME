@@ -1,0 +1,221 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      7735,        213]
+NotebookOptionsPosition[      6606,        184]
+NotebookOutlinePosition[      6998,        200]
+CellTagsIndexPosition[      6955,        197]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Binding Energy A", "Title",
+ CellChangeTimes->{{3.854731919140115*^9, 
+  3.854731922732417*^9}},ExpressionUUID->"8a0ad2d5-86c6-47ff-92ad-\
+22d94074ac64"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"compoundMass", " ", "=", " ", "252"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"compoundCharge", "=", "98"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.854731976378656*^9, 3.854731981593502*^9}, {
+  3.854732046842101*^9, 3.854732067416134*^9}},
+ CellLabel->"In[63]:=",ExpressionUUID->"5b7c318f-3b77-454f-bcf9-c165ccb4d1b3"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"initialEnergy", "=", 
+   RowBox[{"compoundMass", "  ", 
+    RowBox[{"IsotopeData", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"compoundCharge", ",", "compoundMass"}], "}"}], ",", " ", 
+      "\"\<BindingEnergy\>\""}], "]"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.854732075276409*^9, 3.8547321463540277`*^9}},
+ CellLabel->"In[68]:=",ExpressionUUID->"6237a0a0-6146-412e-83ff-6fd14b68b71e"],
+
+Cell[CellGroupData[{
+
+Cell["Systematics", "Section",
+ CellChangeTimes->{{3.854732412188429*^9, 
+  3.8547324138285723`*^9}},ExpressionUUID->"e6acafcc-ceb1-4cd6-9c24-\
+7d09d9a2dcb5"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"sigZ", " ", "=", " ", "0.62"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"zWa", "[", "A_", "]"}], ":=", " ", 
+   RowBox[{
+    RowBox[{"compoundCharge", "/", "compoundMass"}], " ", "A"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"wWa", "[", 
+    RowBox[{"z_", ",", "A_"}], "]"}], ":=", " ", 
+   RowBox[{
+    RowBox[{"1", "/", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"Sqrt", "[", 
+        RowBox[{"2", " ", "Pi"}], " ", "]"}], " ", "sigZ"}], ")"}]}], " ", 
+    RowBox[{"Exp", "[", 
+     RowBox[{
+      RowBox[{"-", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"z", "-", " ", 
+          RowBox[{"zWa", "[", "A", "]"}]}], ")"}], "^", "2"}]}], "/", 
+      RowBox[{"(", 
+       RowBox[{"2", " ", 
+        RowBox[{"sigZ", "^", "2"}]}], ")"}]}], "]"}]}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.85473241481476*^9, 3.854732560645603*^9}},
+ CellLabel->"In[74]:=",ExpressionUUID->"e9a6d45d-bf8c-447c-a356-1b49bd052801"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Calculations", "Section",
+ CellChangeTimes->{{3.8547324378964977`*^9, 
+  3.854732443208694*^9}},ExpressionUUID->"c89c3637-1d8b-403c-bc5f-\
+5c372c0fdd52"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"tabTotE", " ", "=", " ", 
+     RowBox[{"Table", "[", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"A", ",", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"QuantityMagnitude", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"Sum", "[", "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"A", " ", 
+                   RowBox[{"IsotopeData", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"Z", ",", "A"}], "}"}], ",", " ", 
+                    "\"\<BindingEnergy\>\""}], "]"}]}], " ", "+", " ", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"252", " ", "-", " ", "A"}], ")"}], " ", 
+                   RowBox[{"IsotopeData", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"compoundCharge", " ", "-", " ", "Z"}], ")"}], 
+                    ",", 
+                    RowBox[{"(", 
+                    RowBox[{"252", "-", "A"}], ")"}]}], "}"}], ",", " ", 
+                    "\"\<BindingEnergy\>\""}], "]"}]}]}], " ", ")"}], 
+                RowBox[{"wWa", "[", 
+                 RowBox[{"Z", ",", "A"}], "]"}]}], ",", "\[IndentingNewLine]", 
+               RowBox[{"{", 
+                RowBox[{"Z", ",", 
+                 RowBox[{
+                  RowBox[{"Round", "[", 
+                   RowBox[{"zWa", "[", "A", "]"}], "]"}], "-", "1"}], ",", 
+                 RowBox[{
+                  RowBox[{"Round", "[", 
+                   RowBox[{"zWa", "[", "A", "]"}], "]"}], "+", "1"}]}], 
+                "}"}]}], "]"}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"Sum", "[", " ", 
+              RowBox[{
+               RowBox[{"wWa", "[", 
+                RowBox[{"Z", ",", "A"}], "]"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"Z", ",", 
+                 RowBox[{"Round", "[", 
+                  RowBox[{
+                   RowBox[{"zWa", "[", "A", "]"}], "-", "1"}], "]"}], ",", 
+                 RowBox[{"Round", "[", 
+                  RowBox[{
+                   RowBox[{"zWa", "[", "A", "]"}], "+", "1"}], "]"}]}], 
+                "}"}]}], "]"}], ")"}]}], "]"}], "-", " ", 
+          RowBox[{"QuantityMagnitude", "[", "initialEnergy", "]"}]}]}], " ", 
+        "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{"A", ",", "77", ",", "126"}], "}"}]}], "]"}]}], " ", ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"Export", "[", 
+    RowBox[{"\"\<tabTotE.txt\>\"", ",", "tabTotE"}], "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.854731925749713*^9, 3.8547320069602613`*^9}, {
+   3.8547323284535723`*^9, 3.854732404679781*^9}, {3.854732617310758*^9, 
+   3.854732768257868*^9}, {3.8547328401895323`*^9, 3.854733050250867*^9}, 
+   3.8547331313193808`*^9},ExpressionUUID->"90279ac0-496f-4da8-905b-\
+78d5a3139073"],
+
+Cell[BoxData["\<\"tabTotE.txt\"\>"], "Output",
+ CellChangeTimes->{{3.854732630859516*^9, 3.854732644285718*^9}, 
+   3.854732687622834*^9, {3.854732739548895*^9, 3.854732768867708*^9}, {
+   3.854732845315497*^9, 3.854732850974897*^9}, {3.854732888104542*^9, 
+   3.854732970279327*^9}, 3.8547330510605793`*^9, 3.854733131004972*^9},
+ CellLabel->
+  "Out[107]=",ExpressionUUID->"75bb2914-573b-4072-a770-c20bb147c83d"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{808, 747},
+WindowMargins->{{12, Automatic}, {Automatic, 24}},
+FrontEndVersion->"12.3 for Mac OS X x86 (64-bit) (July 9, 2021)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"fa81217f-ebb3-4f64-81ed-3d711349b4ae"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 159, 3, 98, "Title",ExpressionUUID->"8a0ad2d5-86c6-47ff-92ad-22d94074ac64"],
+Cell[742, 27, 371, 8, 52, "Input",ExpressionUUID->"5b7c318f-3b77-454f-bcf9-c165ccb4d1b3"],
+Cell[1116, 37, 439, 10, 30, "Input",ExpressionUUID->"6237a0a0-6146-412e-83ff-6fd14b68b71e"],
+Cell[CellGroupData[{
+Cell[1580, 51, 158, 3, 67, "Section",ExpressionUUID->"e6acafcc-ceb1-4cd6-9c24-7d09d9a2dcb5"],
+Cell[1741, 56, 1016, 30, 73, "Input",ExpressionUUID->"e9a6d45d-bf8c-447c-a356-1b49bd052801"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2794, 91, 159, 3, 67, "Section",ExpressionUUID->"c89c3637-1d8b-403c-bc5f-5c372c0fdd52"],
+Cell[CellGroupData[{
+Cell[2978, 98, 3172, 73, 304, "Input",ExpressionUUID->"90279ac0-496f-4da8-905b-78d5a3139073"],
+Cell[6153, 173, 413, 6, 34, "Output",ExpressionUUID->"75bb2914-573b-4072-a770-c20bb147c83d"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
