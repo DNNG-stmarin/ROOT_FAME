@@ -19,6 +19,7 @@ void fragFiss::FillFragTree()
   double fKEL, fKEH;
   double fThetaL, fThetaH;
   double fEX;
+  double preA[2], preAb[2], postA[2], preE[2], postE[2];
 
   fragTree->Branch("fT", &fT, "fT/D");
   fragTree->Branch("fAL", &fAL, "fAL/D");
@@ -67,25 +68,77 @@ void fragFiss::FillFragTree()
      // gain matching
      fKE2 = g_gainMatch->Eval(fKE2);
 
-     if(fKE1 > fKE2)
-     {
-       fKEL = fKE1;
-       fThetaL = fTheta1;
-       fKEH = fKE2;
-       fThetaH = fTheta2;
-     }
-     else
-     {
-       fKEL = fKE2;
-       fThetaL = fTheta2;
-       fKEH = fKE1;
-       fThetaH = fTheta1;
-     }
 
 
      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
      // NATHAN put mass calculations here
      // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+     for (int in = 0; in < 2; in++)
+     {
+       preA[in] = A_TOT / 2.0;
+       preAb[in] = A_TOT / 2.0;
+       postA[in] = A_TOT / 2.0;
+     }
+     preE[0] = fKE1;
+     preE[1] = fKE2;
+     postE[0] = fKE1;
+     postE[1] = fKE2;
+
+     int iterCounter = 0;
+     while(iterCounter < MAX_CONV_ITER)
+     {
+       preAb[0] = preA[0];
+       preAb[1] = preA[1];
+
+       for (int i = 0; i < 2; i++)
+       {
+         postA[i] = preA[i] - g_sawtooth->Eval(postA[i]);
+       }
+       // for (int i = 0; i < 2; i++)
+       // {
+       //   postE[j] =  A0*(iph[j] + phd_lookup(mpost[j],pulseheight));
+       // }
+       double B = preA[1] * postA[0] / (preA[0] * postA[1]);
+
+       preA[0] = A_TOT * postE[1] / (postE[0] / B + postE[1]);
+       preA[1] = A_TOT * postE[0] / (postE[1] * B + postE[0]);
+
+       for (int i = 0; i < 2; i++)
+       {
+         preE[i] = postE[i] * preA[i] / postA[i];
+       }
+
+       if (abs(preA[0] - preAb[0]) < CONVERGEANCE_CONST &&
+           abs(preA[1] - preAb[1]) < CONVERGEANCE_CONST)
+       {
+         break;
+       }
+       iterCounter++;
+     }
+
+     if (preA[0] > preA[1])
+     {
+       fAH = preA[0];
+       fAL = preA[1];
+       fKEL = fKE1;
+       fThetaL = fTheta1;
+       fKEH = fKE2;
+       fThetaH = fTheta2;
+
+     }
+     else
+     {
+       fAH = preA[1];
+       fAL = preA[0];
+       fKEL = fKE2;
+       fThetaL = fTheta2;
+       fKEH = fKE1;
+       fThetaH = fTheta1;
+
+     }
+     if (jentry % 1000 == 0) cout << fAH << " " << fAL << endl;
+
 
 
      // rejection
@@ -101,6 +154,7 @@ void fragFiss::FillFragTree()
 
 
   fragFile->cd();
+  // g_sawtooth->Write();
   fragTree->Write();
 
 }

@@ -67,14 +67,14 @@ void fragFiss::GainMatching()
 
    TF1* gaussFit = new TF1("gaussFit", "[0] * e^(-((x - [1])^2)/(2*[2]^2))", 0, MAX_APH);
    // yield 1
-   TF1* f_gaussYield1 = new TF1("f_gaussyield1", "gaussFit + gaussFit", 0, MAX_APH);
-   TF1* f_gaussYield2 = new TF1("f_gaussyield2", "gaussFit + gaussFit", 0, MAX_APH);
+   TF1* f_gaussYield1 = new TF1("f_gaussYield1", "gaussFit + gaussFit", 0, MAX_APH);
+   TF1* f_gaussYield2 = new TF1("f_gaussYield2", "gaussFit + gaussFit", 0, MAX_APH);
 
    double ampGuess, meanGuess, sigGuess;
    ampGuess = h1_uncalibratedA1->GetMaximum();
    meanGuess = h1_uncalibratedA1->GetMean();
    sigGuess = 100;
-   cout << ampGuess << " " << meanGuess << sigGuess << " " << endl;
+   // cout << ampGuess << " " << meanGuess << sigGuess << " " << endl;
    f_gaussYield1->SetParameters(ampGuess*0.8, meanGuess*0.8, sigGuess, ampGuess, meanGuess*1.2, sigGuess);
    // f_gaussYield1->SetParLimits(1, 0, ampGuess);
    // f_gaussYield1->SetParLimits(4, ampGuess, MAX_APH);
@@ -83,7 +83,7 @@ void fragFiss::GainMatching()
    ampGuess = h1_uncalibratedA2->GetMaximum();
    meanGuess = h1_uncalibratedA2->GetMean();
    sigGuess = 100;
-   cout << ampGuess << " " << meanGuess << " " << sigGuess << endl;
+   // cout << ampGuess << " " << meanGuess << " " << sigGuess << endl;
    f_gaussYield2->SetParameters(ampGuess*0.8, meanGuess*0.8, sigGuess, ampGuess, meanGuess*1.2, sigGuess);
    // f_gaussYield2->SetParLimits(1, 0, ampGuess);
    // f_gaussYield2->SetParLimits(4, ampGuess, MAX_APH);

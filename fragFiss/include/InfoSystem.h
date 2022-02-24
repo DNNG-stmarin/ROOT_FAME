@@ -26,11 +26,13 @@ private:
 public:
   int NUM_FILES;
   int* FILE_LIST;
+  TString SAWTOOTH_FILENAME;
 
   InfoSystem()
   {
     NUM_FILES = 1;
     FILE_LIST = NULL;
+    SAWTOOTH_FILENAME = "cf252sawtooth.csv";
   }
 
   void ReadInput(TString inputFile)
@@ -62,6 +64,12 @@ public:
           FILE_LIST[i] = stoi(value);
         }
       }
+      else if(tag == "<SAWTOOTH_FILENAME>:")
+      {
+        file >> value;
+        SAWTOOTH_FILENAME = value;
+      }
+
     }
 
     // TString pathT = (TString)calibrationPath;
