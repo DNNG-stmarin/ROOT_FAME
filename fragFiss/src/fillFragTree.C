@@ -139,7 +139,7 @@ void fragFiss::FillFragTree()
      }
      if (jentry % 1000 == 0) cout << fAH << " " << fAL << endl;
 
-
+     fEX = g_bindErg->Eval(fAL) - (fKEL + fKEH);
 
      // rejection
      if( (fKE1 > MIN_ANODE1) && (fKE2 > MIN_ANODE2) && (fTheta1 > MIN_ANG1) && (fTheta2 > MIN_ANG2))
