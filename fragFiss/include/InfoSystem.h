@@ -26,8 +26,10 @@ private:
 public:
   int NUM_FILES;
   int* FILE_LIST;
+  double KINETIC_PEAKS[2] = {0,0};
   TString SAWTOOTH_FILENAME;
   TString BIND_ERG_FILENAME;
+
 
   InfoSystem()
   {
@@ -65,6 +67,13 @@ public:
           file >> value;
           FILE_LIST[i] = stoi(value);
         }
+      }
+      else if(tag == "<KINETIC_PEAKS>:")
+      {
+        file >> value;
+        KINETIC_PEAKS[0] = stod(value);
+        file >> value;
+        KINETIC_PEAKS[1] = stod(value);
       }
       else if(tag == "<SAWTOOTH_FILENAME>:")
       {

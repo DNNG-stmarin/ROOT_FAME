@@ -51,6 +51,8 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	PARAM_FILES = info->PARAM_FILES;
 	SIM_FILE = info->SIM_FILE;
 	//BEAM = info->BEAM;
+	FRAGMENT_MODE = info->FRAGMENT_MODE;
+	FRAGMENT_PATH = info->FRAGMENT_PATH;
 
 	// create the dynamically allocated array of detectors and triggers
 	triggers = new TriggerClass[NUM_TRIGGERS];
@@ -218,6 +220,16 @@ void DetectorSystemClass::Init(TChain* treeIn)
 			 tree->SetBranchAddress("bChan", &bChan, &b_bChan);
 			 tree->SetBranchAddress("bIndex", &bIndex, &b_bIndex);
 		 }
+		 if(FRAGMENT_MODE)
+		 {
+			 tree->SetBranchAddress("rAL", &rAL, &b_rAL);
+			 tree->SetBranchAddress("rAH", &rAH, &b_rAH);
+			 tree->SetBranchAddress("rKEL", &rKEL, &b_rKEL);
+			 tree->SetBranchAddress("rKEH", &rKEH, &b_rKEH);
+			 tree->SetBranchAddress("rThetaL", &rThetaL, &b_rThetaL);
+			 tree->SetBranchAddress("rThetaH", &rThetaH, &b_rThetaH);
+			 tree->SetBranchAddress("rEX", &rEX, &b_rEX);
+		 }
 
 		 tree->SetBranchAddress("totToF", totToF, &b_totToF);
 		 tree->SetBranchAddress("totPSP", totPSP, &b_totPSP);
@@ -252,6 +264,18 @@ void DetectorSystemClass::InitFiss()
 		 fissionTree->Branch("beamPSP", &f_beamPSP, "beamPSP/D");
 		 fissionTree->Branch("beamChan", &f_beamChan, "beamChan/I");
 		 fissionTree->Branch("beamIndex", &f_beamIndex, "beamIndex/I");
+	 }
+
+	 // fragment variables
+	 if(FRAGMENT_MODE > 0)
+	 {
+		 fissionTree->Branch("AL", &f_AL, "AL/D");
+		 fissionTree->Branch("AH", &f_AH, "AH/D");
+		 fissionTree->Branch("KEL", &f_KEL, "beamDep/D");
+		 fissionTree->Branch("KEH", &f_KEH, "beamPSP/D");
+		 fissionTree->Branch("ThetaL", &f_ThetaL, "ThetaL/D");
+		 fissionTree->Branch("ThetaH", &f_ThetaH, "ThetaH/D");
+		 fissionTree->Branch("EX", &f_EX, "EX/D");
 	 }
 
 	 // multiplicity variables

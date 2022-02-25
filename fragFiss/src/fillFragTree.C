@@ -70,9 +70,7 @@ void fragFiss::FillFragTree()
 
 
 
-     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     // NATHAN put mass calculations here
-     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     // mass calculation
 
      for (int in = 0; in < 2; in++)
      {
@@ -121,9 +119,9 @@ void fragFiss::FillFragTree()
      {
        fAH = preA[0];
        fAL = preA[1];
-       fKEL = fKE1;
+       fKEL = preE[0];
        fThetaL = fTheta1;
-       fKEH = fKE2;
+       fKEH = preE[1];
        fThetaH = fTheta2;
 
      }
@@ -131,17 +129,22 @@ void fragFiss::FillFragTree()
      {
        fAH = preA[1];
        fAL = preA[0];
-       fKEL = fKE2;
+       fKEL = preE[0];
        fThetaL = fTheta2;
-       fKEH = fKE1;
+       fKEH = preE[1];
        fThetaH = fTheta1;
 
      }
-     if (jentry % 1000 == 0) cout << fAH << " " << fAL << endl;
+     // if (jentry % 1000 == 0) cout << fAH << " " << fAL << endl;
 
+     // convert to energy
+     fKEL = g_calib->Eval(fKE1);
+     fKEH = g_calib->Eval(fKE2);
+
+     // extract excitation energy
      fEX = g_bindErg->Eval(fAL) - (fKEL + fKEH);
 
-     // rejection
+     // if event passes the test, fill the tree
      if( (fKE1 > MIN_ANODE1) && (fKE2 > MIN_ANODE2) && (fTheta1 > MIN_ANG1) && (fTheta2 > MIN_ANG2))
      {
        fragTree->Fill();

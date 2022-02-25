@@ -74,19 +74,17 @@ void DetectorSystemClass::FissionAnalysis()
       f_beamChan = bChan;
       f_beamIndex = bIndex;
 
-      // if (f_beamTime < 70)
-      // {
-      //   f_fisType = ALPHA;
-      // }
-      // else if (f_beamTime < 140 && f_beamTime > 60)
-      // {
-      //   f_fisType = PHOTON;
-      // }
-      // else
-      // {
-      //   f_fisType = NEUTRON;
-      // }
+    }
 
+    if(FRAGMENT_MODE)
+    {
+      f_AL = rAL;
+      f_AH = rAH;
+      f_KEL = rKEL;
+      f_KEH = rKEH;
+      f_ThetaL = rThetaL;
+      f_ThetaH = rThetaH;
+      f_EX = rEX;
     }
 
     // allocating the fission info

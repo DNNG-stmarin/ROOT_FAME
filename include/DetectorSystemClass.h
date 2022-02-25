@@ -72,6 +72,7 @@ public:
 	int PARAM_FILES;
 	int SIM_FILE;
 
+
 	// inputs given by the fission experiment class file, made up of the data collected and where to write
 	TChain* tree;
 	TFile*  detFile;
@@ -123,6 +124,9 @@ public:
 	int NUM_DETS;
 	int NUM_EXCLUDED;
 	int NUM_BEAMS;
+
+	int FRAGMENT_MODE;
+	TString FRAGMENT_PATH;
 
 	// list of channels for triggers and detectors
 	int* FISSION_TRIGGERS;
@@ -210,6 +214,15 @@ _  _ _    _
 	int 				  tChan;
 	double				tPSP;
 
+	// fragment branches
+	double        rAL;
+	double        rAH;
+	double        rKEL;
+	double 				rKEH;
+	double 				rThetaL;
+	double 				rThetaH;
+	double 				rEX;
+
 	double 				bTime;
 	double				bErg;
 	double 				bPSP;
@@ -237,6 +250,14 @@ _  _ _    _
 	TBranch        *b_bChan;   //!
 	TBranch        *b_bIndex;   //!
 
+	TBranch        *b_rAL;   //!
+	TBranch        *b_rAH;   //!
+	TBranch        *b_rKEL;   //!
+	TBranch        *b_rKEH;   //!
+	TBranch        *b_rThetaL;   //!
+	TBranch        *b_rThetaH;   //!
+	TBranch        *b_rEX;   //!
+
 	TBranch        *b_totToF;   //!
 	TBranch        *b_totPSP;   //!
 	TBranch        *b_totDep;   //!
@@ -249,6 +270,14 @@ _  _ _    _
 	int 			f_fisType;
 	int 			f_fisChan;
 	double 		f_fisPSP;
+
+	double 		f_AL;
+	double    f_AH;
+	double		f_KEL;
+	double 		f_KEH;
+	double 	  f_ThetaL;
+	double		f_ThetaH;
+	double    f_EX;
 
 	double 		f_beamTime;
 	double    f_beamEnergy;

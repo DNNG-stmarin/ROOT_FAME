@@ -105,6 +105,17 @@ void fragFiss::GainMatching()
 
    g_gainMatch = new TGraph(2, centroids2, centroids1);
    g_gainMatch->SetName("g_gainMatch");
+   g_gainMatch->Fit("p1", "Q");
+
+
+
+   // calibrated results
+   double kineticPeaks[2];
+   kineticPeaks[0] = infoSystem->KINETIC_PEAKS[0];
+   kineticPeaks[1] = infoSystem->KINETIC_PEAKS[1];
+   g_calib = new TGraph(2, centroids1, kineticPeaks);
+   g_calib->SetName("g_gainMatch");
+   g_calib->Fit("p1", "Q");
 
 
    //
@@ -125,6 +136,9 @@ void fragFiss::GainMatching()
 
    c_gain->cd(2);
    g_gainMatch->Draw();
+
+   c_gain->cd(3);
+   g_calib->Draw();
 
    // write file
    fragFile->cd();
