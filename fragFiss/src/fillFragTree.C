@@ -35,6 +35,7 @@ void fragFiss::FillFragTree()
   double fTheta1, fTheta2;
 
   double preA1, preA2, preA1b, preA2b, postA1, postA2, preE1, preE2, postE1, postE2;
+  double fPH1, fPH2;
 
 
   // fill frag tree
@@ -72,8 +73,16 @@ void fragFiss::FillFragTree()
      // gain matching
      fKE2 = g_gainMatch->Eval(fKE2);
 
-     // mass calculation
+     // store pulse heights
+     fPH1 = fKE1;
+     fPH2 = fKE2;
 
+     // convert to energy
+     fKE1 = g_calib->Eval(fKE1);
+     fKE2 = g_calib->Eval(fKE2);
+
+
+     // mass calculation
      preA1 = A_TOT * fKE2 / (fKE1 + fKE2);
      preA2 = A_TOT * fKE1 / (fKE1 + fKE2);
      postA1 = preA1;
@@ -97,12 +106,11 @@ void fragFiss::FillFragTree()
        postA1 = preA1 - g_sawtooth->Eval(preA1);
        postA2 = preA2 - g_sawtooth->Eval(preA2);
 
-       // for (int i = 0; i < 2; i++)
-       // {
-       //   postE[j] =  A0*(iph[j] + phd_lookup(mpost[j],pulseheight));
-       // }
-       double B = preA2 * postA1 / (preA1 * postA2);
+       // Correct for PHD
+       postE1 = fKE1 + g_phd->Eval(postA1);
+       postE2 = fKE2 + g_phd->Eval(postA2);
 
+       double B = preA2 * postA1 / (preA1 * postA2);
 
        preA1 = A_TOT * postE2 / (postE1 / B + postE2);
        preA2 = A_TOT * postE1 / (postE2 * B + postE1);
@@ -130,10 +138,6 @@ void fragFiss::FillFragTree()
        fKEL = preE2;
        fThetaL = fTheta2;
 
-       // if (jentry % 1000 == 0)
-       // {
-       //   cout << jentry << " " << preA1 << " " << preE1 << " | " <<  preA2 << " " << preE2 << endl;
-       // }
 
      }
      else
@@ -151,15 +155,15 @@ void fragFiss::FillFragTree()
 
      // if (jentry % 1000 == 0) cout << fAH << " " << fAL << endl;
 
-     // convert to energy
-     fKEL = g_calib->Eval(fKEL);
-     fKEH = g_calib->Eval(fKEH);
 
      // extract excitation energy
      fEX = g_bindErg->Eval(fAL) - (fKEL + fKEH);
 
+     // cout << fKEL + fKEH << endl;
+
+
      // if event passes the test, fill the tree
-     if( (fKE1 > MIN_ANODE1) && (fKE2 > MIN_ANODE2) && (fTheta1 > MIN_ANG1) && (fTheta2 > MIN_ANG2))
+     if( (fPH1 > MIN_ANODE1) && (fPH2 > MIN_ANODE2) && (fTheta1 > MIN_ANG1) && (fTheta2 > MIN_ANG2))
      {
        fragTree->Fill();
      }

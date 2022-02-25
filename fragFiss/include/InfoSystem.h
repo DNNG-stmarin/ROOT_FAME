@@ -29,6 +29,7 @@ public:
   double KINETIC_PEAKS[2] = {0,0};
   TString SAWTOOTH_FILENAME;
   TString BIND_ERG_FILENAME;
+  TString PHD_FILENAME;
 
 
   InfoSystem()
@@ -37,6 +38,7 @@ public:
     FILE_LIST = NULL;
     SAWTOOTH_FILENAME = "cf252sawtooth.csv";
     BIND_ERG_FILENAME = "L";
+    PHD_FILENAME = "phd.txt";
   }
 
   void ReadInput(TString inputFile)
@@ -84,6 +86,11 @@ public:
       {
         file >> value;
         BIND_ERG_FILENAME = value;
+      }
+      else if(tag == "<PHD_FILENAME>:")
+      {
+        file >> value;
+        PHD_FILENAME = value;
       }
 
     }

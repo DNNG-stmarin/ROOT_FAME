@@ -29,6 +29,7 @@ public :
 
    TGraph*         g_sawtooth;
    TGraph*         g_bindErg;
+   TGraph*         g_phd;
 
    Int_t           fCurrent; //!current Tree number in a TChain
    TString         inputTreeName = "et";

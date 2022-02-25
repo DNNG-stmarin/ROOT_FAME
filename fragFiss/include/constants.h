@@ -4,8 +4,8 @@
 const double MIN_ANODE1 = 100;
 const double MIN_ANODE2 = 100;
 
-const double MIN_ANG1 = 0.4;
-const double MIN_ANG2 = 0.4;
+const double MIN_ANG1 = 0.5;
+const double MIN_ANG2 = 0.5;
 
 const int N_BINS_APH = 50;
 const int MAX_APH = 1000;

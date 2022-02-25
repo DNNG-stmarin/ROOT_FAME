@@ -46,6 +46,7 @@ fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
    // Initialize sawtooth pointer
    g_sawtooth = new TGraph(infoIn->SAWTOOTH_FILENAME);
    g_bindErg = new TGraph(infoIn->BIND_ERG_FILENAME);
+   g_phd = new TGraph(infoIn->PHD_FILENAME);
 
 }
 
