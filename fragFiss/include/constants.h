@@ -23,6 +23,8 @@ const int NUM_WAVES = 100;
 
 const int TIME_SAMPLE_CONVERSION = 2.0;
 
+const int DIGITIZER_BITS = pow(2, 14);
+
 
 
 

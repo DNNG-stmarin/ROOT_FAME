@@ -42,15 +42,16 @@ void fragFiss::PlotWaves()
      Long64_t ientry = LoadTree(jentry);
      if (ientry < 0) break;
 
-     for(int tS = 0; tS < RECORD_LENGTH; tS++)
-	  {
-	  	cathodeSignal[jentry][tS] = cwf[tS];
-      anode1Signal[jentry][tS] = a0wf[tS];
-      anode2Signal[jentry][tS] = a1wf[tS];
-      grid1Signal[jentry][tS] = g0wf[tS];
-      grid2Signal[jentry][tS] = g1wf[tS];
-	  }
+     eventChain->GetEntry(jentry);
 
+     for(int tS = 0; tS < RECORD_LENGTH; tS++)
+	   {
+	  	 cathodeSignal[jentry][tS] = cwf[tS];
+       anode1Signal[jentry][tS] = a0wf[tS];
+       anode2Signal[jentry][tS] = a1wf[tS];
+       grid1Signal[jentry][tS] = g0wf[tS];
+       grid2Signal[jentry][tS] = g1wf[tS];
+	   }
    }
 
    TCanvas* c_waves = new TCanvas("c_waves", "Signals IC");
@@ -64,7 +65,7 @@ void fragFiss::PlotWaves()
 		TGraph* g_cathode = new TGraph(RECORD_LENGTH, timeAxis, cathodeSignal[nB]);
 		g_cathode->SetName("g_cathode");
 		g_cathode->SetTitle("Cathode");
-		g_cathode->GetYaxis()->SetRangeUser(0,pow(2,14));
+		g_cathode->GetYaxis()->SetRangeUser(-DIGITIZER_BITS/2, DIGITIZER_BITS/2);
 		if(nB == 0) g_cathode->Draw();
 		else g_cathode->Draw("SAME");
 
@@ -76,7 +77,7 @@ void fragFiss::PlotWaves()
 	   TGraph* g_an1 = new TGraph(RECORD_LENGTH, timeAxis, anode1Signal[nB]);
 	   g_an1->SetName("g_an1");
 	   g_an1->SetTitle("Anode1");
-	   g_an1->GetYaxis()->SetRangeUser(0,pow(2,14));
+	   g_an1->GetYaxis()->SetRangeUser(-DIGITIZER_BITS/2, DIGITIZER_BITS/2);
 	   if(nB == 0) g_an1->Draw();
 	   else g_an1->Draw("SAME");
    }
@@ -87,7 +88,7 @@ void fragFiss::PlotWaves()
 	   TGraph* g_an2 = new TGraph(RECORD_LENGTH, timeAxis, anode2Signal[nB]);
 	   g_an2->SetName("g_an2");
 	   g_an2->SetTitle("Anode2");
-	   g_an2->GetYaxis()->SetRangeUser(0,pow(2,14));
+	   g_an2->GetYaxis()->SetRangeUser(-DIGITIZER_BITS/2, DIGITIZER_BITS/2);
 	   if(nB == 0) g_an2->Draw();
 	   else g_an2->Draw("SAME");
 	}
@@ -98,7 +99,7 @@ void fragFiss::PlotWaves()
 	   TGraph* g_grid1 = new TGraph(RECORD_LENGTH, timeAxis, grid1Signal[nB]);
 	   g_grid1->SetName("g_grid1");
 	   g_grid1->SetTitle("Grid1");
-	   g_grid1->GetYaxis()->SetRangeUser(0,pow(2,14));
+	   g_grid1->GetYaxis()->SetRangeUser(-DIGITIZER_BITS/2, DIGITIZER_BITS/2);
 	   if(nB == 0) g_grid1->Draw();
 	   else g_grid1->Draw("SAME");
 	}
@@ -109,7 +110,7 @@ void fragFiss::PlotWaves()
 	   TGraph* g_grid2 = new TGraph(RECORD_LENGTH, timeAxis, grid2Signal[nB]);
 	   g_grid2->SetName("g_grid2");
 	   g_grid2->SetTitle("Grid2");
-	   g_grid2->GetYaxis()->SetRangeUser(0,pow(2,14));
+	   g_grid2->GetYaxis()->SetRangeUser(-DIGITIZER_BITS/2, DIGITIZER_BITS/2);
 	   if(nB == 0) g_grid2->Draw();
 	   else g_grid2->Draw("SAME");
 	}

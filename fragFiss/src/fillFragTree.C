@@ -19,7 +19,6 @@ void fragFiss::FillFragTree()
   double fKEL, fKEH;
   double fThetaL, fThetaH;
   double fEX;
-  double preA[2], preAb[2], postA[2], preE[2], postE[2];
 
   fragTree->Branch("fT", &fT, "fT/D");
   fragTree->Branch("fAL", &fAL, "fAL/D");
@@ -34,6 +33,9 @@ void fragFiss::FillFragTree()
   double fA1, fA2;
   double fKE1, fKE2;
   double fTheta1, fTheta2;
+
+  double preA1, preA2, preA1b, preA2b, postA1, postA2, preE1, preE2, postE1, postE2;
+
 
   // fill frag tree
   for (Long64_t jentry=0; jentry<nentries;jentry++)
@@ -52,94 +54,106 @@ void fragFiss::FillFragTree()
      }
      else fTheta1 = -1;
 
-     if(g_Ang2->Eval(aph[0]) > 0)
+     if(g_Ang2->Eval(aph[1]) > 0)
      {
-     fTheta2  = (gph[1]/aph[1])/g_Ang2->Eval(aph[1]);
+       fTheta2  = (gph[1]/aph[1])/g_Ang2->Eval(aph[1]);
      }
      else fTheta2  = -1;
 
+     if (fTheta1 > 2) fTheta1 = 2;
+     if (fTheta2 > 2) fTheta2 = 2;
 
      // kinetic energy
      fKE1 = aph[0];
      fKE2 = aph[1];
      // attenutation correction
-     fKE1 += f_att1->Eval(1.0/fThetaL) - f_att2->Eval(0);
-     fKE2 += f_att2->Eval(1.0/fThetaL) - f_att2->Eval(0);
+     fKE1 += f_att1->Eval(1.0/fTheta1) - f_att1->Eval(0);
+     fKE2 += f_att2->Eval(1.0/fTheta2) - f_att2->Eval(0);
      // gain matching
      fKE2 = g_gainMatch->Eval(fKE2);
 
-
-
      // mass calculation
 
-     for (int in = 0; in < 2; in++)
-     {
-       preA[in] = A_TOT / 2.0;
-       preAb[in] = A_TOT / 2.0;
-       postA[in] = A_TOT / 2.0;
-     }
-     preE[0] = fKE1;
-     preE[1] = fKE2;
-     postE[0] = fKE1;
-     postE[1] = fKE2;
+     preA1 = A_TOT * fKE2 / (fKE1 + fKE2);
+     preA2 = A_TOT * fKE1 / (fKE1 + fKE2);
+     postA1 = preA1;
+     postA2 = preA2;
+
+     preE1 = fKE1;
+     postE1 = fKE1;
+     preE2 = fKE2;
+     postE2 = fKE2;
 
      int iterCounter = 0;
+     // cout << endl;
      while(iterCounter < MAX_CONV_ITER)
      {
-       preAb[0] = preA[0];
-       preAb[1] = preA[1];
 
-       for (int i = 0; i < 2; i++)
-       {
-         postA[i] = preA[i] - g_sawtooth->Eval(postA[i]);
-       }
+       // cout << preE[0] << " " << preE[1] << postE[0] << " " << postE[1] << endl;
+
+       preA1b = preA1;
+       preA2b = preA2;
+
+       postA1 = preA1 - g_sawtooth->Eval(preA1);
+       postA2 = preA2 - g_sawtooth->Eval(preA2);
+
        // for (int i = 0; i < 2; i++)
        // {
        //   postE[j] =  A0*(iph[j] + phd_lookup(mpost[j],pulseheight));
        // }
-       double B = preA[1] * postA[0] / (preA[0] * postA[1]);
+       double B = preA2 * postA1 / (preA1 * postA2);
 
-       preA[0] = A_TOT * postE[1] / (postE[0] / B + postE[1]);
-       preA[1] = A_TOT * postE[0] / (postE[1] * B + postE[0]);
 
-       for (int i = 0; i < 2; i++)
-       {
-         preE[i] = postE[i] * preA[i] / postA[i];
-       }
+       preA1 = A_TOT * postE2 / (postE1 / B + postE2);
+       preA2 = A_TOT * postE1 / (postE2 * B + postE1);
 
-       if (abs(preA[0] - preAb[0]) < CONVERGEANCE_CONST &&
-           abs(preA[1] - preAb[1]) < CONVERGEANCE_CONST)
+       preE1 = postE1 * preA1 / postA1;
+       preE2 = postE2 * preA2 / postA2;
+
+
+       if (abs(preA1 - preA1b) < CONVERGEANCE_CONST &&
+           abs(preA2 - preA2b) < CONVERGEANCE_CONST)
        {
          break;
        }
        iterCounter++;
      }
 
-     if (preA[0] > preA[1])
+
+     if (preA1 > preA2)
      {
-       fAH = preA[0];
-       fAL = preA[1];
-       fKEL = preE[0];
-       fThetaL = fTheta1;
-       fKEH = preE[1];
-       fThetaH = fTheta2;
+       fAH = preA1;
+       fKEH = preE1;
+       fThetaH = fTheta1;
+
+       fAL = preA2;
+       fKEL = preE2;
+       fThetaL = fTheta2;
+
+       // if (jentry % 1000 == 0)
+       // {
+       //   cout << jentry << " " << preA1 << " " << preE1 << " | " <<  preA2 << " " << preE2 << endl;
+       // }
 
      }
      else
      {
-       fAH = preA[1];
-       fAL = preA[0];
-       fKEL = preE[0];
-       fThetaL = fTheta2;
-       fKEH = preE[1];
-       fThetaH = fTheta1;
+       fAL = preA1;
+       fKEL = preE1;
+       fThetaL = fTheta1;
 
+       fAH = preA2;
+       fKEH = preE2;
+       fThetaH = fTheta2;
      }
+
+     if (iterCounter == MAX_CONV_ITER - 1) {cout << "Reached max. iterations"<< endl;}
+
      // if (jentry % 1000 == 0) cout << fAH << " " << fAL << endl;
 
      // convert to energy
-     fKEL = g_calib->Eval(fKE1);
-     fKEH = g_calib->Eval(fKE2);
+     fKEL = g_calib->Eval(fKEL);
+     fKEH = g_calib->Eval(fKEH);
 
      // extract excitation energy
      fEX = g_bindErg->Eval(fAL) - (fKEL + fKEH);
