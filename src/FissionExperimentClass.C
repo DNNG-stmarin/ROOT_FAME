@@ -240,6 +240,8 @@ int FissionExperimentClass::getEndFile()
 
 void FissionExperimentClass::saveAll()
 {
+	// expFile->Close();
+	// detFile->Close();
 	delete expFile;
 	delete detFile;
   // Close more things?

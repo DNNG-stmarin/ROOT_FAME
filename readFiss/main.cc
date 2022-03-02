@@ -1,5 +1,5 @@
 // Programmer: Stefano Marin, Jonathan Giha
-// Purpose: Reading the fission events generated frmo ROOT_FAME
+// Purpose: Reading the fission events generated from ROOT_FAME
 // Date: April 2021
 
 #include <TROOT.h>
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 
   QApplication a(argc, argv);
   cout << "Application launched...\n" << endl;
-  app = &a;
+  // app = &a;
 
   MainWindow w;
   cout << "Main Window constructed...\n" << endl;
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
   {
     ifstream inputfile(argv[1]);
     cout << "creating streamer" << endl;
-    w.f->SetInfo(&w);
+    w.f->SetInfo(&w); // Nathan: why do we need to SetInfo twice?
 
     w.f->LoadInput(inputfile);
     cout << "loading input" << endl;

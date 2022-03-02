@@ -97,9 +97,10 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		// cout << i << endl;
     if(!inTrig.is_open())
     {
-      triggers[i].X = 0;
-      triggers[i].Y = 0;
-      triggers[i].Z = 0;
+      triggers[i].X = 0.0;
+      triggers[i].Y = 0.0;
+      triggers[i].Z = 0.0;
+			cout << "Can't open trigger file, suing default trigger at origin."  <<endl;
     }
     else
     {

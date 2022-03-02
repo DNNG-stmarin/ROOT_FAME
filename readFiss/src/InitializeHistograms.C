@@ -50,20 +50,21 @@ void readFiss::InitializeHistograms()
 
    */
 
-  h_fissRej = new TH1I("h_fissRej", "Composition of Fission Rejection; Fission Type; Counts", 10, -0.5, 9.5);
+  h_fissRej = new TH1D("h_fissRej", "Composition of Fission Rejection; Fission Type; Counts", 10, -0.5, 9.5);
   h_timeDiffTrig = new TH1D* [NUM_TRIGGERS];
   for(int j = 0; j < NUM_TRIGGERS; j++)
   {
     h_timeDiffTrig[j] = new TH1D("h_timeDiffTrig_" + TString(to_string(j)), "Time difference Triggers; Delta Time (ns); Counts", numDeltaT, minDeltaT, maxDeltaT);
   }
+  h_fissTriggers = new TH1D("h_fissTriggers", "Triggers by Channel; Trigger Channel; Counts", NUM_TRIGGERS, 0, NUM_TRIGGERS);
 
   h_neutronLightOutputExp = new TH1D("h_neutronLightOutputExp", "Light Output Experiment;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
   h_photonLightOutputExp = new TH1D("h_photonLightOutputExp", "Light Output Experiment;Light Output [MeVee];Counts", numLObins, minLO, maxLO);
   h_neutronTofExp = new TH1D("h_neutronTofExp", "Time-of-Flight Experiment;Time [ns];Counts", numTofBins, minTof, maxTof);
   h_photonTofExp = new TH1D("h_photonTofExp", "Time-of-Flight Experiment;Time [ns];Counts", numTofBins, minTof, maxTof);
   h_neutronEnergyExp = new TH1D("h_neutronEnergyExp", "Neutron Energy Experiment;Energy [MeV];Counts", numErgBins, minErg, maxErg);
-  h_neutronMultExp = new TH1I("h_neutronMultExp", "Neutron Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
-  h_photonMultExp = new TH1I("h_photonMultExp", "Photon Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
+  h_neutronMultExp = new TH1D("h_neutronMultExp", "Neutron Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
+  h_photonMultExp = new TH1D("h_photonMultExp", "Photon Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
   h_neutronPSDExp = new TH1D("h_neutronPSDExp", "Neutron PSP; PSP (tail/total); counts",  numPSDBins, minPSP, maxPSP);
   h_photonPSDExp = new TH1D("h_photonPSDExp", "Photon PSP; PSP (tail/total); counts", numPSDBins, minPSP, maxPSP);
   h_neutronSinglesExp = new TH1D("h_neutronSinglesExp", "Neutron Singles; Detector1; counts", numDets, 0, numDets);
@@ -74,8 +75,8 @@ void readFiss::InitializeHistograms()
   h_neutronTofBack = new TH1D("h_neutronTofBack", "Time-of-Flight Background;Time [ns];Counts", numTofBins, minTof, maxTof);
   h_photonTofBack = new TH1D("h_photonTofBack", "Time-of-Flight Background;Time [ns];Counts", numTofBins, minTof, maxTof);
   h_neutronEnergyBack = new TH1D("h_neutronEnergyBack", "Neutron Energy Background;Energy [MeV];Counts", numErgBins, minErg, maxErg);
-  h_neutronMultBack = new TH1I("h_neutronMultBack", "Neutron Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
-  h_photonMultBack = new TH1I("h_photonMultBack", "Photon Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
+  h_neutronMultBack = new TH1D("h_neutronMultBack", "Neutron Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
+  h_photonMultBack = new TH1D("h_photonMultBack", "Photon Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
   h_neutronPSDBack = new TH1D("h_neutronPSDBack", "Neutron PSP; PSP (tail/total); counts",  numPSDBins, minPSP, maxPSP);
   h_photonPSDBack = new TH1D("h_photonPSDBack", "Photon PSP; PSP (tail/total); counts", numPSDBins, minPSP, maxPSP);
   h_neutronSinglesBack = new TH1D("h_neutronSinglesBack", "Neutron Singles; Detector1; counts", numDets, 0, numDets);
@@ -90,8 +91,8 @@ void readFiss::InitializeHistograms()
     h_neutronTofSim = new TH1D("h_neutronTofSim", "Time-of-Flight Simulation;Time [ns];Counts", numTofBins, minTof, maxTof);
     h_photonTofSim = new TH1D("h_photonTofSim", "Time-of-Flight Simulation;Time [ns];Counts", numTofBins, minTof, maxTof);
     h_neutronEnergySim = new TH1D("h_neutronEnergySim", "Neutron Energy Simulation;Energy [MeV];Counts", numErgBins, minErg, maxErg);
-    h_neutronMultSim = new TH1I("h_neutronMultSim", "Neutron Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
-    h_photonMultSim = new TH1I("h_photonMultSim", "Photon Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
+    h_neutronMultSim = new TH1D("h_neutronMultSim", "Neutron Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
+    h_photonMultSim = new TH1D("h_photonMultSim", "Photon Multiplicity; multiplicity; counts", maxMult, minMult, maxMult);
     h_neutronPSDSim = new TH1D("h_neutronPSDSim", "Neutron PSP; PSP (tail/total); counts",  numPSDBins, minPSP, maxPSP);
     h_photonPSDSim = new TH1D("h_photonPSDSim", "Photon PSP; PSP (tail/total); counts", numPSDBins, minPSP, maxPSP);
     h_neutronSinglesSim = new TH1D("h_neutronSinglesSim", "Neutron Singles; Detector1; counts", numDets, 0, numDets);

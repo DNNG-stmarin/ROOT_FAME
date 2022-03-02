@@ -251,7 +251,8 @@ void readFiss::BeamErgAnalysis()
       // Take projY and scale by # of fissions
       pj_scaledGammaLOErg[r][i] = h2_gammaLightOutErg[r]->ProjectionY("pj_scaledGammaLOErg_"+ (TString)to_string(r) + "_" + (TString)to_string(i+1),i+1,i+1);  // Start at bin 1 and i starts at 0
       pj_scaledGammaLOErg[r][i]->Scale(1./h_beamErg[r]->GetBinContent(i+1));
-      for (int eG = 0; eG < numLObins; eG++){
+      for (int eG = 0; eG < numLObins; eG++)
+      {
         h2_gammaLightOutErg[r]->SetBinContent(i+1,eG+1,pj_scaledGammaLOErg[r][i]->GetBinContent(eG+1));
       }
 
@@ -271,7 +272,7 @@ void readFiss::BeamErgAnalysis()
         pj_meanGammaLOErg[r][eG] = h2_gammaLightOutErg[r]->ProjectionX("pj_meanGammaLOErg_"+ (TString)to_string(r) + "_" + (TString)to_string(eG+1),eG+1,eG+1);  // Start at bin 1 and i starts at 0
     }
 
-    for (int eN = 0; eN < numLObins; eN++){
+    for (int eN = 0; eN < numErgBins; eN++){
       // take projX --> creating mean graph vs incident energy
         pj_meanNeutronEnErg[r][eN] = h2_nToFErg[r]->ProjectionX("pj_meanNeutronEnErg_"+ (TString)to_string(r) + "_" + (TString)to_string(eN+1),eN+1,eN+1);  // Start at bin 1 and i starts at 0
     }

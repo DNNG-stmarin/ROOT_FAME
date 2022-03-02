@@ -204,10 +204,11 @@ public :
    //TH2D* h2_arrayDiff;
 
    // loop histograms quality of data
-   TH1I* h_fissRej;
+   TH1D* h_fissRej;
 
    // trigger histograms
    TH1D** h_timeDiffTrig;
+   TH1D* h_fissTriggers;
 
    // n LO
    TH1D* h_neutronLightOutputSim;
@@ -234,14 +235,14 @@ public :
    TH1D* h_neutronEnergyBack;
 
    // n Mult
-   TH1I* h_neutronMultExp;
-   TH1I* h_neutronMultSim;
-   TH1I* h_neutronMultBack;
+   TH1D* h_neutronMultExp;
+   TH1D* h_neutronMultSim;
+   TH1D* h_neutronMultBack;
 
    // p Mult
-   TH1I* h_photonMultExp;
-   TH1I* h_photonMultSim;
-   TH1I* h_photonMultBack;
+   TH1D* h_photonMultExp;
+   TH1D* h_photonMultSim;
+   TH1D* h_photonMultBack;
 
    // n PSD
    TH1D* h_neutronPSDExp;

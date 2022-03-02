@@ -450,6 +450,10 @@ public:
       cout << "Failed to open calibration file\n";
     }
     calibrationDet = new TGraph(pathT);
+
+
+    fin.close();
+    file.close();
   }
 
   ~InfoSystem()

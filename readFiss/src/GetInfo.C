@@ -238,6 +238,7 @@ void readFiss::Run()
   }
 
   cout << "finished" << endl;
+  writeFile->Close();
 
   // cout << writeFile << endl;
 

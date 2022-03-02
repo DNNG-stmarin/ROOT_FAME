@@ -719,12 +719,12 @@ void readFiss::WriteCovEM()
         {
            multMatFire << arrayExpErg[eN][eP][nN][nP];
 
-           if(eP < BP - 1)
+           if(nP < NUM_DETECTORS - 1)
            {
              multMatFire << ",";
 
            }
-           else if(eP == BP - 1)
+           else if(nP == NUM_DETECTORS - 1)
            {
              multMatFire << "\n";
            }
