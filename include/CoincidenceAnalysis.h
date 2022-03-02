@@ -11,6 +11,8 @@ Date: Ann Arbor, May 6th, 2020
 #include <TChain.h>
 #include <TFile.h>
 
+#include <TSystem.h>
+
 #include <string.h>
 #include <iostream>
 #include <fstream>
@@ -38,10 +40,15 @@ public :
 
    //create TTree object to contain the output coincidence tree
    TTree* coincTree;
+   TChain* fragTreeChain = 0;
 
    // output file
    TFile* expFile = 0;
    TFile* beamFile = 0;
+   TFile* fragFile = 0;
+
+   TString rootEnding = ".root";
+   TString nameFragTree = "FragmentTree"; // coincidence pre-clean tree
    // TDirectory* fileTreeDir = 0;
 
    // declare the digitizer classes
@@ -75,6 +82,9 @@ public :
    int* DETECTORS;
    int* BEAM;
 
+   int FRAGMENT_MODE;
+   TString FRAGMENT_PATH;
+
    double MICRO_SEP;
    double MACRO_SEP;
    int MICRO_NUM;
@@ -104,6 +114,29 @@ public :
 
   // keep track of file numbers to be read in later
   int numCoincFiles;
+
+
+  // fragment
+  Long64_t fragEntry;
+  // Declaration of leaf types
+  Double_t        fT;
+  Double_t        fAL;
+  Double_t        fAH;
+  Double_t        fKEL;
+  Double_t        fKEH;
+  Double_t        fThetaL;
+  Double_t        fThetaH;
+  Double_t        fEX;
+
+  // List of branches
+  TBranch        *b_fT;   //!
+  TBranch        *b_fAL;   //!
+  TBranch        *b_fAH;   //!
+  TBranch        *b_fKEL;   //!
+  TBranch        *b_fKEH;   //!
+  TBranch        *b_fThetaL;   //!
+  TBranch        *b_fThetaH;   //!
+  TBranch        *b_fEX;   //!
 
 
    CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFile* beamFileWrite, InfoSystem* info = 0);
@@ -147,6 +180,9 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFil
     BEAM_DELAY = info->BEAM_DELAY;
 
     RANDOM_COINCIDENCE = info->RANDOM_COINCIDENCE;
+
+    FRAGMENT_MODE = info->FRAGMENT_MODE;
+    FRAGMENT_PATH = info->FRAGMENT_PATH;
 
    // set the output stream
    beamFile = beamFileWrite;

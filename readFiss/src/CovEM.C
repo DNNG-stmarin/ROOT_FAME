@@ -14,215 +14,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-// #include <filesystem>
-//
-//
-// namespace fs = std::filesystem;
 using namespace std;
-
-void readFiss::CovEM()
-{
-//
-//    cout << "Beginning the great CovEM loop" << endl;
-//    // place to store all the result
-//
-//    h2_arrayCorr = new TH2D("CovMat", "Covariance Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
-//    h2_arraySpec = new TH2D("SpecMat", "Spectrum Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
-//
-//    // make sure tree is open
-//    if (expTree == 0) return;
-//
-//    // updated event-by-event history
-//    int* listNerg;
-//    int* listPerg;
-//    listNerg = new int[BN];
-//    listPerg = new int[BP];
-//
-//    // initialize the EM histograms
-//    TString t_nameH;
-//    TString t_rootName = "em_";
-//    TString titleH = "EnergyMode Correlations";
-//
-//    TH2I*** emMode;
-//    emMode = new TH2I** [BN];
-//    for(int eN = 0; eN < BN; eN++)
-//    {
-//    	emMode[eN] = new TH2I* [BP];
-//
-//       for(int eP = 0; eP < BP; eP++)
-//       {
-//          t_nameH = t_rootName + to_string(eN) + " " + to_string(eP);
-//          emMode[eN][eP] = new TH2I(t_nameH, titleH, 10,0,10, 10,0,10);
-//       }
-//    }
-//
-//    TH2I**** emModeChunks;
-//    emModeChunks = new TH2I*** [NUM_CHUNKS];
-//    for(int chunk = 0; chunk < NUM_CHUNKS; chunk++)
-//    {
-//      emModeChunks[chunk] = new TH2I** [BN];
-//      for(int eN = 0; eN < BN; eN++)
-//      {
-//      	emModeChunks[chunk][eN] = new TH2I* [BP];
-//
-//         for(int eP = 0; eP < BP; eP++)
-//         {
-//            t_nameH = t_rootName + to_string(eN) + " " + to_string(eP) + " " + to_string(chunk);
-//            emModeChunks[chunk][eN][eP] = new TH2I(t_nameH, titleH, 10,0,10, 10,0,10);
-//         }
-//      }
-//    }
-//
-//
-//    int encN, encP;
-//    // read the entries
-//    Long64_t nentries = expTree->GetEntriesFast();
-//    nentries = 1000000;
-//    Long64_t nbytes = 0, nb = 0;
-//
-//    for (Long64_t jentry=0; jentry<nentries;jentry++)
-//    {
-//
-//       if(jentry%1000000 == 0)
-//       {
-//         cout << jentry << " entries done. " << endl;
-//       }
-//
-//
-//
-//    	  // load the new entry
-//       Long64_t ientry = LoadExpTree(jentry);
-//       if (ientry < 0) break;
-//       nb = expTree->GetEntry(jentry);   nbytes += nb;
-//
-//      // cout << "loaded the new entry " << endl;
-//
-//      // reset the event-by-event list to 0
-//      for(int eN = 0; eN < BN; eN ++)
-//      {
-//       listNerg[eN] = 0;
-//      }
-//      for(int eP = 0; eP < BP; eP ++)
-//      {
-//       listPerg[eP] = 0;
-//      }
-//
-//      // cout << "resetted lists" << endl;
-//
-//
-//      // Neutron event-by-event spectrum
-//      for(int nN = 0; nN < neutronMult; nN++)
-//      {
-//
-//        if(neutronLightOut[nN] > THRESHOLD && neutronDetTimes[nN] < MAX_TIME_N)
-//        {
-//          encN = int((neutronToFErg[nN] - MIN_N_ERG)/sizeNerg);
-//
-//          if(encN >= BN)
-//          {
-//            encN = BN-1;
-//          }
-//          else if(encN < 0)
-//          {
-//            encN = 0;
-//          }
-//
-//          listNerg[encN] += 1;
-//        }
-//
-//      }
-//
-//      // cout << "encoded neutrons" << endl;
-//
-//      // Photon event-by-event spectrum
-//      for(int nP = 0; nP < gammaMult; nP++)
-//      {
-//        encP = int((photonLightOut[nP] - MIN_P_ERG)/sizePerg);
-//
-//        if(encP >= BP)
-//        {
-//          encP = BP-1;
-//        }
-//        else if(encP < 0)
-//        {
-//          encP = 0;
-//        }
-//
-//        listPerg[encP] += 1;
-//      }
-//
-//      // cout << "encoded gammas" << endl;
-//
-//
-//      // populate the em histograms
-//      for(int eN = 0; eN < BN; eN ++)
-//      {
-//       for(int eP = 0; eP < BP; eP ++)
-//        {
-//         emMode[eN][eP]->Fill(listNerg[eN], listPerg[eP]);
-//
-//         if(SELF_ERROR)
-//         {
-//           emModeChunks[jentry%NUM_CHUNKS][eN][eP]->Fill(listNerg[eN], listPerg[eP]);
-//         }
-//        }
-//      }
-//
-//      // cout << "filled EM histograms" << endl;
-//
-//     }
-//
-//    // find the covariance and spec at each point
-//      for(int eN = 0; eN < BN; eN ++)
-//      {
-//       for(int eP = 0; eP < BP; eP ++)
-//        {
-//         h2_arrayCorr->SetBinContent(eN+1, eP+1, emMode[eN][eP]->GetCovariance());
-//         h2_arraySpec->SetBinContent(eN+1, eP+1, (emMode[eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2)));
-//
-//        }
-//      }
-//
-//      cout << "finished setting EM matrices " << endl;
-//
-//
-//
-//
-//      if(SELF_ERROR)
-//      {
-//        double listCov[NUM_CHUNKS] = {0};
-//        double listSpec[NUM_CHUNKS] = {0};
-//
-//        double totCov = 0;
-//        double totSpec = 0;
-//
-//        cout << "computing self error from data fluctuations" << endl;
-//        // find the covariance at each point
-//          for(int eN = 0; eN < BN; eN ++)
-//          {
-//           for(int eP = 0; eP < BP; eP ++)
-//            {
-//              for(int chunk = 0; chunk < NUM_CHUNKS; chunk++)
-//              {
-//                double thisCov = emModeChunks[chunk][eN][eP]->GetCovariance();
-//                double thisSpec = (emModeChunks[chunk][eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2));
-//
-//                listCov[chunk] = thisCov;
-//                listSpec[chunk] = thisSpec;
-//
-//              }
-//
-//              h2_arrayCorr->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listCov)/sqrt(NUM_CHUNKS-1) );
-//              h2_arraySpec->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listSpec)/sqrt(NUM_CHUNKS-1) );
-//            }
-//          }
-//      }
-//
-//
-}
 
 void readFiss::ExtractCov()
 {
+  cd_FAME->cd();
   TH1D* h_Angles = new TH1D("Angles","angles between detectors",BA,MIN_THETA,MAX_THETA);
   cout << "extracting cov " << endl;
 
@@ -965,4 +761,205 @@ void readFiss::AnalyseCovEM()
 
        // covMatFire->Close();
        // covFire->Close();
+}
+
+void readFiss::CovEM()
+{
+//
+//    cout << "Beginning the great CovEM loop" << endl;
+//    // place to store all the result
+//
+//    h2_arrayCorr = new TH2D("CovMat", "Covariance Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
+//    h2_arraySpec = new TH2D("SpecMat", "Spectrum Matrix; Neutron ToF Energy (MeV); Photon Deposited Energy (MeVee); counts", BN, MIN_N_ERG, MAX_N_ERG, BP, MIN_P_ERG, MAX_P_ERG);
+//
+//    // make sure tree is open
+//    if (expTree == 0) return;
+//
+//    // updated event-by-event history
+//    int* listNerg;
+//    int* listPerg;
+//    listNerg = new int[BN];
+//    listPerg = new int[BP];
+//
+//    // initialize the EM histograms
+//    TString t_nameH;
+//    TString t_rootName = "em_";
+//    TString titleH = "EnergyMode Correlations";
+//
+//    TH2I*** emMode;
+//    emMode = new TH2I** [BN];
+//    for(int eN = 0; eN < BN; eN++)
+//    {
+//    	emMode[eN] = new TH2I* [BP];
+//
+//       for(int eP = 0; eP < BP; eP++)
+//       {
+//          t_nameH = t_rootName + to_string(eN) + " " + to_string(eP);
+//          emMode[eN][eP] = new TH2I(t_nameH, titleH, 10,0,10, 10,0,10);
+//       }
+//    }
+//
+//    TH2I**** emModeChunks;
+//    emModeChunks = new TH2I*** [NUM_CHUNKS];
+//    for(int chunk = 0; chunk < NUM_CHUNKS; chunk++)
+//    {
+//      emModeChunks[chunk] = new TH2I** [BN];
+//      for(int eN = 0; eN < BN; eN++)
+//      {
+//      	emModeChunks[chunk][eN] = new TH2I* [BP];
+//
+//         for(int eP = 0; eP < BP; eP++)
+//         {
+//            t_nameH = t_rootName + to_string(eN) + " " + to_string(eP) + " " + to_string(chunk);
+//            emModeChunks[chunk][eN][eP] = new TH2I(t_nameH, titleH, 10,0,10, 10,0,10);
+//         }
+//      }
+//    }
+//
+//
+//    int encN, encP;
+//    // read the entries
+//    Long64_t nentries = expTree->GetEntriesFast();
+//    nentries = 1000000;
+//    Long64_t nbytes = 0, nb = 0;
+//
+//    for (Long64_t jentry=0; jentry<nentries;jentry++)
+//    {
+//
+//       if(jentry%1000000 == 0)
+//       {
+//         cout << jentry << " entries done. " << endl;
+//       }
+//
+//
+//
+//    	  // load the new entry
+//       Long64_t ientry = LoadExpTree(jentry);
+//       if (ientry < 0) break;
+//       nb = expTree->GetEntry(jentry);   nbytes += nb;
+//
+//      // cout << "loaded the new entry " << endl;
+//
+//      // reset the event-by-event list to 0
+//      for(int eN = 0; eN < BN; eN ++)
+//      {
+//       listNerg[eN] = 0;
+//      }
+//      for(int eP = 0; eP < BP; eP ++)
+//      {
+//       listPerg[eP] = 0;
+//      }
+//
+//      // cout << "resetted lists" << endl;
+//
+//
+//      // Neutron event-by-event spectrum
+//      for(int nN = 0; nN < neutronMult; nN++)
+//      {
+//
+//        if(neutronLightOut[nN] > THRESHOLD && neutronDetTimes[nN] < MAX_TIME_N)
+//        {
+//          encN = int((neutronToFErg[nN] - MIN_N_ERG)/sizeNerg);
+//
+//          if(encN >= BN)
+//          {
+//            encN = BN-1;
+//          }
+//          else if(encN < 0)
+//          {
+//            encN = 0;
+//          }
+//
+//          listNerg[encN] += 1;
+//        }
+//
+//      }
+//
+//      // cout << "encoded neutrons" << endl;
+//
+//      // Photon event-by-event spectrum
+//      for(int nP = 0; nP < gammaMult; nP++)
+//      {
+//        encP = int((photonLightOut[nP] - MIN_P_ERG)/sizePerg);
+//
+//        if(encP >= BP)
+//        {
+//          encP = BP-1;
+//        }
+//        else if(encP < 0)
+//        {
+//          encP = 0;
+//        }
+//
+//        listPerg[encP] += 1;
+//      }
+//
+//      // cout << "encoded gammas" << endl;
+//
+//
+//      // populate the em histograms
+//      for(int eN = 0; eN < BN; eN ++)
+//      {
+//       for(int eP = 0; eP < BP; eP ++)
+//        {
+//         emMode[eN][eP]->Fill(listNerg[eN], listPerg[eP]);
+//
+//         if(SELF_ERROR)
+//         {
+//           emModeChunks[jentry%NUM_CHUNKS][eN][eP]->Fill(listNerg[eN], listPerg[eP]);
+//         }
+//        }
+//      }
+//
+//      // cout << "filled EM histograms" << endl;
+//
+//     }
+//
+//    // find the covariance and spec at each point
+//      for(int eN = 0; eN < BN; eN ++)
+//      {
+//       for(int eP = 0; eP < BP; eP ++)
+//        {
+//         h2_arrayCorr->SetBinContent(eN+1, eP+1, emMode[eN][eP]->GetCovariance());
+//         h2_arraySpec->SetBinContent(eN+1, eP+1, (emMode[eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2)));
+//
+//        }
+//      }
+//
+//      cout << "finished setting EM matrices " << endl;
+//
+//
+//
+//
+//      if(SELF_ERROR)
+//      {
+//        double listCov[NUM_CHUNKS] = {0};
+//        double listSpec[NUM_CHUNKS] = {0};
+//
+//        double totCov = 0;
+//        double totSpec = 0;
+//
+//        cout << "computing self error from data fluctuations" << endl;
+//        // find the covariance at each point
+//          for(int eN = 0; eN < BN; eN ++)
+//          {
+//           for(int eP = 0; eP < BP; eP ++)
+//            {
+//              for(int chunk = 0; chunk < NUM_CHUNKS; chunk++)
+//              {
+//                double thisCov = emModeChunks[chunk][eN][eP]->GetCovariance();
+//                double thisSpec = (emModeChunks[chunk][eN][eP]->GetMean(1))*(emMode[eN][eP]->GetMean(2));
+//
+//                listCov[chunk] = thisCov;
+//                listSpec[chunk] = thisSpec;
+//
+//              }
+//
+//              h2_arrayCorr->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listCov)/sqrt(NUM_CHUNKS-1) );
+//              h2_arraySpec->SetBinError(eN+1, eP+1, TMath::StdDev(NUM_CHUNKS, listSpec)/sqrt(NUM_CHUNKS-1) );
+//            }
+//          }
+//      }
+//
+//
 }

@@ -39,6 +39,10 @@ public:
   int *EXCLUDE_DETECTORS;
   int NUM_EXCLUDED;
 
+  // fragment mode and path to fragment
+  int FRAGMENT_MODE;
+  TString FRAGMENT_PATH;
+
   //calibration attributes
   TGraph *calibrationDet;
   TString calibrationPath;
@@ -113,6 +117,9 @@ public:
     nameOfExp = "";
 
     calibrationDet = NULL;
+
+    FRAGMENT_MODE = 0;
+    FRAGMENT_PATH = "";
 
     NUM_BEAMS = 0;
     NUM_DETS = 0;
@@ -308,7 +315,6 @@ public:
           EXCLUDE_DETECTORS[i] = stoi(value);
         }
       }
-
       else if(tag == "<COINC_WINDOW>:") {
         file >> value;
         COINC_WINDOW = stod(value);
@@ -441,6 +447,13 @@ public:
       else if(tag == "<BEAM_DELAY>:") {
         file >> value;
         BEAM_DELAY = stod(value);
+      }
+
+      else if(tag == "<FRAGMENT_PATH>:")
+      {
+        FRAGMENT_MODE = 1;
+        file >> value;
+        FRAGMENT_PATH = TString(value);
       }
     }
 

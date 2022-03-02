@@ -108,6 +108,15 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	double bPSP = 0;
 	double bTail = 0;
 
+	// fragment branches
+	double rAL = 0;
+	double rAH = 0;
+	double rKEL = 0;
+	double rKEH = 0;
+	double rThetaL = 0;
+	double rThetaH = 0;
+	double rEX = 0;
+
 	// particles
 	double totToF[MAX_MULTIPLICITY] = {0};
 	double totPSP[MAX_MULTIPLICITY] = {0};
@@ -132,6 +141,49 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		coincTree->Branch("bIndex", &bIndex, "beamIndex/I");
 		coincTree->Branch("bPSP", &bPSP, "beamPSP/D");
 		coincTree->Branch("bTail", &bTail, "beamTail/D");
+	}
+
+	if(FRAGMENT_MODE == 1)
+	{
+		coincTree->Branch("rAL", &rAL, "rAL/D");
+		coincTree->Branch("rAH", &rAH, "rAH/D");
+		coincTree->Branch("rKEL", &rKEL, "rKEL/D");
+		coincTree->Branch("rKEH", &rKEH, "rKEH/D");
+		coincTree->Branch("rThetaL", &rThetaL, "rThetaL/D");
+		coincTree->Branch("rThetaH", &rThetaH, "rThetaH/D");
+		coincTree->Branch("rEX", &rEX, "rEX/D");
+
+		// open the fragment tree
+		gROOT->cd();
+
+		cout << "Reading fragment tree from " << FRAGMENT_PATH + rootEnding + "/" + nameFragTree << endl;
+
+		fragTreeChain->Add(FRAGMENT_PATH + rootEnding + "/" + nameFragTree);
+		bool fileFound = true;
+		int fileNum = 1;
+
+		while(gSystem->AccessPathName(FRAGMENT_PATH + "_" + to_string(fileNum) + rootEnding) == false)
+		{
+			fragTreeChain->Add(FRAGMENT_PATH + "_" + to_string(fileNum) + rootEnding + "/" + nameFragTree);
+			cout << "And file " << FRAGMENT_PATH + "_" + to_string(fileNum) + rootEnding + "/" + nameFragTree << endl;
+			fileNum++;
+		}
+		cout << "Completed reading from " << fileNum << " with " << fragTreeChain->GetEntries() << endl;
+
+		cout << "initializing fragment tree " << endl;
+
+		fragTreeChain->SetBranchAddress("fT", &fT, &b_fT);
+    fragTreeChain->SetBranchAddress("fAL", &fAL, &b_fAL);
+    fragTreeChain->SetBranchAddress("fAH", &fAH, &b_fAH);
+    fragTreeChain->SetBranchAddress("fKEL", &fKEL, &b_fKEL);
+    fragTreeChain->SetBranchAddress("fKEH", &fKEH, &b_fKEH);
+    fragTreeChain->SetBranchAddress("fThetaL", &fThetaL, &b_fThetaL);
+    fragTreeChain->SetBranchAddress("fThetaH", &fThetaH, &b_fThetaH);
+    fragTreeChain->SetBranchAddress("fEX", &fEX, &b_fEX);
+
+
+		// index of fragment tree
+		fragEntry = 0;
 	}
 
 	// list variables
@@ -312,6 +364,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		Long64_t ientry = LoadTree(jentry);
 	  	if (ientry < 0) break;
+	  // Long64_t fentry	= fragTreeChain->LoadTree(fragEntry);
 
 
 
@@ -886,7 +939,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				tChan = fissionChan;
 				tTail = fissionTail;
 
-				if(NUM_BEAMS >0)
+				if(NUM_BEAMS > 0)
 				{
 					bErg = beamEnergy;
 					bPSP = beamPSP;
@@ -896,7 +949,27 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					bTail = beamTail;
 				}
 
+				if(FRAGMENT_MODE)
+				{
+					while((fT - tTime) < -1*COINC_WINDOW)
+					{
+						fragEntry++;
+						Long64_t fentry	= fragTreeChain->LoadTree(fragEntry);
+					}
+					if((fT - tTime) > COINC_WINDOW) continue;
+
+					rAL = fAL;
+					rAH = fAH;
+					rKEL = fKEL;
+					rKEH = fKEH;
+					rThetaL = fThetaL;
+					rThetaH = fThetaH;
+					rEX = fEX;
+					tTime = fT;
+				}
+
 				// fill the tree branches
+
 				coincTree->Fill();
 				fisTracker++;
 

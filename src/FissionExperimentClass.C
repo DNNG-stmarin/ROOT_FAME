@@ -54,6 +54,9 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 
 	NUM_BEAMS = info->NUM_BEAMS;
 
+	FRAGMENT_MODE = info->FRAGMENT_MODE;
+	FRAGMENT_PATH = info->FRAGMENT_PATH;
+
 
 	resultFold = new TFolder(nameOfExp, nameOfExp);
 
