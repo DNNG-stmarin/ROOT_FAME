@@ -109,6 +109,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	double bTail = 0;
 
 	// fragment branches
+	double rDelt = 0;
 	double rAL = 0;
 	double rAH = 0;
 	double rKEL = 0;
@@ -145,6 +146,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	if(FRAGMENT_MODE == 1)
 	{
+		cout << "Creating fragment chain" << endl;
+		fragTreeChain = new TChain(nameFragTree, "Fragment Tree");
 		coincTree->Branch("rAL", &rAL, "rAL/D");
 		coincTree->Branch("rAH", &rAH, "rAH/D");
 		coincTree->Branch("rKEL", &rKEL, "rKEL/D");
@@ -152,6 +155,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		coincTree->Branch("rThetaL", &rThetaL, "rThetaL/D");
 		coincTree->Branch("rThetaH", &rThetaH, "rThetaH/D");
 		coincTree->Branch("rEX", &rEX, "rEX/D");
+		coincTree->Branch("rDelt", &rDelt, "rDelt/D");
 
 		// open the fragment tree
 		gROOT->cd();
@@ -171,7 +175,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		cout << "Completed reading from " << fileNum << " with " << fragTreeChain->GetEntries() << endl;
 
 		cout << "initializing fragment tree " << endl;
-
+		fragTreeChain->SetMakeClass(1);
 		fragTreeChain->SetBranchAddress("fT", &fT, &b_fT);
     fragTreeChain->SetBranchAddress("fAL", &fAL, &b_fAL);
     fragTreeChain->SetBranchAddress("fAH", &fAH, &b_fAH);
@@ -182,8 +186,17 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
     fragTreeChain->SetBranchAddress("fEX", &fEX, &b_fEX);
 
 
+
+		cout << fragTreeChain->GetEntries() << " fragment events" << endl;
+
 		// index of fragment tree
-		fragEntry = 0;
+		fragEntry = fragTreeChain->GetEntries()-1;
+
+		fragTreeChain->GetEntry(1);
+		cout << "First time is " << fT << endl;
+
+		fragTreeChain->GetEntry(fragEntry);
+		cout << "Last time is " << fT << endl;
 	}
 
 	// list variables
@@ -349,7 +362,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	double timeDel = 0;
 	int fileInd = 0;
 
-	cout << "Beam delay set to: " << BEAM_DELAY << endl;
+	if(NUM_BEAMS > 0) cout << "Beam delay set to: " << BEAM_DELAY << endl;
+
 
 	// cout << TRIGGER_THRESHOLD << " " << TRIGGER_CLIP << endl;
 
@@ -364,8 +378,10 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		Long64_t ientry = LoadTree(jentry);
 	  	if (ientry < 0) break;
-	  // Long64_t fentry	= fragTreeChain->LoadTree(fragEntry);
-
+		if(FRAGMENT_MODE)
+		{
+	  	Long64_t fentry	= fragTreeChain->LoadTree(fragEntry);
+		}
 
 
 		// load current entry
@@ -951,21 +967,37 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 				if(FRAGMENT_MODE)
 				{
+					// cout << fragEntry << " " << (fT - tTime) << endl;
 					while((fT - tTime) < -1*COINC_WINDOW)
 					{
-						fragEntry++;
-						Long64_t fentry	= fragTreeChain->LoadTree(fragEntry);
+						if(fragEntry == 0) break;
+						fragEntry--;
+						// cout << fragEntry << endl;
+						// cout << fragEntry << " " << (fT - tTime) << endl;
+						fragTreeChain->GetEntry(fragEntry);
+						// cout << fT << " " << (fT - tTime) << endl;
+						// fragTreeChain->Show(fragEntry);
 					}
-					if((fT - tTime) > COINC_WINDOW) continue;
 
-					rAL = fAL;
-					rAH = fAH;
-					rKEL = fKEL;
-					rKEH = fKEH;
-					rThetaL = fThetaL;
-					rThetaH = fThetaH;
-					rEX = fEX;
-					tTime = fT;
+					if(abs(fT - tTime) < COINC_WINDOW )
+					{
+						cout << "fragment coincidence found: " << (fT - tTime) << endl;
+
+						rAL = fAL;
+						rAH = fAH;
+						rKEL = fKEL;
+						rKEH = fKEH;
+						rThetaL = fThetaL;
+						rThetaH = fThetaH;
+						rEX = fEX;
+						rDelt = fT - tTime;
+					// tTime = fT;
+					}
+					else
+					{
+						// cout << fT << " " << (fT - tTime) << endl;
+						continue;
+					}
 				}
 
 				// fill the tree branches
