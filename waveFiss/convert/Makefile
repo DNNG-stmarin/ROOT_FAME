@@ -129,30 +129,6 @@ WAVE_FISS/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/WAVE_FISS.dir/build.make CMakeFiles/WAVE_FISS.dir/build
 .PHONY : WAVE_FISS/fast
 
-ConvertCompass.o: ConvertCompass.C.o
-.PHONY : ConvertCompass.o
-
-# target to build an object file
-ConvertCompass.C.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/WAVE_FISS.dir/build.make CMakeFiles/WAVE_FISS.dir/ConvertCompass.C.o
-.PHONY : ConvertCompass.C.o
-
-ConvertCompass.i: ConvertCompass.C.i
-.PHONY : ConvertCompass.i
-
-# target to preprocess a source file
-ConvertCompass.C.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/WAVE_FISS.dir/build.make CMakeFiles/WAVE_FISS.dir/ConvertCompass.C.i
-.PHONY : ConvertCompass.C.i
-
-ConvertCompass.s: ConvertCompass.C.s
-.PHONY : ConvertCompass.s
-
-# target to generate assembly for a file
-ConvertCompass.C.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/WAVE_FISS.dir/build.make CMakeFiles/WAVE_FISS.dir/ConvertCompass.C.s
-.PHONY : ConvertCompass.C.s
-
 main.o: main.C.o
 .PHONY : main.o
 
@@ -177,6 +153,30 @@ main.C.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/WAVE_FISS.dir/build.make CMakeFiles/WAVE_FISS.dir/main.C.s
 .PHONY : main.C.s
 
+src/ConvertCompass.o: src/ConvertCompass.C.o
+.PHONY : src/ConvertCompass.o
+
+# target to build an object file
+src/ConvertCompass.C.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WAVE_FISS.dir/build.make CMakeFiles/WAVE_FISS.dir/src/ConvertCompass.C.o
+.PHONY : src/ConvertCompass.C.o
+
+src/ConvertCompass.i: src/ConvertCompass.C.i
+.PHONY : src/ConvertCompass.i
+
+# target to preprocess a source file
+src/ConvertCompass.C.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WAVE_FISS.dir/build.make CMakeFiles/WAVE_FISS.dir/src/ConvertCompass.C.i
+.PHONY : src/ConvertCompass.C.i
+
+src/ConvertCompass.s: src/ConvertCompass.C.s
+.PHONY : src/ConvertCompass.s
+
+# target to generate assembly for a file
+src/ConvertCompass.C.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/WAVE_FISS.dir/build.make CMakeFiles/WAVE_FISS.dir/src/ConvertCompass.C.s
+.PHONY : src/ConvertCompass.C.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -186,12 +186,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... WAVE_FISS"
-	@echo "... ConvertCompass.o"
-	@echo "... ConvertCompass.i"
-	@echo "... ConvertCompass.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... src/ConvertCompass.o"
+	@echo "... src/ConvertCompass.i"
+	@echo "... src/ConvertCompass.s"
 .PHONY : help
 
 

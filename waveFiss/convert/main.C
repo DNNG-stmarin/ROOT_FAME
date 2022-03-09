@@ -2,7 +2,7 @@
 // Purpose: Convert CoMPASS output to a format compatible with Dana's scripts
 // Date: March 2022
 
-// #include "InfoSystem.h"
+#include "InfoSystem.h"
 #include "ConvertCompass.h"
 
 #include <stdlib.h>
@@ -15,17 +15,17 @@ using namespace std;
 int main(int argc, char** argv)
 {
 
-  cout << "\nWelcome to WAVE_FAME" << endl;
+  cout << "\nWelcome to CONVERT_COMPASS" << endl;
 
   if(argc == 1) {
-    cout << "ERROR: config file not given\n";
+    cout << "ERROR: input file not given\n";
     return 0;
   }
 
-  TString configFileName;
+  TString inputFileName;
   TString fileName;
 
-  configFileName = TString(argv[1]);
+  inputFileName = TString(argv[1]);
 
   if(argc >= 3) {
     fileName = TString(argv[2]);
@@ -35,7 +35,10 @@ int main(int argc, char** argv)
     fileName = "compassCf_";
   }
 
-  ConvertCompass* convert = new ConvertCompass(configFileName);
+  InfoSystem* info = new InfoSystem();
+  info->ReadInput(inputFileName);
+
+  ConvertCompass* convert = new ConvertCompass(info, fileName);
   convert->Loop();
 
   return 0;

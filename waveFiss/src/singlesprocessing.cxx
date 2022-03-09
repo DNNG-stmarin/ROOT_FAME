@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
   tke.tMethod[i_bnum][i_chnum]          = "derivative";
   tke.interp[i_bnum][i_chnum]           = "cubic";
   tke.thresh[i_bnum][i_chnum]           = 5;
-  tke.polarity[i_bnum][i_chnum]         = "negative";
+  tke.polarity[i_bnum][i_chnum]         = "positive";
   tke.bLineOS[i_bnum][i_chnum]          = 1;
   tke.bLineNpts[i_bnum][i_chnum]        = 10;
   tke.eMethod[i_bnum][i_chnum]          = "chargeInt";
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
   tke.Ns[i_bnum][i_chnum]        = WF_SIZE;
   tke.nZero[i_bnum][i_chnum]     = 4;
   tke.tOffset[i_bnum][i_chnum]   = 10;
-  tke.polarity[i_bnum][i_chnum]  = "negative";
+  tke.polarity[i_bnum][i_chnum]  = "positive";
   tke.thresh[i_bnum][i_chnum]    = -1;
   tke.tau[i_bnum][i_chnum]       = 16.0;
   tke.tMethod[i_bnum][i_chnum]   = "derivative";
@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
   for (i_chnum = 2; i_chnum < 4; ++i_chnum) {
     tke.Ns[i_bnum][i_chnum]        = WF_SIZE;
     tke.thresh[i_bnum][i_chnum]    = -1;
-    tke.polarity[i_bnum][i_chnum]  = "negative";
+    tke.polarity[i_bnum][i_chnum]  = "positive";
     tke.bLineOS[i_bnum][i_chnum]   = 10;
     tke.bLineNpts[i_bnum][i_chnum] = 100;
     tke.eMethod[i_bnum][i_chnum]   = "trapFilter";
@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
   // ion chamber grids
   for (i_chnum = 4; i_chnum < 6; ++i_chnum) {
     tke.Ns[i_bnum][i_chnum]        = WF_SIZE;
-    tke.polarity[i_bnum][i_chnum]  = "negative";
+    tke.polarity[i_bnum][i_chnum]  = "positive";
     tke.tMethod[i_bnum][i_chnum]   = "cfd";
     tke.thresh[i_bnum][i_chnum]    = -1;
     tke.bLineOS[i_bnum][i_chnum]   = 10;
@@ -395,6 +395,7 @@ int main(int argc, char* argv[])
   itree->SetBranchAddress(buf, raw_evt.wf);
 
 
+
   // cout << "oh wow i made it to the output loop\n";
   cout << "Creating output tree...\n";
   for (int i = 0; i < MAXNBOARDS; ++i) {
@@ -421,7 +422,7 @@ int main(int argc, char* argv[])
   cout << "...success!\n";
 
   // logistical stuff to sort out clock rollover
-  UInt_t    last_ts[MAXNBOARDS][MAXNCHANNELS];
+  ULong64_t    last_ts[MAXNBOARDS][MAXNCHANNELS];
   ULong64_t ts_base[MAXNBOARDS][MAXNCHANNELS];
   for (int i = 0; i < MAXNBOARDS; ++i) {
     for (int j = 0; j < MAXNCHANNELS; ++j) {

@@ -4,8 +4,8 @@
 
     TFile *ofile = new TFile("processed_data/run92_wfproc.root","recreate");
     TTree *otree = new TTree("pt","Pulse tree from waveform analysis");
-    // 
-    UInt_t last_ts[2][8];
+    //
+    ULong64_t last_ts[2][8];
     ULong64_t ts_base[2][8];
     for (int i=0;i<2;++i)
     {
@@ -15,7 +15,7 @@
             ts_base[i][j]=0;
         }
     }
-    
+
     // input branches
     UChar_t bnum;
     UChar_t chnum;
@@ -44,7 +44,7 @@
             printf("hey i found rollover on board %i channel %i event %i\n",bnum,chnum,i);
             ts_base[bnum][chnum] =ts_base[bnum][chnum] + pow(2,32);
             cout << "My ts base is now " << ts_base[bnum][chnum] << endl;
-          
+
         }
         ts_out = ts_base[bnum][chnum] + ts;
         last_ts[bnum][chnum] = ts;

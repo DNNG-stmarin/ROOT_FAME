@@ -57,7 +57,7 @@ class CAEN_DGTZ_Event
 public:
   UChar_t  bnum;
   UChar_t  chnum;
-  UInt_t   ts;            // 32 bit unsigned integer
+  ULong64_t   ts;            // 64 bit unsigned long
   Short_t  wf[WF_SIZE];   // raw waveform
   Double_t Eflt[WF_SIZE]; // filtered waveform 0 - mostly 1st derivative
   Double_t Tflt[WF_SIZE]; // filtered waveform 1 - mostly 2nd derivative

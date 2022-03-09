@@ -17,17 +17,15 @@ find_package(ROOT REQUIRED COMPONENTS RIO Net)
 include(${ROOT_USE_FILE})
 
 # Setup include directory for this project
-# include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 # NB: headers are included so they will show up in IDEs
 #
-file(GLOB sources ${PROJECT_SOURCE_DIR}/ConvertCompass.C)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/ConvertCompass.h)
-# file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cxx)
-# file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h)
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.C)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h)
 
 #---Create  a main program using the library
-add_executable(WAVE_FISS main.C ${sources} ${headers})
-target_link_libraries(WAVE_FISS ${ROOT_LIBRARIES})
+add_executable(CONVERT main.C ${sources} ${headers})
+target_link_libraries(CONVERT ${ROOT_LIBRARIES})

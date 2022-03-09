@@ -7,25 +7,38 @@
 
 using namespace std;
 
-ConvertCompass::ConvertCompass(TString runFileName) : runChain(0)
+ConvertCompass::ConvertCompass(InfoSystem* infoIn, TString fileName) : runChain(0)
 {
   // Create output file
-  cout << "Creating output file" << endl;
-  danaFile = new TFile("danaFile.root", "RECREATE");
+  TString outfileName = "danaFile.root";
+  cout << "Creating output file:" << outfileName << endl;
+  danaFile = new TFile(outfileName, "RECREATE");
 
   // Get runChain
   runChain = new TChain(inputTreeName, inputTreeName);
 
-   for(int i = 0; i < 1; i++)
-   {
-      // int fileNum = (infoSystem->FILE_LIST)[i];
-      //
-      // cout << "Reading file number " << fileNum << endl;
+  // Load info
+  infoSystem = infoIn;
 
-      TString s_runFile =  "/Users/giha/Documents/ANL2022/ionizationChamber/results/runW/FILTERED/DataF_runW.root"; // runFileName + TString(to_string(fileNum)) + extRunfile;
+   for(int i = 0; i < infoSystem->NUM_FILES; i++)
+   {
+      int fileNum = (infoSystem->FILE_LIST)[i];
+
+      TString s_runFile;
+      if (i == 0)
+      {
+        s_runFile = "DataF_runW" + extRunFile;
+      }
+      else
+      {
+        s_runFile = "DataF_runW_" + TString(to_string(fileNum)) + extRunFile;
+      }
+
+      cout << "Reading file number " << fileNum << ": " << s_runFile << endl;
+
       runFile = (TFile*)gROOT->GetListOfFiles()->FindObject(s_runFile);
 
-      if (!runFile || !runFile ->IsOpen())
+      if (!runFile || !runFile->IsOpen())
       {
         runFile = new TFile(s_runFile);
       }
@@ -66,15 +79,16 @@ void ConvertCompass::Loop()
 
    UChar_t tBoard;
    UChar_t tChan;
-   UInt_t tTime;
+   ULong64_t tTime;
    Short_t* tWave;
 
    danaTree->Branch("bnum", &tBoard, "bnum/b");
    danaTree->Branch("chnum", &tChan, "chnum/b");
-   danaTree->Branch("ts", &tTime, "ts/i");
+   danaTree->Branch("ts", &tTime, "ts/l");
    danaTree->Branch("wf[1280]", tWave, "wf[1280]/S");
 
    danaTree->SetMaxTreeSize(1000000000LL);
+   danaTree->SetFileNumber(0);
 
 
    // random filling options
@@ -97,47 +111,16 @@ void ConvertCompass::Loop()
 
       tBoard = (UChar_t)Board;
       tChan = (UChar_t)Channel;
-      tTime = (UInt_t)Timestamp;
+      tTime = (ULong64_t)Timestamp;
 
-      for (int i = 0; i < recordLength; i++)
-      {
-        tWave[i] = (Short_t)Samples->GetAt(i);
-      }
-
-
-
-      // // mock data generator
-      // // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      // tBoard = 0;
-      // tChan = r%NUM_ELEC;
-      // tTime = 2000*r/NUM_ELEC + randGen->Integer(400);
-      //
-      // h1 = randGen->Gaus(5000,1500);
-      // // if(tChan == 1)
-      // // {
-      // //    r++;
-      // //    continue;
-      // // }
-      // if(tChan == 4 || tChan == 5) // grids
+      // for (int i = 0; i < recordLength; i++)
       // {
-      //    h2 = h1 + randGen->Gaus(2000,400);
+      //   tWave[i] = (Short_t)Samples->GetAt(i);
       // }
-      // else
-      // {
-      //    h2 = 0;
-      // }
-      //
-      //
-      // for(int x = 0; x < RECORD_LENGTH; x++)
-      // {
-      //    tWave[x] = h1/(1.0+TMath::Exp((x-RECORD_LENGTH/2)/50)) + h2/(1.0+TMath::Exp(-(x-RECORD_LENGTH/2 - 400)/50));
-      // }
-      // r++;
-      // // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
+      cout << "Filling tree" << endl;
       danaTree->Fill();
+      cout << "Tree filled" << endl;
 
    }
 
@@ -207,8 +190,6 @@ Bool_t ConvertCompass::Notify()
    // is started when using PROOF. It is normally not necessary to make changes
    // to the generated code, but the routine can be extended by the
    // user if needed. The return value is currently not used.
-   cout << "Notify " << fCurrent << endl;
-
    return kTRUE;
 }
 

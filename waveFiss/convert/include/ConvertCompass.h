@@ -8,6 +8,8 @@
 #ifndef ConvertCompass_h
 #define ConvertCompass_h
 
+#include "InfoSystem.h"
+
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
@@ -18,8 +20,7 @@
 
 class ConvertCompass {
 public :
-
-   int NUM_FILES = 1;
+   InfoSystem*     infoSystem;
 
    TChain*         runChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -32,7 +33,7 @@ public :
 
    TString         inputTreeName = "Data_F";
    TString         runFilename = "default";
-   TString         extRunfile = ".root";
+   TString         extRunFile = ".root";
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
@@ -54,13 +55,13 @@ public :
    TBranch*        b_Probe;   //!
    TBranch*        b_Samples;   //!
 
-   ConvertCompass(TString runFileName);
+   ConvertCompass(InfoSystem* infoIn, TString fileName);
    virtual ~ConvertCompass();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init();
-   
+
    virtual void     Loop();
 
    virtual Bool_t   Notify();
