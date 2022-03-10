@@ -157,6 +157,30 @@ Double_t CAEN_DGTZ_Event::calcPhChargeInt(Int_t Ns, Int_t offset, Short_t* wf)
 
 ////////////////////////////////////////////////////////////////////////////////
 /// calculate peak height with a simple charge integration
+
+Double_t CAEN_DGTZ_Event::calcPhGrid(Int_t Ns, Int_t offset, Int_t Npts, Short_t* wf)
+{
+  Int_t min = 10000;
+  for (int eye = 0; eye < Ns; eye++)
+  {
+    if (wf[eye] < min)  { min = wf[eye]; }
+  }
+
+  Double_t integral = 0;
+
+  for (int eye = min + offset; eye < min + offset + Npts; eye++)
+  {
+    integral += (double)wf[eye];
+  }
+  // cout << "final integral " << integral << endl;
+  return integral / ((double)Npts);
+}
+
+
+
+/*
+WE ARE NOT JUST DOING SIMPLE CHARGE INTEGRATION. WE CAN DO BETTER.
+
 Double_t CAEN_DGTZ_Event::calcPhGrid(Int_t Ns, Int_t Npts, Short_t* wf)
 {
   Double_t integral = 0;
@@ -169,6 +193,7 @@ Double_t CAEN_DGTZ_Event::calcPhGrid(Int_t Ns, Int_t Npts, Short_t* wf)
   // cout << "final integral " << integral << endl;
   return integral / ((double)Npts);
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 /// calculate peak height by fitting with an exponential function
@@ -680,7 +705,7 @@ Int_t CAEN_DGTZ_Event::processWf(TKESettings tke, double* tTrig, int* tPeak, dou
     // ph =
     //   calcPhChargeInt(tke.nPeak[bnum][chnum], ((int)zcross) + tke.eOffset[bnum][chnum],
     //   this->wf);
-    ph    = calcPhGrid(tke.Ns[bnum][chnum], tke.nPeak[bnum][chnum], this->wf);
+    ph    = calcPhGrid(tke.Ns[bnum][chnum], tke.gOffset[bnum][chnum], tke.nPeak[bnum][chnum], this->wf);
     *peak = ph;
   } else if (tke.eMethod[bnum][chnum].compare("expFit") == 0) {
     // cout << "number of points in waveform " << tke.Ns[bnum][chnum] << endl;

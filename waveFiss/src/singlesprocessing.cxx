@@ -133,6 +133,7 @@ int main(int argc, char* argv[])
     tke.nZero[i_bnum][i_chnum]     = 4;
     tke.interp[i_bnum][i_chnum]    = "cubic";
     tke.tOffset[i_bnum][i_chnum]   = 4;
+    tke.gOffset[i_bnum][i_chnum]   = 20;
 
     // tke.nPeak[i_bnum][i_chnum] = 200; // good for U5
     // tke.bLineNpts[i_bnum][i_chnum] = 200; /// good for U5
@@ -501,7 +502,7 @@ int main(int argc, char* argv[])
       cout << "!!!Warning!!! - Event limit exceeded; exiting entry processing loop!\n";
       break;
     }
-    if((int)raw_evt.chnum == 0) break;
+    // if((int)raw_evt.chnum == 0) break;
   }
   cout << "\ndone!\n"
        << "Processed " << eye << " entries\n";

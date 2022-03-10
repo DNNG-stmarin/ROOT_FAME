@@ -49,6 +49,8 @@ public:
   Double_t tau[MAXNBOARDS][MAXNCHANNELS];     // CSP decay constant
   Double_t frac[MAXNBOARDS][MAXNCHANNELS];    // frac for CFD
   Double_t thresh[MAXNBOARDS][MAXNCHANNELS];  // zero crossing threshold (for double derivative)
+
+  Int_t    gOffset[MAXNBOARDS][MAXNCHANNELS]; // number of samples after grid min to begin averaging signal
 public:
   void reset();
 };
@@ -69,7 +71,7 @@ public:
 public:
   Double_t calcBaseline(Int_t Ns, Int_t offset, Short_t* wf);
   Double_t calcPhChargeInt(Int_t Ns, Int_t offset, Short_t* wf); // charge integration
-  Double_t calcPhGrid(Int_t Ns, Int_t Npts, Short_t* wf);
+  Double_t calcPhGrid(Int_t Ns, Int_t offset, Int_t Npts, Short_t* wf);
   Double_t calcPhExp(Int_t Ns, Int_t Npts, Int_t offset, Double_t baseline, Short_t* wf,
                      Double_t ph_guess, Double_t tau); // exponential fitting
   void     CFD(Int_t Ns, Short_t* wf, Double_t* CFD, Int_t delay, Double_t frac);
