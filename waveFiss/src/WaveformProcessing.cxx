@@ -167,7 +167,7 @@ Double_t CAEN_DGTZ_Event::calcPhGrid(Int_t Ns, Int_t Npts, Short_t* wf)
     // endl;
   }
   // cout << "final integral " << integral << endl;
-  return -integral / ((double)Npts);
+  return integral / ((double)Npts);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -372,6 +372,7 @@ Double_t CAEN_DGTZ_Event::getPhTrapFilter(Int_t Ns, Double_t* tf, Int_t offset, 
 {
   Int_t    t0  = offset + tRise + tPeak - nPeak + 1;
   Int_t    t_f = offset + tRise + tPeak;
+  // cout << "Been trappin " << t0 << " " << t_f << endl;
   Double_t ph  = 0;
   for (Int_t eye = t0; eye <= t_f; eye++) { ph += tf[eye]; }
   return ph / ((double)nPeak);
@@ -533,9 +534,9 @@ void CAEN_DGTZ_Event::trapFilter(Int_t Ns, Short_t* wf, Double_t* tf, Int_t zcro
   Int_t    ell  = T_g + T_r;
   for (Int_t en = zcross; en < Ns; en++) {
     d_kl = wf[en];
-    if (en - T_r >= zcross) { d_kl -= wf[en - T_r]; }
-    if (en - ell >= zcross) { d_kl -= wf[en - ell]; }
-    if (en - T_r - ell >= zcross) { d_kl += wf[en - T_r - ell]; }
+    if (en - T_r >= zcross) { d_kl -= wf[en - T_r]; } // In the gap
+    if (en - ell >= zcross) { d_kl -= wf[en - ell]; } // In the fall time
+    if (en - T_r - ell >= zcross) { d_kl += wf[en - T_r - ell]; } // Past fall
     p_n += d_kl;
     r_n = p_n + M * d_kl;
     s_n += r_n;

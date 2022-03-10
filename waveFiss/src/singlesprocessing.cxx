@@ -100,10 +100,10 @@ int main(int argc, char* argv[])
     tke.bLineOS[i_bnum][i_chnum]   = 10;
     tke.bLineNpts[i_bnum][i_chnum] = 16;
     tke.eMethod[i_bnum][i_chnum]   = "trapFilter";
-    tke.tRise[i_bnum][i_chnum]     = 100;
-    tke.tGap[i_bnum][i_chnum]      = 100;
+    tke.tRise[i_bnum][i_chnum]     = 20;
+    tke.tGap[i_bnum][i_chnum]      = 50;
     tke.tPeak[i_bnum][i_chnum]     = tke.tGap[i_bnum][i_chnum] - 1;
-    tke.nPeak[i_bnum][i_chnum]     = 2;
+    tke.nPeak[i_bnum][i_chnum]     = 10;//2;
     tke.tMethod[i_bnum][i_chnum]   = "derivative";
     tke.ffRise[i_bnum][i_chnum]    = 16;
     tke.delay[i_bnum][i_chnum]     = 4;
@@ -111,8 +111,8 @@ int main(int argc, char* argv[])
     tke.interp[i_bnum][i_chnum]    = "cubic";
     tke.nZero[i_bnum][i_chnum]     = 4;
     tke.tOffset[i_bnum][i_chnum]   = 4;
-    tke.tau[i_bnum][i_chnum]       = 2.50e4;
-    tke.phGuess[i_bnum][i_chnum]   = 550;
+    tke.tau[i_bnum][i_chnum]       = 1.0e4;//2.50e4;
+    tke.phGuess[i_bnum][i_chnum]   = 3000;
     tke.sampleDelta[i_bnum][i_chnum] = 1;
     tke.derivePointDelta[i_bnum][i_chnum] = 3;
     // tke.nPeak[i_bnum][i_chnum] = 300; // for U5
@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
     tke.bLineOS[i_bnum][i_chnum]   = 10;
     tke.bLineNpts[i_bnum][i_chnum] = 200;
     tke.eMethod[i_bnum][i_chnum]   = "chargeInt";
-    tke.nPeak[i_bnum][i_chnum]     = 200;
+    tke.nPeak[i_bnum][i_chnum]     = 20;
     tke.nZero[i_bnum][i_chnum]     = 4;
     tke.interp[i_bnum][i_chnum]    = "cubic";
     tke.tOffset[i_bnum][i_chnum]   = 4;

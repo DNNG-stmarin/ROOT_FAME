@@ -20,7 +20,7 @@
 #define NBITSADC 12
 
 // pre-processor flags
-#define SAVE_WAVEFORMS     // (un)comment to (keep)discard waveforms through all analysis stages (requires recompilation of all executables)
+// #define SAVE_WAVEFORMS     // (un)comment to (keep)discard waveforms through all analysis stages (requires recompilation of all executables)
 // #define WRITE_FILTERS     // (un)comment to (keep)discard sum waveform filters
 #define GAMMAS_OFF     // (un)comment to (discard)use gamma detectors
 // #define SMOOTHING // smooth anode waveforms
