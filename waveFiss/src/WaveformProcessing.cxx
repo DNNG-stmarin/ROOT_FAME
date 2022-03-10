@@ -121,9 +121,18 @@ void EventInfo::reset()
 ///////////////////////////// CAEN_DGTZ_Event Class /////////////////////////////////
 void CAEN_DGTZ_Event::reset()
 {
+  gD = new TGraph();
+  gW = new TGraph();
+  gE = new TGraph();
+  gW->SetName("gW");
+  gD->SetName("gD");
+  gE->SetName("gE");
+
+  // cout << WF_SIZE << endl;
   bnum  = 255;
   chnum = 255;
   ts    = 0;
+
   for (int eye = 0; eye < WF_SIZE; eye++) {
     wf[eye]   = 0;
     Eflt[eye] = 0;
@@ -237,7 +246,8 @@ void CAEN_DGTZ_Event::derivativeFilter(Int_t Ns, Short_t* wf, Double_t* outarray
 
 ////////////////////////////////////////////////////////////////////////////////
 void CAEN_DGTZ_Event::doubleDerivativeFilter(Int_t Ns, Short_t* wf, Double_t* outarray,
-                                             Int_t sampleDelta, Int_t derivePointDelta)
+                                             Int_t sampleDelta, Int_t derivePointDelta,
+                                             TGraph* gW, TGraph* gD)
 {
   // global loop
   int gllim = (2. * sampleDelta + 1) + derivePointDelta;
@@ -272,8 +282,12 @@ void CAEN_DGTZ_Event::doubleDerivativeFilter(Int_t Ns, Short_t* wf, Double_t* ou
     Double_t derivative2       = (hiavg - loavg) / (2. * derivePointDelta + 1.);
     Double_t second_derivative = (derivative2 - derivative) / derivePointDelta;
     outarray[eye]              = second_derivative;
-    // cout<< "i " << eye << " original waveform " << wf[eye] << " flt " << outarray[eye] <<
-    // "deriv 1 " << derivative << "deriv 2 " << derivative2 << endl;
+    // cout << "i " << eye << " original waveform " << wf[eye] << " flt " << outarray[eye] <<
+    // " deriv 1 " << derivative << " deriv 2 " << derivative2 << endl;
+
+    gW->SetPoint(gW->GetN(), eye, wf[eye]);
+    gD->SetPoint(gD->GetN(), eye, second_derivative);
+
   }
 };
 
@@ -438,10 +452,12 @@ Double_t CAEN_DGTZ_Event::cubicInterp0X(Int_t Ns, Double_t* wf, Double_t armthre
     if (!armed) {
       if (wf[eye] > armthresh) {
         armed = true;
+        // cout << "armed" << endl;
         continue;
       }
     } else {
       if (wf[eye] < 0.) {
+        // cout << "Found cross at " << eye << endl;
         Int_t x0  = eye - Npts / 2;
         Int_t xf  = eye + Npts / 2 - 1;
         TF1*  fit = new TF1("fit", "pol3", x0, xf);
@@ -525,7 +541,10 @@ void CAEN_DGTZ_Event::trapFilter(Int_t Ns, Short_t* wf, Double_t* tf, Int_t zcro
     s_n += r_n;
     tf[en] = s_n;
     tf[en] /= (T_r * tau);
+    // save energy filter
+    gE->SetPoint(gE->GetN(), en, tf[en]);
   }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -590,7 +609,7 @@ Int_t CAEN_DGTZ_Event::processWf(TKESettings tke, double* tTrig, int* tPeak, dou
     // derivativeFilter(tke.Ns[bnum][chnum], this->wf, this->Eflt, tke.sampleDelta[bnum][chnum],
     //                  tke.derivePointDelta[bnum][chnum]);
     doubleDerivativeFilter(tke.Ns[bnum][chnum], this->wf, this->Tflt, tke.sampleDelta[bnum][chnum],
-                           tke.derivePointDelta[bnum][chnum]);
+                           tke.derivePointDelta[bnum][chnum], gW, gD);
   } else if (tke.tMethod[bnum][chnum].compare("ffCFD") == 0 ||
              tke.tMethod[bnum][chnum].compare("ffcfd") == 0) {
     ffCFD(tke.Ns[bnum][chnum], this->wf, this->Tflt, tke.ffRise[bnum][chnum], 1,
@@ -621,6 +640,7 @@ Int_t CAEN_DGTZ_Event::processWf(TKESettings tke, double* tTrig, int* tPeak, dou
     bdelta = 2 * tke.thresh[bnum][chnum];
   } else {
     bdelta = locatePeak(tke.Ns[bnum][chnum], this->Tflt);
+    // cout << (int)chnum  << " " << bdelta << endl;
   }
   // get time stamp
   if (tke.tMethod[bnum][chnum].compare("ff") == 0 ||
@@ -630,6 +650,7 @@ Int_t CAEN_DGTZ_Event::processWf(TKESettings tke, double* tTrig, int* tPeak, dou
       tke.tMethod[bnum][chnum].compare("sdlFilter") == 0 ||
       tke.tMethod[bnum][chnum].compare("sdlFlt") == 0 ||
       tke.tMethod[bnum][chnum].compare("sdl") == 0) {
+        cout << "Using dumb method" << endl;
     // timestamp is time pointed to by linear extrap of time to thresh & time to half thresh
     zcross = (double)ffExtrapTs(tke.Ns[bnum][chnum], this->Tflt, tke.tOffset[bnum][chnum],
                                 tke.ffRise[bnum][chnum], bdelta / 2.);
@@ -648,6 +669,7 @@ Int_t CAEN_DGTZ_Event::processWf(TKESettings tke, double* tTrig, int* tPeak, dou
       zcross = locate0X(tke.Ns[bnum][chnum], this->Tflt, bdelta / 2., tke.tOffset[bnum][chnum]);
     }
   }
+  // set time of triggers to cross
   *tTrig = zcross;
 
   // cout << "time in the output is " << *tTrig << endl;
@@ -666,7 +688,8 @@ Int_t CAEN_DGTZ_Event::processWf(TKESettings tke, double* tTrig, int* tPeak, dou
                    tke.tau[bnum][chnum]);
     *peak = ph;
     // cout << "baseline " << bl << "peak height " << *peak << endl;
-  } else if (tke.eMethod[bnum][chnum].compare("trapFilter") == 0) {
+  } else if (tke.eMethod[bnum][chnum].compare("trapFilter") == 0)
+  {
     if (((int)zcross) > 0) {
       trapFilter(tke.Ns[bnum][chnum], this->wf, this->Eflt, ((int)zcross), tke.tRise[bnum][chnum],
                  tke.tGap[bnum][chnum], 1, tke.tau[bnum][chnum]);

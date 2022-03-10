@@ -12,7 +12,7 @@
 #define _DEFINITIONS_H_ 1
 
 // definitions
-#define WF_SIZE 1280
+#define WF_SIZE 312
 // #define WF_SIZE 4096 // Jan 2018 data
 #define MAXNBOARDS 1
 #define MAXNCHANNELS 8
@@ -20,9 +20,9 @@
 #define NBITSADC 12
 
 // pre-processor flags
-// #define SAVE_WAVEFORMS     // (un)comment to (keep)discard waveforms through all analysis stages (requires recompilation of all executables)
+#define SAVE_WAVEFORMS     // (un)comment to (keep)discard waveforms through all analysis stages (requires recompilation of all executables)
 // #define WRITE_FILTERS     // (un)comment to (keep)discard sum waveform filters
 #define GAMMAS_OFF     // (un)comment to (discard)use gamma detectors
-#define SMOOTHING // smooth anode waveforms
+// #define SMOOTHING // smooth anode waveforms
 
 #endif // _DEFINITIONS_H_

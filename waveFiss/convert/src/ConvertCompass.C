@@ -54,8 +54,8 @@ ConvertCompass::ConvertCompass(InfoSystem* infoIn, TString fileName) : runChain(
       {
         runChain->Add(s_runFile + "/" + inputTreeName);
       }
-      //runFile->Close();
-      delete runFile;
+      runFile->Close();
+      // delete runFile;
    }
 
    Init();
@@ -74,18 +74,26 @@ void ConvertCompass::Loop()
 
    // setup info
    int recordLength = 1280;
-   const int NUM_ELEC = 7;
-   const int channelChamber[NUM_ELEC] = {1,2,3,4,5,6,21};
+   // const int NUM_ELEC = 7;
+   // const int channelChamber[NUM_ELEC] = {1,2,3,4,5,6,21};
 
    UChar_t tBoard;
    UChar_t tChan;
    ULong64_t tTime;
    Short_t* tWave;
 
+   runChain->GetEntry(0);
+   recordLength = Samples->GetSize();
+   tWave = new Short_t [recordLength];
+
    danaTree->Branch("bnum", &tBoard, "bnum/b");
    danaTree->Branch("chnum", &tChan, "chnum/b");
    danaTree->Branch("ts", &tTime, "ts/l");
-   danaTree->Branch("wf[1280]", tWave, "wf[1280]/S");
+
+   char buf[100];
+   sprintf(buf, "wf[%i]/S", recordLength);
+
+   danaTree->Branch("wf", tWave, buf);
 
    danaTree->SetMaxTreeSize(1000000000LL);
    danaTree->SetFileNumber(0);
@@ -95,9 +103,6 @@ void ConvertCompass::Loop()
    // TF1* electrodeFall = new TF1("electrode", "1/(1 + Exp[-x])", )
    // TRandom3* randGen = new TRandom3();
 
-   runChain->GetEntry(0);
-   recordLength = Samples->GetSize();
-   tWave = new Short_t [recordLength];
 
    if (runChain == 0) return;
 
@@ -113,15 +118,11 @@ void ConvertCompass::Loop()
       tChan = (UChar_t)Channel;
       tTime = (ULong64_t)Timestamp;
 
-      // for (int i = 0; i < recordLength; i++)
-      // {
-      //   tWave[i] = (Short_t)Samples->GetAt(i);
-      // }
-
-      cout << "Filling tree" << endl;
+      for (int i = 0; i < recordLength; i++)
+      {
+        tWave[i] = (Short_t)Samples->GetAt(i);
+      }
       danaTree->Fill();
-      cout << "Tree filled" << endl;
-
    }
 
 

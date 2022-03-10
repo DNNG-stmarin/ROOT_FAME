@@ -15,6 +15,7 @@
 #include "Rtypes.h"
 #include "TH1.h"
 #include "TF1.h"
+#include "TGraph.h"
 
 // File includes
 #include "definitions.h"
@@ -61,6 +62,9 @@ public:
   Short_t  wf[WF_SIZE];   // raw waveform
   Double_t Eflt[WF_SIZE]; // filtered waveform 0 - mostly 1st derivative
   Double_t Tflt[WF_SIZE]; // filtered waveform 1 - mostly 2nd derivative
+  TGraph*  gW = NULL;
+  TGraph*  gD = NULL;
+  TGraph*  gE = NULL;
 
 public:
   Double_t calcBaseline(Int_t Ns, Int_t offset, Short_t* wf);
@@ -70,7 +74,7 @@ public:
                      Double_t ph_guess, Double_t tau); // exponential fitting
   void     CFD(Int_t Ns, Short_t* wf, Double_t* CFD, Int_t delay, Double_t frac);
   void     doubleDerivativeFilter(Int_t Ns, Short_t* wf, Double_t* outarray, Int_t sampleDelta,
-                                  Int_t derivePointDelta);
+                                  Int_t derivePointDelta, TGraph* gW, TGraph* gD);
   void     derivativeFilter(Int_t Ns, Short_t* wf, Double_t* outarray, Int_t sampleDelta,
                             Int_t derivePointDelta);
   void     fastFilter(Int_t Ns, Short_t* wf, Double_t* ff, Int_t T_r, Int_t T_clk, Double_t tau);
@@ -97,8 +101,8 @@ public:
 class ProcessedRootEvent
 {
 public:
-  UChar_t   bnum;
-  UChar_t   chnum;
+  int   bnum;
+  int   chnum;
   ULong64_t ts;
   Double_t  tTrig;
   Int_t     tPeak;

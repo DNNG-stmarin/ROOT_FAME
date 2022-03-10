@@ -55,9 +55,10 @@ int main(int argc, char* argv[])
   // defaults
   tke.reset();
   Int_t i_bnum  = 0;
-  Int_t i_chnum = 0;
+
 
   // Board 0 T0
+  Int_t i_chnum = 5;
   tke.sampleDelta[i_bnum][i_chnum]      = 1;
   tke.derivePointDelta[i_bnum][i_chnum] = 3;
   tke.Ns[i_bnum][i_chnum]               = 60;
@@ -78,12 +79,12 @@ int main(int argc, char* argv[])
   tke.bLineNpts[i_bnum][i_chnum] = 100;
   tke.bLineOS[i_bnum][i_chnum]   = 1;
   tke.eMethod[i_bnum][i_chnum]   = "chargeInt";
-  tke.interp[i_bnum][i_chnum]    = "cubic";
-  tke.nPeak[i_bnum][i_chnum]     = 80;
+  tke.interp[i_bnum][i_chnum]    = "linear";
+  tke.nPeak[i_bnum][i_chnum]     = 10;
   tke.Ns[i_bnum][i_chnum]        = WF_SIZE;
   tke.nZero[i_bnum][i_chnum]     = 4;
   tke.tOffset[i_bnum][i_chnum]   = 10;
-  tke.polarity[i_bnum][i_chnum]  = "positive";
+  tke.polarity[i_bnum][i_chnum]  = "negative";
   tke.thresh[i_bnum][i_chnum]    = -1;
   tke.tau[i_bnum][i_chnum]       = 16.0;
   tke.tMethod[i_bnum][i_chnum]   = "derivative";
@@ -92,44 +93,47 @@ int main(int argc, char* argv[])
   tke.frac[i_bnum][i_chnum]      = 0.98;
 
   // ion chamber anodes
-  for (i_chnum = 2; i_chnum < 4; ++i_chnum) {
+  for (i_chnum = 0; i_chnum < 2; ++i_chnum) {
     tke.Ns[i_bnum][i_chnum]        = WF_SIZE;
     tke.thresh[i_bnum][i_chnum]    = -1;
     tke.polarity[i_bnum][i_chnum]  = "positive";
     tke.bLineOS[i_bnum][i_chnum]   = 10;
-    tke.bLineNpts[i_bnum][i_chnum] = 100;
+    tke.bLineNpts[i_bnum][i_chnum] = 16;
     tke.eMethod[i_bnum][i_chnum]   = "trapFilter";
-    tke.tRise[i_bnum][i_chnum]     = 400;
+    tke.tRise[i_bnum][i_chnum]     = 100;
     tke.tGap[i_bnum][i_chnum]      = 100;
     tke.tPeak[i_bnum][i_chnum]     = tke.tGap[i_bnum][i_chnum] - 1;
     tke.nPeak[i_bnum][i_chnum]     = 2;
-    tke.tMethod[i_bnum][i_chnum]   = "ffCFD";
+    tke.tMethod[i_bnum][i_chnum]   = "derivative";
     tke.ffRise[i_bnum][i_chnum]    = 16;
     tke.delay[i_bnum][i_chnum]     = 4;
     tke.frac[i_bnum][i_chnum]      = 0.98;
     tke.interp[i_bnum][i_chnum]    = "cubic";
     tke.nZero[i_bnum][i_chnum]     = 4;
-    tke.tOffset[i_bnum][i_chnum]   = 350;
+    tke.tOffset[i_bnum][i_chnum]   = 4;
     tke.tau[i_bnum][i_chnum]       = 2.50e4;
     tke.phGuess[i_bnum][i_chnum]   = 550;
-    // tke.sampleDelta[i_bnum][i_chnum] = 1;
-    // tke.derivePointDelta[i_bnum][i_chnum] = 3;
+    tke.sampleDelta[i_bnum][i_chnum] = 1;
+    tke.derivePointDelta[i_bnum][i_chnum] = 3;
     // tke.nPeak[i_bnum][i_chnum] = 300; // for U5
     // tke.tOffset[i_bnum][i_chnum] = 400; // for U5
     // tke.bLineNpts[i_bnum][i_chnum] = 150; // good for U5
   }
 
   // ion chamber grids
-  for (i_chnum = 4; i_chnum < 6; ++i_chnum) {
+  for (i_chnum = 2; i_chnum < 4; ++i_chnum) {
     tke.Ns[i_bnum][i_chnum]        = WF_SIZE;
     tke.polarity[i_bnum][i_chnum]  = "positive";
-    tke.tMethod[i_bnum][i_chnum]   = "cfd";
+    tke.tMethod[i_bnum][i_chnum]   = "derivative";
     tke.thresh[i_bnum][i_chnum]    = -1;
     tke.bLineOS[i_bnum][i_chnum]   = 10;
     tke.bLineNpts[i_bnum][i_chnum] = 200;
     tke.eMethod[i_bnum][i_chnum]   = "chargeInt";
     tke.nPeak[i_bnum][i_chnum]     = 200;
     tke.nZero[i_bnum][i_chnum]     = 4;
+    tke.interp[i_bnum][i_chnum]    = "cubic";
+    tke.tOffset[i_bnum][i_chnum]   = 4;
+
     // tke.nPeak[i_bnum][i_chnum] = 200; // good for U5
     // tke.bLineNpts[i_bnum][i_chnum] = 200; /// good for U5
   }
@@ -371,7 +375,7 @@ int main(int argc, char* argv[])
   // cout << setw(32) << left << "\tcfd delay: " << left << sum.delay << "\n";
   // cout << setw(32) << left << "\tcfd fraction: " << left << sum.frac << "\n";
 
-  cout << "Opening input file\n";
+  cout << "Opening input file " + (TString)ipath + "\n";
   // Get file / tree paths set
   TFile* ifile = new TFile(ipath);
   TTree* itree = (TTree*)ifile->Get("t");
@@ -379,6 +383,7 @@ int main(int argc, char* argv[])
   // TTree *otree = new TTree("pt","Pulse tree from waveform analysis");
   TTree* otree[MAXNBOARDS][MAXNCHANNELS]; // = new TTree("pt","Pulse tree from waveform analysis");
 
+  cout << "Files opened: " << ifile << " " << ofile << endl;
 
   // set up tree representing classes
   CAEN_DGTZ_Event raw_evt;
@@ -391,8 +396,8 @@ int main(int argc, char* argv[])
   itree->SetBranchAddress("bnum", &raw_evt.bnum);
   itree->SetBranchAddress("chnum", &raw_evt.chnum);
   itree->SetBranchAddress("ts", &raw_evt.ts);
-  sprintf(buf, "wf[%i]", WF_SIZE);
-  itree->SetBranchAddress(buf, raw_evt.wf);
+  // sprintf(buf, "wf[%i]", WF_SIZE);
+  itree->SetBranchAddress("wf", raw_evt.wf);
 
 
 
@@ -410,16 +415,22 @@ int main(int argc, char* argv[])
       otree[i][j]->Branch("peak", &proc_evt.peak);
       otree[i][j]->Branch("baseline", &proc_evt.baseline);
 #ifdef SAVE_WAVEFORMS
-      sprintf(buf, "wf[%i]", WF_SIZE);
-      otree[i][j]->Branch(buf, proc_evt.wf);
-      sprintf(buf, "Eflt[%i]", WF_SIZE);
-      otree[i][j]->Branch(buf, proc_evt.Eflt);
-      sprintf(buf, "Tflt[%i]", WF_SIZE);
-      otree[i][j]->Branch(buf, proc_evt.Tflt);
+      // sprintf(buf, "wf[%i]", WF_SIZE);
+      otree[i][j]->Branch("wf", proc_evt.wf);
+      // sprintf(buf, "Eflt[%i]", WF_SIZE);
+      otree[i][j]->Branch("Eflt", proc_evt.Eflt);
+      // sprintf(buf, "Tflt[%i]", WF_SIZE);
+      otree[i][j]->Branch("Tflt", proc_evt.Tflt);
 #endif
     }
   }
   cout << "...success!\n";
+
+//   cout << tke.tMethod[0][0] << " " << tke.tMethod[0][1]
+// << " " << tke.tMethod[0][2] << " " << tke.tMethod[0][3] << endl;
+//
+// cout << tke.interp[0][0] << " " << tke.interp[0][1]
+// << " " << tke.interp[0][2] << " " << tke.interp[0][3] << endl;
 
   // logistical stuff to sort out clock rollover
   ULong64_t    last_ts[MAXNBOARDS][MAXNCHANNELS];
@@ -435,7 +446,11 @@ int main(int argc, char* argv[])
   cout << "Processing raw entries \n";
   Long64_t eye;
 
-  for (eye = 0; eye < itree->GetEntries(); eye++)
+  Long64_t nentries = itree->GetEntries();
+
+  nentries = 100000;
+
+  for (eye = 0; eye < nentries; eye++)
   {
     // cout << "on loop " << eye << endl;
     // itree->Show(eye);
@@ -444,7 +459,6 @@ int main(int argc, char* argv[])
     itree->GetEntry(eye);
     // cout << "read entry " << eye << endl;
     // cout << raw_evt.bnum << " " << raw_evt.chnum << endl;
-    if(raw_evt.chnum == 1) continue;
     // check timestamps for rollover
     if (raw_evt.ts < last_ts[raw_evt.bnum][raw_evt.chnum]) {
       printf("hey i found rollover on board %i channel %i event // %i\n",raw_evt.bnum,raw_evt.chnum,eye);
@@ -455,8 +469,8 @@ int main(int argc, char* argv[])
     proc_evt.ts                          = ts_base[raw_evt.bnum][raw_evt.chnum] + raw_evt.ts;
     last_ts[raw_evt.bnum][raw_evt.chnum] = raw_evt.ts;
     // build rest of tree
-    proc_evt.bnum  = raw_evt.bnum;
-    proc_evt.chnum = raw_evt.chnum;
+    proc_evt.bnum  = (int)raw_evt.bnum;
+    proc_evt.chnum = (int)raw_evt.chnum;
     // if ((proc_evt.bnum == 0) && (proc_evt.chnum == 0))
     // if ((proc_evt.bnum == 0) && (proc_evt.chnum == 0 || proc_evt.chnum == 1 || proc_evt.chnum==2
     // || proc_evt.chnum==3 || proc_evt.chnum == 4 || proc_evt.chnum == 5 || proc_evt.chnum == 6 ||
@@ -465,8 +479,10 @@ int main(int argc, char* argv[])
     if (proc_evt.bnum == 0) {
       // std::cout << "board / channel numbers " << (Int_t)proc_evt.bnum << " " <<
       // (Int_t)proc_evt.chnum << std::endl;
+      // mstd::cout << (int)proc_evt.chnum << std::endl;
       Int_t retval = raw_evt.processWf(tke, &proc_evt.tTrig, &proc_evt.tPeak, &proc_evt.peak,
                                        &proc_evt.baseline);
+
       // cout << "baseline " << proc_evt.baseline << endl;
 #ifdef SAVE_WAVEFORMS
       for (int eye = 0; eye < WF_SIZE; eye++) {
@@ -477,7 +493,7 @@ int main(int argc, char* argv[])
 #endif
       otree[proc_evt.bnum][proc_evt.chnum]->Fill();
     }
-    if (eye % 100 == 0) {
+    if (eye % 10000 == 0) {
       printf("\rProcessing entry %i", eye);
       fflush(stdout);
     }
@@ -485,13 +501,20 @@ int main(int argc, char* argv[])
       cout << "!!!Warning!!! - Event limit exceeded; exiting entry processing loop!\n";
       break;
     }
+    if((int)raw_evt.chnum == 0) break;
   }
   cout << "\ndone!\n"
        << "Processed " << eye << " entries\n";
   cout << "Writing output file...\n";
+
+  ofile->cd();
   for (int eye = 0; eye < MAXNBOARDS; eye++) {
     for (int jay = 0; jay < MAXNCHANNELS; jay++) { otree[eye][jay]->Write(); }
   }
+  raw_evt.gW->Write();
+  raw_evt.gD->Write();
+  raw_evt.gE->Write();
+
   cout << "...success!\n";
   ofile->Close();
   ifile->Close();
