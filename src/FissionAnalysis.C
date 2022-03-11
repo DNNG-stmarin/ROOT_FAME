@@ -19,7 +19,7 @@ void DetectorSystemClass::FissionAnalysis()
   fissionFile->cd();
 
   Long64_t nentries = tree->GetEntriesFast();
-  // nentries = 1000000;
+  // nentries = 10000;
   Long64_t nbytes = 0, nb = 0;
 
   // neutron and photon multiplicities
@@ -31,13 +31,15 @@ void DetectorSystemClass::FissionAnalysis()
   int numDet, numTrig;
   double engDet;
 
-  double neutVelocity;
+  double neutVelocity, neutErg;
 
   // cout << "NUM_DET: " << NUM_DETS << endl;
   // for(int d =0; d < NUM_DETS; d++)
   // {
   //     cout << DETECTORS[d] << endl;
   // }
+
+
 
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
   {
@@ -58,6 +60,7 @@ void DetectorSystemClass::FissionAnalysis()
 	  }
 
     numTrig = isTrigger(tChan);
+    //cout << tChan << " " << numTrig << endl;
 
     // Define offset based on targetCoord.txt
     if (NUM_BEAMS > 0)
@@ -74,19 +77,17 @@ void DetectorSystemClass::FissionAnalysis()
       f_beamChan = bChan;
       f_beamIndex = bIndex;
 
-      // if (f_beamTime < 70)
-      // {
-      //   f_fisType = ALPHA;
-      // }
-      // else if (f_beamTime < 140 && f_beamTime > 60)
-      // {
-      //   f_fisType = PHOTON;
-      // }
-      // else
-      // {
-      //   f_fisType = NEUTRON;
-      // }
+    }
 
+    if(FRAGMENT_MODE)
+    {
+      f_AL = rAL;
+      f_AH = rAH;
+      f_KEL = rKEL;
+      f_KEH = rKEH;
+      f_ThetaL = rThetaL;
+      f_ThetaH = rThetaH;
+      f_EX = rEX;
     }
 
     // allocating the fission info
@@ -117,6 +118,7 @@ void DetectorSystemClass::FissionAnalysis()
       double adjX = detectors[numDet].X - triggers[numTrig].X;
       double adjY = detectors[numDet].Y - triggers[numTrig].Y;
       double adjZ = detectors[numDet].Z - triggers[numTrig].Z;
+      //cout << adjX << " " << adjY << " " <<  adjZ << endl;
       detectors[numDet].distance = sqrt(pow(adjX, 2.) + pow(adjY, 2.) + pow(adjZ, 2.));
       double detDist = detectors[numDet].distance;
 
@@ -161,10 +163,13 @@ void DetectorSystemClass::FissionAnalysis()
         neutronLightOut[nMult] = engDet;
         neutronPSD[nMult] = totPSP[j];
         neutVelocity = (1.0/LIGHT_C)*detDist/timeDet;
-        cout << "";
+        // if (timeDet == 0) {cout << "Wee woo" << endl;}
+        // if (LIGHT_C == 0) {cout << "wtf" << endl;}
+        // cout << "";
         // cout << numDet << " " << detectors[numDet].distance << endl;
         // cout << (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2) << endl;
-        neutronToFErg[nMult] = (1.0/2.0)*MASS_NEUTRONS*pow(neutVelocity,2);
+        neutErg = 0.5*MASS_NEUTRONS*pow(neutVelocity, 2);
+        neutronToFErg[nMult] = neutErg;
         neutronDet[nMult] = numDet;
         neutronVx[nMult] = adjX / detDist*neutVelocity;
         neutronVy[nMult] = adjY / detDist*neutVelocity;

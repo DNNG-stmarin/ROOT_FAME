@@ -185,6 +185,7 @@ void readFiss::LoopExp()
       */
       // fissions passed all the tests, delete
       numFissIter++;
+      h_fissTriggers->Fill(indexChannel);
       // cout << numFissIter << endl;
       h_fissRej->Fill(ACCEPTED_SIGNAL);
       if(numFissIter%1000000 == 0)
@@ -924,6 +925,8 @@ void readFiss::LoopExp()
 
       }
    }
+
+
 
    expEntries = numFissIter;
    cout << "We found " << expEntries << " valid measured fissions" << endl;

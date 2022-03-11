@@ -41,6 +41,9 @@ private:
 	int FISSION_MODE;
 	int PARAM_FILES;
 
+	int FRAGMENT_MODE;
+	TString FRAGMENT_PATH;
+
 	int RANDOM_COINCIDENCE;
 
 	int FILE_LIST_MODE;
@@ -64,7 +67,7 @@ private:
 	TString rootEnding = ".root";
 	TString detFileT = "Detectors.root";
 	TString sysFileT = "Fission.root";
-    TString beamFileT = "BeamInfo.root";
+  TString beamFileT = "BeamInfo.root";
 
 public:
 
@@ -82,6 +85,7 @@ public:
 	TFile* expFile = 0;
 	TFile* detFile = 0;
 	TFile* beamFile = 0;
+	// TFile* fragFile = 0;
 
 	// pointer attributes
 	CoincidenceAnalysis* inputData;
@@ -93,6 +97,7 @@ public:
 	// chain of raw tree files
 	TChain* rawTreeChain = 0;
 	TChain* coincTreeChain = 0;
+
 
 /*
 	           _   _            _

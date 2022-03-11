@@ -105,6 +105,7 @@ void sfame::readFromCol()
     cout << "Events so far: " << collisionTree->GetEntries() << endl;
 
   }
+
   
   // close out of everything
   outFile = collisionTree->GetCurrentFile();
