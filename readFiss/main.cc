@@ -17,10 +17,10 @@
 
 using namespace std;
 
-QApplication* app;
 
 int main(int argc, char** argv)
 {
+  QApplication* app;
 
   gErrorIgnoreLevel = kError;
 
@@ -50,15 +50,24 @@ int main(int argc, char** argv)
 
     cout << "done" << endl;
     return 0;
+    // ****************
+    cout << "after return" << endl;
+    // ******************
   }
   else
   {
     w.show();
     cout << "Main Window shown...\n" << endl;
   }
-
+  // ****************
+  cout << "before Exec" << endl;
+  // ******************
   a.exec();
-
+  // ****************
+  cout << "after Exec" << endl;
+  // ******************
   return 0;
-
+  // ****************
+  cout << "after final return" << endl;
+  // ******************
 }
