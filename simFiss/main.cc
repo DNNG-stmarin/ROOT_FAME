@@ -14,6 +14,7 @@
 #include <sstream>
 
 #include "SFAME.h"
+#include "infoSystem.h"
 
 using namespace std;
 
@@ -24,45 +25,40 @@ int main(int argc, char** argv)
 
   TString simFile;
   TString dataFileName;
+  TString inputFileName;
   int firstFile;
   int numFiles;
+  InfoSystem* infoSys;
 
-  if(argc == 1) {
-    cout << "ERROR: data file not given\n";
-    return 0;
-  }
+  inputFileName = TString(argv[1]);
 
-  dataFileName = TString(argv[1]);
+  dataFileName = TString(argv[2]);
 
-  /*if(argc == 1)
+  cout << "reading input from: " << inputFileName << endl;
+  cout << "reading data from: " << dataFileName << endl;
+
+  if(argc == 1)
   {
     cout << "USAGE STATEMENT:" << endl;
-    cout << "Provide name of sim file, first file, and number of files to process" << endl;
+    cout << "Provide name of input file and name of .d file" << endl;
     return 1;
   }
-  else if(argc == 4)
-  {
-    simFile = TString(argv[1]);
-    firstFile = stoi(argv[2]);
-    numFiles = stoi(argv[3]);
-  }
-  else
-  {
-    cout << "wrong number of inputs provided! \n";
-    return 2;
-  }*/
 
-  sfame* simFame = new sfame();
+  cout << "creating info " << endl;
+  InfoSystem* info = new InfoSystem();
+  info->ReadInput(inputFileName);
+
+  cout << info << endl;
+
+  cout << "creating instance of simFame: " << endl;
+  
+  sfame* simFame = new sfame(info);
   simFame->nameColFile = dataFileName;
 
   cout << "finished constructing" << endl;
 
   simFame->readFromCol();
   simFame->LoopColl();
-
-  // simFame->readFromCol();
-  // simFame->readFromSimFile(simFile, firstFile, numFiles);
-  //
 
 
   return 0;

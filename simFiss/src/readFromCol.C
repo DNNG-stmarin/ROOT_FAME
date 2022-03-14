@@ -17,7 +17,7 @@ void sfame::readFromCol()
 
   // loop through the entire .d file and populate the tree
   // the first history will be 1
-  for(int nJ = 0; nJ < numFiles; nJ++ )
+  for(int nJ = FIRST_FILE; nJ < FIRST_FILE + NUM_FILES; nJ++ )
   {
     cout << "Read from Col File is Running" << endl;
     cout << "Reading from " << nameColFile + to_string(nJ) + ".d" << endl;
@@ -106,7 +106,7 @@ void sfame::readFromCol()
 
   }
 
-  
+
   // close out of everything
   outFile = collisionTree->GetCurrentFile();
   outFile->Write();

@@ -15,7 +15,7 @@ void sfame::initializeCoincTree()
 */
 
   cout << "Initializing coincidence TTrees " << endl;
-  SfameFiss = new TFile(NameOutput, "RECREATE");
+  SfameFiss = new TFile(OUTPUT_NAME, "RECREATE");
 
 	SfameFiss->cd();
 

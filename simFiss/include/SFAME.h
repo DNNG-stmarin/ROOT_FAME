@@ -15,6 +15,8 @@
 #include <TGraphErrors.h>
 #include <THStack.h>
 
+#include "infoSystem.h"
+
 #include <iostream>
 #include <fstream>
 // Header file for the classes stored in the TTree if any.
@@ -30,7 +32,9 @@ using namespace std;
 
 class sfame {
 public:
-    sfame();
+    sfame(InfoSystem* inInfo);
+
+    InfoSystem* info;
 
     // readfromCol vars
     TString nameColFile;
@@ -38,11 +42,11 @@ public:
 
     // read from sim vars
     TString simFile;
-    int firstFile;
-    int numFiles;
+    int FIRST_FILE;
+    int NUM_FILES;
 
     // output file of SFAME
-    TString NameOutput;
+    TString OUTPUT_NAME;
 
     int numCollTreeFiles;
     int REUSE_DATA;
@@ -152,7 +156,7 @@ public:
     // DETECTORS
     int NUM_DETECTORS;
     int TRIGGER_CHANNEL;
-    double SOURCE_POSITION[3];
+    double* SOURCE_POSITION;
     double THRESHOLD;
     double COINCIDENCE_WINDOW;
     double PULSE_GENERATION_WINDOW;
@@ -168,7 +172,7 @@ public:
     TString TIME_RESOLUTION_FILE; // time resolution
     TString CELL_NUMBERS_FILE; // cell numbers
     TString LIGHTOUTPUT_FILE; // conversion between energyDep and lightoutput
-    double RESOLUTION_COEFFICIENTS[3];
+    double* RESOLUTION_COEFFICIENTS;
     // energy file
     TString MEAN_NEUTRON_PSD_FILE;
     TString MEAN_PHOTON_PSD_FILE;
@@ -195,6 +199,7 @@ public:
     double** sigPhotPSDArray;
 
     // initialization functions
+    void getInfo();
     void initializeDetectors();
     void initializeInputFiles();
 
