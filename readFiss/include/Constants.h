@@ -8,6 +8,8 @@ const int MAX_TRIGGERS = 1000;
 const int STANDARD_MODE = 0;
 const int SIM_MODE = 1;
 const int BEAM_MODE = 2;
+const int FRAG_MODE = 3;
+const int FRAG_BEAM_MODE = 10;
 
 // Set physical constants
 const double BEAM_PATH = 2150;//cm

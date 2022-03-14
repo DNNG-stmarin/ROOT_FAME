@@ -82,7 +82,8 @@ FissionExperimentClass::FissionExperimentClass(TString inputFileName)
 	}
 	if(NUM_BEAMS > 0)
 	{
-		beamFile = new TFile(beamFileT, "RECREATE");
+		if(REUSE_DATA == 0) beamFile = new TFile(beamFileT, "RECREATE");
+		// else beamFile = new TFile(beamFileT, "READ");
 	}
 
   // create the chain with all the entries to analyze for the raw coincidence mode

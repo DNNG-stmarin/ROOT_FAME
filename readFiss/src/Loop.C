@@ -20,6 +20,8 @@ void readFiss::LoopExp()
    cout << "ANN mode set to: " << ANN_mode << endl;
    if (expTree == 0) return;
 
+   int badEvents = 0;
+
    if(mode == BEAM_MODE)
    {
      cout << "beam acceptance between " << BEAM_ERG_MIN << " and " << BEAM_ERG_MAX << " MeV, with " << BEAM_ERG_BINNUM << " bins. " << endl;
@@ -127,7 +129,8 @@ void readFiss::LoopExp()
       if(indexChannel < 0)
       {
         cout << "Trigger number " << fisChan << " not recognized." << endl;
-        exit(10);
+        badEvents++;
+        continue;
       }
 
        // beam coincidence cut
@@ -241,7 +244,8 @@ void readFiss::LoopExp()
             if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
             {
               cout << "Detector number " << neutronDet[i] << " not recognized from neutronDet." << endl;
-              exit(10);
+              badEvents++;
+              continue;
             }
 
             h_IndivNeutronLightOutputExp[indexDet]->Fill(neutronLightOut[i]);
@@ -337,7 +341,8 @@ void readFiss::LoopExp()
           if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
           {
             cout << "Detector number " << photonDet[i] << " not recognized from photonDet." << endl;
-            exit(10);
+            badEvents++;
+            continue;
           }
 
           h_IndivPhotonLightOutputExp[indexDet]->Fill(photonLightOut[i]);
@@ -447,7 +452,8 @@ void readFiss::LoopExp()
             if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
             {
               cout << "Detector number " << backNeutronDet[i] << " not recognized from backNeutronDet." << endl;
-              exit(10);
+              badEvents++;
+              continue;
             }
 
             h_IndivNeutronLightOutputBack[indexDet]->Fill(backNeutronLightOut[i]);
@@ -526,7 +532,8 @@ void readFiss::LoopExp()
           if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
           {
             cout << "Detector number " << backPhotonDet[i] << " not recognized from backPhotonDet." << endl;
-            exit(10);
+            badEvents++;
+            continue;
           }
 
           h_IndivPhotonLightOutputBack[indexDet]->Fill(backPhotonLightOut[i]);
@@ -924,6 +931,8 @@ void readFiss::LoopExp()
 // ***************************
 
       }
+
+      cout << "Unfortunately I found: " << badEvents << " bad events..." << endl;
    }
 
 
@@ -937,6 +946,7 @@ void readFiss::LoopExp()
 void readFiss::LoopSim()
 {
     cout << "Now looping through simulation. " << endl;
+    int badEvents = 0;
 
     if (expTree == 0) return;
     //CHANGE BACK TO SIM TREE
@@ -983,7 +993,8 @@ void readFiss::LoopSim()
               if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
               {
                 cout << "Detector number " << neutronDet[i] << " not recognized from neutronChannel." << endl;
-                exit(10);
+                badEvents++;
+                continue;
               }
 
               h_IndivNeutronLightOutputSim[indexDet]->Fill(neutronLightOut[i]);
@@ -1008,7 +1019,8 @@ void readFiss::LoopSim()
               if(indexDet < 0 || indexDet > (NUM_DETECTORS - 1))
               {
                 cout << "Detector number " << photonDet[i] << " not recognized from photonChannel." << endl;
-                exit(10);
+                badEvents++;
+                continue;
               }
 
               h_IndivPhotonLightOutputSim[indexDet]->Fill(photonLightOut[i]);

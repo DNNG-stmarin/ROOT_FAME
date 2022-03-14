@@ -71,6 +71,8 @@ for(int trig = 0; trig < NUM_TRIGGERS; trig++)
     // sets the file name to the base name and the detector
     fileNameTrigBeam =  fileNameTrigBeamBase + (TString)to_string(trig);
 
+    cout << "reading from " << fileNameTrigBeam << endl;
+
     //sets the canvas equal to the psdErg one for that detector
     c_trigBeam = (TCanvas*)detFile->Get(fileNameTrigBeam);
     f_trigBeam = (TF1*)c_trigBeam->GetPrimitive("fisBeamActivity");
