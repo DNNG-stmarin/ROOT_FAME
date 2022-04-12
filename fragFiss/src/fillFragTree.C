@@ -171,11 +171,11 @@ void fragFiss::FillFragTree()
   }
 
 
-  cout << "finished filling tree" << endl;
+  cout << "Finished filling tree" << endl;
 
 
   fragFile->cd();
-  // g_sawtooth->Write();
+  g_sawtooth->Write();
   fragTree->Write();
 
 }
