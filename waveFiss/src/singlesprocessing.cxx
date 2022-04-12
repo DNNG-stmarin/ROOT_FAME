@@ -75,43 +75,43 @@ int main(int argc, char* argv[])
   tke.eOffset[i_bnum][i_chnum]          = -1;
 
   // Fast Cathode
-  i_chnum                        = 6;
-  tke.bLineNpts[i_bnum][i_chnum] = 100;
+  i_chnum                        = 0;
+  tke.bLineNpts[i_bnum][i_chnum] = 16;
   tke.bLineOS[i_bnum][i_chnum]   = 1;
   tke.eMethod[i_bnum][i_chnum]   = "chargeInt";
   tke.interp[i_bnum][i_chnum]    = "linear";
-  tke.nPeak[i_bnum][i_chnum]     = 10;
+  tke.nPeak[i_bnum][i_chnum]     = 16;
   tke.Ns[i_bnum][i_chnum]        = WF_SIZE;
   tke.nZero[i_bnum][i_chnum]     = 4;
   tke.tOffset[i_bnum][i_chnum]   = 10;
   tke.polarity[i_bnum][i_chnum]  = "negative";
   tke.thresh[i_bnum][i_chnum]    = -1;
-  tke.tau[i_bnum][i_chnum]       = 16.0;
+  tke.tau[i_bnum][i_chnum]       = 9375;
   tke.tMethod[i_bnum][i_chnum]   = "derivative";
-  tke.ffRise[i_bnum][i_chnum]    = 16;
-  tke.delay[i_bnum][i_chnum]     = 4;
+  tke.derivePointDelta[i_bnum][i_chnum]   = 3;
   tke.frac[i_bnum][i_chnum]      = 0.98;
+  tke.gOffset[i_bnum][i_chnum]   = 160;
 
   // ion chamber anodes
-  for (i_chnum = 0; i_chnum < 2; ++i_chnum) {
+  for (i_chnum = 1; i_chnum < 3; ++i_chnum) {
     tke.Ns[i_bnum][i_chnum]        = WF_SIZE;
     tke.thresh[i_bnum][i_chnum]    = -1;
     tke.polarity[i_bnum][i_chnum]  = "positive";
-    tke.bLineOS[i_bnum][i_chnum]   = 10;
+    tke.bLineOS[i_bnum][i_chnum]   = 1;
     tke.bLineNpts[i_bnum][i_chnum] = 16;
     tke.eMethod[i_bnum][i_chnum]   = "trapFilter";
     tke.tRise[i_bnum][i_chnum]     = 20;
     tke.tGap[i_bnum][i_chnum]      = 50;
     tke.tPeak[i_bnum][i_chnum]     = tke.tGap[i_bnum][i_chnum] - 1;
-    tke.nPeak[i_bnum][i_chnum]     = 10;//2;
+    tke.nPeak[i_bnum][i_chnum]     = 16;//2;
     tke.tMethod[i_bnum][i_chnum]   = "derivative";
     tke.ffRise[i_bnum][i_chnum]    = 16;
-    tke.delay[i_bnum][i_chnum]     = 4;
-    tke.frac[i_bnum][i_chnum]      = 0.98;
+    // tke.delay[i_bnum][i_chnum]     = 4;
+    // tke.frac[i_bnum][i_chnum]      = 0.98;
     tke.interp[i_bnum][i_chnum]    = "cubic";
     tke.nZero[i_bnum][i_chnum]     = 4;
     tke.tOffset[i_bnum][i_chnum]   = 4;
-    tke.tau[i_bnum][i_chnum]       = 1.0e4;//2.50e4;
+    tke.tau[i_bnum][i_chnum]       = 9375;
     tke.phGuess[i_bnum][i_chnum]   = 3000;
     tke.sampleDelta[i_bnum][i_chnum] = 1;
     tke.derivePointDelta[i_bnum][i_chnum] = 3;
@@ -121,19 +121,19 @@ int main(int argc, char* argv[])
   }
 
   // ion chamber grids
-  for (i_chnum = 2; i_chnum < 4; ++i_chnum) {
+  for (i_chnum = 3; i_chnum < 5; ++i_chnum) {
     tke.Ns[i_bnum][i_chnum]        = WF_SIZE;
     tke.polarity[i_bnum][i_chnum]  = "positive";
     tke.tMethod[i_bnum][i_chnum]   = "derivative";
     tke.thresh[i_bnum][i_chnum]    = -1;
     tke.bLineOS[i_bnum][i_chnum]   = 10;
-    tke.bLineNpts[i_bnum][i_chnum] = 200;
+    tke.bLineNpts[i_bnum][i_chnum] = 16;
     tke.eMethod[i_bnum][i_chnum]   = "chargeInt";
-    tke.nPeak[i_bnum][i_chnum]     = 20;
+    tke.nPeak[i_bnum][i_chnum]     = 16;
     tke.nZero[i_bnum][i_chnum]     = 4;
     tke.interp[i_bnum][i_chnum]    = "cubic";
     tke.tOffset[i_bnum][i_chnum]   = 4;
-    tke.gOffset[i_bnum][i_chnum]   = 20;
+    tke.gOffset[i_bnum][i_chnum]   = 165;
 
     // tke.nPeak[i_bnum][i_chnum] = 200; // good for U5
     // tke.bLineNpts[i_bnum][i_chnum] = 200; /// good for U5
@@ -262,33 +262,33 @@ int main(int argc, char* argv[])
 
   cfgf.close();
 
-  tke.polarity[i_bnum][3] = tke.polarity[i_bnum][2];
-  tke.tMethod[i_bnum][3]  = tke.tMethod[i_bnum][2];
-  tke.eMethod[i_bnum][3]  = tke.eMethod[i_bnum][2];
-  tke.interp[i_bnum][3]   = tke.interp[i_bnum][2];
-  tke.Ns[i_bnum][3]       = tke.Ns[i_bnum][2];
-  // tke.thresh[i_bnum][3]    = tke.thresh[i_bnum][2];
-  // tke.bLineOS[i_bnum][3]   = tke.bLineOS[i_bnum][2];
-  // tke.bLineNpts[i_bnum][3] = tke.bLineNpts[i_bnum][2];
-  // tke.tRise[i_bnum][3]     = tke.tRise[i_bnum][2];
-  // tke.tGap[i_bnum][3]      = tke.tGap[i_bnum][2];
-  // tke.tPeak[i_bnum][3]     = tke.tPeak[i_bnum][2];
-  // tke.nPeak[i_bnum][3]     = tke.nPeak[i_bnum][2];
-  // tke.nZero[i_bnum][3]     = tke.nZero[i_bnum][2];
-  // tke.ffRise[i_bnum][3]    = tke.ffRise[i_bnum][2];
-  // tke.delay[i_bnum][3]     = tke.delay[i_bnum][2];
-  // tke.frac[i_bnum][3]      = tke.frac[i_bnum][2];
-  // tke.tOffset[i_bnum][3]   = tke.tOffset[i_bnum][2];
-  // tke.tau[i_bnum][3]       = tke.tau[i_bnum][2];
+  tke.polarity[i_bnum][2] = tke.polarity[i_bnum][1];
+  tke.tMethod[i_bnum][2]  = tke.tMethod[i_bnum][1];
+  tke.eMethod[i_bnum][2]  = tke.eMethod[i_bnum][1];
+  tke.interp[i_bnum][2]   = tke.interp[i_bnum][1];
+  tke.Ns[i_bnum][2]       = tke.Ns[i_bnum][1];
+  // tke.thresh[i_bnum][2]    = tke.thresh[i_bnum][1];
+  // tke.bLineOS[i_bnum][2]   = tke.bLineOS[i_bnum][1];
+  // tke.bLineNpts[i_bnum][2] = tke.bLineNpts[i_bnum][1];
+  // tke.tRise[i_bnum][2]     = tke.tRise[i_bnum][1];
+  // tke.tGap[i_bnum][2]      = tke.tGap[i_bnum][1];
+  // tke.tPeak[i_bnum][2]     = tke.tPeak[i_bnum][1];
+  // tke.nPeak[i_bnum][2]     = tke.nPeak[i_bnum][1];
+  // tke.nZero[i_bnum][2]     = tke.nZero[i_bnum][1];
+  // tke.ffRise[i_bnum][2]    = tke.ffRise[i_bnum][1];
+  // tke.delay[i_bnum][2]     = tke.delay[i_bnum][1];
+  // tke.frac[i_bnum][2]      = tke.frac[i_bnum][1];
+  // tke.tOffset[i_bnum][2]   = tke.tOffset[i_bnum][1];
+  // tke.tau[i_bnum][2]       = tke.tau[i_bnum][1];
 
-  tke.Ns[i_bnum][5]        = tke.Ns[i_bnum][4];
-  tke.polarity[i_bnum][5]  = tke.polarity[i_bnum][4];
-  tke.thresh[i_bnum][5]    = tke.thresh[i_bnum][4];
-  tke.bLineOS[i_bnum][5]   = tke.bLineOS[i_bnum][4];
-  tke.bLineNpts[i_bnum][5] = tke.bLineNpts[i_bnum][4];
-  tke.eMethod[i_bnum][5]   = tke.eMethod[i_bnum][4];
-  tke.nPeak[i_bnum][5]     = tke.nPeak[i_bnum][4];
-  tke.tOffset[i_bnum][5]   = tke.tOffset[i_bnum][5];
+  tke.Ns[i_bnum][4]        = tke.Ns[i_bnum][3];
+  tke.polarity[i_bnum][4]  = tke.polarity[i_bnum][3];
+  tke.thresh[i_bnum][4]    = tke.thresh[i_bnum][3];
+  tke.bLineOS[i_bnum][4]   = tke.bLineOS[i_bnum][3];
+  tke.bLineNpts[i_bnum][4] = tke.bLineNpts[i_bnum][3];
+  tke.eMethod[i_bnum][4]   = tke.eMethod[i_bnum][3];
+  tke.nPeak[i_bnum][4]     = tke.nPeak[i_bnum][3];
+  tke.tOffset[i_bnum][4]   = tke.tOffset[i_bnum][3];
 
 
   // printing out
@@ -339,25 +339,25 @@ int main(int argc, char* argv[])
   cout << setw(32) << left << "\tpeak offset: " << left << tke.tOffset[i_bnum][4] << "\n";
   cout << setw(32) << left << "Cathode: "
        << "\n";
-  cout << setw(32) << left << "\tpolarity: " << left << tke.polarity[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tE method: " << left << tke.eMethod[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tT method: " << left << tke.tMethod[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tZero interpolation: " << left << tke.interp[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\t# interpolation pts: " << left << tke.nZero[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tN samples: " << left << tke.Ns[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tthreshold: " << left << tke.thresh[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tcfd delay: " << left << tke.delay[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tcfd fraction: " << left << tke.frac[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\ttau: " << left << tke.tau[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tfast filter rise time: " << left << tke.ffRise[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\ttrap filter rise time: " << left << tke.tRise[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\ttrap filter gap time: " << left << tke.tGap[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\ttrap filter peak time: " << left << tke.tPeak[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\ttrap filter N peak: " << left << tke.nPeak[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tbaseline offset: " << left << tke.bLineOS[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tbaseline N pts: " << left << tke.bLineNpts[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tpeak npts: " << left << tke.nPeak[i_bnum][6] << "\n";
-  cout << setw(32) << left << "\tpeak offset: " << left << tke.tOffset[i_bnum][6] << "\n";
+  cout << setw(32) << left << "\tpolarity: " << left << tke.polarity[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tE method: " << left << tke.eMethod[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tT method: " << left << tke.tMethod[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tZero interpolation: " << left << tke.interp[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\t# interpolation pts: " << left << tke.nZero[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tN samples: " << left << tke.Ns[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tthreshold: " << left << tke.thresh[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tcfd delay: " << left << tke.delay[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tcfd fraction: " << left << tke.frac[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\ttau: " << left << tke.tau[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tfast filter rise time: " << left << tke.ffRise[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\ttrap filter rise time: " << left << tke.tRise[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\ttrap filter gap time: " << left << tke.tGap[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\ttrap filter peak time: " << left << tke.tPeak[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\ttrap filter N peak: " << left << tke.nPeak[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tbaseline offset: " << left << tke.bLineOS[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tbaseline N pts: " << left << tke.bLineNpts[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tpeak npts: " << left << tke.nPeak[i_bnum][0] << "\n";
+  cout << setw(32) << left << "\tpeak offset: " << left << tke.tOffset[i_bnum][8] << "\n";
   // cout << setw(32) << left << "\tcfd delay: " << left << tke.delay << "\n";
   // cout << setw(32) << left << "\tcfd fraction: " << left << tke.frac << "\n";
   // cout << setw(32) << left << "Sum: " << "\n";
@@ -425,7 +425,7 @@ int main(int argc, char* argv[])
 #endif
     }
   }
-  cout << "...success!\n";
+  cout << "...great success!\n";
 
 //   cout << tke.tMethod[0][0] << " " << tke.tMethod[0][1]
 // << " " << tke.tMethod[0][2] << " " << tke.tMethod[0][3] << endl;
@@ -448,8 +448,8 @@ int main(int argc, char* argv[])
   Long64_t eye;
 
   Long64_t nentries = itree->GetEntries();
-
-  nentries = 100000;
+  cout << nentries << " entries total\n";
+  // nentries = 100000;
 
   for (eye = 0; eye < nentries; eye++)
   {
@@ -465,6 +465,7 @@ int main(int argc, char* argv[])
       printf("hey i found rollover on board %i channel %i event // %i\n",raw_evt.bnum,raw_evt.chnum,eye);
       ts_base[raw_evt.bnum][raw_evt.chnum] =
           ts_base[raw_evt.bnum][raw_evt.chnum] + pow(2, NBITSCLOCK); ////// / STEFANO CHANGE THIS
+
       // std::cout << "My ts base is now " << ts_base[raw_evt.bnum][raw_evt.chnum] << std::endl;
     }
     proc_evt.ts                          = ts_base[raw_evt.bnum][raw_evt.chnum] + raw_evt.ts;
@@ -495,14 +496,14 @@ int main(int argc, char* argv[])
       otree[proc_evt.bnum][proc_evt.chnum]->Fill();
     }
     if (eye % 10000 == 0) {
-      printf("\rProcessing entry %i", eye);
+      printf("\rProcessing entry %i \n", eye);
       fflush(stdout);
     }
     if (eye > EvtBreakout) {
       cout << "!!!Warning!!! - Event limit exceeded; exiting entry processing loop!\n";
       break;
     }
-    // if((int)raw_evt.chnum == 0) break;
+    // if((int)raw_evt.chnum == 3) break; // Select channel to debug
   }
   cout << "\ndone!\n"
        << "Processed " << eye << " entries\n";
@@ -516,7 +517,7 @@ int main(int argc, char* argv[])
   raw_evt.gD->Write();
   raw_evt.gE->Write();
 
-  cout << "...success!\n";
+  cout << "...great success!\n";
   ofile->Close();
   ifile->Close();
   return 0;

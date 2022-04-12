@@ -26,11 +26,13 @@ private:
 public:
   int NUM_FILES;
   int* FILE_LIST;
+  TString FILE_NAME;
 
   InfoSystem()
   {
     NUM_FILES = 1;
     FILE_LIST = NULL;
+    FILE_NAME = "DataF_runW";
   }
 
   void ReadInput(TString inputFile)
@@ -48,7 +50,12 @@ public:
     string tag, value;
     while(file >> tag)
     {
-      if(tag == "<NUM_FILES>:")
+      if(tag == "<FILE_NAME>:")
+      {
+        file >> value;
+        FILE_NAME = value;
+      }
+      else if(tag == "<NUM_FILES>:")
       {
         file >> value;
         NUM_FILES = stoi(value);

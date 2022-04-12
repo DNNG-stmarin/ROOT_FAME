@@ -27,11 +27,11 @@ ConvertCompass::ConvertCompass(InfoSystem* infoIn, TString fileName) : runChain(
       TString s_runFile;
       if (i == 0)
       {
-        s_runFile = "DataF_runW" + extRunFile;
+        s_runFile = infoSystem->FILE_NAME + extRunFile;
       }
       else
       {
-        s_runFile = "DataF_runW_" + TString(to_string(fileNum)) + extRunFile;
+        s_runFile = infoSystem->FILE_NAME + "_" + TString(to_string(fileNum)) + extRunFile;
       }
 
       cout << "Reading file number " << fileNum << ": " << s_runFile << endl;
@@ -116,7 +116,12 @@ void ConvertCompass::Loop()
 
       tBoard = (UChar_t)Board;
       tChan = (UChar_t)Channel;
-      tTime = (ULong64_t)Timestamp;
+      if (tChan == 8)
+      {
+        tChan = 0;
+      }
+
+      tTime = (ULong64_t)Timestamp / 1000.; // Convert from ps to ns
 
       for (int i = 0; i < recordLength; i++)
       {

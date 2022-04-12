@@ -12,7 +12,7 @@
 #define _DEFINITIONS_H_ 1
 
 // definitions
-#define WF_SIZE 312
+#define WF_SIZE 216
 // #define WF_SIZE 4096 // Jan 2018 data
 #define MAXNBOARDS 1
 #define MAXNCHANNELS 8
