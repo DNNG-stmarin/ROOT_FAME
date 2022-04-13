@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
     tke.thresh[i_bnum][i_chnum]    = -1;
     tke.polarity[i_bnum][i_chnum]  = "positive";
     tke.bLineOS[i_bnum][i_chnum]   = 1;
-    tke.bLineNpts[i_bnum][i_chnum] = 16;
+    tke.bLineNpts[i_bnum][i_chnum] = 8;
     tke.eMethod[i_bnum][i_chnum]   = "trapFilter";
     tke.tRise[i_bnum][i_chnum]     = 20;
     tke.tGap[i_bnum][i_chnum]      = 50;
