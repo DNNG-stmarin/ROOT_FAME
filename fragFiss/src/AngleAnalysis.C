@@ -11,8 +11,8 @@ void fragFiss::AngleAnalysis()
 
    if (eventChain == 0) return;
    // Put this somewhere else
-   TH2D* h2_anodeGrid1 = new TH2D("h2_anodeGrid1","h2_anodeGrid1",N_BINS_RATIO,0,1,N_BINS_APH,0,MAX_APH);
-   TH2D* h2_anodeGrid2 = new TH2D("h2_anodeGrid2","h2_anodeGrid2",N_BINS_RATIO,0,1,N_BINS_APH,0,MAX_APH);
+   TH2D* h2_anodeGrid1 = new TH2D("h2_anodeGrid1","h2_anodeGrid1;gph/aph;aph",N_BINS_RATIO,0,MAX_RATIO,N_BINS_APH,0,MAX_APH);
+   TH2D* h2_anodeGrid2 = new TH2D("h2_anodeGrid2","h2_anodeGrid2;gph/aph;aph",N_BINS_RATIO,0,MAX_RATIO,N_BINS_APH,0,MAX_APH);
 
 
   /*
@@ -65,8 +65,8 @@ void fragFiss::AngleAnalysis()
    for (int b=0; b < N_BINS_APH; b++)
    {
      phAx[b] = h2_anodeGrid1->GetYaxis()->GetBinCenter(b+1);
-     TH1D* projAPH1 = h2_anodeGrid1->ProjectionX("projAPH1" + TString(b),b+1,b+2);
-     TH1D* projAPH2 = h2_anodeGrid2->ProjectionX("projAPH2" + TString(b),b+1,b+2);
+     TH1D* projAPH1 = h2_anodeGrid1->ProjectionX("projAPH1" + TString(b),b+1,b+1);
+     TH1D* projAPH2 = h2_anodeGrid2->ProjectionX("projAPH2" + TString(b),b+1,b+1);
 
      // line conversion
 
@@ -75,7 +75,7 @@ void fragFiss::AngleAnalysis()
      double maxAPH1 = -1;
      double maxAPH2 = -1;
 
-     for (int i = 0; i < N_BINS_RATIO; i++)
+     for (int i = MIN_BIN_RATIO; i < N_BINS_RATIO; i++)
      {
        cosAx[i] = projAPH1->GetBinCenter(i+1);
        APH1[i]  = projAPH1->GetBinContent(i+1);
@@ -103,23 +103,43 @@ void fragFiss::AngleAnalysis()
      double dMinAPH1 = -1;
      double dMinAPH2 = -1;
 
-     for (int i = 0; i < N_BINS_RATIO-1; i++)
+     double dPrev = 0;
+     double dPrev1 = 0;
+     double dPrev2 = 0;
+     double dNext = 0;
+     double dNext1 = 0;
+     double dNext2 = 0;
+
+     for (int i = MIN_BIN_RATIO; i < N_BINS_RATIO - 2; i++)
      {
        dcosAx[i] = (cosAx[i+1]- cosAx[i]) / 2.0;
        dAPH1[i] = (APH1[i+1] - APH1[i]) / dcosAx[i];
        dAPH2[i] = (APH2[i+1] - APH2[i]) / dcosAx[i];
 
-       // find maximum and bin
-       if( (dAPH1[i] < dMinAPH1) && (i >= maxBinAPH1) )
-       {
-         dMinAPH1 = dAPH1[i];
-         dMinBinAPH1 = i;
-       }
+       dPrev    = (cosAx[i]- cosAx[i-1]) / 2.0;
+       dPrev1 = (APH1[i] - APH1[i-1]) / dPrev;
+       dPrev2 = (APH2[i] - APH2[i-1]) / dPrev;
 
-       if( (dAPH2[i] < dMinAPH2) && (i >= maxBinAPH2) )
+       dNext    = (cosAx[i+2]- cosAx[i+1]) / 2.0;
+       dNext1 = (APH1[i+2] - APH1[i+1]) / dNext;
+       dNext2 = (APH2[i+2] - APH2[i+1]) / dNext;
+
+       if ( (dPrev1 < 0) && (dNext1 < 0) )
        {
-         dMinAPH2 = dAPH2[i];
-         dMinBinAPH2 = i;
+         // find maximum and bin
+         if( (dAPH1[i] < dMinAPH1) && (i >= maxBinAPH1) )
+         {
+           dMinAPH1 = dAPH1[i];
+           dMinBinAPH1 = i;
+         }
+       }
+       if ( (dPrev2 < 0) && (dNext2 < 0) )
+       {
+         if( (dAPH2[i] < dMinAPH2) && (i >= maxBinAPH2) )
+         {
+           dMinAPH2 = dAPH2[i];
+           dMinBinAPH2 = i;
+         }
        }
      }
 
@@ -157,7 +177,7 @@ void fragFiss::AngleAnalysis()
    g_xAng1->SetName("g_xAng2");
 
    // canvas with angle results
-   TCanvas* c_angleAn = new TCanvas("c_angle1", "c_angle1", 400, 500);
+   TCanvas* c_angleAn = new TCanvas("c_angle1", "c_angle1", 600, 800);
    c_angleAn->Divide(1,2);
 
    c_angleAn->cd(1);

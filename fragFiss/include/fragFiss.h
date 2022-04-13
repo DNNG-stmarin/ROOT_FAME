@@ -44,7 +44,8 @@ public :
    TF1* f_att2;
 
    TGraph* g_gainMatch;
-   TGraph* g_calib;
+   TGraph* g_calib1;
+   TGraph* g_calib2;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 

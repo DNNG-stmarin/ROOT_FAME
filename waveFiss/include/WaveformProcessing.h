@@ -67,6 +67,8 @@ public:
   TGraph*  gW = NULL;
   TGraph*  gD = NULL;
   TGraph*  gE = NULL;
+  TGraph*  gWF = NULL;
+
 
 public:
   Double_t calcBaseline(Int_t Ns, Int_t offset, Short_t* wf);
@@ -91,7 +93,7 @@ public:
   Double_t locatePeak(Int_t Ns, Double_t* wf);
   Double_t cSplineInterp0X(Int_t Ns, Double_t* wf, Double_t armthresh = 20, Int_t Npts = 4,
                            Int_t offset = 0, Double_t tolerance = 1.e-4);
-  Int_t    processWf(TKESettings tvar, double* tTrig, int* tPeak, double* peak, double* baseline);
+  Int_t    processWf(TKESettings tvar, double* tTrig, int* tPeak, double* peak, double* baseline, TGraph* gWF);
   void     reset();
   void     sdlFilter(Int_t Ns, Short_t* wf, Double_t* sdl, Int_t delay, Double_t tau);
   void     sdlCFD(Int_t Ns, Short_t* wf, Double_t* CFD, Int_t ff_rise = 64, Double_t tau = 2.5e4,

@@ -45,7 +45,7 @@ void fragFiss::GainMatching()
 
       if(g_Ang2->Eval(aph[1]) > 0)
       {
-        cos2  = (gph[1]/aph[1])/g_Ang1->Eval(aph[1]);
+        cos2  = (gph[1]/aph[1])/g_Ang2->Eval(aph[1]);
       }
       else cos2  = -1;
 
@@ -53,7 +53,7 @@ void fragFiss::GainMatching()
       // kinetic energy
       ua1 = aph[0];
       ua2 = aph[1];
-      ua1 += f_att1->Eval(1.0/cos1) - f_att2->Eval(0);
+      ua1 += f_att1->Eval(1.0/cos1) - f_att1->Eval(0);
       ua2 += f_att2->Eval(1.0/cos2) - f_att2->Eval(0);
 
 
@@ -100,9 +100,26 @@ void fragFiss::GainMatching()
    centroids2[0] = f_gaussYield2->GetParameter(1);
    centroids2[1] = f_gaussYield2->GetParameter(4);
 
+   if (centroids1[0] > centroids1[1])
+   {
+     double temp = centroids1[0];
+     centroids1[0] = centroids1[1];
+     centroids1[1] = temp;
+   }
+   if (centroids2[0] > centroids2[1])
+   {
+     double temp = centroids2[0];
+     centroids2[0] = centroids2[1];
+     centroids2[1] = temp;
+   }
+
    cout << centroids1[0] << " " << centroids1[1] << endl;
    cout << centroids2[0] << " " << centroids2[1] << endl;
 
+   // TF1* f_intersect = new TF1("f_intersect", [0] + [1] * x);
+   // TF1* f_intersect = new TF1("f_intersect", [0] + [1] * x);
+   // TF1* f_intersect = new TF1("f_intersect", [0] + [1] * x);
+   //
    g_gainMatch = new TGraph(2, centroids2, centroids1);
    g_gainMatch->SetName("g_gainMatch");
    g_gainMatch->Fit("pol1", "Q");
@@ -113,9 +130,18 @@ void fragFiss::GainMatching()
    double kineticPeaks[2];
    kineticPeaks[0] = infoSystem->KINETIC_PEAKS[0];
    kineticPeaks[1] = infoSystem->KINETIC_PEAKS[1];
-   g_calib = new TGraph(2, centroids1, kineticPeaks);
-   g_calib->SetName("g_gainMatch");
-   g_calib->Fit("pol1", "Q");
+
+   g_calib1 = new TGraph(2, centroids1, kineticPeaks);
+   g_calib1->SetName("g_calib1");
+   g_calib1->Fit("pol1", "Q");
+
+   g_calib2 = new TGraph(2, centroids2, kineticPeaks);
+   g_calib2->SetName("g_calib2");
+   g_calib2->Fit("pol1", "Q");
+
+   cout << "f_att1: " << f_att1->GetParameter(0) << " " << f_att1->GetParameter(1) << endl;
+   cout << "f_att2: " << f_att2->GetParameter(0) << " " << f_att2->GetParameter(1) << endl;
+
 
 
    //
@@ -138,7 +164,8 @@ void fragFiss::GainMatching()
    g_gainMatch->Draw();
 
    c_gain->cd(3);
-   g_calib->Draw();
+   g_calib1->Draw();
+   g_calib2->Draw("SAME");
 
    // write file
    fragFile->cd();

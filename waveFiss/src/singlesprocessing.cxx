@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
   tke.tMethod[i_bnum][i_chnum]   = "derivative";
   tke.derivePointDelta[i_bnum][i_chnum]   = 3;
   tke.frac[i_bnum][i_chnum]      = 0.98;
-  tke.gOffset[i_bnum][i_chnum]   = 160;
+  tke.eOffset[i_bnum][i_chnum]   = 160;
 
   // ion chamber anodes
   for (i_chnum = 1; i_chnum < 3; ++i_chnum) {
@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
     tke.ffRise[i_bnum][i_chnum]    = 16;
     // tke.delay[i_bnum][i_chnum]     = 4;
     // tke.frac[i_bnum][i_chnum]      = 0.98;
-    tke.interp[i_bnum][i_chnum]    = "cubic";
+    tke.interp[i_bnum][i_chnum]    = "linear";
     tke.nZero[i_bnum][i_chnum]     = 4;
     tke.tOffset[i_bnum][i_chnum]   = 4;
     tke.tau[i_bnum][i_chnum]       = 9375;
@@ -128,12 +128,12 @@ int main(int argc, char* argv[])
     tke.thresh[i_bnum][i_chnum]    = -1;
     tke.bLineOS[i_bnum][i_chnum]   = 10;
     tke.bLineNpts[i_bnum][i_chnum] = 16;
-    tke.eMethod[i_bnum][i_chnum]   = "chargeInt";
+    tke.eMethod[i_bnum][i_chnum]   = "chargeIntGrid";
     tke.nPeak[i_bnum][i_chnum]     = 16;
     tke.nZero[i_bnum][i_chnum]     = 4;
     tke.interp[i_bnum][i_chnum]    = "cubic";
     tke.tOffset[i_bnum][i_chnum]   = 4;
-    tke.gOffset[i_bnum][i_chnum]   = 165;
+    tke.gOffset[i_bnum][i_chnum]   = 30;
 
     // tke.nPeak[i_bnum][i_chnum] = 200; // good for U5
     // tke.bLineNpts[i_bnum][i_chnum] = 200; /// good for U5
@@ -483,7 +483,7 @@ int main(int argc, char* argv[])
       // (Int_t)proc_evt.chnum << std::endl;
       // mstd::cout << (int)proc_evt.chnum << std::endl;
       Int_t retval = raw_evt.processWf(tke, &proc_evt.tTrig, &proc_evt.tPeak, &proc_evt.peak,
-                                       &proc_evt.baseline);
+                                       &proc_evt.baseline, raw_evt.gWF);
 
       // cout << "baseline " << proc_evt.baseline << endl;
 #ifdef SAVE_WAVEFORMS
@@ -503,7 +503,7 @@ int main(int argc, char* argv[])
       cout << "!!!Warning!!! - Event limit exceeded; exiting entry processing loop!\n";
       break;
     }
-    // if((int)raw_evt.chnum == 3) break; // Select channel to debug
+    // if((int)raw_evt.chnum == 0) break; // Select channel to debug
   }
   cout << "\ndone!\n"
        << "Processed " << eye << " entries\n";
@@ -516,6 +516,7 @@ int main(int argc, char* argv[])
   raw_evt.gW->Write();
   raw_evt.gD->Write();
   raw_evt.gE->Write();
+  raw_evt.gWF->Write();
 
   cout << "...great success!\n";
   ofile->Close();

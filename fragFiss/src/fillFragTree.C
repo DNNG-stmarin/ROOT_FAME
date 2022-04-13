@@ -2,6 +2,7 @@
 #include "constants.h"
 #include <TH2.h>
 #include <TF1.h>
+#include <TCanvas.h>
 
 void fragFiss::FillFragTree()
 {
@@ -11,6 +12,15 @@ void fragFiss::FillFragTree()
   fragTree = new TTree("FragmentTree", "Tree of Fragments");
   fragTree->SetFileNumber(0);
   fragTree->SetMaxTreeSize(1000000000LL);
+
+  TH1D* h_calibratedA1 = new TH1D("h_calibratedA1","h_calibratedA1;KE (MeV);Counts", N_BINS_APH, 0, MAX_KE);
+  TH1D* h_calibratedA2 = new TH1D("h_calibratedA2","h_calibratedA2;KE (MeV);Counts", N_BINS_APH, 0, MAX_KE);
+
+  TH1D* h_rawA1 = new TH1D("h_rawA1","h_rawA1;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
+  TH1D* h_rawA2 = new TH1D("h_rawA2","h_rawA2;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
+
+  TH1D* h_corA1 = new TH1D("h_corA1","h_corA1;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
+  TH1D* h_corA2 = new TH1D("h_corA2","h_corA2;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
 
 
   // fragment assigned quantities
@@ -47,6 +57,9 @@ void fragFiss::FillFragTree()
 
      // import the time
      fT = ct;
+     // get attenuation corrected anode specs
+     h_rawA1->Fill(aph[0]);
+     h_rawA2->Fill(aph[1]);
 
      // angle filling
      if(g_Ang1->Eval(aph[0]) > 0)
@@ -71,15 +84,19 @@ void fragFiss::FillFragTree()
      fKE1 += f_att1->Eval(1.0/fTheta1) - f_att1->Eval(0);
      fKE2 += f_att2->Eval(1.0/fTheta2) - f_att2->Eval(0);
      // gain matching
-     fKE2 = g_gainMatch->Eval(fKE2);
+     // fKE2 = g_gainMatch->Eval(fKE2);
+
 
      // store pulse heights
      fPH1 = fKE1;
      fPH2 = fKE2;
 
+     h_corA1->Fill(fPH1);
+     h_corA2->Fill(fPH2);
+
      // convert to energy
-     fKE1 = g_calib->Eval(fKE1);
-     fKE2 = g_calib->Eval(fKE2);
+     fKE1 = g_calib1->Eval(fKE1);
+     fKE2 = g_calib2->Eval(fKE2);
 
 
      // mass calculation
@@ -163,9 +180,12 @@ void fragFiss::FillFragTree()
 
 
      // if event passes the test, fill the tree
-     if( (fPH1 > MIN_ANODE1) && (fPH2 > MIN_ANODE2) && (fTheta1 > MIN_ANG1) && (fTheta2 > MIN_ANG2))
+     if( (fPH1 > MIN_ANODE1) && (fPH2 > MIN_ANODE2) && (fTheta1 > MIN_ANG1) && (fTheta2 > MIN_ANG2)
+          && (fTheta1 < MAX_ANG1) && (fTheta2 < MAX_ANG2))
      {
        fragTree->Fill();
+       h_calibratedA1->Fill(fKE1);
+       h_calibratedA2->Fill(fKE2);
      }
 
   }
@@ -175,7 +195,30 @@ void fragFiss::FillFragTree()
 
 
   fragFile->cd();
-  g_sawtooth->Write();
-  fragTree->Write();
 
+  TCanvas* c_rawA = new TCanvas("c_rawA", "c_rawA", 600, 400);
+  c_rawA->cd();
+  h_rawA1->SetLineColor(kBlue);
+  h_rawA2->SetLineColor(kRed);
+  h_corA1->SetLineColor(kBlue);
+  h_corA2->SetLineColor(kRed);
+  h_corA1->SetLineStyle(kDashed);
+  h_corA2->SetLineStyle(kDashed);
+  h_rawA1->Draw();
+  h_rawA2->Draw("SAME");
+  h_corA1->Draw("SAME");
+  h_corA2->Draw("SAME");
+
+
+  TCanvas* c_calA = new TCanvas("c_calA", "c_calA", 600, 400);
+  c_calA->cd();
+  h_calibratedA1->SetLineColor(kBlue);
+  h_calibratedA2->SetLineColor(kRed);
+  h_calibratedA1->Draw();
+  h_calibratedA2->Draw("SAME");
+
+  c_rawA->Write();
+  c_calA->Write();
+
+  fragTree->Write();
 }

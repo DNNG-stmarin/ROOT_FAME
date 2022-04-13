@@ -124,9 +124,11 @@ void CAEN_DGTZ_Event::reset()
   gD = new TGraph();
   gW = new TGraph();
   gE = new TGraph();
+  gWF = new TGraph();
   gW->SetName("gW");
   gD->SetName("gD");
   gE->SetName("gE");
+  gWF->SetName("gWF");
 
   // cout << WF_SIZE << endl;
   bnum  = 255;
@@ -160,20 +162,25 @@ Double_t CAEN_DGTZ_Event::calcPhChargeInt(Int_t Ns, Int_t offset, Short_t* wf)
 
 Double_t CAEN_DGTZ_Event::calcPhGrid(Int_t Ns, Int_t offset, Int_t Npts, Short_t* wf)
 {
-  Int_t min = 10000;
+  Int_t max = -10000;
+  int maxInd = -1;
   for (int eye = 0; eye < Ns; eye++)
   {
-    if (wf[eye] < min)  { min = wf[eye]; }
+    if (wf[eye] > max)
+    {
+      max = wf[eye];
+      maxInd = eye;
+    }
   }
 
   Double_t integral = 0;
 
-  for (int eye = min + offset; eye < min + offset + Npts; eye++)
+  for (int eye = maxInd + offset; eye < maxInd + offset + Npts; eye++)
   {
     integral += (double)wf[eye];
   }
-  // cout << "final integral " << integral << endl;
-  return integral / ((double)Npts);
+  // cout << "maxInd " << maxInd << " final integral " << integral << endl;
+  return -1 * integral / ((double)Npts);
 }
 
 
@@ -603,8 +610,14 @@ void CAEN_DGTZ_Event::sdlCFD(Int_t Ns, Short_t* wf, Double_t* CFD, Int_t ff_rise
 ////////////////////////////////////////////////////////////////////////////////
 /// this is a critical function - it defines  how all the wavefoms get processed
 Int_t CAEN_DGTZ_Event::processWf(TKESettings tke, double* tTrig, int* tPeak, double* peak,
-                                 double* baseline)
+                                 double* baseline, TGraph* gWF)
 {
+
+  for (Int_t eye = 0; eye < tke.Ns[bnum][chnum]; eye++) // Store current wf in graph
+  {
+    gWF->SetPoint(gWF->GetN(), eye, wf[eye]);
+  }
+
   // invert negative waveforms
   if (tke.polarity[bnum][chnum].compare("negative") == 0) {
     for (Int_t eye = 0; eye < tke.Ns[bnum][chnum]; eye++) { wf[eye] = pow(2, NBITSADC) - wf[eye]; }
@@ -681,6 +694,7 @@ Int_t CAEN_DGTZ_Event::processWf(TKESettings tke, double* tTrig, int* tPeak, dou
     zcross = (double)ffExtrapTs(tke.Ns[bnum][chnum], this->Tflt, tke.tOffset[bnum][chnum],
                                 tke.ffRise[bnum][chnum], bdelta / 2.);
   } else {
+    // cout << "Start zero crossing " << tke.interp[bnum][chnum] << " " << (int)chnum << endl;
     // locate zero crossing of timing filter
     if (tke.interp[bnum][chnum].compare("spline") == 0) {
       zcross = cSplineInterp0X(tke.Ns[bnum][chnum], this->Tflt, bdelta / 2.,
@@ -694,6 +708,8 @@ Int_t CAEN_DGTZ_Event::processWf(TKESettings tke, double* tTrig, int* tPeak, dou
     } else {
       zcross = locate0X(tke.Ns[bnum][chnum], this->Tflt, bdelta / 2., tke.tOffset[bnum][chnum]);
     }
+    // cout << "End zero crossing" << endl;
+
   }
   // set time of triggers to cross
   *tTrig = zcross;
@@ -702,11 +718,13 @@ Int_t CAEN_DGTZ_Event::processWf(TKESettings tke, double* tTrig, int* tPeak, dou
   // calc the peak height
   Double_t ph = 0;
   if (tke.eMethod[bnum][chnum].compare("chargeInt") == 0) {
-    // ph =
-    //   calcPhChargeInt(tke.nPeak[bnum][chnum], ((int)zcross) + tke.eOffset[bnum][chnum],
-    //   this->wf);
-    ph    = calcPhGrid(tke.Ns[bnum][chnum], tke.gOffset[bnum][chnum], tke.nPeak[bnum][chnum], this->wf);
+    ph =
+      calcPhChargeInt(tke.nPeak[bnum][chnum], ((int)zcross) + tke.eOffset[bnum][chnum],
+      this->wf);
     *peak = ph;
+  } else if (tke.eMethod[bnum][chnum].compare("chargeIntGrid") == 0) {
+      ph    = calcPhGrid(tke.Ns[bnum][chnum], tke.gOffset[bnum][chnum], tke.nPeak[bnum][chnum], this->wf);
+      *peak = ph;
   } else if (tke.eMethod[bnum][chnum].compare("expFit") == 0) {
     // cout << "number of points in waveform " << tke.Ns[bnum][chnum] << endl;
     ph    = calcPhExp(tke.Ns[bnum][chnum], tke.nPeak[bnum][chnum],

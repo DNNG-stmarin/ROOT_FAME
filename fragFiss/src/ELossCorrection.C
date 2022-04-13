@@ -60,8 +60,8 @@ void fragFiss::ELossCorrection()
    f_att1 = new TF1("f_att1", "[0] + [1]*x", -10, 10);
    f_att2 = new TF1("f_att1", "[0] + [1]*x", -10, 10);
 
-   p1_backing1->Fit(f_att1, "Q", "", 1, MAX_INV_ANG_FIT);
-   p1_backing2->Fit(f_att2, "Q", "", 1, MAX_INV_ANG_FIT);
+   p1_backing1->Fit(f_att1, "Q", "", MIN_INV_ANG_FIT, MAX_INV_ANG_FIT);
+   p1_backing2->Fit(f_att2, "Q", "", MIN_INV_ANG_FIT, MAX_INV_ANG_FIT);
 
    // analysis of fits
    // ask fredrik about this
@@ -78,6 +78,7 @@ void fragFiss::ELossCorrection()
    p1_backing1->SetName("p1_backing1");
    p1_backing1->SetLineColor(kBlue);
    f_att1->Draw("SAME");
+
 
    p1_backing2->Draw("SAME");
    p1_backing2->SetName("p1_backing2");
