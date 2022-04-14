@@ -147,7 +147,7 @@ void CAEN_DGTZ_Event::reset()
 Double_t CAEN_DGTZ_Event::calcPhChargeInt(Int_t Ns, Int_t offset, Short_t* wf)
 {
   Double_t integral = 0;
-  for (int eye = offset; eye < Ns; eye++) {
+  for (int eye = offset; eye < offset + Ns; eye++) {
     integral += (double)wf[eye];
     ;
     // cout << "amp " << wf[eye] << " baseline " << baseline << " integral " << integral <<

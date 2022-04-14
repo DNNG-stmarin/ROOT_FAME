@@ -12,8 +12,8 @@ void fragFiss::GainMatching()
 
    if (eventChain == 0) return;
    // Put this somewhere else
-   TH1D* h1_uncalibratedA1 = new TH1D("h1_uncalibratedA1","h1_uncalibratedA1", N_BINS_APH, 0, MAX_APH);
-   TH1D* h1_uncalibratedA2 = new TH1D("h1_uncalibratedA2","h1_uncalibratedA2", N_BINS_APH, 0, MAX_APH);
+   TH1D* h1_uncalibratedAn1 = new TH1D("h1_uncalibratedAn1","h1_uncalibratedAn1", N_BINS_APH, 0, MAX_APH);
+   TH1D* h1_uncalibratedAn2 = new TH1D("h1_uncalibratedAn2","h1_uncalibratedAn2", N_BINS_APH, 0, MAX_APH);
 
 
   /*
@@ -39,15 +39,15 @@ void fragFiss::GainMatching()
       // calculate the angles
       if(g_Ang1->Eval(aph[0]) > 0)
       {
-        cos1  = (gph[0]/aph[0])/g_Ang1->Eval(aph[0]);
+        cos1 = (gph[0]/aph[0])/g_Ang1->Eval(aph[0]);
       }
-      else cos1  = -1;
+      else cos1 = -1;
 
       if(g_Ang2->Eval(aph[1]) > 0)
       {
-        cos2  = (gph[1]/aph[1])/g_Ang2->Eval(aph[1]);
+        cos2 = (gph[1]/aph[1])/g_Ang2->Eval(aph[1]);
       }
-      else cos2  = -1;
+      else cos2 = -1;
 
 
       // kinetic energy
@@ -57,10 +57,11 @@ void fragFiss::GainMatching()
       ua2 += f_att2->Eval(1.0/cos2) - f_att2->Eval(0);
 
 
-      if( (ua1 > MIN_ANODE1) && (ua2 > MIN_ANODE2) && (cos1 > MIN_ANG1) && (cos2 > MIN_ANG2))
+      if( (ua1 > MIN_ANODE1) && (ua2 > MIN_ANODE2) && (cos1 > MIN_ANG1) && (cos2 > MIN_ANG2)
+          && (cos1 < MAX_ANG1) && (cos2 < MAX_ANG2))
       {
-        h1_uncalibratedA1->Fill(ua1);
-        h1_uncalibratedA2->Fill(ua2);
+        h1_uncalibratedAn1->Fill(ua1);
+        h1_uncalibratedAn2->Fill(ua2);
       }
 
    }
@@ -71,17 +72,17 @@ void fragFiss::GainMatching()
    TF1* f_gaussYield2 = new TF1("f_gaussYield2", "gaussFit + gaussFit", 0, MAX_APH);
 
    double ampGuess, meanGuess, sigGuess;
-   ampGuess = h1_uncalibratedA1->GetMaximum();
-   meanGuess = h1_uncalibratedA1->GetMean();
+   ampGuess = h1_uncalibratedAn1->GetMaximum();
+   meanGuess = h1_uncalibratedAn1->GetMean();
    sigGuess = 100;
    // cout << ampGuess << " " << meanGuess << sigGuess << " " << endl;
    f_gaussYield1->SetParameters(ampGuess*0.8, meanGuess*0.8, sigGuess, ampGuess, meanGuess*1.2, sigGuess);
    // f_gaussYield1->SetParLimits(1, 0, ampGuess);
    // f_gaussYield1->SetParLimits(4, ampGuess, MAX_APH);
-    h1_uncalibratedA1->Fit(f_gaussYield1, "N Q", "", 0, MAX_APH);
+    h1_uncalibratedAn1->Fit(f_gaussYield1, "N Q", "", 0, MAX_APH);
 
-   ampGuess = h1_uncalibratedA2->GetMaximum();
-   meanGuess = h1_uncalibratedA2->GetMean();
+   ampGuess = h1_uncalibratedAn2->GetMaximum();
+   meanGuess = h1_uncalibratedAn2->GetMean();
    sigGuess = 100;
    // cout << ampGuess << " " << meanGuess << " " << sigGuess << endl;
    f_gaussYield2->SetParameters(ampGuess*0.8, meanGuess*0.8, sigGuess, ampGuess, meanGuess*1.2, sigGuess);
@@ -89,7 +90,7 @@ void fragFiss::GainMatching()
    // f_gaussYield2->SetParLimits(4, ampGuess, MAX_APH);
 
 
-   h1_uncalibratedA2->Fit(f_gaussYield2, "N Q", "", 0, MAX_APH);
+   h1_uncalibratedAn2->Fit(f_gaussYield2, "N Q", "", 0, MAX_APH);
 
    double centroids1[2];
    double centroids2[2];
@@ -151,10 +152,10 @@ void fragFiss::GainMatching()
 
    // draw
    c_gain->cd(1);
-   h1_uncalibratedA1->SetLineColor(kBlue);
-   h1_uncalibratedA2->SetLineColor(kRed);
-   h1_uncalibratedA1->Draw();
-   h1_uncalibratedA2->Draw("SAME");
+   h1_uncalibratedAn1->SetLineColor(kBlue);
+   h1_uncalibratedAn2->SetLineColor(kRed);
+   h1_uncalibratedAn1->Draw();
+   h1_uncalibratedAn2->Draw("SAME");
    f_gaussYield1->SetLineColor(kBlue);
    f_gaussYield2->SetLineColor(kRed);
    f_gaussYield1->Draw("SAME");

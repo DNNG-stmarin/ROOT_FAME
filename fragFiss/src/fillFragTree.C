@@ -13,14 +13,21 @@ void fragFiss::FillFragTree()
   fragTree->SetFileNumber(0);
   fragTree->SetMaxTreeSize(1000000000LL);
 
-  TH1D* h_calibratedA1 = new TH1D("h_calibratedA1","h_calibratedA1;KE (MeV);Counts", N_BINS_APH, 0, MAX_KE);
-  TH1D* h_calibratedA2 = new TH1D("h_calibratedA2","h_calibratedA2;KE (MeV);Counts", N_BINS_APH, 0, MAX_KE);
+  TH2D* h2_massAngle = new TH2D("h2_massAngle", "h2_massAngle;cos;A", 100,0,2,160,40,200);
 
-  TH1D* h_rawA1 = new TH1D("h_rawA1","h_rawA1;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
-  TH1D* h_rawA2 = new TH1D("h_rawA2","h_rawA2;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
+  TH1D* h_calibratedAn1 = new TH1D("h_calibratedAn1","h_calibratedAn1;KE (MeV);Counts", N_BINS_APH, 0, MAX_KE);
+  TH1D* h_calibratedAn2 = new TH1D("h_calibratedAn2","h_calibratedAn2;KE (MeV);Counts", N_BINS_APH, 0, MAX_KE);
 
-  TH1D* h_corA1 = new TH1D("h_corA1","h_corA1;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
-  TH1D* h_corA2 = new TH1D("h_corA2","h_corA2;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
+  TH1D* h_rawAn1 = new TH1D("h_rawAn1","h_rawAn1;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
+  TH1D* h_rawAn2 = new TH1D("h_rawAn2","h_rawAn2;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
+
+  TH1D* h_corAn1 = new TH1D("h_corAn1","h_corAn1;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
+  TH1D* h_corAn2 = new TH1D("h_corAn2","h_corAn2;KE (MeV);Counts", N_BINS_APH, 0, MAX_APH);
+
+  TH1D* h_rawMass1 = new TH1D("h_rawMass1","h_rawMass1;amu;Counts", 252, 0, 252);
+  TH1D* h_rawMass2 = new TH1D("h_rawMass2","h_rawMass2;amu;Counts", 252, 0, 252);
+
+  TH1D* h_finalMass = new TH1D("h_finalMass","h_finalMass;amu;Counts", 252, 0, 252);
 
 
   // fragment assigned quantities
@@ -58,8 +65,8 @@ void fragFiss::FillFragTree()
      // import the time
      fT = ct;
      // get attenuation corrected anode specs
-     h_rawA1->Fill(aph[0]);
-     h_rawA2->Fill(aph[1]);
+     h_rawAn1->Fill(aph[0]);
+     h_rawAn2->Fill(aph[1]);
 
      // angle filling
      if(g_Ang1->Eval(aph[0]) > 0)
@@ -72,7 +79,7 @@ void fragFiss::FillFragTree()
      {
        fTheta2  = (gph[1]/aph[1])/g_Ang2->Eval(aph[1]);
      }
-     else fTheta2  = -1;
+     else fTheta2 = -1;
 
      if (fTheta1 > 2) fTheta1 = 2;
      if (fTheta2 > 2) fTheta2 = 2;
@@ -91,8 +98,8 @@ void fragFiss::FillFragTree()
      fPH1 = fKE1;
      fPH2 = fKE2;
 
-     h_corA1->Fill(fPH1);
-     h_corA2->Fill(fPH2);
+     h_corAn1->Fill(fPH1);
+     h_corAn2->Fill(fPH2);
 
      // convert to energy
      fKE1 = g_calib1->Eval(fKE1);
@@ -104,6 +111,9 @@ void fragFiss::FillFragTree()
      preA2 = A_TOT * fKE1 / (fKE1 + fKE2);
      postA1 = preA1;
      postA2 = preA2;
+
+     h_rawMass1->Fill(preA1);
+     h_rawMass2->Fill(preA2);
 
      preE1 = fKE1;
      postE1 = fKE1;
@@ -179,13 +189,21 @@ void fragFiss::FillFragTree()
      // cout << fKEL + fKEH << endl;
 
 
+     h2_massAngle->Fill(fThetaL, fAL);
+     h2_massAngle->Fill(fThetaH, fAH);
+
+
      // if event passes the test, fill the tree
      if( (fPH1 > MIN_ANODE1) && (fPH2 > MIN_ANODE2) && (fTheta1 > MIN_ANG1) && (fTheta2 > MIN_ANG2)
           && (fTheta1 < MAX_ANG1) && (fTheta2 < MAX_ANG2))
      {
        fragTree->Fill();
-       h_calibratedA1->Fill(fKE1);
-       h_calibratedA2->Fill(fKE2);
+       h_calibratedAn1->Fill(fKE1);
+       h_calibratedAn2->Fill(fKE2);
+
+       h_finalMass->Fill(fAL);
+       h_finalMass->Fill(fAH);
+
      }
 
   }
@@ -196,29 +214,43 @@ void fragFiss::FillFragTree()
 
   fragFile->cd();
 
-  TCanvas* c_rawA = new TCanvas("c_rawA", "c_rawA", 600, 400);
-  c_rawA->cd();
-  h_rawA1->SetLineColor(kBlue);
-  h_rawA2->SetLineColor(kRed);
-  h_corA1->SetLineColor(kBlue);
-  h_corA2->SetLineColor(kRed);
-  h_corA1->SetLineStyle(kDashed);
-  h_corA2->SetLineStyle(kDashed);
-  h_rawA1->Draw();
-  h_rawA2->Draw("SAME");
-  h_corA1->Draw("SAME");
-  h_corA2->Draw("SAME");
+  TCanvas* c_rawMass = new TCanvas("c_rawMass", "c_rawMass", 600, 400);
+  c_rawMass->cd();
+  h_rawMass1->SetLineColor(kBlue);
+  h_rawMass2->SetLineColor(kRed);
+  h_rawMass1->Draw();
+  h_rawMass2->Draw("SAME");
+
+  TCanvas* c_massAngle = new TCanvas("c_massAngle", "c_massAngle", 600, 400);
+  c_massAngle->cd();
+  h2_massAngle->Draw("COLZ");
+
+  TCanvas* c_rawAn = new TCanvas("c_rawAn", "c_rawAn", 600, 400);
+  c_rawAn->cd();
+  h_rawAn1->SetLineColor(kBlue);
+  h_rawAn2->SetLineColor(kRed);
+  h_corAn1->SetLineColor(kBlue);
+  h_corAn2->SetLineColor(kRed);
+  h_corAn1->SetLineStyle(kDashed);
+  h_corAn2->SetLineStyle(kDashed);
+  h_rawAn1->Draw();
+  h_rawAn2->Draw("SAME");
+  h_corAn1->Draw("SAME");
+  h_corAn2->Draw("SAME");
 
 
   TCanvas* c_calA = new TCanvas("c_calA", "c_calA", 600, 400);
   c_calA->cd();
-  h_calibratedA1->SetLineColor(kBlue);
-  h_calibratedA2->SetLineColor(kRed);
-  h_calibratedA1->Draw();
-  h_calibratedA2->Draw("SAME");
+  h_calibratedAn1->SetLineColor(kBlue);
+  h_calibratedAn2->SetLineColor(kRed);
+  h_calibratedAn1->Draw();
+  h_calibratedAn2->Draw("SAME");
 
-  c_rawA->Write();
+  c_rawMass->Write();
+  c_massAngle->Write();
+  c_rawAn->Write();
   c_calA->Write();
+  h_finalMass->Write();
 
   fragTree->Write();
 }

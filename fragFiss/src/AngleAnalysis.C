@@ -100,8 +100,8 @@ void fragFiss::AngleAnalysis()
 
      int dMinBinAPH1 = -1;
      int dMinBinAPH2 = -1;
-     double dMinAPH1 = -1;
-     double dMinAPH2 = -1;
+     double dMinAPH1 = 0;
+     double dMinAPH2 = 0;
 
      double dPrev = 0;
      double dPrev1 = 0;
@@ -109,6 +109,9 @@ void fragFiss::AngleAnalysis()
      double dNext = 0;
      double dNext1 = 0;
      double dNext2 = 0;
+
+     bool dFound1 = false;
+     bool dFound2 = false;
 
      for (int i = MIN_BIN_RATIO; i < N_BINS_RATIO - 2; i++)
      {
@@ -131,20 +134,32 @@ void fragFiss::AngleAnalysis()
          {
            dMinAPH1 = dAPH1[i];
            dMinBinAPH1 = i;
+           dFound1 = true;
          }
        }
+
        if ( (dPrev2 < 0) && (dNext2 < 0) )
        {
          if( (dAPH2[i] < dMinAPH2) && (i >= maxBinAPH2) )
          {
            dMinAPH2 = dAPH2[i];
            dMinBinAPH2 = i;
+           dFound2 = true;
          }
        }
      }
 
-     chargeLength1[b] = projAPH1->GetBinCenter(dMinBinAPH1+1);
-     chargeLength2[b] = projAPH2->GetBinCenter(dMinBinAPH2+1);
+
+
+     cout << phAx[b] << " " << dMinAPH1 << " " << dMinAPH2 << endl;
+
+     if (dFound1) {chargeLength1[b] = projAPH1->GetBinCenter(dMinBinAPH1+1);}
+     else {chargeLength1[b] = chargeLength1[b-1];}
+
+     if (dFound2) {chargeLength2[b] = projAPH2->GetBinCenter(dMinBinAPH2+1);}
+     else {chargeLength2[b] = chargeLength2[b-1];}
+
+     // chargeLength2[b] = projAPH2->GetBinCenter(dMinBinAPH2+1);
 
      // cout << phAx[b] << " " << chargeLength1[b] << " "<< chargeLength2[b] << endl;
 

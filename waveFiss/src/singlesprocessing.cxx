@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
   tke.tMethod[i_bnum][i_chnum]   = "derivative";
   tke.derivePointDelta[i_bnum][i_chnum]   = 3;
   tke.frac[i_bnum][i_chnum]      = 0.98;
-  tke.eOffset[i_bnum][i_chnum]   = 160;
+  tke.eOffset[i_bnum][i_chnum]   = 50;
 
   // ion chamber anodes
   for (i_chnum = 1; i_chnum < 3; ++i_chnum) {
@@ -482,6 +482,7 @@ int main(int argc, char* argv[])
       // std::cout << "board / channel numbers " << (Int_t)proc_evt.bnum << " " <<
       // (Int_t)proc_evt.chnum << std::endl;
       // mstd::cout << (int)proc_evt.chnum << std::endl;
+      // cout << eye << " " << (int)raw_evt.chnum << endl;
       Int_t retval = raw_evt.processWf(tke, &proc_evt.tTrig, &proc_evt.tPeak, &proc_evt.peak,
                                        &proc_evt.baseline, raw_evt.gWF);
 
@@ -504,6 +505,7 @@ int main(int argc, char* argv[])
       break;
     }
     // if((int)raw_evt.chnum == 0) break; // Select channel to debug
+    // if(eye == 328) break; // Get pulse that fails
   }
   cout << "\ndone!\n"
        << "Processed " << eye << " entries\n";
