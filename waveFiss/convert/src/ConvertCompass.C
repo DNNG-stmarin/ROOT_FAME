@@ -114,7 +114,8 @@ void ConvertCompass::Loop()
       if (ientry < 0) break;
       nb = runChain->GetEntry(jentry);   nbytes += nb;
 
-      tBoard = (UChar_t)Board;
+      // tBoard = (UChar_t)Board;
+      tBoard = 0;
       tChan = (UChar_t)Channel;
       if (tChan == 8)
       {
