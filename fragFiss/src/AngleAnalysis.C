@@ -100,8 +100,8 @@ void fragFiss::AngleAnalysis()
 
      int dMinBinAPH1 = -1;
      int dMinBinAPH2 = -1;
-     double dMinAPH1 = 0;
-     double dMinAPH2 = 0;
+     double dMinAPH1 = -1;
+     double dMinAPH2 = -1;
 
      double dPrev = 0;
      double dPrev1 = 0;
@@ -151,14 +151,15 @@ void fragFiss::AngleAnalysis()
 
 
 
-     cout << phAx[b] << " " << dMinAPH1 << " " << dMinAPH2 << endl;
-
+     // cout << phAx[b] << " " << dMinAPH1 << " " << dMinAPH2 << endl;
+     //
      if (dFound1) {chargeLength1[b] = projAPH1->GetBinCenter(dMinBinAPH1+1);}
      else {chargeLength1[b] = chargeLength1[b-1];}
 
      if (dFound2) {chargeLength2[b] = projAPH2->GetBinCenter(dMinBinAPH2+1);}
      else {chargeLength2[b] = chargeLength2[b-1];}
 
+     // chargeLength1[b] = projAPH1->GetBinCenter(dMinBinAPH1+1);
      // chargeLength2[b] = projAPH2->GetBinCenter(dMinBinAPH2+1);
 
      // cout << phAx[b] << " " << chargeLength1[b] << " "<< chargeLength2[b] << endl;

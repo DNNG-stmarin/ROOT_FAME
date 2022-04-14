@@ -17,6 +17,8 @@ const double MAX_RATIO = 0.25;
 const int MIN_ENTRIES_PROJ = 400;
 const int MIN_BIN_RATIO = 5;
 
+const double PHD_L = 4.122; // +/- 0.05 MeV
+const double PHD_H = 4.313; // +/- 0.03 MeV
 
 
 const double MIN_INV_ANG_FIT = 1.1;

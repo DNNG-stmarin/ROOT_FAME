@@ -2,6 +2,7 @@
 #include "constants.h"
 #include <TH2.h>
 #include <TF1.h>
+#include <TProfile.h>
 #include <TCanvas.h>
 
 void fragFiss::FillFragTree()
@@ -28,6 +29,7 @@ void fragFiss::FillFragTree()
   TH1D* h_rawMass2 = new TH1D("h_rawMass2","h_rawMass2;amu;Counts", 252, 0, 252);
 
   TH1D* h_finalMass = new TH1D("h_finalMass","h_finalMass;amu;Counts", 252, 0, 252);
+  TH2D* h2_finalTKE = new TH2D("h2_finalTKE","h2_finalTKE;amu;<TKE>", 252, 0, 252, N_BINS_APH, 0, 2 * MAX_KE);
 
 
   // fragment assigned quantities
@@ -36,6 +38,8 @@ void fragFiss::FillFragTree()
   double fKEL, fKEH;
   double fThetaL, fThetaH;
   double fEX;
+  double fAn1, fAn2, fGr1, fGr2;
+  double fCat;
 
   fragTree->Branch("fT", &fT, "fT/D");
   fragTree->Branch("fAL", &fAL, "fAL/D");
@@ -45,6 +49,12 @@ void fragFiss::FillFragTree()
   fragTree->Branch("fThetaL", &fThetaL, "fThetaL/D");
   fragTree->Branch("fThetaH", &fThetaH, "fThetaH/D");
   fragTree->Branch("fEX", &fEX, "fEX/D");
+
+  fragTree->Branch("fAn1", &fAn1, "fAn1/D");
+  fragTree->Branch("fAn2", &fAn2, "fAn2/D");
+  fragTree->Branch("fGr1", &fGr1, "fGr1/D");
+  fragTree->Branch("fGr2", &fGr2, "fGr2/D");
+  fragTree->Branch("fCat", &fCat, "fCat/D");
 
   // fragment agnostic quantities
   double fA1, fA2;
@@ -62,8 +72,14 @@ void fragFiss::FillFragTree()
      if (ientry < 0) break;
      eventChain->GetEntry(jentry);
 
-     // import the time
+     // import the time and heights
      fT = ct;
+     fAn1 = aph[0];
+     fAn2 = aph[1];
+     fGr1 = gph[0];
+     fGr2 = gph[1];
+     fCat = cph;
+
      // get attenuation corrected anode specs
      h_rawAn1->Fill(aph[0]);
      h_rawAn2->Fill(aph[1]);
@@ -204,6 +220,8 @@ void fragFiss::FillFragTree()
        h_finalMass->Fill(fAL);
        h_finalMass->Fill(fAH);
 
+       h2_finalTKE->Fill(fAL, fKEL + fKEH);
+       h2_finalTKE->Fill(fAH, fKEL + fKEH);
      }
 
   }
@@ -239,18 +257,35 @@ void fragFiss::FillFragTree()
   h_corAn2->Draw("SAME");
 
 
-  TCanvas* c_calA = new TCanvas("c_calA", "c_calA", 600, 400);
-  c_calA->cd();
+  TCanvas* c_calAn = new TCanvas("c_calAn", "c_calAn", 600, 400);
+  c_calAn->cd();
   h_calibratedAn1->SetLineColor(kBlue);
   h_calibratedAn2->SetLineColor(kRed);
   h_calibratedAn1->Draw();
   h_calibratedAn2->Draw("SAME");
 
-  c_rawMass->Write();
-  c_massAngle->Write();
+  TCanvas* c_finalMass = new TCanvas("c_finalMass","c_finalMass",600,400);
+  c_finalMass->cd();
+  h_finalMass->Draw();
+  double scale = h_finalMass->GetMaximum() / g_fpy->Eval(h_finalMass->GetMaximumBin());
+  for (int i = 0; i < g_fpy->GetN(); i++) g_fpy->GetY()[i] *= scale;
+  g_fpy->Draw("SAME");
+
+  TCanvas* c_tke = new TCanvas("c_tke","c_tke",600,400);
+  c_tke->cd();
+  h2_finalTKE->ProfileX()->Draw();
+  g_tke->Draw("SAME");
+
   c_rawAn->Write();
-  c_calA->Write();
-  h_finalMass->Write();
+  c_calAn->Write();
+
+  c_rawMass->Write();
+  c_finalMass->Write();
+  c_massAngle->Write();
+
+
+  c_tke->Write();
+  h2_finalTKE->Write();
 
   fragTree->Write();
 }

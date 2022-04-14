@@ -47,6 +47,8 @@ fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
    g_sawtooth = new TGraph(infoIn->SAWTOOTH_FILENAME);
    g_bindErg = new TGraph(infoIn->BIND_ERG_FILENAME);
    g_phd = new TGraph(infoIn->PHD_FILENAME);
+   g_fpy = new TGraph(infoIn->FPY_FILENAME);
+   g_tke = new TGraph(infoIn->TKE_FILENAME);
 }
 
 fragFiss::~fragFiss()

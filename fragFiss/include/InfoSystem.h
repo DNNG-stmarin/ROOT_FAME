@@ -30,6 +30,8 @@ public:
   TString SAWTOOTH_FILENAME;
   TString BIND_ERG_FILENAME;
   TString PHD_FILENAME;
+  TString FPY_FILENAME;
+  TString TKE_FILENAME;
 
 
   InfoSystem()
@@ -39,6 +41,8 @@ public:
     SAWTOOTH_FILENAME = "cf252sawtooth.csv";
     BIND_ERG_FILENAME = "L";
     PHD_FILENAME = "phd.txt";
+    FPY_FILENAME = "cf252fpy.txt";
+    TKE_FILENAME = "cf252tke.txt";
   }
 
   void ReadInput(TString inputFile)
@@ -91,6 +95,16 @@ public:
       {
         file >> value;
         PHD_FILENAME = value;
+      }
+      else if(tag == "<FPY_FILENAME>:")
+      {
+        file >> value;
+        FPY_FILENAME = value;
+      }
+      else if(tag == "<TKE_FILENAME>:")
+      {
+        file >> value;
+        TKE_FILENAME = value;
       }
 
     }

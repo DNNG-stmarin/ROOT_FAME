@@ -57,8 +57,8 @@ void fragFiss::GainMatching()
       ua2 += f_att2->Eval(1.0/cos2) - f_att2->Eval(0);
 
 
-      if( (ua1 > MIN_ANODE1) && (ua2 > MIN_ANODE2) && (cos1 > MIN_ANG1) && (cos2 > MIN_ANG2)
-          && (cos1 < MAX_ANG1) && (cos2 < MAX_ANG2))
+      if( (ua1 > MIN_ANODE1) && (ua2 > MIN_ANODE2) && (cos1 > MIN_ANG1) && (cos2 > MIN_ANG2) )
+          // && (cos1 < MAX_ANG1) && (cos2 < MAX_ANG2))
       {
         h1_uncalibratedAn1->Fill(ua1);
         h1_uncalibratedAn2->Fill(ua2);
@@ -129,8 +129,8 @@ void fragFiss::GainMatching()
 
    // calibrated results
    double kineticPeaks[2];
-   kineticPeaks[0] = infoSystem->KINETIC_PEAKS[0];
-   kineticPeaks[1] = infoSystem->KINETIC_PEAKS[1];
+   kineticPeaks[0] = infoSystem->KINETIC_PEAKS[0] - PHD_H;
+   kineticPeaks[1] = infoSystem->KINETIC_PEAKS[1] - PHD_L;
 
    g_calib1 = new TGraph(2, centroids1, kineticPeaks);
    g_calib1->SetName("g_calib1");
