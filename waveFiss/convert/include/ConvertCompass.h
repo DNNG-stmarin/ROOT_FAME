@@ -31,7 +31,7 @@ public :
    TTree*          danaTree;
    TFile*          danaFile;
 
-   TString         inputTreeName = "Data_R";
+   TString         inputTreeName = "Data_F";
    TString         runFilename = "default";
    TString         extRunFile = ".root";
 

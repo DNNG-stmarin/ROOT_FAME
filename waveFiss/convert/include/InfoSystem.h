@@ -61,10 +61,14 @@ public:
       {
         file >> value;
         NUM_FILES = stoi(value);
+        FILE_LIST = new int[NUM_FILES];
+        for(int i=0; i<NUM_FILES; i++)
+        {
+          FILE_LIST[i] = i;
+        }
       }
       else if(tag == "<FILE_LIST>:")
       {
-        FILE_LIST = new int[NUM_FILES];
         for(int i=0; i<NUM_FILES; i++)
         {
           file >> value;

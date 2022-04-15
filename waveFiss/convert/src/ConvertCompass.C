@@ -25,14 +25,8 @@ ConvertCompass::ConvertCompass(InfoSystem* infoIn, TString fileName) : runChain(
       int fileNum = (infoSystem->FILE_LIST)[i];
 
       TString s_runFile;
-      if (i == 0)
-      {
-        s_runFile = infoSystem->FILE_NAME + extRunFile;
-      }
-      else
-      {
-        s_runFile = infoSystem->FILE_NAME + "_" + TString(to_string(fileNum)) + extRunFile;
-      }
+
+      s_runFile = infoSystem->FILE_NAME + "_" + TString(to_string(fileNum)) + extRunFile;
 
       cout << "Reading file number " << fileNum << ": " << s_runFile << endl;
 
@@ -73,9 +67,11 @@ ConvertCompass::ConvertCompass(InfoSystem* infoIn, TString fileName) : runChain(
 
 void ConvertCompass::Loop()
 {
+  danaFile->cd();
   cout << "Creating Dana tree" << endl;
   danaTree = new TTree("t", "DanaCompatible TTree");
   danaTree->SetFileNumber(0);
+  danaTree->SetMaxTreeSize(1000000000LL);
 
 
    // setup info
@@ -111,8 +107,8 @@ void ConvertCompass::Loop()
 
    danaTree->Branch("wf", tWave, buf);
 
-   danaTree->SetMaxTreeSize(1000000000LL);
-   danaTree->SetFileNumber(0);
+   // danaTree->SetMaxTreeSize(1000000000LL);
+   // danaTree->SetFileNumber(0);
 
 
    // random filling options
@@ -147,12 +143,22 @@ void ConvertCompass::Loop()
         tWave[i] = (Short_t)Samples->GetAt(i);
       }
       danaTree->Fill();
+
+      if(jentry%10000000 == 0)
+      {
+        cout << jentry << " entries done" << endl;;
+      }
+
    }
 
 
-   danaFile->cd();
-   danaTree->Write();
-   danaFile->Write();
+
+   danaFile = danaTree->GetCurrentFile();
+ 	 danaFile->Write();
+
+
+   // danaTree->Write();
+   // danaFile->Write();
    danaFile->Close();
 }
 

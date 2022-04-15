@@ -1026,7 +1026,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						continue;
 					}
 
-					tTime = fT;
+					// tTime = fT;
 				}
 
 				// fill the tree branches
