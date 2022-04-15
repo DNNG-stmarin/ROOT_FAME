@@ -98,9 +98,10 @@ int DetectorSystemClass::DetectionAnalysis()
 	 }
 
 	 // broken event has been found, skip it.
-	 if(tMult >= NUM_DETS)
+	 if(tMult > NUM_DETS)
 	 {
 		 cout << "Encountered a corrupt event at history: " << jentry << endl;
+		 cout << tMult << endl;
 		 continue;
 	 }
 

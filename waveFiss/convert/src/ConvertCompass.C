@@ -63,6 +63,12 @@ ConvertCompass::ConvertCompass(InfoSystem* infoIn, TString fileName) : runChain(
 
    // nentries = 100;
    cout << "Analyzing " << nentries << " entries" << endl;
+
+   // initializing board
+
+   boardIn = infoSystem->BOARD_NUM;
+   boardDefault = 0;
+   cout << "Reading fragments from board " <<  boardIn << " and writing to " << boardDefault << endl;
 }
 
 void ConvertCompass::Loop()
@@ -82,9 +88,19 @@ void ConvertCompass::Loop()
    ULong64_t tTime;
    Short_t* tWave;
 
-   runChain->GetEntry(0);
+   int iEnt = 0;
+   do
+   {
+     runChain->GetEntry(iEnt);
+   }
+   while(Board != boardIn);
+
    recordLength = Samples->GetSize();
    tWave = new Short_t [recordLength];
+
+   cout << "___________" << endl;
+   cout << "RECORD LENGTH: " << recordLength << endl;
+   cout << "___________" << endl;
 
    danaTree->Branch("bnum", &tBoard, "bnum/b");
    danaTree->Branch("chnum", &tChan, "chnum/b");
@@ -114,10 +130,12 @@ void ConvertCompass::Loop()
       if (ientry < 0) break;
       nb = runChain->GetEntry(jentry);   nbytes += nb;
 
+      if(Board != boardIn) continue;
+
       // tBoard = (UChar_t)Board;
-      tBoard = 0;
+      tBoard = (UChar_t)boardDefault; // convert back to 0, for ease of use of next codes
       tChan = (UChar_t)Channel;
-      if (tChan == 8)
+      if (tChan == 8) // cathode channel
       {
         tChan = 0;
       }

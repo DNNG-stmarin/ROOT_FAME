@@ -107,9 +107,14 @@ void DetectorSystemClass::FissionAnalysis()
     nBackMult = 0;
     pBackMult = 0;
 
+    // if(tMult > 0)
+    // {
+    //   cout << tMult << endl;
+    // }
+    // cout << tMult << endl;
+
     for(int j = 0; j < tMult; j++)
     {
-
       // find the number of the detector
       numDet = isDetector(totChan[j]);
       if(SIM_FILE == 1) numDet = totChan[j];
@@ -129,6 +134,8 @@ void DetectorSystemClass::FissionAnalysis()
       engDet = totDep[j]/detectors[numDet].calibration;
       if(SIM_FILE == 1) engDet = totDep[j];
 
+      // cout << engDet << " " << timeDet << endl;
+
       //if numdet is broken, continue and skip this detector
       bool quit = 0;
       for(int k=0; k< NUM_EXCLUDED; k++) {
@@ -145,6 +152,8 @@ void DetectorSystemClass::FissionAnalysis()
       {
         continue;
       }
+
+
 
       if(
       (((DOUBLE_DISC == 1) & (totPSP[j] > detectors[numDet].discPSDNeut->Eval(engDet)))

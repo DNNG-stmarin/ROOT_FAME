@@ -70,6 +70,8 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 		detectors[det].timeResolution = new double[NUM_TRIGGERS];
 	}
 
+	cout << "setting coordinates " << endl;
+
   // Setting detector distances
 	string line;
 	string x, y, z;

@@ -28,6 +28,7 @@
 
 int main(int argc, char* argv[])
 {
+  gErrorIgnoreLevel = 6001;
   // Creation of variables section
   char   ipath[512];
   char   opath[512];
@@ -496,7 +497,7 @@ int main(int argc, char* argv[])
 #endif
       otree[proc_evt.bnum][proc_evt.chnum]->Fill();
     }
-    if (eye % 10000 == 0) {
+    if (eye % 100000 == 0) {
       printf("\rProcessing entry %i \n", eye);
       fflush(stdout);
     }

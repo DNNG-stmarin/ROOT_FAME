@@ -27,12 +27,14 @@ public:
   int NUM_FILES;
   int* FILE_LIST;
   TString FILE_NAME;
+  int BOARD_NUM;
 
   InfoSystem()
   {
     NUM_FILES = 1;
     FILE_LIST = NULL;
     FILE_NAME = "DataF_runW";
+    BOARD_NUM = 3;
   }
 
   void ReadInput(TString inputFile)
@@ -68,6 +70,11 @@ public:
           file >> value;
           FILE_LIST[i] = stoi(value);
         }
+      }
+      else if(tag == "<BOARD_NUM>:")
+      {
+        file >> value;
+        BOARD_NUM = stoi(value);
       }
     }
     file.close();

@@ -193,10 +193,12 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		fragEntry = fragTreeChain->GetEntries()-1;
 
 		fragTreeChain->GetEntry(1);
+		cout << "Last time is " << fT << endl;
+
+		fragTreeChain->GetEntry(fragEntry - 1);
 		cout << "First time is " << fT << endl;
 
-		fragTreeChain->GetEntry(fragEntry);
-		cout << "Last time is " << fT << endl;
+
 	}
 
 	// list variables
@@ -207,6 +209,9 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	coincTree->Branch("totTail", totTail, "totTail[tMult]/D");
 
 	coincTree->SetMaxTreeSize(1000000000LL);
+
+
+	int fissNcount = 0;
 
 
 	/*
@@ -453,11 +458,13 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				// cout << newTrigger.getEnergy() << endl;
 				TriggerBuffer[entryChannel].push(newTrigger);
 				countFiss++;
+				// cout << "trigger " << endl;
 				// cout << TriggerBuffer[entryChannel].size() << endl;
 			}
 
       h_triggerTime->Fill(timeDet - BEAM_DELAY); // Why is this a generic beam delay and not the calculated delay?
       h2_triggerTimeChan->Fill(timeDet - BEAM_DELAY, detChannel);
+			// cout << "trigger " << endl;
 		}
 
 		else if(isBeam(detChannel, NUM_BEAMS, BEAM) >= 0)
@@ -470,12 +477,12 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			// cout << newBeam.getEnergy() << endl;
 		}
 
-		// else
-		// {
-		// 	cout << detChannel << " found in the data, and ";
-		// 	cout << "channel not recognized, stopping the processing and check your input file" << endl;
-		// 	exit(3);
-		// }
+		else
+		{
+			continue;
+		}
+
+		// cout << DetectorBuffer[0].size() << endl;
 
 
 		/*
@@ -846,6 +853,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			if(DetectorBuffer[detIndex].empty())
 			{
 				readyDet = false;
+				// cout << detIndex << endl;
 			}
 		}
 
@@ -857,8 +865,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		{
 
 			// cout << "F" << endl;
-
-
 
 			totMult = 0;
 
@@ -890,6 +896,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 			beamTail = qFission.getBeamTail();
 
 			// cout << FissionBuffer.size() << endl;
+
+			// cout << "forming fissiona" << endl;
 
 			// look at the detection events
 			for(int detIndex = 0; detIndex < NUM_DETS; detIndex++)
@@ -931,6 +939,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					detTime = qParticle.getTime();
 					deltaT = detTime - fissionTime;
 
+					// cout << deltaT << endl;
+
 					// create the coincidence event
 					if(abs(deltaT) < COINC_WINDOW)
 					{
@@ -946,6 +956,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				// get rid of analyzed fission event
 				FissionBuffer.pop();
 				// cout << "pop" <<  FissionBuffer.size() << endl;
+
 
 				// now fill the histogram of particle-particle coincidences
 				tMult = totMult;
@@ -965,11 +976,24 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					bTail = beamTail;
 				}
 
+				fissNcount++;
+				// cout << tTime << " " << fT << " " << fragEntry << endl;
+
 				if(FRAGMENT_MODE)
 				{
+
 					// cout << fragEntry << " " << (fT - tTime) << endl;
+					if(!(fT > 0))
+					{
+						fragEntry--;
+						cout << "uh oh" << endl;
+						fragTreeChain->GetEntry(fragEntry);
+					}
+
 					while((fT - tTime) < -1*COINC_WINDOW)
 					{
+						// cout << fT-tTime << endl;
+						// cout << fT - tTime << endl;
 						if(fragEntry == 0) break;
 						fragEntry--;
 						// cout << fragEntry << endl;
@@ -981,7 +1005,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 					if(abs(fT - tTime) < COINC_WINDOW )
 					{
-						cout << "fragment coincidence found: " << (fT - tTime) << endl;
+						// cout << "fragment coincidence found: " << (fT - tTime) << endl;
 
 						rAL = fAL;
 						rAH = fAH;
@@ -991,13 +1015,18 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						rThetaH = fThetaH;
 						rEX = fEX;
 						rDelt = fT - tTime;
+
+						// cout << rDelt << endl;
 					// tTime = fT;
 					}
 					else
 					{
+						// cout << fT-tTime << endl;
 						// cout << fT << " " << (fT - tTime) << endl;
 						continue;
 					}
+
+					tTime = fT;
 				}
 
 				// fill the tree branches
@@ -1064,6 +1093,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	cout << "Saving the tree to file. " << endl;
 
 	cout << "In total: " << fisTracker << " fissions formed. " << endl;
+	cout << "of which " << fissNcount << " without enforcing fragment coincidence" << endl;
 
 	expFile = coincTree->GetCurrentFile();
 	expFile->Write();

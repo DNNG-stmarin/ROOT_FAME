@@ -35,6 +35,9 @@ public :
    TString         runFilename = "default";
    TString         extRunFile = ".root";
 
+   int             boardIn;
+   int             boardDefault;
+
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
 // Declaration of leaf types
