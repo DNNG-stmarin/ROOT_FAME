@@ -22,6 +22,9 @@ public :
    TFile*          eventFile;
    Long64_t        nentries;
 
+   int             numFiles;
+   Long64_t*       nentriesTree;
+
    TTree*          fragTree;
    TFile*          fragFile;
 
@@ -38,13 +41,27 @@ public :
    TString         eventFilename = "default";
    TString         extEventfile = ".root";
 
-   // detection analysis
+   // angular analysis
    TGraph* g_Ang1;
    TGraph* g_Ang2;
+
+   TF1* f_ang1;
+   TF1* f_ang2;
+
+   // attenuation analysis
 
    TF1* f_att1;
    TF1* f_att2;
 
+   TF1* f_att1L;
+   TF1* f_att1H;
+   TF1* f_att2L;
+   TF1* f_att2H;
+
+   TF1* f_sepAtt1;
+   TF1* f_sepAtt2;
+
+   // calibration analysis
    TGraph* g_gainMatch;
    TGraph* g_calib1;
    TGraph* g_calib2;

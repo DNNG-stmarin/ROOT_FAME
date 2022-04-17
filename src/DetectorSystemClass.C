@@ -43,6 +43,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	EXCLUDE_DETECTORS = info->EXCLUDE_DETECTORS;
 
 	TRIGGER_PATH = info->triggerPath;
+	TRIGGER_DIR_PATH = info->triggerDirPath;
 	DETECTOR_PATH = info->detectorPath;
 	DET_CALIBRATION = new TGraph(*(info->calibrationDet));
 	REUSE_DETECTOR = info->REUSE_DETECTOR;
@@ -75,6 +76,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
   // Setting detector distances
 	string line;
 	string x, y, z;
+	string u, v, w;
 	ifstream inDet (DETECTOR_PATH);
 	for(int i=0; i<NUM_DETS; i++)
 	{
@@ -94,6 +96,11 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
   // Setting trigger offsets
   string trigLine;
 	ifstream inTrig (TRIGGER_PATH);
+	ifstream inTrigDir;
+	if(FRAGMENT_MODE)
+	{
+		inTrigDir.open(TRIGGER_DIR_PATH);
+	}
 
 	for(int i=0; i<NUM_TRIGGERS; i++)
 	{
@@ -104,7 +111,7 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
       triggers[i].X = 0.0;
       triggers[i].Y = 0.0;
       triggers[i].Z = 0.0;
-			cout << "Can't open trigger file, suing default trigger at origin."  <<endl;
+			cout << "Can't open trigger cartesian file, using default trigger at origin."  <<endl;
     }
     else
     {
@@ -117,8 +124,41 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
       //cout << info->triggerPath << endl;
       cout << "Trigger " << i << " at: " << triggers[i].X << " " << triggers[i].Y << " " << triggers[i].Z << endl;
     }
+
+		if(FRAGMENT_MODE)
+		{
+			if(!inTrigDir.is_open())
+			{
+				triggers[i].U = 0.0;
+				triggers[i].V = 0.0;
+				triggers[i].W = 1.0;
+				cout << "Can't open trigger dire, using default trigger direction toward Z axis."  <<endl;
+			}
+			else
+			{
+				getline(inTrigDir, trigLine);
+	  		istringstream iss(trigLine);
+	  		iss >> u >> v >> w;
+	      triggers[i].U = stod(u);
+	      triggers[i].V = stod(v);
+	      triggers[i].W = stod(w);
+
+				double totDir = triggers[i].U + triggers[i].V + triggers[i].W;
+				triggers[i].U = triggers[i].U/totDir;
+	      triggers[i].V = triggers[i].V/totDir;
+	      triggers[i].W = triggers[i].W/totDir;
+
+	      //cout << info->triggerPath << endl;
+	      cout << "Trigger " << i << " pointing: " << triggers[i].U << " " << triggers[i].V << " " << triggers[i].W << endl;
+			}
+		}
+
+
+
 	}
   inTrig.close();
+	if(FRAGMENT_MODE) inTrigDir.close();
+
 
 	//calibration for only chinu system
 	for(int i=0; i<NUM_DETS; i++)
@@ -232,6 +272,13 @@ void DetectorSystemClass::Init(TChain* treeIn)
 			 tree->SetBranchAddress("rThetaL", &rThetaL, &b_rThetaL);
 			 tree->SetBranchAddress("rThetaH", &rThetaH, &b_rThetaH);
 			 tree->SetBranchAddress("rEX", &rEX, &b_rEX);
+
+			 tree->SetBranchAddress("rAn1", &rAn1, &b_rAn1);
+			 tree->SetBranchAddress("rAn2", &rAn2, &b_rAn2);
+			 tree->SetBranchAddress("rGr1", &rGr1, &b_rGr1);
+			 tree->SetBranchAddress("rGr2", &rGr2, &b_rGr2);
+		 	 tree->SetBranchAddress("rCat", &rCat, &b_rCat);
+
 		 }
 
 		 tree->SetBranchAddress("totToF", totToF, &b_totToF);
@@ -279,6 +326,16 @@ void DetectorSystemClass::InitFiss()
 		 fissionTree->Branch("ThetaL", &f_ThetaL, "ThetaL/D");
 		 fissionTree->Branch("ThetaH", &f_ThetaH, "ThetaH/D");
 		 fissionTree->Branch("EX", &f_EX, "EX/D");
+
+
+		 fissionTree->Branch("Anode1", &f_An1, "An1/D");
+		 fissionTree->Branch("Anode2", &f_An2, "An2/D");
+		 fissionTree->Branch("Grid1", &f_Gr1, "Gr1/D");
+		 fissionTree->Branch("Grid2", &f_Gr2, "Gr2/D");
+		 fissionTree->Branch("Cathode", &f_Cat, "Cat/D");
+
+
+
 	 }
 
 	 // multiplicity variables

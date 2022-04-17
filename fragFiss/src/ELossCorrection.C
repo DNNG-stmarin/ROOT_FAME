@@ -51,10 +51,135 @@ void fragFiss::ELossCorrection()
       if(aph[1] > MIN_ANODE2) h2_backingRem2->Fill(1.0/cos2, aph[1]);
    }
 
+    /*
+     ___                            _     ___
+    | __| _ __ _ __ _ _ __  ___ _ _| |_  / __| ___ _ __
+    | _| '_/ _` / _` | '  \/ -_) ' \  _| \__ \/ -_) '_ \
+    |_||_| \__,_\__, |_|_|_\___|_||_\__| |___/\___| .__/
+               |___/                             |_|
 
+    */
+   // compute the light and heavy fragment separator line as a function of the attenuation
+
+   // determine the x axis
+   double attAx[N_BINS_RATIO] = {0};
+   int MIN_INV_ANG_BIN, MAX_INV_ANG_BIN;
+   for(int t = 0; t < N_BINS_RATIO; t++)
+   {
+     attAx[t] = h2_backingRem1->GetXaxis()->GetBinCenter(t+1);
+     if(attAx[t] < MIN_INV_ANG_FIT) MIN_INV_ANG_BIN = t+1;
+     else if(attAx[t] < MAX_INV_ANG_FIT) MAX_INV_ANG_BIN = t-1;
+   }
+   // number of inverse ang bins
+   int NUM_INV_ANG_BIN = MAX_INV_ANG_BIN - MIN_INV_ANG_BIN;
+
+   // set up the fit functions
+   TF1* gaussFit = new TF1("gaussFit", "[0] * e^(-((x - [1])^2)/(2*[2]^2))", 0, MAX_APH);
+   // yield 1
+   TF1* f_gaussYield1 = new TF1("f_gaussYield1", "gaussFit + gaussFit", 0, MAX_APH);
+   TF1* f_gaussYield2 = new TF1("f_gaussYield2", "gaussFit + gaussFit", 0, MAX_APH);
+
+
+   // create arrays to store data
+   double** centroids1;
+   double** centroids2;
+
+   double* attAxC;
+   double* sepLineAtt1;
+   double* sepLineAtt2;
+
+   centroids1 = new double*[2];
+   centroids2 = new double*[2];
+
+   attAxC = new double [NUM_INV_ANG_BIN];
+   sepLineAtt1 = new double [NUM_INV_ANG_BIN];
+   sepLineAtt2 = new double [NUM_INV_ANG_BIN];
+
+   for(int i = 0; i < 2; i++)
+   {
+     centroids1[i] = new double [NUM_INV_ANG_BIN];
+     centroids2[i] = new double [NUM_INV_ANG_BIN];
+   }
+
+   // now loop through the allowable values of angles
+   for(int c = MIN_INV_ANG_BIN; c < MAX_INV_ANG_BIN; c++)
+   {
+     TH1D* h_sliceTKEatt1 = h2_backingRem1->ProjectionY("h_sliceTKEatt1_" + TString(c), c, c);
+     TH1D* h_sliceTKEatt2 = h2_backingRem2->ProjectionY("h_sliceTKEatt2_" + TString(c), c, c);
+
+     double ampGuess, meanGuess, sigGuess;
+     ampGuess = h_sliceTKEatt1->GetMaximum();
+     meanGuess = h_sliceTKEatt1->GetMean();
+     sigGuess = SIG_ANODE;
+     // cout << ampGuess << " " << meanGuess << sigGuess << " " << endl;
+     f_gaussYield1->SetParameters(ampGuess*0.8, meanGuess*0.8, sigGuess, ampGuess, meanGuess*1.2, sigGuess);
+     f_gaussYield2->SetParLimits(1, MIN_ANODE2, meanGuess);
+     f_gaussYield2->SetParLimits(4, meanGuess, MAX_APH);
+     h_sliceTKEatt1->Fit(f_gaussYield1, "N Q", "", 0, MAX_APH);
+
+     ampGuess = h_sliceTKEatt2->GetMaximum();
+     meanGuess = h_sliceTKEatt2->GetMean();
+     sigGuess = SIG_ANODE;
+     // cout << ampGuess << " " << meanGuess << " " << sigGuess << endl;
+     f_gaussYield2->SetParameters(ampGuess*0.8, meanGuess*0.8, sigGuess, ampGuess, meanGuess*1.2, sigGuess);
+     f_gaussYield2->SetParLimits(1, MIN_ANODE2, meanGuess);
+     f_gaussYield2->SetParLimits(4, meanGuess, MAX_APH);
+     h_sliceTKEatt2->Fit(f_gaussYield2, "N Q", "", 0, MAX_APH);
+
+     // store the results
+     attAxC[c-MIN_INV_ANG_BIN] = attAx[c];
+
+     centroids1[0][c-MIN_INV_ANG_BIN] = f_gaussYield1->GetParameter(1);
+     centroids1[1][c-MIN_INV_ANG_BIN] = f_gaussYield1->GetParameter(4);
+     sepLineAtt1[c-MIN_INV_ANG_BIN] = 0.5*(centroids1[0][c-MIN_INV_ANG_BIN] + centroids1[1][c-MIN_INV_ANG_BIN]);
+
+     centroids2[0][c-MIN_INV_ANG_BIN] = f_gaussYield2->GetParameter(1);
+     centroids2[1][c-MIN_INV_ANG_BIN] = f_gaussYield2->GetParameter(4);
+     sepLineAtt2[c-MIN_INV_ANG_BIN] = 0.5*(centroids2[0][c-MIN_INV_ANG_BIN] + centroids2[1][c-MIN_INV_ANG_BIN]);
+
+   }
+   // create the graphs
+   TGraph* g_cent1H = new TGraph(NUM_INV_ANG_BIN, attAxC, centroids1[0]);
+   TGraph* g_cent1L = new TGraph(NUM_INV_ANG_BIN, attAxC, centroids1[1]);
+   TGraph* g_sep1 = new TGraph(NUM_INV_ANG_BIN, attAxC, sepLineAtt1);
+
+   TGraph* g_cent2H = new TGraph(NUM_INV_ANG_BIN, attAxC, centroids2[0]);
+   TGraph* g_cent2L = new TGraph(NUM_INV_ANG_BIN, attAxC, centroids2[1]);
+   TGraph* g_sep2 = new TGraph(NUM_INV_ANG_BIN, attAxC, sepLineAtt2);
+
+   g_cent1H->SetName("g_cent1H");
+   g_cent1L->SetName("g_cent1L");
+   g_cent2H->SetName("g_cent2H");
+   g_cent2L->SetName("g_cent2L");
+   g_sep1->SetName("g_sep1");
+   g_sep2->SetName("g_sep2");
+
+   f_att1H = new TF1("f_att1H", "[0] + [1]*x", -10, 10);
+   f_att1L = new TF1("f_att1L", "[0] + [1]*x", -10, 10);
+   f_att2H = new TF1("f_att2H", "[0] + [1]*x", -10, 10);
+   f_att2L = new TF1("f_att2L", "[0] + [1]*x", -10, 10);
+   f_sepAtt1 = new TF1("f_sepAtt1", "[0] + [1]*x", -10, 10);
+   f_sepAtt2 = new TF1("f_sepAtt2", "[0] + [1]*x", -10, 10);
+
+   g_cent1H->Fit(f_att1H, "Q", "", MIN_INV_ANG_FIT, MAX_INV_ANG_FIT);
+   g_cent1L->Fit(f_att1L, "Q", "", MIN_INV_ANG_FIT, MAX_INV_ANG_FIT);
+   g_cent2H->Fit(f_att2H, "Q", "", MIN_INV_ANG_FIT, MAX_INV_ANG_FIT);
+   g_cent2L->Fit(f_att2L, "Q", "", MIN_INV_ANG_FIT, MAX_INV_ANG_FIT);
+
+   g_sep1->Fit(f_sepAtt1, "Q", "", MIN_INV_ANG_FIT, MAX_INV_ANG_FIT);
+   g_sep2->Fit(f_sepAtt2, "Q", "", MIN_INV_ANG_FIT, MAX_INV_ANG_FIT);
+
+
+  /*
+     _  _   _                     _   _
+    /_\| |_| |_ ___ _ _ _  _ __ _| |_(_)___ _ _
+   / _ \  _|  _/ -_) ' \ || / _` |  _| / _ \ ' \
+  /_/ \_\__|\__\___|_||_\_,_\__,_|\__|_\___/_||_|
+  */
+
+   // find the profiles
    TProfile* p1_backing1 = h2_backingRem1->ProfileX();
    TProfile* p1_backing2 = h2_backingRem2->ProfileX();
-
 
    // fits
    f_att1 = new TF1("f_att1", "[0] + [1]*x", -10, 10);
@@ -70,8 +195,18 @@ void fragFiss::ELossCorrection()
 
    cout << "The intersect point is " << crossPoint << " and the height is " << heightPoint << endl;
 
+
+    /*
+     ___ _     _
+    | _ \ |___| |_
+    |  _/ / _ \  _|
+    |_| |_\___/\__|
+
+    */
+
    // canvas with angle results
    TCanvas* c_backing = new TCanvas("c_backing", "c_backing", 400, 500);
+   c_backing->Divide(3,1);
 
    c_backing->cd(1);
    p1_backing1->Draw();
@@ -84,6 +219,40 @@ void fragFiss::ELossCorrection()
    p1_backing2->SetName("p1_backing2");
    p1_backing2->SetLineColor(kRed);
    f_att2->Draw("SAME");
+
+   c_backing->cd(2);
+   h2_backingRem1->Draw("COLZ");
+   // centers
+   g_cent1H->SetLineColor(kRed);
+   g_cent1L->SetLineColor(kRed);
+   g_cent1H->SetLineWidth(2);
+   g_cent1L->SetLineWidth(2);
+   g_cent1H->Draw("SAME");
+   g_cent1L->Draw("SAME");
+   // sep
+   g_sep1->SetLineColor(kBlack);
+   g_sep1->SetLineStyle(kDashed);
+   g_sep1->SetLineWidth(2);
+   g_sep1->Draw("SAME");
+   f_sepAtt1->Draw("SAME");
+
+
+   c_backing->cd(3);
+   h2_backingRem2->Draw("COLZ");
+   // centers
+   g_cent2H->SetLineColor(kRed);
+   g_cent2L->SetLineColor(kRed);
+   g_cent2H->SetLineWidth(2);
+   g_cent2L->SetLineWidth(2);
+   g_cent2H->Draw("SAME");
+   g_cent2L->Draw("SAME");
+   // sep
+   g_sep2->SetLineColor(kBlack);
+   g_sep2->SetLineStyle(kDashed);
+   g_sep2->SetLineWidth(2);
+   g_sep2->Draw("SAME");
+   f_sepAtt2->Draw("SAME");
+
 
    fragFile->cd();
    c_backing->Write();

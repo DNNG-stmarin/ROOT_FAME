@@ -142,6 +142,7 @@ public:
 	TGraph* DET_CALIBRATION;
 	string DETECTOR_PATH;
 	string TRIGGER_PATH;
+	string TRIGGER_DIR_PATH;
 
 /*
 _  _ _    _
@@ -223,6 +224,13 @@ _  _ _    _
 	double 				rThetaH;
 	double 				rEX;
 
+	// fragment branches
+	double        rAn1;
+	double        rAn2;
+	double        rGr1;
+	double 				rGr2;
+	double 				rCat;
+
 	double 				bTime;
 	double				bErg;
 	double 				bPSP;
@@ -258,19 +266,26 @@ _  _ _    _
 	TBranch        *b_rThetaH;   //!
 	TBranch        *b_rEX;   //!
 
+	TBranch        *b_rAn1;   //!
+	TBranch        *b_rAn2;   //!
+	TBranch        *b_rGr1;   //!
+	TBranch        *b_rGr2;   //!
+	TBranch        *b_rCat;   //!
+
 	TBranch        *b_totToF;   //!
 	TBranch        *b_totPSP;   //!
 	TBranch        *b_totDep;   //!
 	TBranch        *b_totChan;   //!
 	TBranch        *b_totFlag;   //!
 
-
+	// trigger
 	double    f_fisTime;
 	double    f_fisDep;
 	int 			f_fisType;
 	int 			f_fisChan;
 	double 		f_fisPSP;
 
+	// fragment characteristics
 	double 		f_AL;
 	double    f_AH;
 	double		f_KEL;
@@ -278,7 +293,15 @@ _  _ _    _
 	double 	  f_ThetaL;
 	double		f_ThetaH;
 	double    f_EX;
+	// fragment detector characteristics
+	double    f_An1;
+	double    f_An2;
+	double 		f_Gr1;
+	double    f_Gr2;
+	double 		f_Cat;
 
+
+  // beam characteristics
 	double 		f_beamTime;
 	double    f_beamEnergy;
 	double		f_beamDep;

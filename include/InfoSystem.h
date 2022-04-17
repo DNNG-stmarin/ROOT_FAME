@@ -48,6 +48,7 @@ public:
   TString calibrationPath;
   TString detectorPath;
   TString triggerPath;
+  TString triggerDirPath;
   TString nameOfExp;
 
   //input file
@@ -113,6 +114,7 @@ public:
   {
     detectorPath = "";
     triggerPath = "";
+    triggerDirPath = "";
     calibrationPath = "";
     nameOfExp = "";
 
@@ -266,6 +268,10 @@ public:
       else if(tag == "<TRIGGER_PATH>:") {
         file >> value;
         triggerPath = TString(value);
+      }
+      else if(tag == "<TRIGGER_DIR_PATH>:") {
+        file >> value;
+        triggerDirPath = TString(value);
       }
       else if(tag == "<CALIBRATION_PATH>:") {
         file >> value;

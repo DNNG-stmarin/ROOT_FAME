@@ -64,6 +64,9 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	TH1I* h1_fissNumPerBeam = new TH1I("h1_fissNumPerBeam", "Number of fissions per micropulse; Number of fissions; counts", 100, -0.5, 99.5);
 	TH1D* h1_fissTimeInBeam = new TH1D("h1_fissTimeInBeam", "Time of fissions in micropulse; Number of fissions; counts", 2000, 0, 2000);
 
+	TH1D* h1_fissFragDelt = new TH1D("h1_fissFragDelt", "Coincidence Window", 2000, 0, 200000);
+	TH1D* h1_fragSorting = new TH1D("h1_fragSorting", "FragmentSorting", 2000, -1e7, 1e7);
+
 	queue<BeamEvent> microStructure;
 
 	TRandom* randomTimeCoinc = new TRandom();
@@ -91,6 +94,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	coincTree = new TTree("CoincidenceTree", "Tree of Experimental Coincidences");
 	coincTree->SetFileNumber(0);
 
+	Long64_t fragEntry;
+
 	// declatre the variables to store the fission branches
 	// fission trigger
 	int tMult = 0;
@@ -117,6 +122,12 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	double rThetaL = 0;
 	double rThetaH = 0;
 	double rEX = 0;
+
+	double rAn1 = 0;
+	double rAn2 = 0;
+	double rGr1 = 0;
+	double rGr2 = 0;
+	double rCat = 0;
 
 	// particles
 	double totToF[MAX_MULTIPLICITY] = {0};
@@ -157,6 +168,13 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		coincTree->Branch("rEX", &rEX, "rEX/D");
 		coincTree->Branch("rDelt", &rDelt, "rDelt/D");
 
+		coincTree->Branch("rAn1", &rAn1, "rAn1/D");
+		coincTree->Branch("rAn2", &rAn2, "rAn2/D");
+		coincTree->Branch("rGr1", &rGr1, "rGr1/D");
+		coincTree->Branch("rGr2", &rGr2, "rGr2/D");
+		coincTree->Branch("rCat", &rCat, "rCat/D");
+
+
 		// open the fragment tree
 		gROOT->cd();
 
@@ -183,21 +201,21 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
     fragTreeChain->SetBranchAddress("fKEH", &fKEH, &b_fKEH);
     fragTreeChain->SetBranchAddress("fThetaL", &fThetaL, &b_fThetaL);
     fragTreeChain->SetBranchAddress("fThetaH", &fThetaH, &b_fThetaH);
-    fragTreeChain->SetBranchAddress("fEX", &fEX, &b_fEX);
+		fragTreeChain->SetBranchAddress("fEX", &fEX, &b_fEX);
 
-
+    fragTreeChain->SetBranchAddress("fAn1", &fAn1, &b_fAn1);
+		fragTreeChain->SetBranchAddress("fAn2", &fAn2, &b_fAn2);
+		fragTreeChain->SetBranchAddress("fGr1", &fGr1, &b_fGr1);
+		fragTreeChain->SetBranchAddress("fGr2", &fGr2, &b_fGr2);
+		fragTreeChain->SetBranchAddress("fCat", &fCat, &b_fCat);
 
 		cout << fragTreeChain->GetEntries() << " fragment events" << endl;
 
 		// index of fragment tree
-		fragEntry = fragTreeChain->GetEntries()-1;
+		fragEntry = 0;
 
-		fragTreeChain->GetEntry(1);
-		cout << "Last time is " << fT << endl;
-
-		fragTreeChain->GetEntry(fragEntry - 1);
+		fragTreeChain->GetEntry(0);
 		cout << "First time is " << fT << endl;
-
 
 	}
 
@@ -319,6 +337,10 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		long int countBeams, countFiss, countDet;
 
+		// fragment diff times
+		Double_t tDiff;
+		double oldTime;
+
 
 
 	/*
@@ -331,6 +353,14 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	                                          | |
 	                                          |_|
 	*/
+
+	bool noFrag;
+	if(FRAGMENT_MODE)
+	{
+		noFrag = false;
+
+
+	}
 
 	// get the number of entries
 	Long64_t nentries = fChain->GetEntries();
@@ -371,6 +401,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 
 	// cout << TRIGGER_THRESHOLD << " " << TRIGGER_CLIP << endl;
+	bool doneFrag = false;
 
 	// loop through the raw data
 	for (Long64_t jentry = 0; jentry < nentries; jentry++)
@@ -382,11 +413,12 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		// }
 
 		Long64_t ientry = LoadTree(jentry);
-	  	if (ientry < 0) break;
+	  if (ientry < 0) break;
 		if(FRAGMENT_MODE)
 		{
 	  	Long64_t fentry	= fragTreeChain->LoadTree(fragEntry);
 		}
+		if(doneFrag) break;
 
 
 		// load current entry
@@ -864,6 +896,14 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		while(!FissionBuffer.empty() & readyDet)
 		{
 
+			if(FRAGMENT_MODE)
+			{
+				if(doneFrag) break;
+			}
+
+
+			// cout << "picking up new events" << endl;
+
 			// cout << "F" << endl;
 
 			totMult = 0;
@@ -977,36 +1017,45 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				}
 
 				fissNcount++;
-				// cout << tTime << " " << fT << " " << fragEntry << endl;
+
 
 				if(FRAGMENT_MODE)
 				{
+					// fragTreeChain->GetEntry(fragEntry);
+					// cout << tTime << " " << fT << " " << fragEntry << endl;
+					oldTime = fT;
+					// store the time difference from last event
+					h1_fissFragDelt->Fill(fT - tTime);
 
-					// cout << fragEntry << " " << (fT - tTime) << endl;
-					if(!(fT > 0))
+					// eliminate bad events
+					if(!(fT >= 0))
 					{
-						fragEntry--;
-						cout << "uh oh" << endl;
+						fragEntry++;
+						cout << "uh oh: " << fT << endl;
+						// fragTreeChain->LoadTree(fragEntry);
 						fragTreeChain->GetEntry(fragEntry);
+						h1_fragSorting->Fill(fT-oldTime);
 					}
 
-					while((fT - tTime) < -1*COINC_WINDOW)
+					// compute the time difference
+					// tDiff = fT - tTime;
+					// cout << tDiff << endl;
+
+					//
+					while(fT - tTime < -1*COINC_WINDOW)
 					{
-						// cout << fT-tTime << endl;
-						// cout << fT - tTime << endl;
-						if(fragEntry == 0) break;
-						fragEntry--;
-						// cout << fragEntry << endl;
-						// cout << fragEntry << " " << (fT - tTime) << endl;
+						// cout << "pruning" << endl;
+						// if(fragEntry >= fragTreeChain->GetEntries()) doneFrag = true; break;
+						fragEntry++;
+						// fragTreeChain->LoadTree(fragEntry);
 						fragTreeChain->GetEntry(fragEntry);
-						// cout << fT << " " << (fT - tTime) << endl;
-						// fragTreeChain->Show(fragEntry);
+						h1_fragSorting->Fill(fT-oldTime);
 					}
 
-					if(abs(fT - tTime) < COINC_WINDOW )
+					if(abs(fT - tTime) <= COINC_WINDOW )
 					{
 						// cout << "fragment coincidence found: " << (fT - tTime) << endl;
-
+						// cout << "coinc" << endl;
 						rAL = fAL;
 						rAH = fAH;
 						rKEL = fKEL;
@@ -1016,23 +1065,94 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						rEX = fEX;
 						rDelt = fT - tTime;
 
-						// cout << rDelt << endl;
-					// tTime = fT;
+						rAn1 = fAn1;
+						rAn2 = fAn2;
+						rGr1 = fGr1;
+						rGr2 = fGr2;
+						rCat = fCat;
+
+						fragEntry++;
+						// fragTreeChain->LoadTree(fragEntry);
+						fragTreeChain->GetEntry(fragEntry);
+						h1_fragSorting->Fill(fT-oldTime);
+
 					}
-					else
+
+					else if (fT - tTime > COINC_WINDOW)
 					{
-						// cout << fT-tTime << endl;
-						// cout << fT << " " << (fT - tTime) << endl;
+						// cout << "weird event with tdiff: " << fT-tTime << endl;
+						// cout << "catching up" << endl;
+						// fragEntry++;
+						noFrag = true;
 						continue;
 					}
+
+					else
+					{
+						cout << "weird event with tdiff: " << fT-tTime << endl;
+						fragEntry++;
+						// fragTreeChain->LoadTree(fragEntry);
+						fragTreeChain->GetEntry(fragEntry);
+					}
+
+					// check for discontinuities
+					if(fT - oldTime > 1000*FISS_RATE)
+					{
+						cout << "discontinuation in time found at " << fT << ", " << fT - oldTime << endl;
+						fragEntry++;
+						fragTreeChain->GetEntry(fragEntry);
+					}
+
+					if(fragEntry >= fragTreeChain->GetEntries()-1)
+				  {
+						cout << "finished fragments" << endl;
+						doneFrag = true;
+					}
+
+
+					// cout << fragEntry << "/" << fragTreeChain->GetEntries() << endl;
+
+
+
+					// cout << fragEntry << endl;
+
+					// finished the fragment tree
+					// if(fragEntry > fragTreeChain->GetEntries()) break;
 
 					// tTime = fT;
 				}
 
+				// cout << "A" << endl;
+
 				// fill the tree branches
 
-				coincTree->Fill();
-				fisTracker++;
+				if(!(tTime >= 0))
+				{
+					cout << "problem with fragment time at " << tTime << endl;
+					continue;
+				}
+
+				// fill event
+				if(FRAGMENT_MODE)
+				{
+					if(!noFrag)
+					{
+						// cout << "coinc" << endl;
+						coincTree->Fill();
+						fisTracker++;
+					}
+					else
+					{
+						// cout << "noFrag" << endl;
+						noFrag = false;
+					}
+
+				}
+				else
+				{
+					coincTree->Fill();
+					fisTracker++;
+				}
 
 				// cout << tTime << " " << tMult << " " << tDep << " " << tPSP << " " << tChan << endl;
 
@@ -1047,7 +1167,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		 }
 
 		}
-
 		cout << "Finished looping through data. " << endl;
 
 		if(NUM_BEAMS > 0)
@@ -1079,6 +1198,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 
 
+
+
 	 //   _____             _               _____        _
 	 //  / ____|           (_)             |  __ \      | |
 	 // | (___   __ ___   ___ _ __   __ _  | |  | | __ _| |_ __ _
@@ -1097,6 +1218,13 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	expFile = coincTree->GetCurrentFile();
 	expFile->Write();
+
+	if(FRAGMENT_MODE)
+	{
+		expFile->cd();
+		h1_fissFragDelt->Write();
+		h1_fragSorting->Write();
+	}
 
 	numCoincFiles = coincTree->GetFileNumber();
 

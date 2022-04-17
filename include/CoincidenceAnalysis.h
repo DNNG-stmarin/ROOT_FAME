@@ -128,6 +128,12 @@ public :
   Double_t        fThetaH;
   Double_t        fEX;
 
+  Double_t        fAn1;
+  Double_t        fAn2;
+  Double_t        fGr1;
+  Double_t        fGr2;
+  Double_t        fCat;
+
   // List of branches
   TBranch        *b_fT;   //!
   TBranch        *b_fAL;   //!
@@ -137,6 +143,12 @@ public :
   TBranch        *b_fThetaL;   //!
   TBranch        *b_fThetaH;   //!
   TBranch        *b_fEX;   //!
+
+  TBranch        *b_fAn1;   //!
+  TBranch        *b_fAn2;   //!
+  TBranch        *b_fGr1;   //!
+  TBranch        *b_fGr2;   //!
+  TBranch        *b_fCat;   //!
 
 
    CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFile* beamFileWrite, InfoSystem* info = 0);

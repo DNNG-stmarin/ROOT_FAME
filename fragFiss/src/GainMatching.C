@@ -53,8 +53,29 @@ void fragFiss::GainMatching()
       // kinetic energy
       ua1 = aph[0];
       ua2 = aph[1];
-      ua1 += f_att1->Eval(1.0/cos1) - f_att1->Eval(0);
-      ua2 += f_att2->Eval(1.0/cos2) - f_att2->Eval(0);
+
+      if(ua1 < f_sepAtt1->Eval(1.0/cos1)) // heavy fragment
+      {
+        ua1 += f_att1H->Eval(1.0/cos1) - f_att1H->Eval(0);
+      }
+      else // light fragment
+      {
+        ua1 += f_att1L->Eval(1.0/cos1) - f_att1L->Eval(0);
+      }
+
+      if(ua2 < f_sepAtt2->Eval(1.0/cos2)) // heavy fragment
+      {
+        ua2 += f_att2H->Eval(1.0/cos2) - f_att2H->Eval(0);
+      }
+      else // light fragment
+      {
+        ua2 += f_att2L->Eval(1.0/cos2) - f_att2L->Eval(0);
+      }
+
+      // use the single line evaluation
+
+      // ua1 += f_att1->Eval(1.0/cos1) - f_att1->Eval(0);
+      // ua2 += f_att2->Eval(1.0/cos2) - f_att2->Eval(0);
 
 
       if( (ua1 > MIN_ANODE1) && (ua2 > MIN_ANODE2) && (cos1 > MIN_ANG1) && (cos2 > MIN_ANG2) )
@@ -74,22 +95,20 @@ void fragFiss::GainMatching()
    double ampGuess, meanGuess, sigGuess;
    ampGuess = h1_uncalibratedAn1->GetMaximum();
    meanGuess = h1_uncalibratedAn1->GetMean();
-   sigGuess = 100;
+   sigGuess = SIG_ANODE;
    // cout << ampGuess << " " << meanGuess << sigGuess << " " << endl;
    f_gaussYield1->SetParameters(ampGuess*0.8, meanGuess*0.8, sigGuess, ampGuess, meanGuess*1.2, sigGuess);
-   // f_gaussYield1->SetParLimits(1, 0, ampGuess);
-   // f_gaussYield1->SetParLimits(4, ampGuess, MAX_APH);
-    h1_uncalibratedAn1->Fit(f_gaussYield1, "N Q", "", 0, MAX_APH);
+   f_gaussYield1->SetParLimits(1, MIN_ANODE2, meanGuess);
+   f_gaussYield1->SetParLimits(4, meanGuess, MAX_APH);
+   h1_uncalibratedAn1->Fit(f_gaussYield1, "N Q", "", 0, MAX_APH);
 
    ampGuess = h1_uncalibratedAn2->GetMaximum();
    meanGuess = h1_uncalibratedAn2->GetMean();
-   sigGuess = 100;
+   sigGuess = SIG_ANODE;
    // cout << ampGuess << " " << meanGuess << " " << sigGuess << endl;
    f_gaussYield2->SetParameters(ampGuess*0.8, meanGuess*0.8, sigGuess, ampGuess, meanGuess*1.2, sigGuess);
-   // f_gaussYield2->SetParLimits(1, 0, ampGuess);
-   // f_gaussYield2->SetParLimits(4, ampGuess, MAX_APH);
-
-
+   f_gaussYield2->SetParLimits(1, MIN_ANODE2, meanGuess);
+   f_gaussYield2->SetParLimits(4, meanGuess, MAX_APH);
    h1_uncalibratedAn2->Fit(f_gaussYield2, "N Q", "", 0, MAX_APH);
 
    double centroids1[2];

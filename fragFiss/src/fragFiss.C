@@ -1,4 +1,5 @@
 #include "fragFiss.h"
+#include "constants.h"
 
 fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
 {
@@ -9,8 +10,13 @@ fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
   fragFile = new TFile("frag.root", "RECREATE");
   eventChain = new TChain(inputTreeName, inputTreeName);
 
+   numFiles = 0;
+   nentriesTree = new Long64_t [infoSystem->NUM_FILES];
+
    for(int i = 0; i < infoSystem->NUM_FILES; i++)
    {
+
+
       int fileNum = (infoSystem->FILE_LIST)[i];
 
       cout << "Reading file number " << fileNum << endl;
@@ -34,6 +40,10 @@ fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
       if(eventTree != 0)
       {
         eventChain->Add(s_eventFile + "/" + inputTreeName);
+        nentriesTree[numFiles] = eventTree->GetEntries();
+        cout << nentriesTree[numFiles] << " events" << endl;
+        numFiles++;
+
       }
       //eventFile->Close();
       delete eventFile;
@@ -115,13 +125,18 @@ void fragFiss::Init()
    eventChain->SetBranchAddress("sumtTrig[2]", sumtTrig, &b_sumtTrig);
    eventChain->SetBranchAddress("sumtPeak[2]", sumtPeak, &b_sumtPeak);
    eventChain->SetBranchAddress("ccoinc", &ccoinc, &b_ccoinc);
-   eventChain->SetBranchAddress("a0wf[1280]", a0wf, &b_a0wf);
-   eventChain->SetBranchAddress("a1wf[1280]", a1wf, &b_a1wf);
-   eventChain->SetBranchAddress("g0wf[1280]", g0wf, &b_g0wf);
-   eventChain->SetBranchAddress("g1wf[1280]", g1wf, &b_g1wf);
-   eventChain->SetBranchAddress("sum0wf[1280]", sum0wf, &b_sum0wf);
-   eventChain->SetBranchAddress("sum1wf[1280]", sum1wf, &b_sum1wf);
-   eventChain->SetBranchAddress("cwf[1280]", cwf, &b_cwf);
+
+   if(WAVE_MODE)
+   {
+     eventChain->SetBranchAddress("a0wf[1280]", a0wf, &b_a0wf);
+     eventChain->SetBranchAddress("a1wf[1280]", a1wf, &b_a1wf);
+     eventChain->SetBranchAddress("g0wf[1280]", g0wf, &b_g0wf);
+     eventChain->SetBranchAddress("g1wf[1280]", g1wf, &b_g1wf);
+     eventChain->SetBranchAddress("sum0wf[1280]", sum0wf, &b_sum0wf);
+     eventChain->SetBranchAddress("sum1wf[1280]", sum1wf, &b_sum1wf);
+     eventChain->SetBranchAddress("cwf[1280]", cwf, &b_cwf);
+   }
+
    Notify();
 }
 

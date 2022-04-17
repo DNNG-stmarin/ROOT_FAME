@@ -88,6 +88,12 @@ void DetectorSystemClass::FissionAnalysis()
       f_ThetaL = rThetaL;
       f_ThetaH = rThetaH;
       f_EX = rEX;
+
+      f_An1 = rAn1;
+      f_An2 = rAn2;
+      f_Gr1 = rGr1;
+      f_Gr2 = rGr2;
+      f_Cat = rCat;
     }
 
     // allocating the fission info
