@@ -15,7 +15,7 @@ const double MAX_ANG2 = 1.9;
 
 // angle finding parameters
 const int N_BINS_RATIO = 100;
-const double MIN_RATIO = 0.03;
+const double MIN_RATIO = 0.05;
 const double MAX_RATIO = 0.25;
 const int MIN_ENTRIES_PROJ = 400;
 
@@ -28,7 +28,9 @@ const double MIN_BR_1 = 150;
 const double MAX_BR_1 = 700;
 const double MIN_BR_2 = 150;
 const double MAX_BR_2 = 700;
-const double BREAK_POINT_RATIO = 0.04;
+const double MID_BR_1 = 400;
+const double MID_BR_2 = 400;
+const double BREAK_POINT_RATIO = 0.02;
 
 // fitting parameter for attenuation analysis
 const double MIN_INV_ANG_FIT = 1.1;

@@ -212,9 +212,9 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		cout << fragTreeChain->GetEntries() << " fragment events" << endl;
 
 		// index of fragment tree
-		fragEntry = 0;
+		fragEntry = 1;
 
-		fragTreeChain->GetEntry(0);
+		fragTreeChain->GetEntry(1);
 		cout << "First time is " << fT << endl;
 
 	}
@@ -1023,7 +1023,19 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				{
 					// fragTreeChain->GetEntry(fragEntry);
 					// cout << tTime << " " << fT << " " << fragEntry << endl;
+
+					// if(fT > 3e13) cout << tTime << " " << fT << " " << fragEntry << endl;
+
+					fragTreeChain->GetEntry(fragEntry-1);
 					oldTime = fT;
+					fragTreeChain->GetEntry(fragEntry);
+
+					if(fT - oldTime > 1000*FISS_RATE)
+					{
+						cout << "discontinuation in time found at " << fT << ", " << fT - oldTime << endl;
+						fragEntry++;
+						fragTreeChain->GetEntry(fragEntry);
+					}
 					// store the time difference from last event
 					h1_fissFragDelt->Fill(fT - tTime);
 
@@ -1083,8 +1095,11 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						// cout << "weird event with tdiff: " << fT-tTime << endl;
 						// cout << "catching up" << endl;
 						// fragEntry++;
+						// check for discontinuities
+
 						noFrag = true;
 						continue;
+
 					}
 
 					else
@@ -1092,14 +1107,6 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						cout << "weird event with tdiff: " << fT-tTime << endl;
 						fragEntry++;
 						// fragTreeChain->LoadTree(fragEntry);
-						fragTreeChain->GetEntry(fragEntry);
-					}
-
-					// check for discontinuities
-					if(fT - oldTime > 1000*FISS_RATE)
-					{
-						cout << "discontinuation in time found at " << fT << ", " << fT - oldTime << endl;
-						fragEntry++;
 						fragTreeChain->GetEntry(fragEntry);
 					}
 

@@ -33,7 +33,7 @@ void fragFiss::FillFragTree()
 
 
   // fragment assigned quantities
-  double fT;
+  Double_t fT = 0;
   Double_t fAL, fAH;
   Double_t fKEL, fKEH;
   Double_t fThetaL, fThetaH;
@@ -116,9 +116,28 @@ void fragFiss::FillFragTree()
        // kinetic energy
        fKE1 = aph[0];
        fKE2 = aph[1];
-       // attenutation correction
-       fKE1 += f_att1->Eval(1.0/fTheta1) - f_att1->Eval(0);
-       fKE2 += f_att2->Eval(1.0/fTheta2) - f_att2->Eval(0);
+
+       if(fKE1 < f_sepAtt1->Eval(1.0/fTheta1)) // heavy fragment
+       {
+         fKE1 += f_att1H->Eval(1.0/fTheta1) - f_att1H->Eval(0);
+       }
+       else // light fragment
+       {
+         fKE1 += f_att1L->Eval(1.0/fTheta1) - f_att1L->Eval(0);
+       }
+
+       if(fKE2 < f_sepAtt2->Eval(1.0/fTheta2)) // heavy fragment
+       {
+         fKE2 += f_att2H->Eval(1.0/fTheta2) - f_att2H->Eval(0);
+       }
+       else // light fragment
+       {
+         fKE2 += f_att2L->Eval(1.0/fTheta2) - f_att2L->Eval(0);
+       }
+
+       // // attenutation correction
+       // fKE1 += f_att1->Eval(1.0/fTheta1) - f_att1->Eval(0);
+       // fKE2 += f_att2->Eval(1.0/fTheta2) - f_att2->Eval(0);
        // gain matching
        // fKE2 = g_gainMatch->Eval(fKE2);
 

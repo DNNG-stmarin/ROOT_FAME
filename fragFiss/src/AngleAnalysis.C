@@ -21,6 +21,8 @@ void fragFiss::AngleAnalysis()
    const int MIN_BR_2_BIN = (int)(MIN_BR_2/MAX_APH*N_BINS_APH);
    const int MAX_BR_1_BIN = (int)(MAX_BR_1/MAX_APH*N_BINS_APH);
    const int MAX_BR_2_BIN = (int)(MAX_BR_2/MAX_APH*N_BINS_APH);
+   const int MID_BR_1_BIN = (int)(MID_BR_1/MAX_APH*N_BINS_APH);
+   const int MID_BR_2_BIN = (int)(MID_BR_2/MAX_APH*N_BINS_APH);
 
    // cout << MIN_BIN_RATIO << " " << MAX_BIN_RATIO << " " << MIN_BR_1_BIN << " " << MAX_BR_1_BIN << endl;
 
@@ -202,32 +204,33 @@ void fragFiss::AngleAnalysis()
     // find the breakpoints
     for(int b = MIN_BR_1_BIN+1; b < MAX_BR_1_BIN; b++)
     {
-      if(chargeLength1[b+1] - chargeLength1[b] >= maxBreak1)
+      if((chargeLength1[b+1] - chargeLength1[b] >= BREAK_POINT_RATIO) & (b + 1 < MID_BR_1_BIN))
       {
        maxBreak1 = chargeLength1[b+1] - chargeLength1[b];
-       brMaxA1 = b;
+       brMaxA1 = b+1;
       }
-      if(chargeLength1[b] - chargeLength1[b-1] <= minBreak1)
+      if((chargeLength1[b] - chargeLength1[b-1] <= -BREAK_POINT_RATIO) & (b - 1 > MID_BR_1_BIN))
       {
        minBreak1 = chargeLength1[b] - chargeLength1[b-1] ;
-       brMinA1 = b;
+       brMinA1 = b-1;
       }
     }
 
    double minBreak2 = 1;
    double maxBreak2 = -1;
+
    // find the breakpoints
    for(int b = MIN_BR_2_BIN+1; b < MAX_BR_2_BIN; b++)
    {
-     if(chargeLength2[b+1] - chargeLength2[b] >= maxBreak2)
+     if((chargeLength2[b+1] - chargeLength2[b] >= BREAK_POINT_RATIO) & (b + 1 < MID_BR_2_BIN))
      {
       maxBreak2 = chargeLength2[b+1] - chargeLength2[b];
-      brMaxA2 = b;
+      brMaxA2 = b+1;
      }
-     if(chargeLength2[b] - chargeLength2[b-1] <= minBreak2)
+     if((chargeLength2[b] - chargeLength2[b-1] <= -BREAK_POINT_RATIO) & (b -1 > MID_BR_2_BIN))
      {
       minBreak2 = chargeLength2[b] - chargeLength2[b-1] ;
-      brMinA2 = b;
+      brMinA2 = b-1;
      }
    }
 
@@ -420,6 +423,7 @@ void fragFiss::AngleAnalysis()
      g_centAng2L->Draw("SAME");
    }
 
+   // cout << "Writing" << endl; 
    fragFile->cd();
    c_angleAn->Write();
 
