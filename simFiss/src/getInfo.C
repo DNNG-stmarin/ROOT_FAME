@@ -23,6 +23,8 @@ void sfame::getInfo()
   ACCEPT_PSP =  info->ACCEPT_PSP;
   ACCEPT_TRIG =  info->ACCEPT_TRIG; // V us
   ACCEPT_TYPE =  info->ACCEPT_TYPE; // Spontaneous fission (?)
+    
+  TIME_RES_TRIGGER = info->TIME_RES_TRIGGER; // in ns
 
   THRESHOLD =  info->THRESHOLD; // MeVee
   COINCIDENCE_WINDOW =  info->COINCIDENCE_WINDOW; // ns

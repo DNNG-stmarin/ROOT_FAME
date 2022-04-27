@@ -17,6 +17,8 @@ void sfame::LoopColl()
    Long64_t nentries = rCollisionTree->GetEntries();
    cout << "Processing " << nentries << " events" << endl;
 
+   double historyTime;
+
    // vertex properties
    int vertexChannel;
    int vertexID;
@@ -73,6 +75,8 @@ void sfame::LoopColl()
       tChan = TRIGGER_CHANNEL;
       tType = ACCEPT_TYPE;
 
+      historyTime = randGen->Gaus(0, TIME_RES_TRIGGER);
+
 
       for(int l = 0; l < f_numLines; l++)
       {
@@ -81,7 +85,7 @@ void sfame::LoopColl()
         vertexID = f_particle[l];
         vertexType = f_type[l];
         // vertexLightOut = detectors[vertexChannel].lightOutput->Eval(f_energyDep[l]); // Does this ever check the particle type? (giha)
-        vertexTime = f_time[l]*10.0; // shakes to ns conversion
+        vertexTime = f_time[l]*10.0 - historyTime; // shakes to ns conversion
 
         // psd simulation
         if(vertexType == NEUTRONS)

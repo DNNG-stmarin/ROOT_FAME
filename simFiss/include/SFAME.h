@@ -165,6 +165,8 @@ public:
     double ACCEPT_PSP;
     double ACCEPT_TRIG;
     int ACCEPT_TYPE;
+    
+    double TIME_RES_TRIGGER;
 
 
     // external files

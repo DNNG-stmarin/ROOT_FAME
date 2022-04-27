@@ -45,7 +45,8 @@ public:
   double ACCEPT_PSP;
   double ACCEPT_TRIG;
   int ACCEPT_TYPE;
-
+    
+  double TIME_RES_TRIGGER;
 
   // external files
   TString DET_DIST_FILE; // detector distances
@@ -83,6 +84,7 @@ public:
     THRESHOLD = 0.01; // MeVee
     COINCIDENCE_WINDOW = 200; // ns
     PULSE_GENERATION_WINDOW = 10; // ns
+    TIME_RES_TRIGGER = 0.01; // ns
 
     RESOLUTION_COEFFICIENTS = new double[3];
 
@@ -135,6 +137,11 @@ public:
       {
         file >> value;
         OUTPUT_NAME = (TString)value;
+      }
+      else if(tag == "<TIME_RES_TRIGGER>:")
+      {
+          file >> value;
+          TIME_RES_TRIGGER = stod(value);
       }
 
       // geometry
