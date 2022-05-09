@@ -142,6 +142,7 @@ public:
       {
           file >> value;
           TIME_RES_TRIGGER = stod(value);
+          cout << "broadening trigger by " << TIME_RES_TRIGGER << " ns" << endl;
       }
 
       // geometry
