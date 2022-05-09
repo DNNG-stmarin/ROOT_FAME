@@ -136,7 +136,7 @@ void readFiss::InitExp(TChain* tree)
     expTree->SetBranchAddress("backPhotonVz", backPhotonVz, &b_backPhotonVz);
 
 
-    if(mode == 2)
+    if(mode == BEAM_MODE)
     {
       expTree->SetBranchAddress("beamTime", &beamTime, &b_beamTime);
       expTree->SetBranchAddress("beamEnergy", &beamEnergy, &b_beamEnergy);
@@ -144,6 +144,22 @@ void readFiss::InitExp(TChain* tree)
       expTree->SetBranchAddress("beamPSP", &beamPSP, &b_beamPSP);
       expTree->SetBranchAddress("beamChan", &beamChan, &b_beamChan);
       expTree->SetBranchAddress("beamIndex", &beamIndex, &b_beamIndex);
+    }
+
+    if(mode == FRAG_MODE)
+    {
+      expTree->SetBranchAddress("AL", &AL, &b_AL);
+      expTree->SetBranchAddress("AH", &AH, &b_AH);
+      expTree->SetBranchAddress("KEL", &KEL, &b_KEL);
+      expTree->SetBranchAddress("KEH", &KEH, &b_KEH);
+      expTree->SetBranchAddress("ThetaL", &ThetaL, &b_ThetaL);
+      expTree->SetBranchAddress("ThetaH", &ThetaH, &b_ThetaH);
+      expTree->SetBranchAddress("EX", &EX, &b_EX);
+      expTree->SetBranchAddress("Anode1", &Anode1, &b_Anode1);
+      expTree->SetBranchAddress("Anode2", &Anode2, &b_Anode2);
+      expTree->SetBranchAddress("Grid1", &Grid1, &b_Grid1);
+      expTree->SetBranchAddress("Grid2", &Grid2, &b_Grid2);
+      expTree->SetBranchAddress("Cathode", &Cathode, &b_Cathode);
     }
     Notify();
 

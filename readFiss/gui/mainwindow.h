@@ -74,7 +74,6 @@ public:
 
     // modes
     int mode(int set = -1);
-    int NUM_RUNS(int set = -1);
     bool CovEM_in(int set = -1);
 
     // paths
@@ -90,43 +89,42 @@ public:
     // detectors
     int NUM_DETECTORS(int set = -1);
     double THRESHOLD(double set = -1);
-    double THRESHOLD2(double set = -1);
-    bool THRESHOLD_Check(int set = -1);
     double CLIPPING(double set = -1);
-    double CLIPPING2(double set = -1);
-    bool CLIPPING_Check(int set = -1);
+
+
+    double MIN_TIME_N(double set = -1);
     double MAX_TIME_N(double set = -1);
-    double MAX_TIME_N2(double set = -1);
-    bool MAX_TIME_N_Check(int set = -1);
+    double MIN_TIME_P(double set = -1);
+    double MAX_TIME_P(double set = -1);
 
     // triggers
     int NUM_TRIGGERS(int set = -1);
     int* TRIGGERS(int* set = nullptr);
     double THRESHOLD_DEP(double set = -1);
-    double THRESHOLD_DEP2(double set = -1);
-    bool THRESHOLD_DEP_Check(int set = -1);
     double CLIPPING_DEP(double set = -1);
-    double CLIPPING_DEP2(double set = -1);
-    bool CLIPPING_DEP_Check(int set = -1);
 
     // other
     double BACKGROUND_DELAY(double set = -1);
-    double BACKGROUND_DELAY2(double set = -1);
-    bool BACKGROUND_DELAY_Check(int set = -1);
     double FISS_PILEUP_TIME(double set = -1);
-    double FISS_PILEUP_TIME2(double set = -1);
-    bool FISS_PILEUP_TIME_Check(int set = -1);
 
     // beam settings
     double BEAM_ERG_MIN(double set = -1);
     double BEAM_ERG_MAX(double set = -1);
     double BEAM_ERG_BINNUM(double set = -1);
 
+    // fragment settings
+    double MIN_ANGLE(double set = -1);
+    double MAX_ANGLE(double set = -1);
+    double MIN_MASS(double set = -1);
+    double MAX_MASS(double set = -1);
+    int    MASS_BINNUM(double set=-1);
+
     // CovEM settings
     double MIN_N_ERG(double set = -1);
     double MAX_N_ERG(double set = -1);
     double MIN_P_ERG(double set = -1);
     double MAX_P_ERG(double set = -1);
+
     int BN(int set = -1);
     int BP(int set = -1);
     int BA(int set = -1);
@@ -150,8 +148,6 @@ private slots:
     void on_beamFinder_clicked();
 
     void on_openBrowser_clicked();
-
-    void on_NUM_RUNS_valueChanged(int arg1);
 
 
 private:

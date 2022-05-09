@@ -5,6 +5,8 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(main)
 
+set(CMAKE_BUILD_TYPE RelWithDebInfo)
+
 # You need to tell CMake where to find the ROOT installation. This can be done in a number of ways:
 #   - ROOT built with classic configure/make use the provided $ROOTSYS/etc/cmake/FindROOT.cmake
 #   - ROOT built with CMake. Add in CMAKE_PREFIX_PATH the installation prefix for ROOT

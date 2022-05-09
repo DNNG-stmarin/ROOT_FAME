@@ -11,11 +11,11 @@ void fragFiss::AngleAnalysis()
 
    if (eventChain == 0) return;
    // Put this somewhere else
-   TH2D* h2_anodeGrid1 = new TH2D("h2_anodeGrid1","h2_anodeGrid1;gph/aph;aph",N_BINS_RATIO,0,MAX_RATIO,N_BINS_APH,0,MAX_APH);
-   TH2D* h2_anodeGrid2 = new TH2D("h2_anodeGrid2","h2_anodeGrid2;gph/aph;aph",N_BINS_RATIO,0,MAX_RATIO,N_BINS_APH,0,MAX_APH);
+   TH2D* h2_anodeGrid1 = new TH2D("h2_anodeGrid1","h2_anodeGrid1;gph/aph;aph",N_BINS_RATIO,0,ALL_RATIO,N_BINS_APH,0,MAX_APH);
+   TH2D* h2_anodeGrid2 = new TH2D("h2_anodeGrid2","h2_anodeGrid2;gph/aph;aph",N_BINS_RATIO,0,ALL_RATIO,N_BINS_APH,0,MAX_APH);
 
-   const int MIN_BIN_RATIO = (int)(MIN_RATIO/MAX_RATIO*N_BINS_RATIO);
-   const int MAX_BIN_RATIO = (int)N_BINS_RATIO;
+   const int MIN_BIN_RATIO = (int)(MIN_RATIO/ALL_RATIO*N_BINS_RATIO);
+   const int MAX_BIN_RATIO = (int)(MAX_RATIO/ALL_RATIO*N_BINS_RATIO);
 
    const int MIN_BR_1_BIN = (int)(MIN_BR_1/MAX_APH*N_BINS_APH);
    const int MIN_BR_2_BIN = (int)(MIN_BR_2/MAX_APH*N_BINS_APH);
@@ -38,14 +38,25 @@ void fragFiss::AngleAnalysis()
    cout << "Filling angle histograms" << endl;
    for (Long64_t jentry=0; jentry<nentries;jentry++)
    {
+
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = eventChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
 
+      if(ccoinc != 1)
+      {
+        continue;
+      }
+
+      aph[0] = (aph[0] - GRID_INEFFICIENCY*(aph[0] + gph[0]))/(1 - GRID_INEFFICIENCY);
+      aph[1] = (aph[1] - GRID_INEFFICIENCY*(aph[1] + gph[1]))/(1 - GRID_INEFFICIENCY);
+
+
       h2_anodeGrid1->Fill(gph[0]/aph[0], aph[0]);
       h2_anodeGrid2->Fill(gph[1]/aph[1], aph[1]);
    }
+
 
   /*
      _             _       ___ _ _ _   _
@@ -79,6 +90,9 @@ void fragFiss::AngleAnalysis()
      TH1D* projAPH1 = h2_anodeGrid1->ProjectionX("projAPH1" + TString(b),b+1,b+1);
      TH1D* projAPH2 = h2_anodeGrid2->ProjectionX("projAPH2" + TString(b),b+1,b+1);
 
+     projAPH1->Smooth(2);
+     projAPH2->Smooth(2);
+
      // line conversion
 
      int maxBinAPH1 = -1;
@@ -88,7 +102,8 @@ void fragFiss::AngleAnalysis()
 
      for (int i = MIN_BIN_RATIO; i < N_BINS_RATIO; i++)
      {
-       cosAx[i] = projAPH1->GetBinCenter(i+1);
+       cosAx[i] = 0.5*(projAPH1->GetBinCenter(i+1) + projAPH1->GetBinCenter(i+1));
+
        APH1[i]  = projAPH1->GetBinContent(i+1);
        APH2[i]  = projAPH2->GetBinContent(i+2);
 
@@ -183,10 +198,11 @@ void fragFiss::AngleAnalysis()
      {
        chargeLength2[b] = 0;
      }
-
      // cout << b << ": " << chargeLength1[b] << " " << chargeLength2[b] << endl;
 
    }
+
+
 
   /*
    ___              _             _     _
@@ -196,14 +212,19 @@ void fragFiss::AngleAnalysis()
                       |_|
   */
 
-    int brMinA1, brMinA2;
-    int brMaxA1, brMaxA2;
+
+
+    int brMinA1 = MAX_BR_1_BIN;
+    int brMinA2 = MIN_BR_1_BIN;
+    int brMaxA1 = MAX_BR_2_BIN;
+    int brMaxA2 = MIN_BR_2_BIN;
 
     double minBreak1 = 1;
     double maxBreak1 = -1;
     // find the breakpoints
     for(int b = MIN_BR_1_BIN+1; b < MAX_BR_1_BIN; b++)
     {
+      // cout << "1 " << b << endl;
       if((chargeLength1[b+1] - chargeLength1[b] >= BREAK_POINT_RATIO) & (b + 1 < MID_BR_1_BIN))
       {
        maxBreak1 = chargeLength1[b+1] - chargeLength1[b];
@@ -222,6 +243,7 @@ void fragFiss::AngleAnalysis()
    // find the breakpoints
    for(int b = MIN_BR_2_BIN+1; b < MAX_BR_2_BIN; b++)
    {
+     // cout <<  "2 " << b << endl;
      if((chargeLength2[b+1] - chargeLength2[b] >= BREAK_POINT_RATIO) & (b + 1 < MID_BR_2_BIN))
      {
       maxBreak2 = chargeLength2[b+1] - chargeLength2[b];
@@ -234,18 +256,20 @@ void fragFiss::AngleAnalysis()
      }
    }
 
-   cout << "Breakpoints for anode 1: " << phAx[brMinA1] << " " << phAx[brMaxA1] << endl;
-   cout << "Breakpoints for anode 2: " << phAx[brMinA2] << " " << phAx[brMaxA2] << endl;
+   // cout << brMinA1 << " " << brMaxA1 << endl;
+
+   cout << "Breakpoints for anode 1: " << phAx[brMaxA1] << " " << phAx[brMinA1] << endl;
+   cout << "Breakpoints for anode 2: " << phAx[brMaxA2] << " " <<  phAx[brMinA2] << endl;
 
 
-   // // get rid of points past the breakpoints
+   // get rid of points past the breakpoints
    for (int b=0; b < N_BINS_APH; b++)
    {
-     if(b <= brMaxA1) chargeLength1[b] = chargeLength1[brMaxA1 + 1];
-     else if(b >= brMinA1) chargeLength1[b] = chargeLength1[brMinA1 - 1];
+     if(b <= brMaxA1 - 1) chargeLength1[b] = chargeLength1[brMaxA1 + 2];
+     else if(b >= brMinA1 + 1) chargeLength1[b] = chargeLength1[brMinA1 - 2];
 
-     if(b <= brMaxA2) chargeLength2[b] = chargeLength2[brMaxA2 + 1];
-     else if(b >= brMinA2) chargeLength2[b] = chargeLength2[brMinA2 - 1];
+     if(b <= brMaxA2 - 1 ) chargeLength2[b] = chargeLength2[brMaxA2 + 2];
+     else if(b >= brMinA2  + 1) chargeLength2[b] = chargeLength2[brMinA2 - 2];
    }
 
    // store final results
@@ -254,10 +278,15 @@ void fragFiss::AngleAnalysis()
 
 
    // fit functions
-   f_ang1 = new TF1("f_ang1", "[0] + [2]*x^2", 0, MAX_APH);
-   f_ang2 = new TF1("f_ang2", "[0] + [2]*x^2", 0, MAX_APH);
+   f_Ang1 = new TF1("f_Ang1", "[0] + [1]*x^2 + [2]*x", 0, MAX_APH);
+   f_Ang2 = new TF1("f_Ang2", "[0] + [1]*x^2 + [2]*x", 0, MAX_APH);
 
-   // f_ang1->SetParameters(chargeLength1[brMinA1 + 1], (chargeLength1[brMaxA1 - 1] - chargeLength1[brMinA1 + 1])
+   g_Ang1->Fit(f_Ang1, "Q R", "", phAx[brMaxA1+2], phAx[brMinA1-2]);
+   g_Ang2->Fit(f_Ang2, "Q R", "", phAx[brMaxA2+2], phAx[brMinA2-2]);
+
+
+
+   // f_Ang1->SetParameters(chargeLength1[brMinA1 + 1], (chargeLength1[brMaxA1 - 1] - chargeLength1[brMinA1 + 1])
 
 
     //    ___                            _     ___
@@ -301,7 +330,7 @@ void fragFiss::AngleAnalysis()
 
      int indC = 0;
      // now loop through the allowable values of angles
-     for(int c = 0; c < N_BINS_RATIO; c++)
+     for(int c = MIN_BIN_RATIO; c < MAX_BIN_RATIO; c++)
      {
 
        double angle = h2_anodeGrid1->GetXaxis()->GetBinCenter(c+1); // store the results
@@ -380,11 +409,11 @@ void fragFiss::AngleAnalysis()
    TGraph* g_xAng1 = new TGraph(N_BINS_APH, chargeLength1, phAx);
    g_xAng1->SetName("g_xAng1");
    TGraph* g_xAng2 = new TGraph(N_BINS_APH, chargeLength2, phAx);
-   g_xAng1->SetName("g_xAng2");
+   g_xAng2->SetName("g_xAng2");
 
    // canvas with angle results
    TCanvas* c_angleAn = new TCanvas("c_angle1", "c_angle1", 600, 800);
-   c_angleAn->Divide(1,2);
+   c_angleAn->Divide(1,3);
 
    c_angleAn->cd(1);
    h2_anodeGrid1->Draw();
@@ -423,8 +452,25 @@ void fragFiss::AngleAnalysis()
      g_centAng2L->Draw("SAME");
    }
 
-   // cout << "Writing" << endl; 
-   fragFile->cd();
+   c_angleAn->cd(3);
+   g_Ang1->SetLineColor(kBlack);
+   g_Ang2->SetLineColor(kRed);
+   f_Ang1->SetLineColor(kBlack);
+   f_Ang2->SetLineColor(kBlack);
+   f_Ang1->SetLineStyle(kDashed);
+   f_Ang2->SetLineStyle(kDashed);
+
+   g_Ang1->Draw();
+   g_Ang2->Draw("SAME");
+   f_Ang1->Draw("SAME");
+   f_Ang2->Draw("SAME");
+   c_angleAn->Write();
+
+
+
+   // cout << "Writing" << endl;
+   fragDiagnostics->cd();
+   cd_diagnostics->cd();
    c_angleAn->Write();
 
 }

@@ -37,13 +37,38 @@ int main(int argc, char** argv)
   InfoSystem* info = new InfoSystem();
   info->ReadInput(inputFileName);
 
+  cout << "You have selected to run " << info->NUM_RECURSIONS << " recursions." << endl;
+
   fragFiss* frag = new fragFiss(info, fileName);
   frag->PlotWaves();
   frag->AngleAnalysis();
   frag->ELossCorrection();
   frag->GainMatching();
-
   frag->FillFragTree();
+
+  if(info->NUM_RECURSIONS > 0) cout << "Beginning recursive improvements" << endl;
+
+  for(int i = 0; i < info->NUM_RECURSIONS; i++)
+  {
+    frag->InitPost(i);
+    frag->PostChargeCorr(i);
+    frag->PostAngle(i);
+    frag->PostCalib(i);
+    frag->PostCalibPHD(i);
+    frag->PostFrag(i);
+  }
+
+
+  frag->fragFile->Close();
+  frag->postFragFile->Close();
+  if(info->NUM_RECURSIONS > 0)
+  {
+    frag->fragDiagnostics->Close();
+  }
+
+
+  cout << "Thank you for using FRAG_FISS" << endl;
+  cout << "Please be thankful to Dana Duke at LANL" << endl;
 
 
 

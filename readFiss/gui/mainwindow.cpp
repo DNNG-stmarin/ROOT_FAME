@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete f;
+    // delete f;
 }
 
 void MainWindow::on_Run_clicked()
@@ -34,11 +34,9 @@ void MainWindow::on_Run_clicked()
     ui->progressBar->setValue(0);
     ui->centralwidget->repaint();
 
-    for(int i = 0; i < NUM_RUNS(); ++i)
-    {
-      f->SetInfo(this);
-      f->Run();
-    }
+
+    f->SetInfo(this);
+    f->Run();
 
     f->runNum = 0;
     ui->progressBar->setValue(100);
@@ -128,45 +126,6 @@ void MainWindow::on_openBrowser_clicked()
     TBrowser Browser;
 }
 
-void MainWindow::on_NUM_RUNS_valueChanged(int arg1)
-{
-    if(arg1 == 1)
-    {
-      ui->THRESHOLD2->setEnabled(false);
-      ui->CLIPPING2->setEnabled(false);
-      ui->MAX_TIME_N2->setEnabled(false);
-      ui->THRESHOLD_DEP2->setEnabled(false);
-      ui->CLIPPING_DEP2->setEnabled(false);
-      ui->BACKGROUND_DELAY2->setEnabled(false);
-      ui->FISS_PILEUP_TIME2->setEnabled(false);
-      ui->THRESHOLD_Check->setEnabled(false);
-      ui->CLIPPING_Check->setEnabled(false);
-      ui->MAX_TIME_N_Check->setEnabled(false);
-      ui->THRESHOLD_DEP_Check->setEnabled(false);
-      ui->CLIPPING_DEP_Check->setEnabled(false);
-      ui->BACKGROUND_DELAY_Check->setEnabled(false);
-      ui->FISS_PILEUP_TIME_Check->setEnabled(false);
-    }
-    else
-    {
-      ui->THRESHOLD2->setEnabled(true);
-      ui->CLIPPING2->setEnabled(true);
-      ui->MAX_TIME_N2->setEnabled(true);
-      ui->THRESHOLD_DEP2->setEnabled(true);
-      ui->CLIPPING_DEP2->setEnabled(true);
-      ui->BACKGROUND_DELAY2->setEnabled(true);
-      ui->FISS_PILEUP_TIME2->setEnabled(true);
-      ui->THRESHOLD_Check->setEnabled(true);
-      ui->CLIPPING_Check->setEnabled(true);
-      ui->MAX_TIME_N_Check->setEnabled(true);
-      ui->THRESHOLD_DEP_Check->setEnabled(true);
-      ui->CLIPPING_DEP_Check->setEnabled(true);
-      ui->BACKGROUND_DELAY_Check->setEnabled(true);
-      ui->FISS_PILEUP_TIME_Check->setEnabled(true);
-    }
-}
-
-
 
 // getters/setters
 // progress bar, setter only
@@ -188,29 +147,20 @@ int MainWindow::mode(int set)
   {
     if(ui->simMode->isChecked()) return 1;
     else if(ui->beamMode->isChecked()) return 2;
+    else if(ui->fragMode->isChecked()) return 3;
     else return 0;
   }
   else
   {
     if(set == 1) ui->simMode->setChecked(true);
     else if(set == 2) ui->beamMode->setChecked(true);
+    else if(set == 3) ui->fragMode->setChecked(true);
     else
     {
       ui->simMode->setChecked(false);
       ui->beamMode->setChecked(false);
+      ui->fragMode->setChecked(false);
     }
-    return -1;
-  }
-}
-int MainWindow::NUM_RUNS(int set)
-{
-  if(set == -1)
-  {
-    return ui->NUM_RUNS->value();
-  }
-  else
-  {
-    ui->NUM_RUNS->setValue(set);
     return -1;
   }
 }
@@ -339,33 +289,6 @@ double MainWindow::THRESHOLD(double set)
     return -1;
   }
 }
-double MainWindow::THRESHOLD2(double set)
-{
-  if(set == -1)
-  {
-    if(ui->THRESHOLD_Check->isChecked() && NUM_RUNS() > 1)
-    return ui->THRESHOLD2->displayText().toDouble();
-    else
-    return THRESHOLD();
-  }
-  else
-  {
-    ui->THRESHOLD2->setText(QString::number(set));
-    return -1;
-  }
-}
-bool MainWindow::THRESHOLD_Check(int set)
-{
-  if(set == -1)
-  {
-    return ui->THRESHOLD_Check->isChecked();
-  }
-  else
-  {
-    ui->THRESHOLD_Check->setChecked((bool)set);
-    return -1;
-  }
-}
 double MainWindow::CLIPPING(double set)
 {
   if(set == -1)
@@ -375,33 +298,6 @@ double MainWindow::CLIPPING(double set)
   else
   {
     ui->CLIPPING->setText(QString::number(set));
-    return -1;
-  }
-}
-double MainWindow::CLIPPING2(double set)
-{
-  if(set == -1)
-  {
-    if(ui->CLIPPING_Check->isChecked() && NUM_RUNS() > 1)
-    return ui->CLIPPING2->displayText().toDouble();
-    else
-    return CLIPPING();
-  }
-  else
-  {
-    ui->CLIPPING2->setText(QString::number(set));
-    return -1;
-  }
-}
-bool MainWindow::CLIPPING_Check(int set)
-{
-  if(set == -1)
-  {
-    return ui->CLIPPING_Check->isChecked();
-  }
-  else
-  {
-    ui->CLIPPING_Check->setChecked((bool)set);
     return -1;
   }
 }
@@ -417,34 +313,42 @@ double MainWindow::MAX_TIME_N(double set)
     return -1;
   }
 }
-double MainWindow::MAX_TIME_N2(double set)
+double MainWindow::MIN_TIME_N(double set)
 {
   if(set == -1)
   {
-    if(ui->MAX_TIME_N_Check->isChecked() && NUM_RUNS() > 1)
-    return ui->MAX_TIME_N2->displayText().toDouble();
-    else
-    return MAX_TIME_N();
+    return ui->MIN_TIME_N->displayText().toDouble();
   }
   else
   {
-    ui->MAX_TIME_N2->setText(QString::number(set));
+    ui->MIN_TIME_N->setText(QString::number(set));
     return -1;
   }
 }
-bool MainWindow::MAX_TIME_N_Check(int set)
+double MainWindow::MAX_TIME_P(double set)
 {
   if(set == -1)
   {
-    return ui->MAX_TIME_N_Check->isChecked();
+    return ui->MAX_TIME_P->displayText().toDouble();
   }
   else
   {
-    ui->MAX_TIME_N_Check->setChecked((bool)set);
+    ui->MAX_TIME_P->setText(QString::number(set));
     return -1;
   }
 }
-
+double MainWindow::MIN_TIME_P(double set)
+{
+  if(set == -1)
+  {
+    return ui->MIN_TIME_P->displayText().toDouble();
+  }
+  else
+  {
+    ui->MIN_TIME_P->setText(QString::number(set));
+    return -1;
+  }
+}
 // triggers
 int MainWindow::NUM_TRIGGERS(int set)
 {
@@ -493,33 +397,6 @@ double MainWindow::THRESHOLD_DEP(double set)
     return -1;
   }
 }
-double MainWindow::THRESHOLD_DEP2(double set)
-{
-  if(set == -1)
-  {
-    if(ui->THRESHOLD_DEP_Check->isChecked() && NUM_RUNS() > 1)
-    return ui->THRESHOLD_DEP2->displayText().toDouble();
-    else
-    return THRESHOLD_DEP();
-  }
-  else
-  {
-    ui->THRESHOLD_DEP2->setText(QString::number(set));
-    return -1;
-  }
-}
-bool MainWindow::THRESHOLD_DEP_Check(int set)
-{
-  if(set == -1)
-  {
-    return ui->THRESHOLD_DEP_Check->isChecked();
-  }
-  else
-  {
-    ui->THRESHOLD_DEP_Check->setChecked((bool)set);
-    return -1;
-  }
-}
 double MainWindow::CLIPPING_DEP(double set)
 {
   if(set == -1)
@@ -529,33 +406,6 @@ double MainWindow::CLIPPING_DEP(double set)
   else
   {
     ui->CLIPPING_DEP->setText(QString::number(set));
-    return -1;
-  }
-}
-double MainWindow::CLIPPING_DEP2(double set)
-{
-  if(set == -1)
-  {
-    if(ui->CLIPPING_DEP_Check->isChecked() && NUM_RUNS() > 1)
-    return ui->CLIPPING_DEP2->displayText().toDouble();
-    else
-    return CLIPPING_DEP();
-  }
-  else
-  {
-    ui->CLIPPING_DEP2->setText(QString::number(set));
-    return -1;
-  }
-}
-bool MainWindow::CLIPPING_DEP_Check(int set)
-{
-  if(set == -1)
-  {
-    return ui->CLIPPING_DEP_Check->isChecked();
-  }
-  else
-  {
-    ui->CLIPPING_DEP_Check->setChecked((bool)set);
     return -1;
   }
 }
@@ -573,33 +423,6 @@ double MainWindow::BACKGROUND_DELAY(double set)
     return -1;
   }
 }
-double MainWindow::BACKGROUND_DELAY2(double set)
-{
-  if(set == -1)
-  {
-    if(ui->BACKGROUND_DELAY_Check->isChecked() && NUM_RUNS() > 1)
-    return ui->BACKGROUND_DELAY2->displayText().toDouble();
-    else
-    return BACKGROUND_DELAY();
-  }
-  else
-  {
-    ui->BACKGROUND_DELAY2->setText(QString::number(set));
-    return -1;
-  }
-}
-bool MainWindow::BACKGROUND_DELAY_Check(int set)
-{
-  if(set == -1)
-  {
-    return ui->BACKGROUND_DELAY_Check->isChecked();
-  }
-  else
-  {
-    ui->BACKGROUND_DELAY_Check->setChecked((bool)set);
-    return -1;
-  }
-}
 double MainWindow::FISS_PILEUP_TIME(double set)
 {
   if(set == -1)
@@ -609,33 +432,6 @@ double MainWindow::FISS_PILEUP_TIME(double set)
   else
   {
     ui->FISS_PILEUP_TIME->setText(QString::number(set));
-    return -1;
-  }
-}
-double MainWindow::FISS_PILEUP_TIME2(double set)
-{
-  if(set == -1)
-  {
-    if(ui->FISS_PILEUP_TIME_Check->isChecked() && NUM_RUNS() > 1)
-    return ui->FISS_PILEUP_TIME2->displayText().toDouble();
-    else
-    return FISS_PILEUP_TIME();
-  }
-  else
-  {
-    ui->FISS_PILEUP_TIME2->setText(QString::number(set));
-    return -1;
-  }
-}
-bool MainWindow::FISS_PILEUP_TIME_Check(int set)
-{
-  if(set == -1)
-  {
-    return ui->FISS_PILEUP_TIME_Check->isChecked();
-  }
-  else
-  {
-    ui->FISS_PILEUP_TIME_Check->setChecked((bool)set);
     return -1;
   }
 }
@@ -674,6 +470,68 @@ double MainWindow::BEAM_ERG_BINNUM(double set)
   else
   {
     ui->BEAM_ERG_BINNUM->setText(QString::number(set));
+    return -1;
+  }
+}
+
+// fragment settings
+double MainWindow::MIN_ANGLE(double set)
+{
+  if(set == -1)
+  {
+    return ui->MIN_ANGLE->displayText().toDouble();
+  }
+  else
+  {
+    ui->MIN_ANGLE->setText(QString::number(set));
+    return -1;
+  }
+}
+double MainWindow::MAX_ANGLE(double set)
+{
+  if(set == -1)
+  {
+    return ui->MAX_ANGLE->displayText().toDouble();
+  }
+  else
+  {
+    ui->MAX_ANGLE->setText(QString::number(set));
+    return -1;
+  }
+}
+double MainWindow::MIN_MASS(double set)
+{
+  if(set == -1)
+  {
+    return ui->MIN_MASS->displayText().toDouble();
+  }
+  else
+  {
+    ui->MIN_MASS->setText(QString::number(set));
+    return -1;
+  }
+}
+double MainWindow::MAX_MASS(double set)
+{
+  if(set == -1)
+  {
+    return ui->MAX_MASS->displayText().toDouble();
+  }
+  else
+  {
+    ui->MAX_MASS->setText(QString::number(set));
+    return -1;
+  }
+}
+int MainWindow::MASS_BINNUM(double set)
+{
+  if(set == -1)
+  {
+    return ui->MASS_BINNUM->displayText().toInt();
+  }
+  else
+  {
+    ui->MASS_BINNUM->setText(QString::number(set));
     return -1;
   }
 }

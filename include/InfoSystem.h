@@ -186,7 +186,7 @@ public:
     MACRO_SEP = 2e6;
     MICRO_NUM = 330;
 
-    BEAM_DELAY = 950;
+    BEAM_DELAY = 0;
   }
 
   void ReadInput(TString inputFile) {

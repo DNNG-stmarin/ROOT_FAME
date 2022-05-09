@@ -71,7 +71,7 @@ void ConvertCompass::Loop()
   cout << "Creating Dana tree" << endl;
   danaTree = new TTree("t", "DanaCompatible TTree");
   danaTree->SetFileNumber(0);
-  danaTree->SetMaxTreeSize(1000000000LL);
+  danaTree->SetMaxTreeSize(500000000LL);
 
 
    // setup info

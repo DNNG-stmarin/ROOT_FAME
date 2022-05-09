@@ -27,6 +27,11 @@ void readFiss::LoopExp()
      cout << "beam acceptance between " << BEAM_ERG_MIN << " and " << BEAM_ERG_MAX << " MeV, with " << BEAM_ERG_BINNUM << " bins. " << endl;
    }
 
+   if(mode == FRAG_MODE)
+   {
+     cout << "fragment acceptance between angles " << MIN_ANGLE << " and " << MAX_ANGLE  << endl;
+   }
+
    expEntries = expTree->GetEntries();
    // expEntries = 10000000;
    Long64_t firstEvent = 0;
@@ -142,8 +147,6 @@ void readFiss::LoopExp()
         continue;
       }
 
-
-
       // store values for histograms
 
       if(mode == BEAM_MODE)
@@ -151,6 +154,14 @@ void readFiss::LoopExp()
         h_fisDep[indexChannel]->Fill(fisDep);
         h_beamTime[indexChannel]->Fill(beamTime);
         h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
+      }
+
+      if(mode == FRAG_MODE)
+      {
+        if(AL < MIN_MASS) continue;
+        if(ThetaL < MIN_ANGLE || ThetaL > MAX_ANGLE) continue;
+        if(ThetaH < MIN_ANGLE || ThetaH > MAX_ANGLE) continue;
+        // if(ThetaL - ThetaH < 0.05) continue;
       }
 
 
@@ -207,6 +218,13 @@ void readFiss::LoopExp()
         else if(encBeamErg < 0) encBeamErg = 0;
       }
 
+      if(mode == FRAG_MODE)
+      {
+        h2_MassTKE->Fill(AL, KEL + KEH);
+        h2_MassTKE->Fill(AH, KEL + KEH);
+        h1_exc->Fill(EX);
+      }
+
 
 
       /*
@@ -228,7 +246,8 @@ void readFiss::LoopExp()
           if(ANNFlag < thresholdANN) continue;
         }
 
-        if ((neutronLightOut[i] > THRESHOLD) && (neutronLightOut[i] < CLIPPING) && (neutronDetTimes[i] < MAX_TIME_N))
+        if ((neutronLightOut[i] > THRESHOLD) && (neutronLightOut[i] < CLIPPING)
+             && (neutronDetTimes[i] < MAX_TIME_N) && (neutronDetTimes[i] >= MIN_TIME_N))
         {
 
             nMult++;
@@ -256,10 +275,20 @@ void readFiss::LoopExp()
             h2_IndivNeutronEnergyLOExp[indexDet]->Fill(neutronToFErg[i], neutronLightOut[i]);
             h2_IndivNeutronLightOutPSDExp[indexDet]->Fill(neutronLightOut[i], neutronPSD[i]);
 
+
+
             if (validBeam)
             {
               h2_nLightOutErg[indexChannel]->Fill(beamEnergy, neutronLightOut[i]);
               h2_nToFErg[indexChannel]->Fill(beamEnergy, neutronToFErg[i]);
+            }
+
+            if(mode == FRAG_MODE)
+            {
+              h2_nSpecExc->Fill(EX, neutronToFErg[i]);
+
+              h3_nSpecMassTKE->Fill(AL, KEL+KEH, neutronToFErg[i]);
+              h3_nSpecMassTKE->Fill(AH, KEL+KEH, neutronToFErg[i]);
             }
 
 
@@ -282,8 +311,6 @@ void readFiss::LoopExp()
 
         }
 
-
-
         // double neutrons
         if(nMult == 1)
         {
@@ -296,6 +323,12 @@ void readFiss::LoopExp()
       }
 
       h_neutronMultExp->Fill(nMult);
+
+      if(mode == FRAG_MODE)
+      {
+        h3_nMassTKE->Fill(AL, KEL+KEH, nMult);
+        h3_nMassTKE->Fill(AH, KEL+KEH, nMult);
+      }
 
       if(validBeam) h2_neutronMultDep[indexChannel]->Fill(fisDep, nMult);
 
@@ -327,7 +360,8 @@ void readFiss::LoopExp()
       for (int i = 0; i < gammaMult; i++)
       {
         //cout << "a" << endl;
-        if (photonLightOut[i] > THRESHOLD && photonLightOut[i] < CLIPPING )
+        if (photonLightOut[i] > THRESHOLD && photonLightOut[i] < CLIPPING
+           && photonDetTimes[i] < MAX_TIME_P &&  photonDetTimes[i] >= MIN_TIME_P)
         {
           gMult++;
           h_photonLightOutputExp->Fill(photonLightOut[i]);
@@ -355,6 +389,16 @@ void readFiss::LoopExp()
           {
             h2_photonLightOutErg[indexChannel]->Fill(beamEnergy, photonLightOut[i]);
             h2_gammaLightOutErg[indexChannel]->Fill(beamEnergy, photonLightOut[i]);
+          }
+
+          if(mode == FRAG_MODE)
+          {
+            h2_gSpecExc->Fill(EX, photonLightOut[i]);
+
+
+            h3_gSpecMassTKE->Fill(AL, KEL+KEH, photonLightOut[i]);
+            h3_gSpecMassTKE->Fill(AH, KEL+KEH, photonLightOut[i]);
+
           }
 
           if(CovEM_in)
@@ -385,6 +429,11 @@ void readFiss::LoopExp()
       }
       h_photonMultExp->Fill(gMult);
       if(validBeam) h2_gammaMultDep[indexChannel]->Fill(fisDep, gMult);
+      if(mode == FRAG_MODE)
+      {
+        h3_gMassTKE->Fill(AL, KEL+KEH, gMult);
+        h3_gMassTKE->Fill(AH, KEL+KEH, gMult);
+      }
 
 
       if(gMult == 2)
@@ -439,7 +488,9 @@ void readFiss::LoopExp()
       int nB1 = -1, nB2 = -1;
       for (int i = 0; i < neutronBackMult; i++)
       {
-        if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronLightOut[i] < CLIPPING ) && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N))
+        if ((backNeutronLightOut[i] > THRESHOLD) && (backNeutronLightOut[i] < CLIPPING )
+             && (backNeutronDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_N)
+             && (backNeutronDetTimes[i] + BACKGROUND_DELAY >= MIN_TIME_N))
         {
             nMultBack++;
             h_neutronLightOutputBack->Fill(backNeutronLightOut[i]);
@@ -520,7 +571,9 @@ void readFiss::LoopExp()
       int gB1 = -1, gB2 = -1;
       for (int i = 0; i < gammaBackMult; i++)
       {
-        if (backPhotonLightOut[i] > THRESHOLD && backPhotonLightOut[i] < CLIPPING )
+        if (backPhotonLightOut[i] > THRESHOLD && backPhotonLightOut[i] < CLIPPING
+            && (backPhotonDetTimes[i] + BACKGROUND_DELAY < MAX_TIME_P)
+            && (backPhotonDetTimes[i] + BACKGROUND_DELAY >= MIN_TIME_P))
         {
           gMultBack++;
           h_photonLightOutputBack->Fill(backPhotonLightOut[i]);
@@ -932,8 +985,10 @@ void readFiss::LoopExp()
 
       }
 
-      cout << "Unfortunately I found: " << badEvents << " bad events..." << endl;
+
    }
+
+   cout << "Unfortunately I found: " << badEvents << " bad events..." << endl;
 
 
 
@@ -981,7 +1036,7 @@ void readFiss::LoopSim()
         // loop through neutrons
         for (int i = 0; i < neutronMult; i++)
         {
-          if (neutronLightOut[i] > THRESHOLD && neutronLightOut[i] < CLIPPING && neutronDetTimes[i] < MAX_TIME_N)
+          if (neutronLightOut[i] > THRESHOLD && neutronLightOut[i] < CLIPPING && neutronDetTimes[i] < MAX_TIME_N  && neutronDetTimes[i] >= MIN_TIME_N)
           {
               nMult++;
               h_neutronLightOutputSim->Fill(neutronLightOut[i]);
@@ -1008,7 +1063,7 @@ void readFiss::LoopSim()
         // loop through gamma rays
         for (int i = 0; i < gammaMult; i++)
         {
-          if (photonLightOut[i] > THRESHOLD && photonLightOut[i] < CLIPPING )
+          if (photonLightOut[i] > THRESHOLD && photonLightOut[i] < CLIPPING && photonDetTimes[i] < MAX_TIME_P  && photonDetTimes[i] >= MIN_TIME_P)
           {
               gMult++;
               h_photonLightOutputSim->Fill(photonLightOut[i]);

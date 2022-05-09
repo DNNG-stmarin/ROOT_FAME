@@ -32,9 +32,7 @@ void readFiss::SetInfo(MainWindow* main_in)
 
   // modes
   mode = w->mode();
-  NUM_RUNS = w->NUM_RUNS();
-  int compensator = NUM_RUNS;
-  if(compensator > 1) compensator = 0;
+
   CovEM_in = w->CovEM_in();
 
   // paths
@@ -52,9 +50,12 @@ void readFiss::SetInfo(MainWindow* main_in)
 
   // detectors
   NUM_DETECTORS = w->NUM_DETECTORS();
-  THRESHOLD = w->THRESHOLD() + (((w->THRESHOLD2() - w->THRESHOLD()) / (NUM_RUNS - 1 + compensator)) * runNum);
-  CLIPPING = w->CLIPPING() + (((w->CLIPPING2() - w->CLIPPING()) / (NUM_RUNS - 1 + compensator)) * runNum);
-  MAX_TIME_N = w->MAX_TIME_N() + (((w->MAX_TIME_N2() - w->MAX_TIME_N()) / (NUM_RUNS - 1 + compensator)) * runNum);
+  THRESHOLD = w->THRESHOLD();
+  CLIPPING = w->CLIPPING();
+  MAX_TIME_N = w->MAX_TIME_N();
+  MIN_TIME_N = w->MIN_TIME_N();
+  MAX_TIME_P = w->MAX_TIME_P();
+  MIN_TIME_P = w->MIN_TIME_P();
 
   // triggers
   NUM_TRIGGERS = w->NUM_TRIGGERS();
@@ -63,12 +64,12 @@ void readFiss::SetInfo(MainWindow* main_in)
     delete[] TRIGGERS;
   }
   TRIGGERS = w->TRIGGERS();
-  THRESHOLD_DEP = w->THRESHOLD_DEP() + (((w->THRESHOLD_DEP2() - w->THRESHOLD_DEP()) / (NUM_RUNS - 1 + compensator)) * runNum);
-  CLIPPING_DEP = w->CLIPPING_DEP() + (((w->CLIPPING_DEP2() - w->CLIPPING_DEP()) / (NUM_RUNS - 1 + compensator)) * runNum);
+  THRESHOLD_DEP = w->THRESHOLD_DEP();
+  CLIPPING_DEP = w->CLIPPING_DEP();
 
   // other settings for all modes
-  BACKGROUND_DELAY = w->BACKGROUND_DELAY() + (((w->BACKGROUND_DELAY2() - w->BACKGROUND_DELAY()) / (NUM_RUNS - 1 + compensator)) * runNum);
-  FISS_PILEUP_TIME = w->FISS_PILEUP_TIME() + (((w->FISS_PILEUP_TIME2() - w->FISS_PILEUP_TIME()) / (NUM_RUNS - 1 + compensator)) * runNum);
+  BACKGROUND_DELAY = w->BACKGROUND_DELAY();
+  FISS_PILEUP_TIME = w->FISS_PILEUP_TIME();
 
   // beam settings
   if(mode == BEAM_MODE)
@@ -77,6 +78,15 @@ void readFiss::SetInfo(MainWindow* main_in)
       BEAM_ERG_MAX = w->BEAM_ERG_MAX();
       BEAM_ERG_BINNUM = w->BEAM_ERG_BINNUM();
       sizeBerg = (BEAM_ERG_MAX - BEAM_ERG_MIN)/BEAM_ERG_BINNUM;
+  }
+
+  if(mode == FRAG_MODE)
+  {
+    MIN_ANGLE = w->MIN_ANGLE();
+    MAX_ANGLE = w->MAX_ANGLE();
+    MIN_MASS = w->MIN_MASS();
+    MAX_MASS = w->MAX_MASS();
+    MASS_BINNUM = w->MASS_BINNUM();
   }
 
   // CovEM settings
@@ -94,30 +104,33 @@ void readFiss::SetInfo(MainWindow* main_in)
       sizePerg = (MAX_P_ERG-MIN_P_ERG)/BP;
       sizeNgAng = (MAX_THETA-MIN_THETA)/BA;
   }
+
+  if(mode == SIM_MODE)
+  {
+    cout << "Simulation mode activated" << endl;
+  }
+  else if(mode == BEAM_MODE)
+  {
+    cout << "Beam mode activated" << endl;
+  }
+  else if(mode == FRAG_MODE)
+  {
+    cout << "Fragment mode activated" << endl;
+  }
 }
 
 void readFiss::Run()
 {
   cout << "\n\nPreparing for analysis..." << endl;
   // get writeFile ready
-  if(NUM_RUNS == 1)
+
+  writeFile = new TFile((TString)nameWrite + (TString)".root", "RECREATE");
+  cout << "Writing output to " << ((TString)nameWrite + (TString)".root") << endl;
+  if(!writeFile->IsOpen())
   {
-    writeFile = new TFile((TString)nameWrite + (TString)".root", "RECREATE");
-    cout << "Writing output to " << ((TString)nameWrite + (TString)".root") << endl;
-    if(!writeFile->IsOpen())
-    {
-      w->noWriteFile();
-    }
+    w->noWriteFile();
   }
-  else
-  {
-    writeFile = new TFile((TString)nameWrite + (TString)to_string(runNum) + (TString)".root", "RECREATE");
-    cout << "Writing run " << runNum << " output to " << ((TString)nameWrite + (TString)to_string(runNum) + (TString)".root") << endl;
-    if(!writeFile->IsOpen())
-    {
-      w->noWriteFile();
-    }
-  }
+
   cd_basics = writeFile->mkdir("Basic");
   cd_individual = writeFile->mkdir("Individual");
   cd_FAME = writeFile->mkdir("FAME");
@@ -172,6 +185,11 @@ void readFiss::Run()
     cd_gammaSpecBeam = cd_beam->mkdir("gammaSpecBeam");
 
     cout << "Reading beam information from " << nameBeam << endl;
+  }
+
+  if(mode == FRAG_MODE)
+  {
+    cd_fragment = writeFile->mkdir("Fragment");
   }
 
   // change visuals for plots
@@ -237,6 +255,11 @@ void readFiss::Run()
     PlotBeamLO();
   }
 
+  if(mode == FRAG_MODE)
+  {
+    PlotFragmentEmission();
+  }
+
   cout << "finished" << endl;
   writeFile->Close();
 
@@ -293,14 +316,14 @@ void readFiss::Print(ostream &out)
     // cout <<  w->GetNameInput() << endl;
     out << w->THRESHOLD(-1) << endl;
     out << w->CLIPPING(-1) << endl;
-    out << w->MAX_TIME_N(-1) << endl;
+    out << w->MIN_TIME_P(-1) << " "  << w->MAX_TIME_P(-1) << endl;
+    out << w->MIN_TIME_N(-1) << " "  << w->MAX_TIME_N(-1) << endl;
     out << w->THRESHOLD_DEP(-1) << endl;
     out << w->CLIPPING_DEP(-1) << endl;
     out << w->BACKGROUND_DELAY(-1) << endl;
     out << w->FISS_PILEUP_TIME(-1)<< endl;
 
     out << w->mode() << endl;
-    out << w->NUM_RUNS() << endl;
     out << w->CovEM_in() << endl;
 
     out << w->nameWrite() << endl;
@@ -343,6 +366,12 @@ void readFiss::Print(ostream &out)
         out << w->BEAM_ERG_MIN() << " " << w->BEAM_ERG_MAX() << " ";
         out << w->BEAM_ERG_BINNUM() << endl;
     }
+
+    if(w->mode() == FRAG_MODE)
+    {
+        out << w->MIN_ANGLE() << " " << w->MAX_ANGLE() << endl;
+        out << w->MIN_MASS() << " " << w->MAX_MASS()  << " " << w->MASS_BINNUM() << endl;
+    }
 }
 
 void readFiss::LoadInput(istream &in)
@@ -360,8 +389,16 @@ void readFiss::LoadInput(istream &in)
     w->THRESHOLD(dbl);
     in >> dbl;
     w->CLIPPING(dbl);
+
+    in >> dbl;
+    w->MIN_TIME_P(dbl);
+    in >> dbl;
+    w->MAX_TIME_P(dbl);
+    in >> dbl;
+    w->MIN_TIME_N(dbl);
     in >> dbl;
     w->MAX_TIME_N(dbl);
+
     in >> dbl;
     w->THRESHOLD_DEP(dbl);
     in >> dbl;
@@ -374,9 +411,6 @@ void readFiss::LoadInput(istream &in)
     // modes
     in >> integer;
     w->mode(integer);
-
-    in >> integer;
-    w->NUM_RUNS(integer);
 
     in >> integer;
     w->CovEM_in(integer);
@@ -450,5 +484,21 @@ void readFiss::LoadInput(istream &in)
         w->BEAM_ERG_MAX(dbl);
         in >> integer;
         w->BEAM_ERG_BINNUM(integer);
+    }
+
+    // frag settings
+    if(w->mode() == FRAG_MODE)
+    {
+        in >> dbl;
+        w->MIN_ANGLE(dbl);
+        in >> dbl;
+        w->MAX_ANGLE(dbl);
+        in >> dbl;
+        w->MIN_MASS(dbl);
+        in >> dbl;
+        w->MAX_MASS(dbl);
+        in >> integer;
+        w->MASS_BINNUM(integer);
+
     }
 }

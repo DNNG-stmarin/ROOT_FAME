@@ -8,7 +8,12 @@ fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
   infoSystem = infoIn;
   cout << "Creating output file" << endl;
   fragFile = new TFile("frag.root", "RECREATE");
+  postFragFile = new TFile("postFrag.root", "RECREATE");
+  fragDiagnostics = new TFile("fragDiagnostics.root", "RECREATE");
   eventChain = new TChain(inputTreeName, inputTreeName);
+
+  cd_diagnostics = fragDiagnostics->mkdir("diagnostics");
+  cd_recursion = fragDiagnostics->mkdir("recursion");
 
    numFiles = 0;
    nentriesTree = new Long64_t [infoSystem->NUM_FILES];
@@ -59,6 +64,12 @@ fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
    g_phd = new TGraph(infoIn->PHD_FILENAME);
    g_fpy = new TGraph(infoIn->FPY_FILENAME);
    g_tke = new TGraph(infoIn->TKE_FILENAME);
+   g_sigtke = new TGraph(infoIn->SIG_TKE_FILENAME);
+   g_neutATKE = new TGraph2D(infoIn->NU_A_TKE_FILENAME);
+   g_neutATKE->SetName("g_neutATKE");
+   g_deltATKE = new TGraph2D(infoIn->DELT_A_TKE_FILENAME);
+   g_deltATKE->SetName("g_deltATKE");
+
 }
 
 fragFiss::~fragFiss()
@@ -71,6 +82,8 @@ fragFiss::~fragFiss()
 
    delete fragTree;
    delete fragFile;
+   delete postFragFile;
+   delete fragDiagnostics;
 
    delete infoSystem;
 
@@ -164,4 +177,73 @@ Int_t fragFiss::Cut(Long64_t entry)
 // returns  1 if entry is accepted.
 // returns -1 otherwise.
    return 1;
+}
+
+void fragFiss::InitFrag()
+{
+  cout << "Creating fragment tree " << endl;
+  fragFile->cd();
+  // initialize fragment tree
+  fragTree = new TTree("FragmentTree", "Tree of Fragments");
+  fragTree->SetFileNumber(0);
+  fragTree->SetMaxTreeSize(5000000000LL);
+
+  fragTree->Branch("fT", &fT, "fT/D");
+  fragTree->Branch("fAL", &fAL, "fAL/D");
+  fragTree->Branch("fAH", &fAH, "fAH/D");
+  fragTree->Branch("fKEL", &fKEL, "fKEL/D");
+  fragTree->Branch("fKEH", &fKEH, "fKEH/D");
+  fragTree->Branch("fThetaL", &fThetaL, "fThetaL/D");
+  fragTree->Branch("fThetaH", &fThetaH, "fThetaH/D");
+  fragTree->Branch("fEX", &fEX, "fEX/D");
+
+  fragTree->Branch("fAn1", &fAn1, "fAn1/D");
+  fragTree->Branch("fAn2", &fAn2, "fAn2/D");
+  fragTree->Branch("fGr1", &fGr1, "fGr1/D");
+  fragTree->Branch("fGr2", &fGr2, "fGr2/D");
+  fragTree->Branch("fCat", &fCat, "fCat/D");
+  fragTree->Branch("fA1", &fA1, "fA1/D");
+  fragTree->Branch("fA2", &fA2, "fA2/D");
+
+  fragTree->Branch("fKE1", &fKE1, "fKE1/D");
+  fragTree->Branch("fKE2", &fKE2, "fKE2/D");
+  fragTree->Branch("fTheta1", &fTheta1, "fTheta1/D");
+  fragTree->Branch("fTheta2", &fTheta2, "fTheta2/D");
+}
+
+void fragFiss::InitPost(int iterationPost)
+{
+  // Set branch addresses and branch pointers
+  cout << "InitPost has been called with index " << iterationPost << endl;
+  // if (!tree) return;
+  // eventChain = tree;
+
+  // cout << fragTree << endl;
+
+  fragTree->SetFileNumber(0);
+
+  fCurrent = -1;
+  fragTree->SetMakeClass(1);
+
+  fragTree->SetBranchAddress("fT", &pT, &b_pT);
+  fragTree->SetBranchAddress("fAL", &pAL, &b_pAL);
+  fragTree->SetBranchAddress("fAH", &pAH, &b_pAH);
+  fragTree->SetBranchAddress("fKEL", &pKEL, &b_pKEL);
+  fragTree->SetBranchAddress("fKEH", &pKEH, &b_pKEH);
+  fragTree->SetBranchAddress("fThetaL", &pThetaL, &b_pThetaL);
+  fragTree->SetBranchAddress("fThetaH", &pThetaH, &b_pThetaH);
+  fragTree->SetBranchAddress("fEX", &pEX, &b_pEX);
+  fragTree->SetBranchAddress("fA1", &pA1, &b_pA1);
+  fragTree->SetBranchAddress("fA2", &pA2, &b_pA2);
+  fragTree->SetBranchAddress("fAn1", &pAn1, &b_pAn1);
+  fragTree->SetBranchAddress("fAn2", &pAn2, &b_pAn2);
+  fragTree->SetBranchAddress("fAn1", &pAn1, &b_pAn1);
+  fragTree->SetBranchAddress("fGr1", &pGr1, &b_pGr1);
+  fragTree->SetBranchAddress("fGr2", &pGr2, &b_pGr2);
+  fragTree->SetBranchAddress("fCat", &pCat, &b_pCat);
+  fragTree->SetBranchAddress("fKE1", &pKE1, &b_pKE1);
+  fragTree->SetBranchAddress("fKE2", &pKE2, &b_pKE2);
+  fragTree->SetBranchAddress("fTheta1", &pTheta1, &b_pTheta1);
+  fragTree->SetBranchAddress("fTheta2", &pTheta2, &b_pTheta2);
+
 }

@@ -15,6 +15,8 @@ void fragFiss::GainMatching()
    TH1D* h1_uncalibratedAn1 = new TH1D("h1_uncalibratedAn1","h1_uncalibratedAn1", N_BINS_APH, 0, MAX_APH);
    TH1D* h1_uncalibratedAn2 = new TH1D("h1_uncalibratedAn2","h1_uncalibratedAn2", N_BINS_APH, 0, MAX_APH);
 
+   TH2D* h2_calAngle1 = new TH2D("h1_calAngle1","h1_calAngle1;angle;anode",N_BINS_ANGLE, 0, MAX_ANG1, N_BINS_APH, 0, MAX_APH);
+   TH2D* h2_calAngle2 = new TH2D("h1_calAngle2","h1_calAngle2;angle;anode",N_BINS_ANGLE, 0, MAX_ANG2, N_BINS_APH, 0, MAX_APH);
 
   /*
          _             _       ___ _ _ _   _
@@ -36,16 +38,26 @@ void fragFiss::GainMatching()
       nb = eventChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
 
+      if(aph[0] < MIN_ANODE1 || aph[1] < MIN_ANODE2) continue;
+
+      if(ccoinc != 1)
+      {
+        continue;
+      }
+
+      aph[0] = (aph[0] - GRID_INEFFICIENCY*(aph[0] + gph[0]))/(1 - GRID_INEFFICIENCY);
+      aph[1] = (aph[1] - GRID_INEFFICIENCY*(aph[1] + gph[1]))/(1 - GRID_INEFFICIENCY);
+
       // calculate the angles
       if(g_Ang1->Eval(aph[0]) > 0)
       {
-        cos1 = (gph[0]/aph[0])/g_Ang1->Eval(aph[0]);
+        cos1 = (gph[0]/aph[0])/f_Ang1->Eval(aph[0]);
       }
       else cos1 = -1;
 
       if(g_Ang2->Eval(aph[1]) > 0)
       {
-        cos2 = (gph[1]/aph[1])/g_Ang2->Eval(aph[1]);
+        cos2 = (gph[1]/aph[1])/f_Ang2->Eval(aph[1]);
       }
       else cos2 = -1;
 
@@ -54,28 +66,38 @@ void fragFiss::GainMatching()
       ua1 = aph[0];
       ua2 = aph[1];
 
-      if(ua1 < f_sepAtt1->Eval(1.0/cos1)) // heavy fragment
+      if(ua1 < MIN_ANODE1 || ua2 < MIN_ANODE2) continue;
+
+      if(DOUBLE_ATT_LINE)
       {
-        ua1 += f_att1H->Eval(1.0/cos1) - f_att1H->Eval(0);
+        // use double line evaluation
+        if(ua1 < f_sepAtt1->Eval(1.0/cos1)) // heavy fragment
+        {
+          ua1 -= f_att1H->Eval(1.0/cos1) - f_att1H->Eval(0);
+        }
+        else // light fragment
+        {
+          ua1 -= f_att1L->Eval(1.0/cos1) - f_att1L->Eval(0);
+        }
+
+        if(ua2 < f_sepAtt2->Eval(1.0/cos2)) // heavy fragment
+        {
+          ua2 -= f_att2H->Eval(1.0/cos2) - f_att2H->Eval(0);
+        }
+        else // light fragment
+        {
+          ua2 -= f_att2L->Eval(1.0/cos2) - f_att2L->Eval(0);
+        }
       }
-      else // light fragment
+      else
       {
-        ua1 += f_att1L->Eval(1.0/cos1) - f_att1L->Eval(0);
+        // // use the single line evaluation
+        ua1 -= f_att1->Eval(1.0/cos1) - f_att1->Eval(0);
+        ua2 -= f_att2->Eval(1.0/cos2) - f_att2->Eval(0);
       }
 
-      if(ua2 < f_sepAtt2->Eval(1.0/cos2)) // heavy fragment
-      {
-        ua2 += f_att2H->Eval(1.0/cos2) - f_att2H->Eval(0);
-      }
-      else // light fragment
-      {
-        ua2 += f_att2L->Eval(1.0/cos2) - f_att2L->Eval(0);
-      }
-
-      // use the single line evaluation
-
-      // ua1 += f_att1->Eval(1.0/cos1) - f_att1->Eval(0);
-      // ua2 += f_att2->Eval(1.0/cos2) - f_att2->Eval(0);
+      h2_calAngle1->Fill(cos1, ua1);
+      h2_calAngle2->Fill(cos2, ua2);
 
 
       if( (ua1 > MIN_ANODE1) && (ua2 > MIN_ANODE2) && (cos1 > MIN_ANG1) && (cos2 > MIN_ANG2) )
@@ -113,28 +135,50 @@ void fragFiss::GainMatching()
 
    double centroids1[2];
    double centroids2[2];
+   double sigmas1[2];
+   double sigmas2[2];
 
    centroids1[0] = f_gaussYield1->GetParameter(1);
    centroids1[1] = f_gaussYield1->GetParameter(4);
 
+   sigmas1[0] = f_gaussYield1->GetParameter(2);
+   sigmas1[1] = f_gaussYield1->GetParameter(5);
+
    centroids2[0] = f_gaussYield2->GetParameter(1);
    centroids2[1] = f_gaussYield2->GetParameter(4);
+
+   sigmas2[0] = f_gaussYield2->GetParameter(2);
+   sigmas2[1] = f_gaussYield2->GetParameter(5);
+
+
 
    if (centroids1[0] > centroids1[1])
    {
      double temp = centroids1[0];
      centroids1[0] = centroids1[1];
      centroids1[1] = temp;
+
+     temp = sigmas1[0];
+     sigmas1[0] = sigmas1[1];
+     sigmas1[1] = temp;
    }
    if (centroids2[0] > centroids2[1])
    {
      double temp = centroids2[0];
      centroids2[0] = centroids2[1];
      centroids2[1] = temp;
+
+     temp = sigmas2[0];
+     sigmas2[0] = sigmas2[1];
+     sigmas2[1] = temp;
    }
 
-   cout << centroids1[0] << " " << centroids1[1] << endl;
-   cout << centroids2[0] << " " << centroids2[1] << endl;
+   cout << "centroids source side: " << centroids1[0] << " " << centroids1[1] << endl;
+   cout << "centroids backing side: " << centroids2[0] << " " << centroids2[1] << endl;
+
+   cout << "sigmas source side: " << sigmas1[0] << " " << sigmas1[1] << endl;
+   cout << "sigmas backing side: " << sigmas2[0] << " " << sigmas2[1] << endl;
+
 
    // TF1* f_intersect = new TF1("f_intersect", [0] + [1] * x);
    // TF1* f_intersect = new TF1("f_intersect", [0] + [1] * x);
@@ -151,17 +195,19 @@ void fragFiss::GainMatching()
    kineticPeaks[0] = infoSystem->KINETIC_PEAKS[0] - PHD_H;
    kineticPeaks[1] = infoSystem->KINETIC_PEAKS[1] - PHD_L;
 
+   TF1* f_calib1 = new TF1("f_calib1", "[0] + [1]*x", 0, 2*infoSystem->KINETIC_PEAKS[1]);
+   TF1* f_calib2 = new TF1("f_calib2", "[0] + [1]*x", 0, 2*infoSystem->KINETIC_PEAKS[1]);
+
    g_calib1 = new TGraph(2, centroids1, kineticPeaks);
    g_calib1->SetName("g_calib1");
-   g_calib1->Fit("pol1", "Q");
+   g_calib1->Fit(f_calib1, "Q");
 
    g_calib2 = new TGraph(2, centroids2, kineticPeaks);
    g_calib2->SetName("g_calib2");
-   g_calib2->Fit("pol1", "Q");
+   g_calib2->Fit(f_calib2, "Q");
 
-   cout << "f_att1: " << f_att1->GetParameter(0) << " " << f_att1->GetParameter(1) << endl;
-   cout << "f_att2: " << f_att2->GetParameter(0) << " " << f_att2->GetParameter(1) << endl;
-
+   cout << "f_calib1: " << f_calib1->GetParameter(0) << " " << f_calib1->GetParameter(1) << endl;
+   cout << "f_calib2: " << f_calib2->GetParameter(0) << " " << f_calib2->GetParameter(1) << endl;
 
 
    //
@@ -188,8 +234,20 @@ void fragFiss::GainMatching()
    g_calib2->Draw("SAME");
 
    // write file
-   fragFile->cd();
+   fragDiagnostics->cd();
+   cd_diagnostics->cd();
    c_gain->Write();
+
+   TCanvas* c_angCal = new TCanvas("c_angCal", "c_angCal", 400, 500);
+   c_angCal->Divide(1,2);
+
+   c_angCal->cd(1);
+   h2_calAngle1->Draw("COLZ");
+
+   c_angCal->cd(2);
+   h2_calAngle2->Draw("COLZ");
+
+   c_angCal->Write();
 
 
  }

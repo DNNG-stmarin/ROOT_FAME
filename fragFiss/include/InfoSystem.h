@@ -10,6 +10,7 @@
 #include <TFile.h>
 #include <TString.h>
 #include <TGraph.h>
+#include <TGraph2D.h>
 
 #include <string.h>
 #include <iostream>
@@ -32,7 +33,11 @@ public:
   TString PHD_FILENAME;
   TString FPY_FILENAME;
   TString TKE_FILENAME;
+  TString SIG_TKE_FILENAME;
+  TString NU_A_TKE_FILENAME;
+  TString DELT_A_TKE_FILENAME;
 
+  int NUM_RECURSIONS;
 
   InfoSystem()
   {
@@ -43,6 +48,10 @@ public:
     PHD_FILENAME = "phd.txt";
     FPY_FILENAME = "cf252fpy.txt";
     TKE_FILENAME = "cf252tke.txt";
+    TKE_FILENAME = "sigTKE.txt";
+    NU_A_TKE_FILENAME = "nuTKE.txt";
+    DELT_A_TKE_FILENAME = "delTKE.txt";
+    NUM_RECURSIONS = 0;
   }
 
   void ReadInput(TString inputFile)
@@ -109,6 +118,29 @@ public:
       {
         file >> value;
         TKE_FILENAME = value;
+      }
+      else if(tag == "<SIG_TKE_FILENAME>:")
+      {
+        file >> value;
+        SIG_TKE_FILENAME = value;
+      }
+
+      else if(tag == "<NU_A_TKE_FILENAME>:")
+      {
+        file >> value;
+        NU_A_TKE_FILENAME = value;
+      }
+
+      else if(tag == "<DELT_A_TKE_FILENAME>:")
+      {
+        file >> value;
+        DELT_A_TKE_FILENAME = value;
+      }
+
+      else if(tag == "<NUM_RECURSIONS>:")
+      {
+        file >> value;
+        NUM_RECURSIONS = stoi(value);
       }
 
     }

@@ -115,7 +115,7 @@ void fragFiss::PlotWaves()
 	   else g_grid2->Draw("SAME");
 	}
 
-  fragFile->cd();
+  fragDiagnostics->cd();
   c_waves->Write();
 
 

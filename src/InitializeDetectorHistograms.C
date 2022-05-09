@@ -78,7 +78,8 @@ void DetectorSystemClass::InitializeDetectorHistograms()
 
     for(int i = 0; i < NUM_DETS; i++)
   	{
-      //cout << "initializing histograms for detector number " << i << endl;
+
+      cout << "initializing histograms for detector number " << i << endl;
   		// find the string name of the detector
   		numDet = to_string(DETECTORS[i]);
 
@@ -183,6 +184,9 @@ void DetectorSystemClass::InitializeDetectorHistograms()
    |___/_\__\___/_| |_| \___|_\__,_|\__|_\___/_||_|
 
   */
+
+  cout << "bicorrelation" << endl;
+
   cout << "Bicorrelation histograms have been created" << endl;
 
   // singles and doubles histograms
@@ -198,6 +202,8 @@ void DetectorSystemClass::InitializeDetectorHistograms()
    \__\___/_|_||_\__|_\__,_\___|_||_\__\___/__/
 
   */
+
+  cout << "coincidences" << endl;
 
   // create titles
   TString nnCoincT = "nn_det_";
@@ -301,6 +307,7 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   |___/\___\__,_|_|_|_| |_||_|_/__/\__\___/\__, |_| \__,_|_|_|_/__/
                                           |___/
   */
+  cout << "bicorrelation" << endl;
   TString nameBeamHist;
   TString bHistStart = "b_";
   beamTimeHist = new TH1D* [NUM_TRIGGERS]; // initialize rows

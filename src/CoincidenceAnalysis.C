@@ -417,8 +417,13 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		if(FRAGMENT_MODE)
 		{
 	  	Long64_t fentry	= fragTreeChain->LoadTree(fragEntry);
+			if(fragEntry >= fragTreeChain->GetEntries() - 10)
+			{
+				doneFrag = true;
+				break;
+			}
 		}
-		if(doneFrag) break;
+
 
 
 		// load current entry
@@ -492,6 +497,10 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				countFiss++;
 				// cout << "trigger " << endl;
 				// cout << TriggerBuffer[entryChannel].size() << endl;
+			}
+			else
+			{
+				// cout << "discarded trigger at " << newTrigger.getEnergy() << " " << newTrigger.getPsp() << endl;
 			}
 
       h_triggerTime->Fill(timeDet - BEAM_DELAY); // Why is this a generic beam delay and not the calculated delay?
@@ -1030,6 +1039,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					oldTime = fT;
 					fragTreeChain->GetEntry(fragEntry);
 
+					// cout << tTime << " " << fT << " " << fragEntry << endl;
+
 					if(fT - oldTime > 1000*FISS_RATE)
 					{
 						cout << "discontinuation in time found at " << fT << ", " << fT - oldTime << endl;
@@ -1083,6 +1094,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						rGr2 = fGr2;
 						rCat = fCat;
 
+
 						fragEntry++;
 						// fragTreeChain->LoadTree(fragEntry);
 						fragTreeChain->GetEntry(fragEntry);
@@ -1096,6 +1108,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						// cout << "catching up" << endl;
 						// fragEntry++;
 						// check for discontinuities
+						// cout << "no frag" << endl;
 
 						noFrag = true;
 						continue;
@@ -1110,7 +1123,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						fragTreeChain->GetEntry(fragEntry);
 					}
 
-					if(fragEntry >= fragTreeChain->GetEntries()-1)
+					if(fragEntry >= fragTreeChain->GetEntries() - 10)
 				  {
 						cout << "finished fragments" << endl;
 						doneFrag = true;
@@ -1153,9 +1166,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						// cout << "noFrag" << endl;
 						noFrag = false;
 					}
-
 				}
-				else
+				else // not in fragment mode
 				{
 					coincTree->Fill();
 					fisTracker++;

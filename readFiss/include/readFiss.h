@@ -98,6 +98,8 @@ public :
      // **********
    TDirectory*      cd_trigger;
 
+   TDirectory*      cd_fragment;
+
    int NUM_TRIGGERS; // number of trigger channels
    int* TRIGGERS;
 
@@ -126,16 +128,24 @@ public :
   // int BA = 20;                   // CovEM setting (number of Lab theta bins)
 
   // int BP = 8;                   // CovEM setting (number of phi bins)
-  double MAX_TIME_N;
+  double MIN_TIME_P, MAX_TIME_P;
+  double MIN_TIME_N, MAX_TIME_N;
   double THRESHOLD, CLIPPING;
   double THRESHOLD_DEP, CLIPPING_DEP;
 
   double BACKGROUND_DELAY;
   double FISS_PILEUP_TIME;
 
+  // beam informations
   double BEAM_ERG_MIN, BEAM_ERG_MAX; // range of the beam energies to be employed
   int BEAM_ERG_BINNUM = 10;          // number of energy bins in range (default so no breaking)
 
+  // fragment information
+  double MIN_ANGLE, MAX_ANGLE;
+  double MIN_MASS, MAX_MASS;
+  int MASS_BINNUM;
+
+  // cov EM settings
   double MIN_N_ERG, MAX_N_ERG;  // CovEM setting
   double MIN_P_ERG, MAX_P_ERG;  // CovEM setting
   double sizeNerg, sizePerg, sizeNgAng;
@@ -391,6 +401,22 @@ public :
    TH2D** h2_photonBackLightOutErg;
    TH2D** h2_nBackLightOutErg;
 
+   // fragment histograms
+
+   TH2D* h2_MassTKE;
+
+   TH3D* h3_gMassTKE;
+   TH3D* h3_nMassTKE;
+   TH3D* h3_geMassTKE;
+
+   TH3D* h3_nSpecMassTKE;
+   TH3D* h3_gSpecMassTKE;
+
+   TH1D* h1_exc;
+   TH2D* h2_nSpecExc;
+   TH2D* h2_gSpecExc;
+
+
 
    //beam stack
    THStack** stack;
@@ -538,6 +564,21 @@ public :
    Int_t           beamChan;
    Int_t           beamIndex;
 
+   // fragment specific branches
+   Double_t        AL;
+   Double_t        AH;
+   Double_t        KEL;
+   Double_t        KEH;
+   Double_t        ThetaL;
+   Double_t        ThetaH;
+   Double_t        EX;
+   Double_t        Anode1;
+   Double_t        Anode2;
+   Double_t        Grid1;
+   Double_t        Grid2;
+   Double_t        Cathode;
+
+
    // List of branches
    TBranch        *b_fisTime;   //!
    TBranch        *b_fisDep;   //!
@@ -585,6 +626,20 @@ public :
    TBranch        *b_beamPSP;   //!
    TBranch        *b_beamChan;   //!
    TBranch        *b_beamIndex;   //!
+
+   // fragment specific branches
+   TBranch        *b_AL;
+   TBranch        *b_AH;
+   TBranch        *b_KEL;
+   TBranch        *b_KEH;
+   TBranch        *b_ThetaL;
+   TBranch        *b_ThetaH;
+   TBranch        *b_EX;
+   TBranch        *b_Anode1;
+   TBranch        *b_Anode2;
+   TBranch        *b_Grid1;
+   TBranch        *b_Grid2;
+   TBranch        *b_Cathode;
 
 
    /*
@@ -743,6 +798,9 @@ public :
    virtual void     PlotStack();
    virtual void     PlotLO();
    virtual void     PlotBeamLO();
+
+   // plot the fragment results
+   virtual void     PlotFragmentEmission();
 
    // plot the experiment vs simulated branches
    virtual void     CompareTof();

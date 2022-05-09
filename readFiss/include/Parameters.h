@@ -34,6 +34,10 @@ const int numDeltaT = 200;
 const double minDeltaT = 0;
 const double maxDeltaT = 10000;
 
+const int numTKEbins = 50;
+const double minTKE = 140;
+const double maxTKE = 240;
+
 // cov EM parameters
 // const double sizeTheta = (MAX_THETA - MIN_THETA)/BTH;
 // const double sizePhi = (MAX_PHI - MIN_PHI)/BPH;
