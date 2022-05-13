@@ -29,6 +29,9 @@ const double MIN_PSD_HIST = 0;
 const double MAX_PSD_HIST = 1;
 const int NUM_PSD_HIST = 100;
 
+const double MIN_BEND_PSD = -2;
+const double MAX_BEND_PSD = 5;
+
 // double discrimination values
 const double DISC_SHIFT_VALUE = 0.005;
 
@@ -40,6 +43,8 @@ const int NUM_LO_HIST = 400;
 const int MIN_ENTRIES = 50;
 
 const double FAKE_FISS_SIGNAL = 0.01;
+
+
 
 
 

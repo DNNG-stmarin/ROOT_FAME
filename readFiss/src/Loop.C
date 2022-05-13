@@ -30,6 +30,8 @@ void readFiss::LoopExp()
    if(mode == FRAG_MODE)
    {
      cout << "fragment acceptance between angles " << MIN_ANGLE << " and " << MAX_ANGLE  << endl;
+     cout << "and masses between " << MIN_MASS << " " << 252-MIN_MASS  << endl;
+
    }
 
    expEntries = expTree->GetEntries();
@@ -159,8 +161,9 @@ void readFiss::LoopExp()
       if(mode == FRAG_MODE)
       {
         if(AL < MIN_MASS) continue;
-        if(ThetaL < MIN_ANGLE || ThetaL > MAX_ANGLE) continue;
-        if(ThetaH < MIN_ANGLE || ThetaH > MAX_ANGLE) continue;
+        if(abs(ThetaL) < MIN_ANGLE || abs(ThetaL) > MAX_ANGLE) continue;
+        if(abs(ThetaH) < MIN_ANGLE || abs(ThetaH) > MAX_ANGLE) continue;
+        
         // if(ThetaL - ThetaH < 0.05) continue;
       }
 

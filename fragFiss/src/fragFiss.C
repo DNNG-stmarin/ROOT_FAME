@@ -70,6 +70,11 @@ fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
    g_deltATKE = new TGraph2D(infoIn->DELT_A_TKE_FILENAME);
    g_deltATKE->SetName("g_deltATKE");
 
+   g_slopeNu = new TGraph(infoIn->SLOPE_NU_FILENAME);
+   g_slopeNu->SetName("g_slopeNu");
+   g_interNu = new TGraph(infoIn->INTERCEPT_NU_FILENAME);
+   g_interNu->SetName("g_interNu");
+
 }
 
 fragFiss::~fragFiss()

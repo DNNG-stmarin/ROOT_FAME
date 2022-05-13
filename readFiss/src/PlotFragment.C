@@ -6,11 +6,19 @@
 #include <TPaveStats.h>
 #include <TProfile2D.h>
 
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include <sys/stat.h>
+#include <sys/types.h>
+
 using namespace std;
 
 void readFiss::PlotFragmentEmission()
 {
   cd_fragment->cd();
+
+  cout << "Plotting Fragment results" << endl;
 
   TCanvas* c_FragYield = new TCanvas("c_fragYield","c_fragYield", 1200, 800);
   c_FragYield->Divide(3,1);
@@ -30,6 +38,8 @@ void readFiss::PlotFragmentEmission()
 
   c_FragYield->Write();
 
+
+
   TCanvas* c_FragSpec = new TCanvas("c_fragSpec","c_fragSpec", 1200, 800);
   c_FragSpec->Divide(3,1);
 
@@ -43,6 +53,94 @@ void readFiss::PlotFragmentEmission()
   h2_MassTKE->Draw("COLZ");
 
   c_FragSpec->Write();
+
+
+
+
+  cout << "writing fragment results to csv" << endl;
+  mkdir("fragResults/", 0777);
+
+  h3_gSpecMassTKE->RebinZ(5);
+
+  int numMASSbins = h3_gSpecMassTKE->GetXaxis()->GetNbins();
+  int numTKEbins = h3_gSpecMassTKE->GetYaxis()->GetNbins();
+  int numGEbins = h3_gSpecMassTKE->GetZaxis()->GetNbins();
+  // cout << h3_gSpecMassTKE->GetZaxis()->GetNbins() << endl;
+  int numNEbins = h3_nSpecMassTKE->GetZaxis()->GetNbins();
+
+  ofstream gamFragFile;
+  ofstream neutFragFile;
+  ofstream yieldFragFile;
+
+  TString nameFileGam;
+  TString nameFileNeut;
+
+  TString baseFileGam = "fragResults/gamFrag_";
+  TString baseFileNeut = "fragResults/neutFrag_";
+
+  TString csvExt = ".csv";
+
+
+  yieldFragFile.open("fragResults/yieldFrag.csv");
+
+  // write yield
+  cout << "writing yield to csv" << endl;
+  for(int m = 1; m <= numMASSbins; m++)
+  {
+    for(int k = 1; k <= numTKEbins; k++)
+    {
+      yieldFragFile << h2_MassTKE->GetBinContent(m, k);
+
+      if(k < numTKEbins) yieldFragFile << ", ";
+      else yieldFragFile << "\n ";
+    }
+  }
+  yieldFragFile.close();
+
+
+
+  cout << "writing gam to csv" << endl;
+  for(int eg = 1; eg <= numGEbins; eg++)
+  {
+    nameFileGam = baseFileGam + (TString)to_string(eg) + csvExt;
+    gamFragFile.open(nameFileGam);
+    // write yield
+    for(int m = 1; m <= numMASSbins; m++)
+    {
+      for(int k = 1; k <= numTKEbins; k++)
+      {
+        gamFragFile << h3_gSpecMassTKE->GetBinContent(m, k, eg);
+
+        if(k < numTKEbins) gamFragFile << ", ";
+        else gamFragFile << "\n ";
+      }
+    }
+    gamFragFile.close();
+
+  }
+
+  cout << "writing neut to csv" << endl;
+  for(int en = 1; en <= numNEbins; en++)
+  {
+    nameFileNeut = baseFileNeut + (TString)to_string(en) + csvExt;
+    neutFragFile.open(nameFileNeut);
+    // write yield
+    for(int m = 1; m <= numMASSbins; m++)
+    {
+      for(int k = 1; k <= numTKEbins; k++)
+      {
+        neutFragFile << h3_nSpecMassTKE->GetBinContent(m, k, en);
+
+        if(k < numTKEbins) neutFragFile << ", ";
+        else neutFragFile << "\n ";
+      }
+    }
+    neutFragFile.close();
+
+  }
+
+
+
 
 
 }

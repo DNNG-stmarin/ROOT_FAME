@@ -158,12 +158,16 @@ void fragFiss::FillFragTree()
            postA1 = preA1 - g_neutATKE->Interpolate(preA1, preE1+preE2);
            postA2 = preA2 - g_neutATKE->Interpolate(preA2, preE1+preE2);
          }
+         else if(INTERP_SLOPE_SAWTOOTH)
+         {
+           postA1 = preA1 - ((preE1 + preE2) - g_interNu->Eval(preA1))*g_slopeNu->Eval(preA1);
+           postA2 = preA2 - ((preE1 + preE2) - g_interNu->Eval(preA2))*g_slopeNu->Eval(preA2);
+         }
          else
          {
            postA1 = preA1 - g_sawtooth->Eval(preA1);
            postA2 = preA2 - g_sawtooth->Eval(preA2);
          }
-
          // Correct for PHD
          postE1 = fKE1 + g_phd->Eval(postA1);
          postE2 = fKE2 + g_phd->Eval(postA2);

@@ -16,6 +16,9 @@ void fragFiss::PostCalib(int iterationPost)
   TH1D* h1_massAn1 = new TH1D("h1_massAn1_"+ TString(to_string(iterationPost)),"h1_massAn1", N_BINS_APH, 0, MAX_APH);
   TH1D* h1_massAn2 = new TH1D("h1_massAn2_"+ TString(to_string(iterationPost)),"h1_massAn2", N_BINS_APH, 0, MAX_APH);
 
+  TH3D* h3_massKEAttCalib1 = new TH3D("h3_massKEAttCalib1_"+ TString(to_string(iterationPost)),"h3_massKEAttCalib1; mass;  1/angle; kinetic energy", N_BINS_MASS_TH, MIN_MASS, MAX_MASS, N_BINS_RATIO,-1, 5, N_BINS_APH,0,MAX_APH);
+  TH3D* h3_massKEAttCalib2 = new TH3D("h3_massKEAttCalib2_"+ TString(to_string(iterationPost)),"h3_massKEAttCalib2; mass; 1/angle; kinetic energy", N_BINS_MASS_TH, MIN_MASS, MAX_MASS, N_BINS_RATIO,-1, 5, N_BINS_APH,0,MAX_APH);
+
   Long64_t nentries = fragTree->GetEntries();
 
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
@@ -25,6 +28,8 @@ void fragFiss::PostCalib(int iterationPost)
 
      fragTree->GetEntry(jentry);
 
+     if( !((pAn1 > MIN_ANODE1) && (pAn2 > MIN_ANODE2) && (pTheta1 > MIN_ANG1) && (pTheta2 > MIN_ANG2)) ) continue;
+
      // grid inefficiency correction
      pAn1 = (pAn1 - GRID_INEFFICIENCY*(pAn1 + pGr1))/(1 - GRID_INEFFICIENCY);
      pAn2 = (pAn2 - GRID_INEFFICIENCY*(pAn2 + pGr2))/(1 - GRID_INEFFICIENCY);
@@ -32,15 +37,39 @@ void fragFiss::PostCalib(int iterationPost)
      pTheta1 /= g_AngMass1->Eval(pA1);
      pTheta2 /= g_AngMass2->Eval(pA2);
 
-     pAn1 -= f_massAtt1->Eval(1.0/pTheta1) - f_massAtt1->Eval(0.0);
-     pAn2 -= f_massAtt2->Eval(1.0/pTheta2) - f_massAtt2->Eval(0.0);
+     if(MASS_DEP_ATT)
+     {
+       pAn1 = pAn1 - (g_slopeMass1->Eval(pA1))*1.0/pTheta1;
+       pAn2 = pAn2 - (g_slopeMass2->Eval(pA2))*1.0/pTheta2;
+     }
+     else
+     {
+       pAn1 -= f_massAtt1->Eval(1.0/pTheta1) - f_massAtt1->Eval(0.0);
+       pAn2 -= f_massAtt2->Eval(1.0/pTheta2) - f_massAtt2->Eval(0.0);
+     }
+
+
+     // cout << pA1 << " " << pTheta1 << " " << - (g_slopeMass1->Eval(pA1))*1.0/pTheta1 << endl;
 
      if( (pAn1 > MIN_ANODE1) && (pAn2 > MIN_ANODE2) && (pTheta1 > MIN_ANG1) && (pTheta2 > MIN_ANG2) )
      {
        h1_massAn1->Fill(pAn1);
        h1_massAn2->Fill(pAn2);
+
+       h3_massKEAttCalib1->Fill(pA1, 1.0/pTheta1, pAn1);
+       h3_massKEAttCalib2->Fill(pA2, 1.0/pTheta2, pAn2);
+
      }
    }
+
+   /*
+
+   ___                 _               _             _         _
+  / __|__ _ _  _ _____(_)__ _ _ _     /_\  _ _  __ _| |_  _ __(_)___
+ | (_ / _` | || (_-<_-< / _` | ' \   / _ \| ' \/ _` | | || (_-< (_-<
+  \___\__,_|\_,_/__/__/_\__,_|_||_| /_/ \_\_||_\__,_|_|\_, /__/_/__/
+                                                       |__/
+   */
 
 
   TF1* gaussFit = new TF1("gaussFit", "[0] * e^(-((x - [1])^2)/(2*[2]^2))", 0, MAX_APH);
@@ -107,6 +136,70 @@ void fragFiss::PostCalib(int iterationPost)
     sigmas2[1] = temp;
   }
 
+
+/*
+
+   _  _   _                     _   _             ___ _           _
+  /_\| |_| |_ ___ _ _ _  _ __ _| |_(_)___ _ _    / __| |_  ___ __| |__
+ / _ \  _|  _/ -_) ' \ || / _` |  _| / _ \ ' \  | (__| ' \/ -_) _| / /
+/_/ \_\__|\__\___|_||_\_,_\__,_|\__|_\___/_||_|  \___|_||_\___\__|_\_\
+
+
+*/
+  // check that the attenuation has been calibrated out
+
+  TProfile** p1_massAtt1;
+  TProfile** p1_massAtt2;
+
+  p1_massAtt1 = new TProfile*[N_BINS_MASS_TH];
+  p1_massAtt2 = new TProfile*[N_BINS_MASS_TH];
+
+  int numMass1 = 0;
+  int numMass2 = 0;
+
+  TF1* f_massAttCalibProj1 = new TF1("f_massAttCalibProj1", "[0] + [1]*x", -10, 10);
+  TF1* f_massAttCalibProj2 = new TF1("f_massAttCalibProj2", "[0] + [1]*x", -10, 10);
+
+  for(int m = 1; m <= N_BINS_MASS_TH; m++)
+  {
+
+    h3_massKEAttCalib1->GetXaxis()->SetRange(m,m);
+
+    TH2D* h2_mKEAttCalib1  = ((TH2D*)h3_massKEAttCalib1->Project3D("zy"));
+
+    if(h2_mKEAttCalib1->GetEntries() < MIN_COUNT_MASS_ATT) continue;
+
+    TProfile* p1_temp1 = h2_mKEAttCalib1->ProfileX();
+
+    p1_massAtt1[numMass1] = (TProfile*)p1_temp1->Clone();
+
+    p1_massAtt1[numMass1]->SetName("p1_massAtt1_" + (TString)to_string(m));
+    p1_massAtt1[numMass1]->Fit(f_massAttCalibProj1, "QS", "", MIN_INV_ANG_FIT_TIP, MAX_INV_ANG_FIT_TIP);
+
+    numMass1++;
+  }
+
+  for(int m = 1; m <= N_BINS_MASS_TH; m++)
+  {
+
+    h3_massKEAttCalib2->GetXaxis()->SetRange(m,m);
+
+    TH2D* h2_mKEAttCalib2  = ((TH2D*)h3_massKEAttCalib2->Project3D("zy"));
+
+    if(h2_mKEAttCalib2->GetEntries() < MIN_COUNT_MASS_ATT) continue;
+
+    TProfile* p1_temp2 = h2_mKEAttCalib2->ProfileX();
+
+    p1_massAtt2[numMass2] = (TProfile*)p1_temp2->Clone();
+    p1_massAtt2[numMass2]->SetName("p1_massAtt2_" + (TString)to_string(m));
+    p1_massAtt2[numMass2]->Fit(f_massAttCalibProj2, "QS", "", MIN_INV_ANG_FIT_TIP, MAX_INV_ANG_FIT_TIP);
+
+    numMass2++;
+  }
+
+
+
+
   // cout << "centroids source side: " << centroids1[0] << " " << centroids1[1] << endl;
   // cout << "centroids backing side: " << centroids2[0] << " " << centroids2[1] << endl;
   //
@@ -146,9 +239,31 @@ void fragFiss::PostCalib(int iterationPost)
   f_gaussYield1->Draw("SAME");
   f_gaussYield2->Draw("SAME");
 
+
+  TCanvas* c_massAttSingCalib = new TCanvas("c_massAttSingCalib" + TString(to_string(iterationPost)), "c_massAttSingCalib", 400, 500);
+  c_massAttSingCalib->Divide(5,2);
+
+  int jPan = 0;
+  int canPan = 1;
+  while(jPan < numMass1 & jPan < numMass2)
+  {
+    c_massAttSingCalib->cd(canPan);
+    p1_massAtt1[jPan]->Draw();
+    p1_massAtt2[jPan]->Draw("SAME");
+    jPan += 5;
+    canPan++;
+  }
+
+
+
+
   fragDiagnostics->cd();
   cd_recursion->cd();
   c_gain->Write();
+  c_massAttSingCalib->Write();
+
+
+
 
 
 

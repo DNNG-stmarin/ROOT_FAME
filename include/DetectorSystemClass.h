@@ -55,6 +55,7 @@ public:
 	double DETECTOR_CLIP;
 	double COINC_WINDOW;
 	double BEAM_WINDOW;
+	double FRAGMENT_WINDOW;
   double BEAM_DISTANCE;
 	double MIN_TIME_P;
 	double MAX_TIME_P;
@@ -230,6 +231,7 @@ _  _ _    _
 	double        rGr1;
 	double 				rGr2;
 	double 				rCat;
+	double 				rA1;
 
 	double 				bTime;
 	double				bErg;
@@ -271,6 +273,7 @@ _  _ _    _
 	TBranch        *b_rGr1;   //!
 	TBranch        *b_rGr2;   //!
 	TBranch        *b_rCat;   //!
+	TBranch        *b_rA1;   //!
 
 	TBranch        *b_totToF;   //!
 	TBranch        *b_totPSP;   //!
@@ -323,6 +326,7 @@ _  _ _    _
 	double neutronVy[MAX_MULTIPLICITY] = {0};
 	double neutronVz[MAX_MULTIPLICITY] = {0};
 	int neutronFlag[MAX_MULTIPLICITY] = {0};
+	double neutronCosF[MAX_MULTIPLICITY] = {0};
 
 	double photonDetTimes[MAX_MULTIPLICITY] = {0};
 	double photonLightOut[MAX_MULTIPLICITY] = {0};
@@ -332,6 +336,7 @@ _  _ _    _
 	double photonVy[MAX_MULTIPLICITY] = {0};
 	double photonVz[MAX_MULTIPLICITY] = {0};
 	int photonFlag[MAX_MULTIPLICITY] = {0};
+	double photonCosF[MAX_MULTIPLICITY] = {0};
 
 	double backNeutronDetTimes[MAX_MULTIPLICITY] = {0};
 	double backNeutronLightOut[MAX_MULTIPLICITY] = {0};
@@ -341,6 +346,7 @@ _  _ _    _
 	double backNeutronVx[MAX_MULTIPLICITY] = {0};
 	double backNeutronVy[MAX_MULTIPLICITY] = {0};
 	double backNeutronVz[MAX_MULTIPLICITY] = {0};
+	double backNeutronCosF[MAX_MULTIPLICITY] = {0};
 
 	double backPhotonDetTimes[MAX_MULTIPLICITY] = {0};
 	double backPhotonLightOut[MAX_MULTIPLICITY] = {0};
@@ -349,6 +355,7 @@ _  _ _    _
 	double backPhotonVx[MAX_MULTIPLICITY] = {0};
 	double backPhotonVy[MAX_MULTIPLICITY] = {0};
 	double backPhotonVz[MAX_MULTIPLICITY] = {0};
+	double backPhotonCosF[MAX_MULTIPLICITY] = {0};
 
 
 	/*

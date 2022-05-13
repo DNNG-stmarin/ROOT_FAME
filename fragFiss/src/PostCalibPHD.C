@@ -26,6 +26,8 @@ void fragFiss::PostCalibPHD(int iterationPost)
 
      fragTree->GetEntry(jentry);
 
+     if( !((pAn1 > MIN_ANODE1) && (pAn2 > MIN_ANODE2) && (pTheta1 > MIN_ANG1) && (pTheta2 > MIN_ANG2)) ) continue;
+
      // grid inefficiency correction
      pAn1 = (pAn1 - GRID_INEFFICIENCY*(pAn1 + pGr1))/(1 - GRID_INEFFICIENCY);
      pAn2 = (pAn2 - GRID_INEFFICIENCY*(pAn2 + pGr2))/(1 - GRID_INEFFICIENCY);
@@ -33,8 +35,16 @@ void fragFiss::PostCalibPHD(int iterationPost)
      pTheta1 /= g_AngMass1->Eval(pA1);
      pTheta2 /= g_AngMass1->Eval(pA2);
 
-     pAn1 -= f_massAtt1->Eval(1.0/pTheta1) - f_massAtt1->Eval(0.0);
-     pAn2 -= f_massAtt2->Eval(1.0/pTheta2) - f_massAtt2->Eval(0.0);
+     if(MASS_DEP_ATT)
+     {
+       pAn1 = pAn1 - (g_slopeMass1->Eval(pA1))*1.0/pTheta1;
+       pAn2 = pAn2 - (g_slopeMass2->Eval(pA2))*1.0/pTheta2;
+     }
+     else
+     {
+       pAn1 -= f_massAtt1->Eval(1.0/pTheta1) - f_massAtt1->Eval(0.0);
+       pAn2 -= f_massAtt2->Eval(1.0/pTheta2) - f_massAtt2->Eval(0.0);
+     }
 
      pKE1 = g_massCalib1->Eval(pAn1) + g_phd->Eval(pA1);
      pKE2 = g_massCalib2->Eval(pAn2) + g_phd->Eval(pA2);

@@ -129,6 +129,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	double rGr2 = 0;
 	double rCat = 0;
 
+	double rA1 = 0;
+
 	// particles
 	double totToF[MAX_MULTIPLICITY] = {0};
 	double totPSP[MAX_MULTIPLICITY] = {0};
@@ -174,6 +176,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		coincTree->Branch("rGr2", &rGr2, "rGr2/D");
 		coincTree->Branch("rCat", &rCat, "rCat/D");
 
+		coincTree->Branch("rA1", &rA1, "rA1/D");
 
 		// open the fragment tree
 		gROOT->cd();
@@ -209,6 +212,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 		fragTreeChain->SetBranchAddress("fGr2", &fGr2, &b_fGr2);
 		fragTreeChain->SetBranchAddress("fCat", &fCat, &b_fCat);
 
+		fragTreeChain->SetBranchAddress("fA1", &fA1, &b_fA1);
+
 		cout << fragTreeChain->GetEntries() << " fragment events" << endl;
 
 		// index of fragment tree
@@ -226,7 +231,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 	coincTree->Branch("totChan", totChan, "totChan[tMult]/I");
 	coincTree->Branch("totTail", totTail, "totTail[tMult]/D");
 
-	coincTree->SetMaxTreeSize(1000000000LL);
+	coincTree->SetMaxTreeSize(5000000000LL);
 
 
 	int fissNcount = 0;
@@ -1065,7 +1070,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					// cout << tDiff << endl;
 
 					//
-					while(fT - tTime < -1*COINC_WINDOW)
+					while(fT - tTime < -1*FRAGMENT_WINDOW)
 					{
 						// cout << "pruning" << endl;
 						// if(fragEntry >= fragTreeChain->GetEntries()) doneFrag = true; break;
@@ -1075,7 +1080,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						h1_fragSorting->Fill(fT-oldTime);
 					}
 
-					if(abs(fT - tTime) <= COINC_WINDOW )
+					if(abs(fT - tTime) <= FRAGMENT_WINDOW )
 					{
 						// cout << "fragment coincidence found: " << (fT - tTime) << endl;
 						// cout << "coinc" << endl;
@@ -1094,6 +1099,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 						rGr2 = fGr2;
 						rCat = fCat;
 
+						rA1 = fA1;
+
 
 						fragEntry++;
 						// fragTreeChain->LoadTree(fragEntry);
@@ -1102,7 +1109,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 					}
 
-					else if (fT - tTime > COINC_WINDOW)
+					else if (fT - tTime > FRAGMENT_WINDOW)
 					{
 						// cout << "weird event with tdiff: " << fT-tTime << endl;
 						// cout << "catching up" << endl;
