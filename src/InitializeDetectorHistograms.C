@@ -204,74 +204,74 @@ void DetectorSystemClass::InitializeDetectorHistograms()
   */
 
   cout << "coincidences" << endl;
-
-  // create titles
-  TString nnCoincT = "nn_det_";
-  TString ngCoincT = "ng_det_";
-  TString gnCoincT = "gn_det_";
-  TString ggCoincT = "gg_det_";
-  TString allCoincT = "all_det_";
-
-  double minTimeCrossCorr, maxTimeCrossCorr, numBinsCrossCorr;
-  minTimeCrossCorr = -50;
-  maxTimeCrossCorr = +50;
-  numBinsCrossCorr = 800;
-
-
-  TString nnHistName, ngHistName, gnHistName, ggHistName, allCoincName;
-  TString nnHistTitle, ngHistTitle, gnHistTitle, ggHistTitle, allCoincTitle;
-
-  // populate histograms with pointers
-  allCoinc = new THStack** [NUM_DETS]; // initialize rows
-  nnMult = new TH1F** [NUM_DETS]; // initialize rows
-  ngMult = new TH1F** [NUM_DETS]; // initialize rows
-  gnMult = new TH1F** [NUM_DETS]; // initialize rows
-  ggMult = new TH1F** [NUM_DETS]; // initialize rows
-
-  for(int det1 = 0; det1 < NUM_DETS; det1++)
-  {
-      allCoinc[det1] = new THStack* [NUM_DETS]; // initialize rows
-      nnMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
-      ngMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
-      gnMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
-      ggMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
-
-     for(int det2 = 0; det2 < NUM_DETS; det2++)
-     {
-        allCoincName = allCoincT + to_string(det1) + "_" + to_string(det2);
-        allCoincTitle = allCoincName + ";" + timeAxis + ";" + countAxis;
-        allCoinc[det1][det2] = new THStack(allCoincName, "");
-
-        nnHistName = nnCoincT + to_string(det1) + "_" + to_string(det2);
-        nnHistTitle = nnHistName + ";" + timeAxis + ";" + countAxis;
-        nnMult[det1][det2] = new TH1F(nnHistName, nnHistTitle, numBinsCrossCorr, minTimeCrossCorr, maxTimeCrossCorr);
-        nnMult[det1][det2]->SetLineColor(kBlue);
-
-        allCoinc[det1][det2]->Add(nnMult[det1][det2]);
-
-        ngHistName = ngCoincT + to_string(det1) + "_" + to_string(det2);
-        ngHistTitle = ngHistName + ";" + timeAxis + ";" + countAxis;
-        ngMult[det1][det2] = new TH1F(ngHistName, ngHistTitle, numBinsCrossCorr, minTimeCrossCorr, maxTimeCrossCorr);
-        ngMult[det1][det2]->SetLineColor(kOrange);
-
-        allCoinc[det1][det2]->Add(ngMult[det1][det2]);
-
-        gnHistName = gnCoincT + to_string(det1) + "_" + to_string(det2);
-        gnHistTitle = gnHistName + ";" + timeAxis + ";" + countAxis;
-        gnMult[det1][det2] = new TH1F(gnHistName, gnHistTitle, numBinsCrossCorr, minTimeCrossCorr, maxTimeCrossCorr);
-        gnMult[det1][det2]->SetLineColor(kOrange);
-
-        allCoinc[det1][det2]->Add(gnMult[det1][det2]);
-
-        ggHistName = ggCoincT + to_string(det1) + "_" + to_string(det2);
-        ggHistTitle = ggHistName + ";" + timeAxis + ";" + countAxis;
-        ggMult[det1][det2] = new TH1F(ggHistName, ggHistTitle, numBinsCrossCorr, minTimeCrossCorr, maxTimeCrossCorr);
-        ggMult[det1][det2]->SetLineColor(kRed);
-
-        allCoinc[det1][det2]->Add(ggMult[det1][det2]);
-        allCoinc[det1][det2]->SetDrawOption("nostack");
-     }
-  }
+  // 
+  // // create titles
+  // TString nnCoincT = "nn_det_";
+  // TString ngCoincT = "ng_det_";
+  // TString gnCoincT = "gn_det_";
+  // TString ggCoincT = "gg_det_";
+  // TString allCoincT = "all_det_";
+  //
+  // double minTimeCrossCorr, maxTimeCrossCorr, numBinsCrossCorr;
+  // minTimeCrossCorr = -50;
+  // maxTimeCrossCorr = +50;
+  // numBinsCrossCorr = 800;
+  //
+  //
+  // TString nnHistName, ngHistName, gnHistName, ggHistName, allCoincName;
+  // TString nnHistTitle, ngHistTitle, gnHistTitle, ggHistTitle, allCoincTitle;
+  //
+  // // populate histograms with pointers
+  // allCoinc = new THStack** [NUM_DETS]; // initialize rows
+  // nnMult = new TH1F** [NUM_DETS]; // initialize rows
+  // ngMult = new TH1F** [NUM_DETS]; // initialize rows
+  // gnMult = new TH1F** [NUM_DETS]; // initialize rows
+  // ggMult = new TH1F** [NUM_DETS]; // initialize rows
+  //
+  // for(int det1 = 0; det1 < NUM_DETS; det1++)
+  // {
+  //     allCoinc[det1] = new THStack* [NUM_DETS]; // initialize rows
+  //     nnMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
+  //     ngMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
+  //     gnMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
+  //     ggMult[det1] = new TH1F* [NUM_DETS]; // initialize rows
+  //
+  //    for(int det2 = 0; det2 < NUM_DETS; det2++)
+  //    {
+  //       allCoincName = allCoincT + to_string(det1) + "_" + to_string(det2);
+  //       allCoincTitle = allCoincName + ";" + timeAxis + ";" + countAxis;
+  //       allCoinc[det1][det2] = new THStack(allCoincName, "");
+  //
+  //       nnHistName = nnCoincT + to_string(det1) + "_" + to_string(det2);
+  //       nnHistTitle = nnHistName + ";" + timeAxis + ";" + countAxis;
+  //       nnMult[det1][det2] = new TH1F(nnHistName, nnHistTitle, numBinsCrossCorr, minTimeCrossCorr, maxTimeCrossCorr);
+  //       nnMult[det1][det2]->SetLineColor(kBlue);
+  //
+  //       allCoinc[det1][det2]->Add(nnMult[det1][det2]);
+  //
+  //       ngHistName = ngCoincT + to_string(det1) + "_" + to_string(det2);
+  //       ngHistTitle = ngHistName + ";" + timeAxis + ";" + countAxis;
+  //       ngMult[det1][det2] = new TH1F(ngHistName, ngHistTitle, numBinsCrossCorr, minTimeCrossCorr, maxTimeCrossCorr);
+  //       ngMult[det1][det2]->SetLineColor(kOrange);
+  //
+  //       allCoinc[det1][det2]->Add(ngMult[det1][det2]);
+  //
+  //       gnHistName = gnCoincT + to_string(det1) + "_" + to_string(det2);
+  //       gnHistTitle = gnHistName + ";" + timeAxis + ";" + countAxis;
+  //       gnMult[det1][det2] = new TH1F(gnHistName, gnHistTitle, numBinsCrossCorr, minTimeCrossCorr, maxTimeCrossCorr);
+  //       gnMult[det1][det2]->SetLineColor(kOrange);
+  //
+  //       allCoinc[det1][det2]->Add(gnMult[det1][det2]);
+  //
+  //       ggHistName = ggCoincT + to_string(det1) + "_" + to_string(det2);
+  //       ggHistTitle = ggHistName + ";" + timeAxis + ";" + countAxis;
+  //       ggMult[det1][det2] = new TH1F(ggHistName, ggHistTitle, numBinsCrossCorr, minTimeCrossCorr, maxTimeCrossCorr);
+  //       ggMult[det1][det2]->SetLineColor(kRed);
+  //
+  //       allCoinc[det1][det2]->Add(ggMult[det1][det2]);
+  //       allCoinc[det1][det2]->SetDrawOption("nostack");
+  //    }
+  // }
 
   cout << "Cross-correlations histograms have been created" << endl;
 
@@ -282,22 +282,22 @@ void DetectorSystemClass::InitializeDetectorHistograms()
    |_|_\___|_| |_\___\__|\__|_\___/_||_/__/
   */
 
-  // create the reflections
-  TString refT = "ref_det_";
-  TString refHistName, refHistTitle;
-  reflections = new TH2F** [NUM_DETS]; // initialize rows
-  for(int det1 = 0; det1 < NUM_DETS; det1++)
-  {
-     reflections[det1] = new TH2F* [NUM_DETS]; // initialize rows
-     for(int det2 = 0; det2 < NUM_DETS; det2++)
-     {
-        refHistName = refT + to_string(det1) + "_" + to_string(det2);
-        refHistTitle = refHistName + ";" + timeAxis + ";" + energyAxis + ";" + countAxis;
-        reflections[det1][det2] = new TH2F(refHistName, refHistTitle, 100, -50, 50, 10000, 0, 10);
-     }
-  }
-
-  cout << "Reflection histograms have been created" << endl;
+  // // create the reflections
+  // TString refT = "ref_det_";
+  // TString refHistName, refHistTitle;
+  // reflections = new TH2F** [NUM_DETS]; // initialize rows
+  // for(int det1 = 0; det1 < NUM_DETS; det1++)
+  // {
+  //    reflections[det1] = new TH2F* [NUM_DETS]; // initialize rows
+  //    for(int det2 = 0; det2 < NUM_DETS; det2++)
+  //    {
+  //       refHistName = refT + to_string(det1) + "_" + to_string(det2);
+  //       refHistTitle = refHistName + ";" + timeAxis + ";" + energyAxis + ";" + countAxis;
+  //       reflections[det1][det2] = new TH2F(refHistName, refHistTitle, 100, -50, 50, 10000, 0, 10);
+  //    }
+  // }
+  //
+  // cout << "Reflection histograms have been created" << endl;
 
 
   /*

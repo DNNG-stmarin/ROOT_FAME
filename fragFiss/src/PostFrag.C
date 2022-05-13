@@ -15,6 +15,13 @@ void fragFiss::PostFrag(int iterationPost)
   postFragFile->cd();
   // if(iterationPost == infoSystem->NUM_RECURSIONS - 1) postFragFile->cd();
 
+  TH1D* h1_iteratedMass = new TH1D("h1_iteratedMass_" +  (TString)to_string(iterationPost), "h1_iteratedMass; amu; counts", A_TOT, 0, A_TOT);
+  TH1D* h1_iteratedTKE = new TH1D("h1_iteratedTKE_" + (TString)to_string(iterationPost), "h1_iteratedTKE; TKE (MeV); counts", 2*N_BINS_APH, 0, 2*MAX_KE);
+  TH2D* h2_iteratedMassTKE = new TH2D("h2_iteratedMassTKE_" + (TString)to_string(iterationPost), "h2_iteratedMassTKE; amu; TKE (MeV); counts",A_TOT, 0, A_TOT,2*N_BINS_APH, 0, 2*MAX_KE );
+
+
+  TH1D* h1_iteratedAngleRes = new TH1D("h1_iteratedAngleRes_" +  (TString)to_string(iterationPost), "h1_iteratedAngleRes; differenceAngle; counts", 200, -0.5, 0.5);
+
   TTree* cloneFrag = new TTree("cloneTree_"+ TString(to_string(iterationPost)), "Clone Tree of Fragments");
   cloneFrag->SetFileNumber(0);
   cloneFrag->SetMaxTreeSize(10000000000LL);
@@ -55,6 +62,8 @@ void fragFiss::PostFrag(int iterationPost)
     Long64_t ientry = fragTree->LoadTree(jentry);
     fragTree->GetEntry(jentry);
 
+    if( !((pAn1 > MIN_ANODE1) && (pAn2 > MIN_ANODE2) && (pTheta1 > MIN_ANG1) && (pTheta2 > MIN_ANG2)) ) continue;
+
     fT = pT;
     fAn1 = pAn1;
     fAn2 = pAn2;
@@ -69,8 +78,16 @@ void fragFiss::PostFrag(int iterationPost)
      pTheta1 /= g_AngMass1->Eval(pA1);
      pTheta2 /= g_AngMass2->Eval(pA2);
 
-     pAn1 -= f_massAtt1->Eval(1.0/pTheta1) - f_massAtt1->Eval(0.0);
-     pAn2 -= f_massAtt2->Eval(1.0/pTheta2) - f_massAtt2->Eval(0.0);
+     if(MASS_DEP_ATT)
+     {
+       pAn1 = pAn1 - (g_slopeMass1->Eval(pA1))*1.0/pTheta1;
+       pAn2 = pAn2 - (g_slopeMass2->Eval(pA2))*1.0/pTheta2;
+     }
+     else
+     {
+       pAn1 -= f_massAtt1->Eval(1.0/pTheta1) - f_massAtt1->Eval(0.0);
+       pAn2 -= f_massAtt2->Eval(1.0/pTheta2) - f_massAtt2->Eval(0.0);
+     }
 
      pKE1 = g_massCalib1->Eval(pAn1) + g_phd->Eval(pA1);
      pKE2 = g_massCalib2->Eval(pAn2) + g_phd->Eval(pA2);
@@ -116,6 +133,11 @@ void fragFiss::PostFrag(int iterationPost)
        {
          postA1 = preA1 - g_neutATKE->Interpolate(preA1, preE1+preE2);
          postA2 = preA2 - g_neutATKE->Interpolate(preA2, preE1+preE2);
+       }
+       else if(INTERP_SLOPE_SAWTOOTH)
+       {
+         postA1 = preA1 - ((preE1 + preE2) - g_interNu->Eval(preA1))*g_slopeNu->Eval(preA1);
+         postA2 = preA2 - ((preE1 + preE2) - g_interNu->Eval(preA2))*g_slopeNu->Eval(preA2);
        }
        else
        {
@@ -195,8 +217,19 @@ void fragFiss::PostFrag(int iterationPost)
      {
        cloneFrag->Fill();
        nFiss++;
-
      }
+
+     if(fAL > MIN_MASS_ANALYSIS & fAH < MAX_MASS_ANALYSIS
+        & fTheta1 > MIN_ANG_ANALYSIS & fTheta1 < MAX_ANG_ANALYSIS
+        & fTheta2 > MIN_ANG_ANALYSIS & fTheta2 < MAX_ANG_ANALYSIS
+        )
+        {
+          h1_iteratedMass->Fill(fAL);
+          h1_iteratedMass->Fill(fAH);
+          h1_iteratedTKE->Fill(fKEL + fKEH);
+          h2_iteratedMassTKE->Fill(fAL, fKEL + fKEH);
+          h2_iteratedMassTKE->Fill(fAH, fKEL + fKEH);
+        }
 
      if((jentry%100000 == 0) & (iterationPost == infoSystem->NUM_RECURSIONS - 1)) cout << "Filled " << nFiss << " fissions in " << fT/1e9 <<  " seconds." <<  endl;
   }
@@ -211,5 +244,58 @@ void fragFiss::PostFrag(int iterationPost)
     fragTree->SetMaxTreeSize(10000000000LL);
     fragTree->Write();
   }
+
+
+
+
+  double massAx[252] = {0};
+  double sigTKE[252] = {0};
+  // double massErr[252] = {0};
+  // double sigTkeErr[252] = {0};
+
+  fragDiagnostics->cd();
+  for(int i = 1; i <= A_TOT; i++)
+  {
+    TH1D* prTKE = h2_iteratedMassTKE->ProjectionY("tkeSlice_"+TString(to_string(i)),i,i);
+    massAx[i-1] = h2_iteratedMassTKE->GetXaxis()->GetBinCenter(i);
+
+    sigTKE[i-1] = prTKE->GetStdDev();
+  }
+  TGraph* g_sig = new TGraph(252, massAx, sigTKE);
+  g_sig->SetName("g_sigIter");
+
+
+
+
+  TCanvas* c_iteratedResults = new TCanvas("c_iteratedResults_" + (TString)to_string(iterationPost),"c_iteratedResults",600,400);
+  c_iteratedResults->Divide(3,2);
+
+  c_iteratedResults->cd(1);
+  h1_iteratedMass->Draw();
+  double scale = h1_iteratedMass->GetMaximum() / g_fpy->Eval(h1_iteratedMass->GetMaximumBin());
+  for (int i = 0; i < g_fpy->GetN(); i++) g_fpy->GetY()[i] *= scale;
+  g_fpy->Draw("SAME");
+
+
+  c_iteratedResults->cd(2);
+  h1_iteratedTKE->Draw();
+
+
+  c_iteratedResults->cd(3);
+  h2_iteratedMassTKE->ProfileX()->Draw();
+  g_tke->Draw("SAME");
+
+
+  c_iteratedResults->cd(4);
+  g_sig->Draw();
+  g_sigtke->Draw("SAME");
+
+  c_iteratedResults->cd(5);
+  h2_iteratedMassTKE->Draw("COLZ");
+
+
+  c_iteratedResults->Write();
+
+
 
 }

@@ -79,10 +79,14 @@ void fragFiss::AngleAnalysis()
    cosAx = new double[N_BINS_RATIO];
 
    double *dAPH1, *dAPH2, *dcosAx;
+   double *d2APH1, *d2APH2, *d2cosAx;
    dAPH1 = new double[N_BINS_RATIO - 1];
    dAPH2 = new double[N_BINS_RATIO - 1];
    dcosAx = new double[N_BINS_RATIO - 1];
 
+   d2APH1 = new double[N_BINS_RATIO - 1];
+   d2APH2 = new double[N_BINS_RATIO - 1];
+   d2cosAx = new double[N_BINS_RATIO - 1];
 
    for (int b=0; b < N_BINS_APH; b++)
    {
@@ -102,7 +106,7 @@ void fragFiss::AngleAnalysis()
 
      for (int i = MIN_BIN_RATIO; i < N_BINS_RATIO; i++)
      {
-       cosAx[i] = 0.5*(projAPH1->GetBinCenter(i+1) + projAPH1->GetBinCenter(i+1));
+       cosAx[i] = 0.5*(projAPH1->GetBinCenter(i+1) + projAPH2->GetBinCenter(i+1));
 
        APH1[i]  = projAPH1->GetBinContent(i+1);
        APH2[i]  = projAPH2->GetBinContent(i+2);
@@ -139,13 +143,33 @@ void fragFiss::AngleAnalysis()
      bool dFound1 = false;
      bool dFound2 = false;
 
-     for (int i = MIN_BIN_RATIO; i < N_BINS_RATIO - 2; i++)
+     // derivative filter
+     for(int i = MIN_BIN_RATIO; i < N_BINS_RATIO - 1; i++)
      {
        // calculate local derivative
        dcosAx[i] = (cosAx[i+1]- cosAx[i]) / 2.0;
        dAPH1[i] = (APH1[i+1] - APH1[i]) / dcosAx[i];
        dAPH2[i] = (APH2[i+1] - APH2[i]) / dcosAx[i];
 
+       // cout << dAPH1[i] << " ";
+     }
+     // cout << endl;
+
+     // second derivative filter
+     for(int i = MIN_BIN_RATIO; i < N_BINS_RATIO - 2; i++)
+     {
+       // calculate local derivative
+       d2cosAx[i] = (dcosAx[i+1]- dcosAx[i]) / 2.0;
+       d2APH1[i] = (dAPH1[i+1] - dAPH1[i]);
+       d2APH2[i] = (dAPH2[i+1] - dAPH2[i]);
+
+       // cout << d2APH1[i] << " ";
+     }
+     // cout << endl;
+
+
+     for (int i = MIN_BIN_RATIO; i < N_BINS_RATIO - 2; i++)
+     {
        // calculate backward and forward derivatives
        dPrev    = (cosAx[i]- cosAx[i-1]) / 2.0;
        dPrev1 = (APH1[i] - APH1[i-1]) / dPrev;
@@ -178,11 +202,54 @@ void fragFiss::AngleAnalysis()
 
      }
      // cout << phAx[b] << " " << dMinAPH1 << " " << dMinAPH2 << endl;
-     //
-     if (dFound1) {chargeLength1[b] = projAPH1->GetBinCenter(dMinBinAPH1+1);}
+     // assign it to the neighbors?
+     if (dFound1)
+     {
+       int iterEdge1 = dMinBinAPH1+1;
+
+       // place the edge at the bin before the crossing
+       while((d2APH1[iterEdge1] < 0) && (iterEdge1 < N_BINS_RATIO-2))
+       {
+         iterEdge1++;
+       }
+       while((d2APH1[iterEdge1] > 0) && (iterEdge1 > 0))
+       {
+         iterEdge1--;
+       }
+
+
+       double slope1 = (d2APH1[iterEdge1+1] - d2APH1[iterEdge1])/(projAPH1->GetBinCenter(iterEdge1+1) - projAPH1->GetBinCenter(iterEdge1));
+
+       double crossPoint1 = projAPH1->GetBinCenter(iterEdge1) - d2APH1[iterEdge1]/slope1;
+
+       chargeLength1[b] = crossPoint1;
+
+     }
      else {chargeLength1[b] = chargeLength1[b-1];}
 
-     if (dFound2) {chargeLength2[b] = projAPH2->GetBinCenter(dMinBinAPH2+1);}
+     if (dFound2)
+     {
+
+       int iterEdge2 = dMinBinAPH2+1;
+
+       // place the edge at the bin before the crossing
+       while((d2APH2[iterEdge2] < 0) && (iterEdge2 < N_BINS_RATIO-2))
+       {
+         iterEdge2++;
+       }
+       while((d2APH2[iterEdge2] > 0) && (iterEdge2 > 0))
+       {
+         iterEdge2--;
+       }
+
+
+       double slope2 = (d2APH2[iterEdge2+1] - d2APH2[iterEdge2])/(projAPH2->GetBinCenter(iterEdge2+1) - projAPH2->GetBinCenter(iterEdge2));
+
+       double crossPoint2 = projAPH2->GetBinCenter(iterEdge2) - d2APH2[iterEdge2]/slope2;
+
+       chargeLength2[b] = crossPoint2;
+
+     }
      else {chargeLength2[b] = chargeLength2[b-1];}
 
      // chargeLength1[b] = projAPH1->GetBinCenter(dMinBinAPH1+1);

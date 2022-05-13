@@ -77,6 +77,7 @@ public :
    double MAX_TRIGGER_DRIFT = 0;
    double COINC_WINDOW = 0;
    double BEAM_WINDOW = 0;
+   double FRAGMENT_WINDOW = 0;
 
    int* FISSION_TRIGGERS;
    int* DETECTORS;
@@ -134,6 +135,8 @@ public :
   Double_t        fGr2;
   Double_t        fCat;
 
+  Double_t        fA1;
+
   // List of branches
   TBranch        *b_fT;   //!
   TBranch        *b_fAL;   //!
@@ -149,6 +152,7 @@ public :
   TBranch        *b_fGr1;   //!
   TBranch        *b_fGr2;   //!
   TBranch        *b_fCat;   //!
+  TBranch        *b_fA1;   //!
 
 
    CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFile* beamFileWrite, InfoSystem* info = 0);
@@ -175,6 +179,7 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFil
     MAX_TRIGGER_DRIFT = info->MAX_TRIGGER_DRIFT;
     COINC_WINDOW = info->COINC_WINDOW;
     BEAM_WINDOW = info->BEAM_WINDOW;
+    FRAGMENT_WINDOW = info->BEAM_WINDOW;
 
     FILE_LIST_MODE = info->FILE_LIST_MODE;
 

@@ -368,8 +368,7 @@ int DetectorSystemClass::DetectionAnalysis()
 			TFitResultPtr optimized;
 
 			// set limits to the psd means
-			psdcombined->SetParLimits(1, MINPSD_FIT, DIVPSD_FIT);
-			psdcombined->SetParLimits(4, DIVPSD_FIT, MAXPSD_FIT);
+
 
 			TH1F* smoothN = (TH1F*) psdhists[i]->Clone();
 			TH1F* smoothP = (TH1F*) psdhists[i]->Clone();
@@ -377,8 +376,13 @@ int DetectorSystemClass::DetectionAnalysis()
 			smoothP->SetLineColor(kGreen);
 			// smoothpsd->Smooth(1);
 
+			double tempLocMaxPhot = psdhists[i]->GetBinCenter(psdhists[i]->GetMaximumBin());
+
+			psdcombined->SetParLimits(1, MINPSD_FIT, tempLocMaxPhot + DIVPSD_FIT);
+			psdcombined->SetParLimits(4, tempLocMaxPhot + DIVPSD_FIT, MAXPSD_FIT);
+
 			//photon fit
-			smoothP->GetXaxis()->SetRangeUser(MINPSD_FIT, DIVPSD_FIT);
+			smoothP->GetXaxis()->SetRangeUser(MINPSD_FIT, tempLocMaxPhot + DIVPSD_FIT);
 			Double_t psdmaxP = smoothP->GetMaximum();
 			Double_t binpsdmaxP = smoothP->GetMaximumBin();
 			Double_t xpsdmaxP = smoothP->GetXaxis()->GetBinCenter(binpsdmaxP);
@@ -387,7 +391,7 @@ int DetectorSystemClass::DetectionAnalysis()
 			Double_t stdDevP = smoothP->GetStdDev();
 
 			//neutron fit
-			smoothN->GetXaxis()->SetRangeUser(DIVPSD_FIT, MAXPSD_FIT);
+			smoothN->GetXaxis()->SetRangeUser(tempLocMaxPhot + DIVPSD_FIT, MAXPSD_FIT);
 			Double_t psdmaxN = smoothN->GetMaximum();
 			Double_t binpsdmaxN = smoothN->GetMaximumBin();
 			Double_t xpsdmaxN = smoothN->GetXaxis()->GetBinCenter(binpsdmaxN);
@@ -421,7 +425,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				TString nameBrokenPSD;
 				nameBrokenPSD = "brokenPSD" + to_string(i);
 				TFormula *f1 = new TFormula("f1", "[0]");
-				f1->SetParameter(0, DIVPSD_FIT);
+				f1->SetParameter(0, tempLocMaxPhot + DIVPSD_FIT);
 				detectors[i].discPSD = new TF1(nameBrokenPSD, "f1");
 				continue;
 			}
@@ -457,7 +461,7 @@ int DetectorSystemClass::DetectionAnalysis()
 
 			//in prediction completely off, use default intersection
 			if(psdtempPSD < optimized->Parameter(1) || psdtempPSD > optimized->Parameter(4) || psdtempPSD >= 1) {
-				psdtempPSD = DIVPSD_FIT;
+				psdtempPSD = tempLocMaxPhot + DIVPSD_FIT;
 			}
 
 			TLine* psdline = new TLine(psdtempPSD, 0, psdtempPSD, optimized->Parameter(0));
@@ -642,17 +646,21 @@ int DetectorSystemClass::DetectionAnalysis()
 				TFitResultPtr optimized;
 
 				// set limits to the psd means
-				psdcombined->SetParLimits(1, MINPSD_FIT, DIVPSD_FIT);
-			    psdcombined->SetParLimits(4, DIVPSD_FIT, MAXPSD_FIT);
+				// psdcombined->SetParLimits(1, MINPSD_FIT, DIVPSD_FIT);
+			  // psdcombined->SetParLimits(4, DIVPSD_FIT, MAXPSD_FIT);
+
+
 
 				TH1F* smoothN = (TH1F*) psdErgSlice->Clone();
 				TH1F* smoothP = (TH1F*) psdErgSlice->Clone();
 				smoothN->SetLineColor(kRed);
 				smoothP->SetLineColor(kGreen);
+
+				double tempLocMaxPhotSlice = psdErgSlice->GetBinCenter(psdErgSlice->GetMaximumBin());
 				// smoothpsd->Smooth(1);
 
 				//photon fit
-				smoothP->GetXaxis()->SetRangeUser(MINPSD_FIT, DIVPSD_FIT);
+				smoothP->GetXaxis()->SetRangeUser(MINPSD_FIT, tempLocMaxPhotSlice + DIVPSD_FIT);
 				Double_t psdmaxP = smoothP->GetMaximum();
 				Double_t binpsdmaxP = smoothP->GetMaximumBin();
 				Double_t xpsdmaxP = smoothP->GetXaxis()->GetBinCenter(binpsdmaxP);
@@ -661,7 +669,7 @@ int DetectorSystemClass::DetectionAnalysis()
 				Double_t stdDevP = smoothP->GetStdDev();
 
 				//neutron fit
-				smoothN->GetXaxis()->SetRangeUser(DIVPSD_FIT, MAXPSD_FIT);
+				smoothN->GetXaxis()->SetRangeUser(tempLocMaxPhotSlice + DIVPSD_FIT, MAXPSD_FIT);
 				Double_t psdmaxN = smoothN->GetMaximum();
 				Double_t binpsdmaxN = smoothN->GetMaximumBin();
 				Double_t xpsdmaxN = smoothN->GetXaxis()->GetBinCenter(binpsdmaxN);
@@ -739,6 +747,8 @@ int DetectorSystemClass::DetectionAnalysis()
 					// cout << endl;
 				}
 
+
+
 				// stores the points for the graphs
 				energySliceInd[numGoodSlicespsd] = tempErgPSD; //xvalue
 				discLinePoint[numGoodSlicespsd] = tempPSD; //yvalue
@@ -747,6 +757,49 @@ int DetectorSystemClass::DetectionAnalysis()
 				meanPhotPoint[numGoodSlicespsd] = psdcombined->GetParameter(1);
 				sigNeutPoint[numGoodSlicespsd] = psdcombined->GetParameter(5);
 				sigPhotPoint[numGoodSlicespsd] = psdcombined->GetParameter(2);
+
+
+
+				// check if there is a natural minimum. If yes, rewrite the values
+				double maxP, maxPosP;
+				double maxN, maxPosN;
+				double  tempMaxP,  tempMaxPosP;
+				double minNP, minPosNP;
+				maxP = 0;
+				maxN = 0;
+				tempMaxP = 0;
+
+				double ratioMin = 100;
+
+				bool valleyFound = false;
+
+				for(int psV = 1; psV <= NUM_PSD_HIST; psV++)
+				{
+					double binC = psdErgSlice->GetBinContent(psV);
+					// find the photon maximum
+					if((!valleyFound) && (binC >= tempMaxP))
+					{
+						tempMaxP = binC;
+						tempMaxPosP = psdErgSlice->GetBinCenter(psV);
+					}
+
+					// find the valley dip
+					if((!valleyFound) && (binC < tempMaxP/ratioMin) & (tempMaxP > 0.5*psdErgSlice->GetMaximum())) // make sure it's an actual viable peak
+					{
+						minNP = binC;
+						maxP = tempMaxP;
+						maxPosP = tempMaxPosP;
+						valleyFound = true;
+					}
+
+					// found the valley, now find the neutron
+					if((valleyFound) & (binC > maxN))
+					{
+						maxN = binC;
+						maxPosN = psdErgSlice->GetBinCenter(psV);
+					}
+				}
+
 
 				// loops through and finds the double discrim lines when turned on
 				if(DOUBLE_DISC == 1)
@@ -798,6 +851,20 @@ int DetectorSystemClass::DetectionAnalysis()
 					while(miscPhot >= MISC_MAX);
 				}
 
+				// if we found the valley, store the halfway point
+
+				if(valleyFound == true)
+				{
+					// cout << "I used the valley!" << endl;
+					energySliceInd[numGoodSlicespsd] = tempErgPSD; //xvalue
+					discLinePoint[numGoodSlicespsd] = 0.5*(maxPosN + maxPosP); //yvalue
+					meanNeutPoint[numGoodSlicespsd] = maxPosN;
+					meanPhotPoint[numGoodSlicespsd] = maxPosP;
+
+					sigPhotPoint[numGoodSlicespsd] = 0.01;
+					sigNeutPoint[numGoodSlicespsd] = 0.01;
+				}
+
 
 				TString canSliceName = "psd" + to_string(det) +  "Proj" + to_string(numGoodSlicespsd);
 
@@ -837,6 +904,44 @@ int DetectorSystemClass::DetectionAnalysis()
 					// create a canvas with the psd discrimination
 					TString canDiscErgName = "psdErg" + to_string(det);
 					TCanvas* canvasDiscErg = new TCanvas(canDiscErgName, canDiscErgName, 800, 500);
+
+
+					// remove discontinuities in the psd points
+					for(int smS = 1; smS < numGoodSlicespsd; smS++)
+					{
+						if((energySliceInd[smS] > 2*MINERG_FIT))
+						{
+							if(abs(discLinePoint[smS] - discLinePoint[smS-1]) > DIVPSD_FIT)
+							{
+								cout << "disc at " << det << ": " << smS << endl;
+
+								discLinePoint[smS] = discLinePoint[smS-1];
+							}
+
+							if(abs(meanNeutPoint[smS] - meanNeutPoint[smS-1]) > DIVPSD_FIT) meanNeutPoint[smS] = meanNeutPoint[smS-1];
+
+							if(abs(meanPhotPoint[smS] - meanPhotPoint[smS-1]) > DIVPSD_FIT) meanPhotPoint[smS] = meanPhotPoint[smS-1];
+
+							if(abs(sigNeutPoint[smS] - sigNeutPoint[smS-1]) > DIVPSD_FIT) sigNeutPoint[smS] = sigNeutPoint[smS-1];
+
+							if(abs(sigPhotPoint[smS] - sigPhotPoint[smS-1]) > DIVPSD_FIT) meanPhotPoint[smS] = sigPhotPoint[smS-1];
+						}
+					}
+
+					// smooth out psd curves
+					for(int smS = 1; smS < numGoodSlicespsd; smS++)
+					{
+						if((energySliceInd[smS] > 2*MINERG_FIT))
+						{
+							discLinePoint[smS] = 0.5*(discLinePoint[smS-1] + discLinePoint[smS]);
+							meanNeutPoint[smS] = 0.5*(meanNeutPoint[smS-1] + meanNeutPoint[smS]);
+							meanPhotPoint[smS] = 0.5*(meanPhotPoint[smS-1] + meanPhotPoint[smS]);
+							sigNeutPoint[smS] = 0.5*(sigNeutPoint[smS-1] + sigNeutPoint[smS]);
+							sigPhotPoint[smS] = 0.5*(sigPhotPoint[smS-1] + sigPhotPoint[smS]);
+
+							energySliceInd[smS] = 0.5*(energySliceInd[smS-1] + energySliceInd[smS]);
+						}
+					}
 
 					// stores the psd discrimination line by detector
 				  discLines[det] = new TGraph(numGoodSlicespsd+1, energySliceInd, discLinePoint);
@@ -880,6 +985,13 @@ int DetectorSystemClass::DetectionAnalysis()
 						discLinesPhot[det]->SetLineWidth(3);
 						discLinesPhot[det]->SetName("psdPhot");
 					}
+
+					expLinPsd->SetParLimits(0, MIN_PSD_HIST, MAX_PSD_HIST); expLinPsd->SetParLimits(1, MIN_BEND_PSD, MAX_BEND_PSD);
+					expLinMN->SetParLimits(0, MIN_PSD_HIST, MAX_PSD_HIST); expLinMN->SetParLimits(1, MIN_BEND_PSD, MAX_BEND_PSD);
+					expLinMP->SetParLimits(0, MIN_PSD_HIST, MAX_PSD_HIST); expLinMP->SetParLimits(1, MIN_BEND_PSD, MAX_BEND_PSD);
+					expLinSN->SetParLimits(0, MIN_PSD_HIST, MAX_PSD_HIST); expLinSN->SetParLimits(1, MIN_BEND_PSD, MAX_BEND_PSD);
+					expLinSP->SetParLimits(0, MIN_PSD_HIST, MAX_PSD_HIST); expLinSP->SetParLimits(1, MIN_BEND_PSD, MAX_BEND_PSD);
+
 
 					// fit the different parameters by detector
 					// fits the dirsim line

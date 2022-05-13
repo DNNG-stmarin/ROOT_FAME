@@ -2,9 +2,20 @@
 #define constants_h
 
 const bool WAVE_MODE = false;
+
+// neutron emission
+const bool TKE_SAWTOOTH = false;
+const bool INTERP_SLOPE_SAWTOOTH = true;
+
+// backing attenuation
+const bool MASS_DEP_ATT = false;
 const bool DOUBLE_ATT_LINE = false;
 const bool QUADRATIC_ATT = false;
-const bool TKE_SAWTOOTH = true;
+
+const double MIN_MASS_ANALYSIS = 85;
+const double MAX_MASS_ANALYSIS = 165;
+const double MIN_ANG_ANALYSIS = 0.7;
+const double MAX_ANG_ANALYSIS = 0.9;
 
 // operational
 const double GRID_INEFFICIENCY = 0.0321;
@@ -37,6 +48,10 @@ const int MAX_MASS = 200;
 const int N_BINS_MASS = 150;
 const int N_BINS_MASS_TH = 50;
 
+// const int MIN_MASS_ATT = 70;
+// const int MAX_MASS_ATT =
+
+
 // breakpoint guesses for angle reconstruction
 const double MIN_BR_1 = 150;
 const double MAX_BR_1 = 700;
@@ -50,9 +65,14 @@ const double MIN_MASS_BR = 60;
 const double MAX_MASS_BR = 170;
 const double BREAK_POINT_MASS = 0.2;
 
+const double MAX_ANG_POST = 1.5;
+
 // fitting parameter for attenuation analysis
 const double MIN_INV_ANG_FIT = 1.1;
 const double MAX_INV_ANG_FIT = 2.0;
+
+const double MIN_INV_ANG_FIT_TIP = 1.1;
+const double MAX_INV_ANG_FIT_TIP = 2.0;
 
 
 const double MAX_KE = 150;
@@ -79,6 +99,9 @@ const int NUM_WAVES = 100;
 const int TIME_SAMPLE_CONVERSION = 16.0;
 
 const int DIGITIZER_BITS = pow(2, 12);
+
+
+const int MIN_COUNT_MASS_ATT = 2000;
 
 
 

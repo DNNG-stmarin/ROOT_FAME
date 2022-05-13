@@ -37,6 +37,11 @@ public:
   TString NU_A_TKE_FILENAME;
   TString DELT_A_TKE_FILENAME;
 
+  TString SLOPE_NU_FILENAME;
+  TString INTERCEPT_NU_FILENAME;
+
+
+
   int NUM_RECURSIONS;
 
   InfoSystem()
@@ -52,6 +57,10 @@ public:
     NU_A_TKE_FILENAME = "nuTKE.txt";
     DELT_A_TKE_FILENAME = "delTKE.txt";
     NUM_RECURSIONS = 0;
+
+    SLOPE_NU_FILENAME = "slopetNu.txt";
+    INTERCEPT_NU_FILENAME = "interceptNu.txt";
+
   }
 
   void ReadInput(TString inputFile)
@@ -135,6 +144,18 @@ public:
       {
         file >> value;
         DELT_A_TKE_FILENAME = value;
+      }
+
+      else if(tag == "<SLOPE_NU_FILENAME>:")
+      {
+        file >> value;
+        SLOPE_NU_FILENAME = value;
+      }
+
+      else if(tag == "<INTERCEPT_NU_FILENAME>:")
+      {
+        file >> value;
+        INTERCEPT_NU_FILENAME = value;
       }
 
       else if(tag == "<NUM_RECURSIONS>:")

@@ -556,6 +556,11 @@ public :
    Double_t        backPhotonVy[MAX_MULT];   //[gammaBackMult]
    Double_t        backPhotonVz[MAX_MULT];   //[gammaBackMult]
 
+   // Double_t        neutronCosF[MAX_MULT];   //[gammaBackMult]
+   // Double_t        photonCosF[MAX_MULT];   //[gammaBackMult]
+   // Double_t        backNeutronCosF[MAX_MULT];   //[gammaBackMult]
+   // Double_t        backPhotonCosF[MAX_MULT];   //[gammaBackMult]
+
    // beam specific branches
    Double_t        beamTime;
    Double_t        beamEnergy;

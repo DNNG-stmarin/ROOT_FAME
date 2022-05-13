@@ -73,6 +73,8 @@ public:
 
   double COINC_WINDOW;
   double BEAM_WINDOW;
+  double FRAGMENT_WINDOW;
+
   double DETECTOR_THRESHOLD;
   double DETECTOR_CLIP;
   double BEAM_DISTANCE;
@@ -150,6 +152,7 @@ public:
     RANDOM_COINCIDENCE = 0;
 
     COINC_WINDOW = 200;
+    FRAGMENT_WINDOW = 2000;
     BEAM_WINDOW = 200;
     BEAM_DISTANCE = 2150;
 
@@ -329,6 +332,11 @@ public:
       else if(tag == "<BEAM_WINDOW>:") {
         file >> value;
         BEAM_WINDOW = stod(value);
+      }
+
+      else if(tag == "<FRAGMENT_WINDOW>:") {
+        file >> value;
+        FRAGMENT_WINDOW = stod(value);
       }
 
       else if(tag == "<BEAM_DISTANCE>:") {

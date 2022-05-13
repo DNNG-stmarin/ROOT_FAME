@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <TString.h>
+#include <constants.h>
 
 using namespace std;
 
@@ -50,20 +51,26 @@ int main(int argc, char** argv)
 
   for(int i = 0; i < info->NUM_RECURSIONS; i++)
   {
+
     frag->InitPost(i);
-    frag->PostChargeCorr(i);
     frag->PostAngle(i);
+    frag->PostAttenuation(i);
     frag->PostCalib(i);
     frag->PostCalibPHD(i);
     frag->PostFrag(i);
   }
 
 
+
+
+
+
   frag->fragFile->Close();
-  frag->postFragFile->Close();
+  frag->fragDiagnostics->Close();
+
   if(info->NUM_RECURSIONS > 0)
   {
-    frag->fragDiagnostics->Close();
+    frag->postFragFile->Close();
   }
 
 

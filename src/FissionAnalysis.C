@@ -8,6 +8,9 @@ Date: May 14th, Ann Arbor
 #include "DetectorSystemClass.h"
 // #include "mappingFunctions.h"
 #include <fstream>
+#include <TVector3.h>
+#include <TRotation.h>
+#include <TRandom3.h>
 
 void DetectorSystemClass::FissionAnalysis()
 {
@@ -32,6 +35,15 @@ void DetectorSystemClass::FissionAnalysis()
   double engDet;
 
   double neutVelocity, neutErg;
+
+  TVector3 trigDir;
+  TVector3 fragLDir;
+  TVector3 fragHDir;
+  TVector3 trigNorm;
+  TRandom3* randPhi = new TRandom3();
+
+  TVector3 neutDir;
+  TVector3 gamDir;
 
   // cout << "NUM_DET: " << NUM_DETS << endl;
   // for(int d =0; d < NUM_DETS; d++)
@@ -94,13 +106,46 @@ void DetectorSystemClass::FissionAnalysis()
       f_Gr1 = rGr1;
       f_Gr2 = rGr2;
       f_Cat = rCat;
+
+
+
+      // fragment direction routine
+
+      // set the fragment direction
+      trigDir.SetXYZ(triggers[numTrig].U, triggers[numTrig].V, triggers[numTrig].W);
+      trigNorm.SetXYZ(0, -1*triggers[numTrig].W, triggers[numTrig].V);
+
+      fragLDir = trigDir;
+      fragHDir = trigDir;
+
+      // make sure the chamber is oriented correctly
+      if(abs(rA1 - rAL) < 0.01) f_ThetaH *= -1;
+      else f_ThetaL *= -1;
+
+      double fragPhi = randPhi->Uniform(-TMath::Pi(), TMath::Pi());
+
+      fragLDir.Rotate(TMath::ACos(f_ThetaL), trigNorm);
+      fragLDir.Rotate(fragPhi, trigDir);
+
+      fragHDir.Rotate(TMath::ACos(f_ThetaH), trigNorm);
+      fragHDir.Rotate(-fragPhi, trigDir);
+
+      fragLDir *= 1/fragLDir.Mag();
+      fragHDir *= 1/fragHDir.Mag();
+
     }
+
+
+
+
 
     // allocating the fission info
     f_fisTime = tTime;
     f_fisDep = tDep;
     f_fisChan = tChan;
     f_fisPSP = tPSP;
+
+
 
     // Assign fission trigger type based on beamTime
     // Times are hard-coded for now since I anticipate needing more complex logic later
@@ -190,8 +235,16 @@ void DetectorSystemClass::FissionAnalysis()
         neutronVy[nMult] = adjY / detDist*neutVelocity;
         neutronVz[nMult] = adjZ / detDist*neutVelocity;
         if(SIM_FILE == 1) neutronFlag[nMult] = totFlag[j];
+
+        neutDir.SetXYZ(adjX, adjY, adjZ);
+        neutDir *= 1/neutDir.Mag();
+
+        if(FRAGMENT_MODE == 1) neutronCosF[nMult] = neutDir.Dot(fragLDir);
+
         nMult++;
       }
+
+
       // cuts for gammas
       else if(
         ((((DOUBLE_DISC == 1) & (totPSP[j] < detectors[numDet].discPSDPhot->Eval(engDet))))
@@ -213,6 +266,14 @@ void DetectorSystemClass::FissionAnalysis()
         photonVy[pMult] = adjY / detDist*LIGHT_C;
         photonVz[pMult] = adjZ / detDist*LIGHT_C;
         if(SIM_FILE == 1) photonFlag[pMult] = totFlag[j];
+
+
+        gamDir.SetXYZ(adjX, adjY, adjZ);
+        gamDir *= 1/gamDir.Mag();
+
+        if(FRAGMENT_MODE == 1) photonCosF[pMult] = gamDir.Dot(fragLDir);
+
+
         pMult++;
       }
 
@@ -238,6 +299,12 @@ void DetectorSystemClass::FissionAnalysis()
         backNeutronVx[nBackMult] = adjX/detDist*neutVelocity;
         backNeutronVy[nBackMult] = adjY/detDist*neutVelocity;
         backNeutronVz[nBackMult] = adjZ/detDist*neutVelocity;
+
+        neutDir.SetXYZ(adjX, adjY, adjZ);
+        neutDir *= 1/neutDir.Mag();
+
+        if(FRAGMENT_MODE == 1) backNeutronCosF[nBackMult] = neutDir.Dot(fragLDir);
+
         nBackMult++;
       }
 
@@ -261,6 +328,12 @@ void DetectorSystemClass::FissionAnalysis()
         backPhotonVx[pBackMult] = adjX/detDist*LIGHT_C;
         backPhotonVy[pBackMult] = adjY/detDist*LIGHT_C;
         backPhotonVz[pBackMult] = adjZ/detDist*LIGHT_C;
+
+        gamDir.SetXYZ(adjX, adjY, adjZ);
+        gamDir *= 1/gamDir.Mag();
+
+        if(FRAGMENT_MODE == 1) photonCosF[pBackMult] = gamDir.Dot(fragLDir);
+
         pBackMult++;
       }
       // else

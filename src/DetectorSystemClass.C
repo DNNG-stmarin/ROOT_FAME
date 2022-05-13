@@ -143,7 +143,8 @@ DetectorSystemClass::DetectorSystemClass(TChain* treeIn, TFile* writeFile, InfoS
 	      triggers[i].V = stod(v);
 	      triggers[i].W = stod(w);
 
-				double totDir = triggers[i].U + triggers[i].V + triggers[i].W;
+				double totDir = pow(pow(triggers[i].U,2) + pow(triggers[i].V,2) + pow(triggers[i].W,2),0.5);
+
 				triggers[i].U = triggers[i].U/totDir;
 	      triggers[i].V = triggers[i].V/totDir;
 	      triggers[i].W = triggers[i].W/totDir;
@@ -279,6 +280,8 @@ void DetectorSystemClass::Init(TChain* treeIn)
 			 tree->SetBranchAddress("rGr2", &rGr2, &b_rGr2);
 		 	 tree->SetBranchAddress("rCat", &rCat, &b_rCat);
 
+			 tree->SetBranchAddress("rA1", &rA1, &b_rA1);
+
 		 }
 
 		 tree->SetBranchAddress("totToF", totToF, &b_totToF);
@@ -371,6 +374,7 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("backNeutronVx", backNeutronVx, "backNeutronVx[neutronBackMult]/D");
 	 fissionTree->Branch("backNeutronVy", backNeutronVy, "backNeutronVy[neutronBackMult]/D");
 	 fissionTree->Branch("backNeutronVz", backNeutronVz, "backNeutronVz[neutronBackMult]/D");
+
 	 fissionTree->Branch("backPhotonDetTimes", backPhotonDetTimes, "backPhotonDetTimes[gammaBackMult]/D");
 	 fissionTree->Branch("backPhotonLightOut", backPhotonLightOut, "backPhotonLightOut[gammaBackMult]/D");
 	 fissionTree->Branch("backPhotonPSD", backPhotonPSD, "backPhotonPSD[gammaBackMult]/D");
@@ -378,6 +382,15 @@ void DetectorSystemClass::InitFiss()
 	 fissionTree->Branch("backPhotonVx", backPhotonVx, "backPhotonVx[gammaBackMult]/D");
 	 fissionTree->Branch("backPhotonVy", backPhotonVy, "backPhotonVy[gammaBackMult]/D");
 	 fissionTree->Branch("backPhotonVz", backPhotonVz, "backPhotonVz[gammaBackMult]/D");
+
+	 if(FRAGMENT_MODE>0)
+	 {
+	 		 fissionTree->Branch("neutronCosF", neutronCosF, "neutronCosF[neutronMult]/D");
+	 		 fissionTree->Branch("photonCosF", photonCosF, "photonCosF[gammaMult]/D");
+
+	 		 fissionTree->Branch("backNeutronCosF", backNeutronCosF, "backNeutronCosF[neutronBackMult]/D");
+	 		 fissionTree->Branch("backPhotonCosF", backPhotonCosF, "backPhotonCosF[gammaBackMult]/D");
+	 }
 
 	 fissionTree->SetMaxTreeSize(5000000000LL);
 	 // fissionTree->SetFileNumber(-1);

@@ -62,6 +62,9 @@ public :
    TGraph2D*         g_neutATKE;
    TGraph2D*         g_deltATKE;
 
+   TGraph*         g_slopeNu;
+   TGraph*         g_interNu;
+
    Int_t           fCurrent; //!current Tree number in a TChain
    TString         inputTreeName = "et";
    TString         eventFilename = "default";
@@ -103,6 +106,13 @@ public :
    TF1* f_massAtt1;
    TF1* f_massAtt2;
 
+   TGraph* g_interpMass1;
+   TGraph* g_slopeMass1;
+   TGraph* g_interpMass2;
+   TGraph* g_slopeMass2;
+
+   TGraph2D* g_massAttSurf;
+
    // calibration analysis
    TGraph* g_gainMatch;
    TGraph* g_calib1;
@@ -113,8 +123,6 @@ public :
 
    TGraph* g_phdCalib1;
    TGraph* g_phdCalib2;
-
-
 
    TH2D* h2_massAngle;
    TH1D* h_calibratedAn1;
@@ -127,6 +135,8 @@ public :
    TH1D* h_rawMass2;
    TH1D* h_finalMass;
    TH2D* h2_finalTKE;
+
+
 
 
 /*
@@ -257,8 +267,8 @@ public :
 
    // posteriori
    virtual void     InitPost(int iterationPost);
-   virtual void     PostChargeCorr(int iterationPost);
    virtual void     PostAngle(int iterationPost);
+   virtual void     PostAttenuation(int iterationPost);
    virtual void     PostCalib(int iterationPost);
    virtual void     PostCalibPHD(int iterationPost);
    virtual void     PostFrag(int iterationPost);
