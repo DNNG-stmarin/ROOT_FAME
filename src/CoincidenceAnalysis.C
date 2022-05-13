@@ -399,6 +399,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 	if(NUM_BEAMS > 0) cout << "Beam delay set to: " << BEAM_DELAY << endl;
 
+	cout << "Fragment mode set to: " << FRAGMENT_MODE << endl;
+
 
 	// cout << TRIGGER_THRESHOLD << " " << TRIGGER_CLIP << endl;
 	bool doneFrag = false;
@@ -414,7 +416,8 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 		Long64_t ientry = LoadTree(jentry);
 	  if (ientry < 0) break;
-		if(FRAGMENT_MODE)
+
+		if(FRAGMENT_MODE == 1)
 		{
 	  	Long64_t fentry	= fragTreeChain->LoadTree(fragEntry);
 			if(fragEntry >= fragTreeChain->GetEntries() - 10)
@@ -1028,7 +1031,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				fissNcount++;
 
 
-				if(FRAGMENT_MODE)
+				if(FRAGMENT_MODE == 1)
 				{
 					// fragTreeChain->GetEntry(fragEntry);
 					// cout << tTime << " " << fT << " " << fragEntry << endl;
@@ -1153,7 +1156,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 				}
 
 				// fill event
-				if(FRAGMENT_MODE)
+				if(FRAGMENT_MODE == 1)
 				{
 					if(!noFrag)
 					{

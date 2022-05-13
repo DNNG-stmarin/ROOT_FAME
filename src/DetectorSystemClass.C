@@ -317,7 +317,7 @@ void DetectorSystemClass::InitFiss()
 	 }
 
 	 // fragment variables
-	 if(FRAGMENT_MODE > 0)
+	 if(FRAGMENT_MODE == 1)
 	 {
 		 fissionTree->Branch("AL", &f_AL, "AL/D");
 		 fissionTree->Branch("AH", &f_AH, "AH/D");
@@ -333,9 +333,6 @@ void DetectorSystemClass::InitFiss()
 		 fissionTree->Branch("Grid1", &f_Gr1, "Gr1/D");
 		 fissionTree->Branch("Grid2", &f_Gr2, "Gr2/D");
 		 fissionTree->Branch("Cathode", &f_Cat, "Cat/D");
-
-
-
 	 }
 
 	 // multiplicity variables

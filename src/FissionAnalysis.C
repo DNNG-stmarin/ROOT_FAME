@@ -79,7 +79,7 @@ void DetectorSystemClass::FissionAnalysis()
 
     }
 
-    if(FRAGMENT_MODE)
+    if(FRAGMENT_MODE == 1)
     {
       f_AL = rAL;
       f_AH = rAH;
