@@ -65,6 +65,8 @@ void DetectorSystemClass::FissionAnalysis()
       cout << jentry << " fissions processed." << endl;
     }
 
+    // cout << jentry << endl;
+
 
 	  if(tMult >= NUM_DETS)
 	  {

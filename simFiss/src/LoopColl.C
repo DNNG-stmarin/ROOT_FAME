@@ -82,6 +82,11 @@ void sfame::LoopColl()
       {
         // important properties of the vertex
         vertexChannel = cellToChannel(f_cell[l]);
+        if(vertexChannel < 0)
+        {
+          // cout << "did not recognize channel " << vertexChannel << endl;
+          continue;
+        }
         vertexID = f_particle[l];
         vertexType = f_type[l];
         // vertexLightOut = detectors[vertexChannel].lightOutput->Eval(f_energyDep[l]); // Does this ever check the particle type? (giha)

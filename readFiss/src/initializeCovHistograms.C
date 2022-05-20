@@ -15,10 +15,12 @@ void readFiss::InitializeCovHistograms()
   cout << "initializing covariance arrays" << endl;
 
   // neutron gamma correlations
+  cout << "  initializing 4d array" << endl;
   arrayExp  = new int****** [NUM_TRIGGERS];
   arrayBack = new int****** [NUM_TRIGGERS];
   for (int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
   {
+    cout << "   initializing trigger " << indexChannel << endl;
     arrayExp[indexChannel]  = new int***** [NUM_DETECTORS];
     arrayBack[indexChannel] = new int***** [NUM_DETECTORS];
 
@@ -76,6 +78,8 @@ void readFiss::InitializeCovHistograms()
 
 
   // neutron-gamma-beam events
+  cout << "  initializing 6d array" << endl;
+
   if(mode == BEAM_MODE)
   {
     arrayExpBeam = new int******* [NUM_TRIGGERS];
@@ -85,6 +89,7 @@ void readFiss::InitializeCovHistograms()
     // **************
     for (int indexChannel = 0; indexChannel < NUM_TRIGGERS; indexChannel++)
     {
+      cout << "   initializing trigger " << indexChannel << endl;
       arrayExpBeam[indexChannel] = new int****** [BEAM_ERG_BINNUM];
       arrayBackBeam[indexChannel] = new int****** [BEAM_ERG_BINNUM];
       // *************

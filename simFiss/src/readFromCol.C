@@ -27,8 +27,8 @@ void sfame::readFromCol()
     ifstream file(nameColFile + to_string(nJ) + ".d");
     if(!file.is_open())
     {
-      cout << "error, file not found \n";
-      exit(1);
+      cout << "error, file " << nJ << " not found \n";
+      continue;
     }
 
 

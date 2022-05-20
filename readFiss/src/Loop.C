@@ -140,30 +140,25 @@ void readFiss::LoopExp()
         continue;
       }
 
-       // beam coincidence cut
+
+       // beam energy and index cuts
       bool validBeam = (mode == BEAM_MODE) &&
-                       (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX);
+                       (beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX) &&
+                       (beamIndex > MIN_BEAM_INDEX && beamIndex < MAX_BEAM_INDEX);
       if((mode == BEAM_MODE) && !(beamEnergy > BEAM_ERG_MIN && beamEnergy < BEAM_ERG_MAX))
       {
         h_fissRej->Fill(CUT_BEAM);
         continue;
       }
 
-      // store values for histograms
 
-      if(mode == BEAM_MODE)
-      {
-        h_fisDep[indexChannel]->Fill(fisDep);
-        h_beamTime[indexChannel]->Fill(beamTime);
-        h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
-      }
-
+      // Fragment cuts
       if(mode == FRAG_MODE)
       {
         if(AL < MIN_MASS) continue;
         if(abs(ThetaL) < MIN_ANGLE || abs(ThetaL) > MAX_ANGLE) continue;
         if(abs(ThetaH) < MIN_ANGLE || abs(ThetaH) > MAX_ANGLE) continue;
-        
+
         // if(ThetaL - ThetaH < 0.05) continue;
       }
 
@@ -205,6 +200,8 @@ void readFiss::LoopExp()
       h_fissTriggers->Fill(indexChannel);
       // cout << numFissIter << endl;
       h_fissRej->Fill(ACCEPTED_SIGNAL);
+      // Add beamTime histogram only if fission is used in final analysis (i.e. is valid)
+
       if(numFissIter%1000000 == 0)
       {
         cout << "finished processing " << numFissIter << " valid fissions, " << (int)jentry + 1 << " entry number" << endl;
@@ -214,8 +211,15 @@ void readFiss::LoopExp()
       nMultBack = 0;
       gMultBack = 0;
 
+
+
       if(mode == BEAM_MODE)
       {
+        // Store histogram values
+        h_fisDep[indexChannel]->Fill(fisDep);
+        h_beamTime[indexChannel]->Fill(beamTime);
+        h2_fisDepErg[indexChannel]->Fill(fisDep, beamEnergy);
+
         encBeamErg = (beamEnergy - BEAM_ERG_MIN)/sizeBerg;
         if(encBeamErg >= BEAM_ERG_BINNUM) encBeamErg = BEAM_ERG_BINNUM-1;
         else if(encBeamErg < 0) encBeamErg = 0;

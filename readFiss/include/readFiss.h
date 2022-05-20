@@ -88,6 +88,7 @@ public :
      TDirectory*      cd_projs;
      TDirectory*      cd_AngleCorr;
    TDirectory*      cd_beam;
+     TDirectory*      cd_beamTime;
      TDirectory*      cd_alphaSub;
      TDirectory*      cd_multRatio;
      TDirectory*      cd_multErg;
@@ -797,6 +798,7 @@ public :
    virtual void     PlotIndiv();
 
    // plot the beam parameters
+   virtual void     PlotBeamTime();
    virtual void     PlotDepSubtraction();
    virtual void     PlotRatioMult();
    virtual void     PlotMultErg();

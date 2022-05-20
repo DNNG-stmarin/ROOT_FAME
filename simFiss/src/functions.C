@@ -10,7 +10,18 @@
 // converts from the cell value to the channel value
 int sfame::cellToChannel(int cell)
 {
-    int channel = (int)(cellToChanList->Eval(cell));
+    int channel;
+    bool goodChan = false;
+    for(int jC = 0; jC < cellToChanList->GetN(); jC++)
+    {
+      if(cell == cellToChanList->GetPointX(jC))
+      {
+         channel = cellToChanList->GetPointY(jC);
+         goodChan = true;
+         break;
+      }
+    }
+    if(!goodChan) channel = -1;
     return channel;
 }
 int sfame::chanToCell(int chan)

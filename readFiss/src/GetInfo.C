@@ -50,6 +50,7 @@ void readFiss::SetInfo(MainWindow* main_in)
 
   // detectors
   NUM_DETECTORS = w->NUM_DETECTORS();
+  cout << "Set detnum to " << NUM_DETECTORS << endl;
   THRESHOLD = w->THRESHOLD();
   CLIPPING = w->CLIPPING();
   MAX_TIME_N = w->MAX_TIME_N();
@@ -177,6 +178,7 @@ void readFiss::Run()
   else if(mode == BEAM_MODE)
   {
     cd_beam = writeFile->mkdir("Beam");
+    cd_beamTime = cd_beam->mkdir("BeamTime");
     cd_alphaSub = cd_beam->mkdir("AlphaSubtraction");
     cd_multRatio = cd_beam->mkdir("MultiplicityRatio");
     cd_multErg = cd_beam->mkdir("MultipicityErg");
@@ -247,6 +249,7 @@ void readFiss::Run()
 
   if(mode == BEAM_MODE)
   {
+    PlotBeamTime();
     PlotDepSubtraction();
     PlotRatioMult();
     PlotMultErg();

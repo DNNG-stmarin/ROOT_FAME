@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     w.f->SetInfo(&w); // Nathan: why do we need to SetInfo twice?
 
     w.f->LoadInput(inputfile);
-    cout << "loading input" << endl;
+    cout << "main: loading input" << endl;
     inputfile.close();
 
     cout << "running fame" << endl;

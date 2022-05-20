@@ -7,6 +7,33 @@
 
 using namespace std;
 
+void readFiss::PlotBeamTime()
+{
+  cd_beamTime->cd();
+  cout << "Plotting time behavior of beam" << endl;
+
+  TCanvas** c_beamTime = new TCanvas* [NUM_TRIGGERS];
+
+  for (int r = 0; r < NUM_TRIGGERS; r++)
+	{
+    TString s_TRIG_NUM = (TString)to_string(r);
+
+    c_beamTime[r] = new TCanvas("beamTimeCh"+ s_TRIG_NUM, "beamTime", 1200, 800);
+
+    h_beamTime[r]->SetLineColor(kBlue);
+    h_alphaDep[r]->SetLineColor(kGreen);
+    h_fisSubtract[r]->SetLineColor(kBlack);
+
+
+    //Draw both fits on general fisDep hisgram
+     c_beamTime[r] ->cd();
+     gPad->SetLogy();
+     h_beamTime[r]->Draw();
+
+     c_beamTime[r]->Write();
+  }
+}
+
 void readFiss::PlotDepSubtraction()
 {
   cd_alphaSub->cd();
@@ -68,7 +95,6 @@ void readFiss::PlotDepSubtraction()
      c_Alpha[r]->Write();
   }
 }
-
 
 void readFiss::PlotRatioMult()
 {
