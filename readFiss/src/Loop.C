@@ -150,6 +150,11 @@ void readFiss::LoopExp()
         h_fissRej->Fill(CUT_BEAM);
         continue;
       }
+      if((mode == BEAM_MODE) && !(beamIndex > MIN_BEAM_INDEX && beamIndex < MAX_BEAM_INDEX))
+      {
+        h_fissRej->Fill(CUT_BEAM_INDEX);
+        continue;
+      }
 
 
       // Fragment cuts
@@ -200,7 +205,6 @@ void readFiss::LoopExp()
       h_fissTriggers->Fill(indexChannel);
       // cout << numFissIter << endl;
       h_fissRej->Fill(ACCEPTED_SIGNAL);
-      // Add beamTime histogram only if fission is used in final analysis (i.e. is valid)
 
       if(numFissIter%1000000 == 0)
       {
@@ -212,7 +216,7 @@ void readFiss::LoopExp()
       gMultBack = 0;
 
 
-
+      // Add beamTime histogram only if fission is used in final analysis (i.e. is valid)
       if(mode == BEAM_MODE)
       {
         // Store histogram values
