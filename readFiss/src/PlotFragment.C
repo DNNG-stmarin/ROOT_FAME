@@ -61,6 +61,10 @@ void readFiss::PlotFragmentEmission()
   mkdir("fragResults/", 0777);
 
   h3_gSpecMassTKE->RebinZ(5);
+  for(int i = 0; i < NUM_DETECTORS; i++)
+  {
+    h3_gSpecMassTKEdet[i]->RebinZ(5);
+  }
 
   int numMASSbins = h3_gSpecMassTKE->GetXaxis()->GetNbins();
   int numTKEbins = h3_gSpecMassTKE->GetYaxis()->GetNbins();
@@ -79,6 +83,7 @@ void readFiss::PlotFragmentEmission()
   TString baseFileNeut = "fragResults/neutFrag_";
 
   TString csvExt = ".csv";
+  TString sepStr = "_";
 
 
   yieldFragFile.open("fragResults/yieldFrag.csv");
@@ -138,6 +143,50 @@ void readFiss::PlotFragmentEmission()
     neutFragFile.close();
 
   }
+
+  cout << "writig all detectrors separately" << endl;
+  for(int deT = 0; deT < NUM_DETECTORS; deT++)
+  {
+
+    for(int eg = 1; eg <= numGEbins; eg++)
+    {
+      nameFileGam = baseFileGam + (TString)to_string(eg) + sepStr + (TString)to_string(deT)  + csvExt;
+      gamFragFile.open(nameFileGam);
+      // write yield
+      for(int m = 1; m <= numMASSbins; m++)
+      {
+        for(int k = 1; k <= numTKEbins; k++)
+        {
+          gamFragFile << h3_gSpecMassTKEdet[deT]->GetBinContent(m, k, eg);
+
+          if(k < numTKEbins) gamFragFile << ", ";
+          else gamFragFile << "\n ";
+        }
+      }
+      gamFragFile.close();
+
+    }
+
+    for(int en = 1; en <= numNEbins; en++)
+    {
+      nameFileNeut = baseFileNeut + (TString)to_string(en) + sepStr + (TString)to_string(deT) + csvExt;
+      neutFragFile.open(nameFileNeut);
+      // write yield
+      for(int m = 1; m <= numMASSbins; m++)
+      {
+        for(int k = 1; k <= numTKEbins; k++)
+        {
+          neutFragFile << h3_nSpecMassTKEdet[deT]->GetBinContent(m, k, en);
+
+          if(k < numTKEbins) neutFragFile << ", ";
+          else neutFragFile << "\n ";
+        }
+      }
+      neutFragFile.close();
+
+    }
+  }
+
 
 
 

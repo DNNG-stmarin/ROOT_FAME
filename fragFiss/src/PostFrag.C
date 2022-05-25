@@ -20,11 +20,11 @@ void fragFiss::PostFrag(int iterationPost)
   TH2D* h2_iteratedMassTKE = new TH2D("h2_iteratedMassTKE_" + (TString)to_string(iterationPost), "h2_iteratedMassTKE; amu; TKE (MeV); counts",A_TOT, 0, A_TOT,2*N_BINS_APH, 0, 2*MAX_KE );
 
 
-  TH1D* h1_iteratedAngleRes = new TH1D("h1_iteratedAngleRes_" +  (TString)to_string(iterationPost), "h1_iteratedAngleRes; differenceAngle; counts", 200, -0.5, 0.5);
+  TH1D* h1_iteratedAngleRes = new TH1D("h1_iteratedAngleRes_" +  (TString)to_string(iterationPost), "h1_iteratedAngleRes; differenceAngle; counts", 500, -1.0, 1.0);
 
   TTree* cloneFrag = new TTree("cloneTree_"+ TString(to_string(iterationPost)), "Clone Tree of Fragments");
   cloneFrag->SetFileNumber(0);
-  cloneFrag->SetMaxTreeSize(10000000000LL);
+  // cloneFrag->SetMaxTreeSize(20000000000LL);
 
   cloneFrag->Branch("fT", &fT, "fT/D");
   cloneFrag->Branch("fAL", &fAL, "fAL/D");
@@ -56,6 +56,7 @@ void fragFiss::PostFrag(int iterationPost)
   Long64_t nentries = fragTree->GetEntries();
   cout << "analyzing " << nentries << " entries." << endl;
   long int nFiss = 0;
+  double pThetaAv;
 
   for (Long64_t jentry =0; jentry < nentries; jentry++)
   {
@@ -63,6 +64,11 @@ void fragFiss::PostFrag(int iterationPost)
     fragTree->GetEntry(jentry);
 
     if( !((pAn1 > MIN_ANODE1) && (pAn2 > MIN_ANODE2) && (pTheta1 > MIN_ANG1) && (pTheta2 > MIN_ANG2)) ) continue;
+    if(iterationPost == infoSystem->NUM_RECURSIONS - 1)
+    {
+      if(pA1 < MIN_MASS_ANALYSIS || pA1 > MAX_MASS_ANALYSIS || pA2 < MIN_MASS_ANALYSIS || pA2 > MAX_MASS_ANALYSIS) continue;
+    }
+
 
     fT = pT;
     fAn1 = pAn1;
@@ -78,10 +84,22 @@ void fragFiss::PostFrag(int iterationPost)
      pTheta1 /= g_AngMass1->Eval(pA1);
      pTheta2 /= g_AngMass2->Eval(pA2);
 
+     h1_iteratedAngleRes->Fill(pTheta1 - pTheta2);
+
+     pThetaAv = 0.5*(pTheta1 + pTheta2);
+     pTheta1 = pThetaAv;
+     pTheta2 = pThetaAv;
+
      if(MASS_DEP_ATT)
      {
        pAn1 = pAn1 - (g_slopeMass1->Eval(pA1))*1.0/pTheta1;
        pAn2 = pAn2 - (g_slopeMass2->Eval(pA2))*1.0/pTheta2;
+     }
+     else if(MASS_DEP_ATT_SURF)
+     {
+       pAn1 = pAn1 + (g_interpMass1->Eval(pA1) - g2_massAttSurf1[iterationPost]->Interpolate(pA1, 1.0/pTheta1));
+       // pAn1 = pAn1 - (g_slopeMass1->Eval(pA1))*1.0/pTheta1;
+       pAn2 = pAn2 + (g_interpMass2->Eval(pA2) - g2_massAttSurf2[iterationPost]->Interpolate(pA2, 1.0/pTheta2));
      }
      else
      {
@@ -241,7 +259,7 @@ void fragFiss::PostFrag(int iterationPost)
   // fragTree->Show(10);
   if(iterationPost == infoSystem->NUM_RECURSIONS - 1)
   {
-    fragTree->SetMaxTreeSize(10000000000LL);
+    // fragTree->SetMaxTreeSize(10000000000LL);
     fragTree->Write();
   }
 
@@ -292,6 +310,9 @@ void fragFiss::PostFrag(int iterationPost)
 
   c_iteratedResults->cd(5);
   h2_iteratedMassTKE->Draw("COLZ");
+
+  c_iteratedResults->cd(6);
+  h1_iteratedAngleRes->Draw("COLZ");
 
 
   c_iteratedResults->Write();

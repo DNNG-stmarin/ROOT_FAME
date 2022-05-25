@@ -75,6 +75,11 @@ fragFiss::fragFiss(InfoSystem* infoIn, TString fileName) : eventChain(0)
    g_interNu = new TGraph(infoIn->INTERCEPT_NU_FILENAME);
    g_interNu->SetName("g_interNu");
 
+
+
+   g2_massAttSurf1 = new TGraph2D* [infoIn->NUM_RECURSIONS];
+   g2_massAttSurf2 = new TGraph2D* [infoIn->NUM_RECURSIONS];
+
 }
 
 fragFiss::~fragFiss()
@@ -91,6 +96,9 @@ fragFiss::~fragFiss()
    delete fragDiagnostics;
 
    delete infoSystem;
+
+   delete g2_massAttSurf1;
+   delete g2_massAttSurf2;
 
    cout << "Finished deleting" << endl;
 
@@ -191,7 +199,7 @@ void fragFiss::InitFrag()
   // initialize fragment tree
   fragTree = new TTree("FragmentTree", "Tree of Fragments");
   fragTree->SetFileNumber(0);
-  fragTree->SetMaxTreeSize(5000000000LL);
+  // fragTree->SetMaxTreeSize(10000000000LL);
 
   fragTree->Branch("fT", &fT, "fT/D");
   fragTree->Branch("fAL", &fAL, "fAL/D");

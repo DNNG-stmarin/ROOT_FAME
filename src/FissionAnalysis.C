@@ -121,8 +121,8 @@ void DetectorSystemClass::FissionAnalysis()
       fragHDir = trigDir;
 
       // make sure the chamber is oriented correctly
-      if(abs(rA1 - rAL) < 0.01) f_ThetaH *= -1;
-      else f_ThetaL *= -1;
+      if(abs(rA1 - rAL) < 0.01) f_ThetaL *= -1;
+      else f_ThetaH *= -1;
 
       double fragPhi = randPhi->Uniform(-TMath::Pi(), TMath::Pi());
 

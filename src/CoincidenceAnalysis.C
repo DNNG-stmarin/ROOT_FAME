@@ -1047,7 +1047,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 					oldTime = fT;
 					fragTreeChain->GetEntry(fragEntry);
 
-					// cout << tTime << " " << fT << " " << fragEntry << endl;
+					// cout << tTime -  fT << " " << fragEntry << endl;
 
 					if(fT - oldTime > 1000*FISS_RATE)
 					{
@@ -1185,6 +1185,7 @@ int CoincidenceAnalysis::CreateCoincidenceTree(Long64_t entriesToProc)
 
 				// cout << tTime << " " << tMult << " " << tDep << " " << tPSP << " " << tChan << endl;
 
+				// cout << fisTracker << endl;
 				// update user on status of processing
 				if(fisTracker%100000 == 0)
 				{

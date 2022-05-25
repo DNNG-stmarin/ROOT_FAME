@@ -28,6 +28,8 @@ void fragFiss::PostAttenuation(int iterationPost)
   cout << "Filling mass attenuation histograms" << endl;
   Long64_t nentries = fragTree->GetEntries();
 
+  double pThetaAv;
+
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
   {
      Long64_t ientry = fragTree->LoadTree(jentry);
@@ -36,6 +38,10 @@ void fragFiss::PostAttenuation(int iterationPost)
      fragTree->GetEntry(jentry);
 
      if( !((pAn1 > MIN_ANODE1) && (pAn2 > MIN_ANODE2) && (pTheta1 > MIN_ANG1) && (pTheta2 > MIN_ANG2)) ) continue;
+     if(iterationPost == infoSystem->NUM_RECURSIONS - 1)
+     {
+       if(pA1 < MIN_MASS_ANALYSIS || pA1 > MAX_MASS_ANALYSIS || pA2 < MIN_MASS_ANALYSIS || pA2 > MAX_MASS_ANALYSIS) continue;
+     }
 
      // grid inefficiency corrections
      pAn1 = (pAn1 - GRID_INEFFICIENCY*(pAn1 + pGr1))/(1 - GRID_INEFFICIENCY);
@@ -47,6 +53,10 @@ void fragFiss::PostAttenuation(int iterationPost)
      pTheta1 /= g_AngMass1->Eval(pA1);
      pTheta2 /= g_AngMass2->Eval(pA2);
 
+     pThetaAv = 0.5*(pTheta1 + pTheta2);
+     pTheta1 = pThetaAv;
+     pTheta2 = pThetaAv;
+
      h2_massAtt1->Fill(1.0/pTheta1, pAn1);
      h2_massAtt2->Fill(1.0/pTheta2, pAn2);
 
@@ -56,8 +66,15 @@ void fragFiss::PostAttenuation(int iterationPost)
   }
 
 
+  // attenuation surfaces
 
+  cout << "declaring attenuation surfaces with dimension " << N_BINS_MASS_TH*N_BINS_MASS_TH << endl;
+  g2_massAttSurf1[iterationPost] = new TGraph2D(N_BINS_MASS_TH*N_BINS_MASS_TH);
+  g2_massAttSurf2[iterationPost] = new TGraph2D(N_BINS_MASS_TH*N_BINS_MASS_TH);
+  g2_massAttSurf1[iterationPost]->SetName("g2_massAttSurf1_" + (TString)to_string(iterationPost));
+  g2_massAttSurf2[iterationPost]->SetName("g2_massAttSurf2_" + (TString)to_string(iterationPost));
 
+  cout << "creating profiles for standard analysis" << endl;
 
   // find the profiles
   TProfile* p1_massBacking1 = h2_massAtt1->ProfileX();
@@ -102,6 +119,8 @@ void fragFiss::PostAttenuation(int iterationPost)
   int numMass1 = 0;
   int numMass2 = 0;
 
+  int surfPoint1 = 0;
+
   for(int m = 1; m <= N_BINS_MASS_TH; m++)
   {
 
@@ -122,8 +141,18 @@ void fragFiss::PostAttenuation(int iterationPost)
     interpMass1[numMass1] = depMass1->Parameter(0);
     slopeMass1[numMass1] = depMass1->Parameter(1);
 
+    for(int anI = 1; anI <= N_BINS_RATIO; anI++)
+    {
+      // cout << surfPoint1 << " " <<  h3_massKEAtt1->GetXaxis()->GetBinCenter(m) << " " << p1_massAtt1[numMass1]->GetBinCenter(anI) << " " << p1_massAtt1[numMass1]->GetBinContent(anI) << endl;
+      g2_massAttSurf1[iterationPost]->SetPoint(surfPoint1, h3_massKEAtt1->GetXaxis()->GetBinCenter(m), p1_massAtt1[numMass1]->GetBinCenter(anI), p1_massAtt1[numMass1]->GetBinContent(anI));
+
+      surfPoint1++;
+    }
+
     numMass1++;
   }
+
+  int surfPoint2 = 0;
 
   for(int m = 1; m <= N_BINS_MASS_TH; m++)
   {
@@ -145,6 +174,14 @@ void fragFiss::PostAttenuation(int iterationPost)
     interpMass2[numMass2] = depMass2->Parameter(0);
     slopeMass2[numMass2] = depMass2->Parameter(1);
 
+    for(int anI = 1; anI <= N_BINS_RATIO; anI++)
+    {
+
+      g2_massAttSurf2[iterationPost]->SetPoint(surfPoint2, h3_massKEAtt2->GetXaxis()->GetBinCenter(m), p1_massAtt2[numMass2]->GetBinCenter(anI), p1_massAtt2[numMass2]->GetBinContent(anI));
+
+      surfPoint2++;
+    }
+
     numMass2++;
   }
 
@@ -154,10 +191,10 @@ void fragFiss::PostAttenuation(int iterationPost)
   g_slopeMass1 = new TGraph(numMass1, massCenters1, slopeMass1);
   g_slopeMass2 = new TGraph(numMass2, massCenters2, slopeMass2);
 
-  g_interpMass1->SetName("g_interpMass1");
-  g_interpMass2->SetName("g_interpMass2");
-  g_slopeMass1->SetName("g_slopeMass1");
-  g_slopeMass2->SetName("g_slopeMass2");
+  g_interpMass1->SetName("g_interpMass1" + (TString)to_string(iterationPost));
+  g_interpMass2->SetName("g_interpMass2" + (TString)to_string(iterationPost));
+  g_slopeMass1->SetName("g_slopeMass1" + (TString)to_string(iterationPost));
+  g_slopeMass2->SetName("g_slopeMass2" + (TString)to_string(iterationPost));
 
   // // analysis of fits
   // // ask fredrik about this
@@ -213,6 +250,12 @@ void fragFiss::PostAttenuation(int iterationPost)
     canPan++;
   }
 
+  // TGraph2D *g2_massAttSurf1C, *g2_massAttSurf2C;
+  //
+  // g2_massAttSurf1C = (TGraph2D*)g2_massAttSurf1->Clone();
+  // g2_massAttSurf2C = (TGraph2D*)g2_massAttSurf2->Clone();
+  // g2_massAttSurf1C->SetName("g2_massAttSurf1C_" + (TString)to_string(iterationPost));
+  // g2_massAttSurf2C->SetName("g2_massAttSurf2C_" + (TString)to_string(iterationPost));
 
 
 
@@ -224,6 +267,9 @@ void fragFiss::PostAttenuation(int iterationPost)
 
   h3_massKEAtt1->Write();
   h3_massKEAtt2->Write();
+
+  g2_massAttSurf1[iterationPost]->Write();
+  g2_massAttSurf2[iterationPost]->Write();
 
 
 

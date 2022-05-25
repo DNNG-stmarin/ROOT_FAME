@@ -30,6 +30,8 @@ void fragFiss::PostAngle(int iterationPost)
   cout << "Filling mass angle histogram" << endl;
   Long64_t nentries = fragTree->GetEntries();
 
+  double pThetaAv;
+
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
   {
      Long64_t ientry = fragTree->LoadTree(jentry);
@@ -38,9 +40,17 @@ void fragFiss::PostAngle(int iterationPost)
      fragTree->GetEntry(jentry);
 
      if( !((pAn1 > MIN_ANODE1) && (pAn2 > MIN_ANODE2) && (pTheta1 > MIN_ANG1) && (pTheta2 > MIN_ANG2)) ) continue;
+     if(iterationPost == infoSystem->NUM_RECURSIONS - 1)
+     {
+       if(pA1 < MIN_MASS_ANALYSIS || pA1 > MAX_MASS_ANALYSIS || pA2 < MIN_MASS_ANALYSIS || pA2 > MAX_MASS_ANALYSIS) continue;
+     }
 
      pAn1 = (pAn1 - GRID_INEFFICIENCY*(pAn1 + pGr1))/(1 - GRID_INEFFICIENCY);
      pAn2 = (pAn2 - GRID_INEFFICIENCY*(pAn2 + pGr2))/(1 - GRID_INEFFICIENCY);
+
+     pThetaAv = 0.5*(pTheta1 + pTheta2);
+     pTheta1 = pThetaAv;
+     pTheta2 = pThetaAv;
 
      // h3_anodeMassGrid1->Fill(pGr1/pAn1, pAn1, pA1);
      // h3_anodeMassGrid2->Fill(pGr2/pAn2, pAn2, pA2);

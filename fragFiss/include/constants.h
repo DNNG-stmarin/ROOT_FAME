@@ -9,20 +9,22 @@ const bool INTERP_SLOPE_SAWTOOTH = true;
 
 // backing attenuation
 const bool MASS_DEP_ATT = false;
+const bool MASS_DEP_ATT_SURF = false;
+
 const bool DOUBLE_ATT_LINE = false;
 const bool QUADRATIC_ATT = false;
 
 const double MIN_MASS_ANALYSIS = 85;
 const double MAX_MASS_ANALYSIS = 165;
 const double MIN_ANG_ANALYSIS = 0.7;
-const double MAX_ANG_ANALYSIS = 0.9;
+const double MAX_ANG_ANALYSIS = 1.2;
 
 // operational
 const double GRID_INEFFICIENCY = 0.0321;
 
 // energy acceptance region
-const double MIN_ANODE1 = 200;
-const double MIN_ANODE2 = 150;
+const double MIN_ANODE1 = 150;
+const double MIN_ANODE2 = 100;
 
 // angle acceptance region
 const double MIN_ANG1 = 0.3;
@@ -59,7 +61,7 @@ const double MIN_BR_2 = 150;
 const double MAX_BR_2 = 700;
 const double MID_BR_1 = 400;
 const double MID_BR_2 = 400;
-const double BREAK_POINT_RATIO = 0.02;
+const double BREAK_POINT_RATIO = 0.015;
 
 const double MIN_MASS_BR = 60;
 const double MAX_MASS_BR = 170;
@@ -71,7 +73,7 @@ const double MAX_ANG_POST = 1.5;
 const double MIN_INV_ANG_FIT = 1.1;
 const double MAX_INV_ANG_FIT = 2.0;
 
-const double MIN_INV_ANG_FIT_TIP = 1.1;
+const double MIN_INV_ANG_FIT_TIP = 1.2;
 const double MAX_INV_ANG_FIT_TIP = 2.0;
 
 

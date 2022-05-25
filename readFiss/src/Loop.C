@@ -124,6 +124,7 @@ void readFiss::LoopExp()
       // if (Cut(ientry) < 0) continue;
 
       indexChannel = isTrigger(fisChan); // this should be a function of fisChan
+      // cout << jentry << endl;
 
       /*
         ___     _
@@ -191,6 +192,8 @@ void readFiss::LoopExp()
         expTree->GetEntry(jentry);
       }
 
+      // cout << jentry << endl;
+
 
 
       /*
@@ -233,10 +236,11 @@ void readFiss::LoopExp()
       {
         h2_MassTKE->Fill(AL, KEL + KEH);
         h2_MassTKE->Fill(AH, KEL + KEH);
-        h1_exc->Fill(EX);
+        // h1_exc->Fill(EX);
       }
 
 
+      // cout << neutronMult << " " << gammaMult << " " << neutronBackMult << " " << gammaBackMult << endl;
 
       /*
                     _
@@ -249,6 +253,7 @@ void readFiss::LoopExp()
       int n1 = -1, n2 = -1; // For nn angular correlations
       for (int i = 0; i < neutronMult; i++)
       {
+
         // ann mode cut neutrons
         if(ANN_mode)
         {
@@ -296,10 +301,13 @@ void readFiss::LoopExp()
 
             if(mode == FRAG_MODE)
             {
-              h2_nSpecExc->Fill(EX, neutronToFErg[i]);
+              // h2_nSpecExc->Fill(EX, neutronToFErg[i]);
 
               h3_nSpecMassTKE->Fill(AL, KEL+KEH, neutronToFErg[i]);
               h3_nSpecMassTKE->Fill(AH, KEL+KEH, neutronToFErg[i]);
+
+              h3_nSpecMassTKEdet[indexDet]->Fill(AL, KEL+KEH, neutronToFErg[i]);
+              h3_nSpecMassTKEdet[indexDet]->Fill(AH, KEL+KEH, neutronToFErg[i]);
             }
 
 
@@ -404,11 +412,14 @@ void readFiss::LoopExp()
 
           if(mode == FRAG_MODE)
           {
-            h2_gSpecExc->Fill(EX, photonLightOut[i]);
+            // h2_gSpecExc->Fill(EX, photonLightOut[i]);
 
 
             h3_gSpecMassTKE->Fill(AL, KEL+KEH, photonLightOut[i]);
             h3_gSpecMassTKE->Fill(AH, KEL+KEH, photonLightOut[i]);
+
+            h3_gSpecMassTKEdet[indexDet]->Fill(AL, KEL+KEH, photonLightOut[i]);
+            h3_gSpecMassTKEdet[indexDet]->Fill(AH, KEL+KEH, photonLightOut[i]);
 
           }
 

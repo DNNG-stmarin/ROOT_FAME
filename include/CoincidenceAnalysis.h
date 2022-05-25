@@ -179,7 +179,7 @@ CoincidenceAnalysis::CoincidenceAnalysis(TFile* expFileWrite, TChain* tree, TFil
     MAX_TRIGGER_DRIFT = info->MAX_TRIGGER_DRIFT;
     COINC_WINDOW = info->COINC_WINDOW;
     BEAM_WINDOW = info->BEAM_WINDOW;
-    FRAGMENT_WINDOW = info->BEAM_WINDOW;
+    FRAGMENT_WINDOW = info->FRAGMENT_WINDOW;
 
     FILE_LIST_MODE = info->FILE_LIST_MODE;
 

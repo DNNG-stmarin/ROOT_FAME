@@ -413,6 +413,9 @@ public :
    TH3D* h3_nSpecMassTKE;
    TH3D* h3_gSpecMassTKE;
 
+   TH3D** h3_nSpecMassTKEdet;
+   TH3D** h3_gSpecMassTKEdet;
+
    TH1D* h1_exc;
    TH2D* h2_nSpecExc;
    TH2D* h2_gSpecExc;

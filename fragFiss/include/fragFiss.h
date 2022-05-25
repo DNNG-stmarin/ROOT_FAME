@@ -111,7 +111,8 @@ public :
    TGraph* g_interpMass2;
    TGraph* g_slopeMass2;
 
-   TGraph2D* g_massAttSurf;
+   TGraph2D** g2_massAttSurf1;
+   TGraph2D** g2_massAttSurf2;
 
    // calibration analysis
    TGraph* g_gainMatch;

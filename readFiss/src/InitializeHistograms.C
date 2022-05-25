@@ -39,8 +39,8 @@ void readFiss::InitializeHistograms()
   const double minDeltaT = 0;
   const double maxDeltaT = 10000;
 
-  const int numTKEbins = 60;
-  const double minTKE = 140;
+  const int numTKEbins = 70;
+  const double minTKE = 120;
   const double maxTKE = 260;
 
   const int numExcBin = 50;
@@ -407,19 +407,29 @@ void readFiss::InitializeHistograms()
   */
   if(FRAG_MODE)
   {
+    cout << "initializing fragment histograms" << endl;
+
+    cout << MASS_BINNUM << " mass bins" << endl;
+    cout << numTKEbins << " ke bins" << endl;
+
     // fragment histograms
     h3_gMassTKE  = new TH3D("h3_gMassTKE", "Gamma yield; Mass (AMU); TKE (MeV); Mean Gamma Multiplicity; counts", MASS_BINNUM, MIN_MASS, MAX_MASS, numTKEbins, minTKE, maxTKE, maxMult, minMult-0.5, maxMult-0.5);
     h3_nMassTKE  = new TH3D("h3_gMassTKE", "Neutron yield; Mass (AMU); TKE (MeV); Mean Neutron Multiplicity; counts", MASS_BINNUM, MIN_MASS, MAX_MASS, numTKEbins, minTKE, maxTKE, maxMult, minMult-0.5, maxMult-0.5);
     // h3_gSpecMassTKE = new TH3D("h3_gMassTKE", "Gamma Energy yield; Mass (AMU); TKE (MeV); Mean Gamma Energy; counts", MASS_BINNUM, MIN_MASS, MAX_MASS, numTKEbins, minTKE, maxTKE, numLObins, 0, maxLO*maxMult);
 
-    h1_exc      = new TH1D("h1_exc", "Fragment Excitation; Excitation Energy (MeV); counts", numExcBin, minExc, maxExc);
-    h2_gSpecExc = new TH2D("h2_gSpecExc", "Gamma Spectrum Excitation; Excitation Energy (MeV); Gamma-ray Lightoutput (MeVee); counts", numExcBin, minExc, maxExc, numLObins, minLO, maxLO);
-    h2_nSpecExc = new TH2D("h2_nSpecExc", "Gamma Spectrum Excitation; Excitation Energy (MeV); Neutron ToF Energy (MeV); counts", numExcBin, minExc, maxExc, numErgBins, minErg, maxErg);
-
     // actual final plots
     h2_MassTKE = new TH2D("h2_MassTKE", "TKE_Mass distribution; Mass (AMU); TKE (MeV);counts", MASS_BINNUM, MIN_MASS, MAX_MASS, numTKEbins, minTKE, maxTKE);
     h3_gSpecMassTKE = new TH3D("h3_gSpecMassTKE", "Gamma yield; Mass (AMU); TKE (MeV); Gamma-ray Energy (MeV); counts", MASS_BINNUM, MIN_MASS, MAX_MASS, numTKEbins, minTKE, maxTKE, numLObins, 0, maxLO);
     h3_nSpecMassTKE = new TH3D("h3_nSpecMassTKE", "Neutron yield; Mass (AMU); TKE (MeV); Neutron Energy (MeV); counts", MASS_BINNUM, MIN_MASS, MAX_MASS, numTKEbins, minTKE, maxTKE, numErgBins, 0, maxErg);
+
+    h3_gSpecMassTKEdet = new TH3D*[NUM_DETECTORS];
+    h3_nSpecMassTKEdet = new TH3D*[NUM_DETECTORS];
+
+    for(int i = 0; i < NUM_DETECTORS; ++i)
+    {
+      h3_gSpecMassTKEdet[i] = new TH3D("h3_gSpecMassTKE_" + (TString)to_string(i), "Gamma yield; Mass (AMU); TKE (MeV); Gamma-ray Energy (MeV); counts", MASS_BINNUM, MIN_MASS, MAX_MASS, numTKEbins, minTKE, maxTKE, numLObins, 0, maxLO);
+      h3_nSpecMassTKEdet[i] = new TH3D("h3_nSpecMassTKE_" + (TString)to_string(i), "Gamma yield; Mass (AMU); TKE (MeV); Gamma-ray Energy (MeV); counts", MASS_BINNUM, MIN_MASS, MAX_MASS, numTKEbins, minTKE, maxTKE, numLObins, 0, maxLO);
+    }
   }
 
 
